@@ -156,6 +156,8 @@ public class SafeGeoImageFactory implements SafeImageProvider {
 		app.setDefaultCursor();
 		if (!isInternalFile) {
 			app.storeUndoInfo();
+			app.getUndoManager().storeAddGeo(geoImage);
+
 		}
 		geoImage.setImagePropertiesIfNecessary();
 	}
