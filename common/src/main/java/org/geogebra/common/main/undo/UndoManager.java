@@ -498,15 +498,23 @@ public abstract class UndoManager {
 	 * @param arg GeoElement just added
 	 */
 	public void storeAddGeo(GeoElement arg) {
+		storeUndoableAction(ActionType.ADD, getXMLOf(arg), ActionType.REMOVE,
+				arg.getLabelSimple());
+	}
+
+	public void storeMoveGeo(GeoElement arg) {
+		storeUndoableAction(ActionType.UPDATE, getXMLOf(arg), ActionType.UPDATE,
+				arg.getLabelSimple());
+	}
+
+	private String[] getXMLOf(GeoElement arg) {
 		String xml;
 		if (arg.getParentAlgorithm() != null) {
 			xml = arg.getParentAlgorithm().getXML();
 		} else {
 			xml = arg.getXML();
 		}
-
-		storeUndoableAction(ActionType.ADD, new String[]{xml}, ActionType.REMOVE,
-				arg.getLabelSimple());
+		return new String[]{xml};
 	}
 
 	/**
