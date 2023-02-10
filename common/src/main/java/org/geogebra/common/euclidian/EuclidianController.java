@@ -6058,7 +6058,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		splitSelectedStrokes(true);
 		ArrayList<GeoElement> moveMultipleObjectsList = companion
 				.removeParentsOfView(getAppSelectedGeos());
-		storeUndo.asDefinitions(moveMultipleObjectsList);
+		storeUndo.store(moveMultipleObjectsList);
 		MoveGeos.moveObjects(moveMultipleObjectsList, translationVec, tmpCoordsL3, null, view);
 	}
 
@@ -7476,7 +7476,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			return;
 		}
 
-		storeUndo.storeDefinitions();
+		storeUndo.storeSelection();
 
 		// handle rotation
 		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
