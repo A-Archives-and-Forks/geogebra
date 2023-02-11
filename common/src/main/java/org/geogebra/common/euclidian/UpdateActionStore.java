@@ -10,13 +10,13 @@ import org.geogebra.common.plugin.ActionType;
 
 import com.google.j2objc.annotations.Weak;
 
-public class MultiuserStoreUndo {
+public class UpdateActionStore {
 	private final List<UndoItem> undoItems = new ArrayList<>();
 	@Weak
 	protected final SelectionManager selection;
 	private final UndoManager undoManager;
 
-	public MultiuserStoreUndo(SelectionManager selection, UndoManager undoManager) {
+	public UpdateActionStore(SelectionManager selection, UndoManager undoManager) {
 		this.selection = selection;
 		this.undoManager = undoManager;
 	}

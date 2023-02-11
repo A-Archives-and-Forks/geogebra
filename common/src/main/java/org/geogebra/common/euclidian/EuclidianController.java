@@ -437,7 +437,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	private final GeoPriorityComparator priorityComparator;
 	private RotateBoundingBox rotateBoundingBox;
-	private final MultiuserStoreUndo storeUndo;
+	private final UpdateActionStore storeUndo;
 
 	/**
 	 * Clears the zoomer animation listeners.
@@ -494,7 +494,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		this.localization = app.getLocalization();
 		this.priorityComparator = app.getGeoPriorityComparator();
 		spotlightController = new SpotlightController(app);
-		storeUndo = new MultiuserStoreUndo(selection, app.getUndoManager());
+		storeUndo = new UpdateActionStore(selection, app.getUndoManager());
 		createCompanions();
 	}
 

@@ -2500,6 +2500,10 @@ public class ConsElementXMLHandler {
 			AlgebraProcessor algProc = xmlHandler.getAlgProcessor();
 
 			for (LocateableExpPair pair : startPointList) {
+				if (pair.locateable.isGeoImage()) {
+					((GeoImage) pair.locateable).removeCorners();
+				}
+
 				GeoPointND P = pair.point != null ? pair.point
 						: algProc.evaluateToPoint(pair.exp,
 								ErrorHelper.silent(), true);

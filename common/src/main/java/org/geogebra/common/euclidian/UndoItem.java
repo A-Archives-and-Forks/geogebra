@@ -7,7 +7,7 @@ import org.geogebra.common.kernel.geos.GeoWidget;
 
 class UndoItem {
 	private final String previousContent;
-	private GeoElement geo;
+	private final GeoElement geo;
 	private final boolean isXml;
 
 	public UndoItem(GeoElement geo) {
@@ -23,10 +23,6 @@ class UndoItem {
 
 	public String content() {
 		return isXml ? geo.getXML() : getDefintion();
-	}
-
-	public boolean isXml() {
-		return isXml;
 	}
 
 	public String previousContent() {

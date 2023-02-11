@@ -1198,6 +1198,11 @@ public class GeoImage extends GeoElement implements Locateable,
 		}
 	}
 
+	public void removeCorners() {
+		for (int i = 1; i < 4; i++) {
+			removeCorner(i);
+		}
+	}
 	private void removeCorner(int idx) {
 		if (corners[idx] == null || corners[idx].hasChildren()) {
 			return;
