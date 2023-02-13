@@ -956,7 +956,7 @@ public class MathFieldInternal
 			int commaCount = 0;
 			for (int i = editorState.getCurrentOffset(); i >= 0; i--) {
 				MathComponent arg = editorState.getCurrentField().getArgument(i);
-				if (arg instanceof MathCharacter && ((MathCharacter) arg).isUnicode(',')) {
+				if (arg != null && arg.isFieldSeparator()) {
 					commaCount++;
 				}
 			}
@@ -979,5 +979,9 @@ public class MathFieldInternal
 		for (MathFieldInternalListener listener: mathFieldInternalListeners) {
 			listener.inputChanged(this);
 		}
+	}
+
+	public void setAllowAbs(boolean b) {
+		inputController.setAllowAbs(b);
 	}
 }
