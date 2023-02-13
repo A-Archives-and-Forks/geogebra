@@ -2498,12 +2498,8 @@ public class ConsElementXMLHandler {
 	private void processStartPointList() {
 		try {
 			AlgebraProcessor algProc = xmlHandler.getAlgProcessor();
-
+			preprocessStartPoints();
 			for (LocateableExpPair pair : startPointList) {
-				if (pair.locateable.isGeoImage()) {
-					((GeoImage) pair.locateable).removeCorners();
-				}
-
 				GeoPointND P = pair.point != null ? pair.point
 						: algProc.evaluateToPoint(pair.exp,
 								ErrorHelper.silent(), true);
@@ -2516,6 +2512,16 @@ public class ConsElementXMLHandler {
 			addError("Invalid start point: " + e);
 		}
 		startPointList.clear();
+	}
+
+	private void preprocessStartPoints() {
+		if (startPointList.isEmpty()) {
+			return;
+		}
+		Locateable locateable = startPointList.get(0).locateable;
+		if (locateable.isGeoImage()) {
+			((GeoImage) locateable).removeCorners();
+		}
 	}
 
 	private void processLinkedGeoList() {

@@ -1184,7 +1184,7 @@ public class GeoImage extends GeoElement implements Locateable,
 		updateRepaint();
 	}
 
-	private void center() {
+	public void center() {
 		removeCorner(1);
 		removeCorner(2);
 		corners[CENTER_INDEX] = corners[0];
@@ -1199,7 +1199,7 @@ public class GeoImage extends GeoElement implements Locateable,
 	}
 
 	public void removeCorners() {
-		for (int i = 1; i < 4; i++) {
+		for (int i = 1; i < corners.length; i++) {
 			removeCorner(i);
 		}
 	}
