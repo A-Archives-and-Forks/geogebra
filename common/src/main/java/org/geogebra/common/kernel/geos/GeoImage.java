@@ -1207,9 +1207,9 @@ public class GeoImage extends GeoElement implements Locateable,
 		if (corners[idx] == null || corners[idx].hasChildren()) {
 			return;
 		}
-		setCorner(null, idx);
-		corners[idx].remove();
 		kernel.notifyRemove(corners[idx]);
+		corners[idx].remove();
+		setCorner(null, idx);
 		corners[idx] = null;
 	}
 
