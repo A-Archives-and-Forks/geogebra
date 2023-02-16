@@ -9854,7 +9854,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			if (!isDraggingOccuredBeyondThreshold()) {
 				showDynamicStylebar();
 			}
-			storeUndoInfo();
+			storeUndo.storeUndo();
 			setResizedShape(null);
 		} else if (isMultiResize) { // resize, multi selection
 			view.resetHitHandler();

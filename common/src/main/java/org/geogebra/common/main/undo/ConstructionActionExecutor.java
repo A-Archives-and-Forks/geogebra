@@ -27,6 +27,7 @@ public class ConstructionActionExecutor
 			for (String arg: args) {
 				if (arg.charAt(0) == '<') {
 					app.getGgbApi().evalXML(arg);
+					app.getKernel().notifyRepaint();
 				} else {
 					app.getGgbApi().evalCommand(arg);
 				}
