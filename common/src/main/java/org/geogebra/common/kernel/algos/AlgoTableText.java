@@ -22,7 +22,6 @@ import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.geos.GeoNumberValue;
-import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.geos.TextProperties;
 import org.geogebra.common.util.StringUtil;
@@ -43,7 +42,7 @@ public class AlgoTableText extends AlgoElement implements TableAlgo {
 	private GeoList geoList; // input
 	private GeoText text; // output
 	private GeoText args; // input
-	private GeoNumeric[] minWidthHeight; // input min width / min height
+	private GeoNumberValue[] minWidthHeight; // input min width / min height
 
 	private GeoList[] geoLists;
 
@@ -133,7 +132,7 @@ public class AlgoTableText extends AlgoElement implements TableAlgo {
 	 *            table formating, see parseArgs()
 	 */
 	public AlgoTableText(Construction cons, GeoElement[] input, String label, GeoList geoList,
-			GeoText args, GeoNumeric[] minWidthHeight) {
+			GeoText args, GeoNumberValue[] minWidthHeight) {
 		this(cons, input, geoList, args, minWidthHeight);
 		text.setLabel(label);
 	}
@@ -149,7 +148,7 @@ public class AlgoTableText extends AlgoElement implements TableAlgo {
 	 *            table formating, see parseArgs()
 	 */
 	AlgoTableText(Construction cons, GeoElement[] input, GeoList geoList, GeoText args,
-			GeoNumeric[] minWidthHeight) {
+			GeoNumberValue[] minWidthHeight) {
 		super(cons);
 		this.input = input;
 		this.geoList = geoList;
@@ -500,7 +499,7 @@ public class AlgoTableText extends AlgoElement implements TableAlgo {
 			sb.append(getJustificationLaTeX(c)); // "l", "r" or "c"
 		} else {
 			sb.append(Character.toUpperCase(getJustification(c)) + "{"
-					+ minWidthHeight[0] + "}");
+					+ minWidthHeight[0].evaluateDouble() + "}");
 		}
 	}
 
@@ -509,7 +508,7 @@ public class AlgoTableText extends AlgoElement implements TableAlgo {
 	 */
 	private void addNewLine() {
 		if (minWidthHeight != null && minWidthHeight.length == 2) {
-			sb.append("\\\\[" + minWidthHeight[1] + "]");
+			sb.append("\\\\[" + minWidthHeight[1].evaluateDouble() + "]");
 		} else {
 			sb.append(" \\\\ "); // newline in LaTeX ie \\
 		}

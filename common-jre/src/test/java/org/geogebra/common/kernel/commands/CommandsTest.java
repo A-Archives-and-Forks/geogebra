@@ -3961,6 +3961,12 @@ public class CommandsTest {
 		t("tables=TableText[{1,2}, {3, 4,5}, \"c\", 100, 120]",
 				StringContains.containsString("array"));
 		checkSize("tables", 3, 2);
+		t("tables=TableText[{{1,2,3}, {4,5}}, \"c\", 100]",
+				StringContains.containsString("array"));
+		checkSize("tables", 3, 2);
+		t("tables=TableText[{{1,2}, {3,4,5}}, \"c\", 100, 120]",
+				StringContains.containsString("array"));
+		checkSize("tables", 3, 2);
 	}
 
 	@Test
