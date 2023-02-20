@@ -502,11 +502,6 @@ public abstract class UndoManager {
 				arg.getLabelSimple());
 	}
 
-	public void storeMoveGeo(GeoElement arg) {
-		storeUndoableAction(ActionType.UPDATE, getXMLOf(arg), ActionType.UPDATE,
-				arg.getLabelSimple());
-	}
-
 	private String[] getXMLOf(GeoElement arg) {
 		String xml;
 		if (arg.getParentAlgorithm() != null) {

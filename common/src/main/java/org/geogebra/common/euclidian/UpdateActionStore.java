@@ -16,11 +16,20 @@ public class UpdateActionStore {
 	protected final SelectionManager selection;
 	private final UndoManager undoManager;
 
+	/**
+	 * Constructor
+	 * @param selection {@link SelectionManager}
+	 * @param undoManager {@link UndoManager}
+	 */
 	public UpdateActionStore(SelectionManager selection, UndoManager undoManager) {
 		this.selection = selection;
 		this.undoManager = undoManager;
 	}
 
+	/**
+	 * Stores list of geos to items
+	 * @param geos to store.
+	 */
 	void store(List<GeoElement> geos) {
 		clear();
 		for (GeoElement geo: geos) {
@@ -28,7 +37,9 @@ public class UpdateActionStore {
 		}
 	}
 
-
+	/**
+	 * Store selected geo to items.
+	 */
 	public void storeSelection() {
 		if (undoItems.isEmpty()) {
 			store(selection.getSelectedGeos());
@@ -39,7 +50,9 @@ public class UpdateActionStore {
 		undoItems.clear();
 	}
 
-
+	/**
+	 * Builds actions from items and stores it in UndoManager
+	 */
 	public void storeUpdateAction() {
 		List<String> actions = new ArrayList<>(undoItems.size());
 		List<String> undoActions = new ArrayList<>(undoItems.size());
@@ -52,6 +65,10 @@ public class UpdateActionStore {
 						ActionType.UPDATE, undoActions.toArray(new String[0]));
 	}
 
+	/**
+	 * Store undo
+	 * @return if there is items in undo list.
+	 */
 	public boolean storeUndo() {
 		if (!undoItems.isEmpty()) {
 			storeUpdateAction();

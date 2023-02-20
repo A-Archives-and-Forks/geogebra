@@ -1199,6 +1199,9 @@ public class GeoImage extends GeoElement implements Locateable,
 		}
 	}
 
+	/**
+	 * Remove all corner points of the image.
+	 */
 	public void removeCorners() {
 		for (int i = 1; i < corners.length; i++) {
 			removeCorner(i);

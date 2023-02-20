@@ -6062,7 +6062,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		MoveGeos.moveObjects(moveMultipleObjectsList, translationVec, tmpCoordsL3, null, view);
 	}
 
-
 	protected double getStartPointX() {
 		return startPoint.x;
 	}
@@ -6634,6 +6633,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			handleMovedElementFree(type);
 		}
 	}
+
 	final protected boolean handleMovedElementDependentWithChangeableParent() {
 		// geo with changeable coord parent numbers
 		if (movedGeoElement.hasChangeableCoordParentNumbers()) {
