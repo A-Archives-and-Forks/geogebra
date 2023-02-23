@@ -48,7 +48,7 @@ public class EditorListener implements MathFieldListener {
 
 	@Override
 	public boolean onTab(boolean shiftDown) {
-		return true;
+		return false;
 	}
 
 	public void registerClientListener(Function fn) {
