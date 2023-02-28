@@ -58,7 +58,6 @@ import com.himamis.retex.editor.share.util.Unicode;
 public class ProbabilityManager {
 
 	private final App app;
-	private final Localization loc;
 	private ProbabilityCalculatorView probCalc;
 	private HashMap<Dist, String[]> distributionParameterTransKeys;
 	private String[] customValues = {
@@ -73,7 +72,6 @@ public class ProbabilityManager {
 	 */
 	public ProbabilityManager(App app, ProbabilityCalculatorView probCalc) {
 		this.app = app;
-		this.loc = app.getLocalization();
 		this.probCalc = probCalc;
 	}
 
