@@ -13,7 +13,7 @@ def getChangelog() {
 }
 
 def isGiac = env.BRANCH_NAME.matches("dependabot.*giac.*")
-def nodeLabel = isGiac ? "Ubuntu" : "posix"
+def nodeLabel = isGiac ? "Ubuntu" : "mac-mini"
 def s3buildDir = "geogebra/branches/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
 
 def s3uploadDefault = { dir, pattern, encoding ->
