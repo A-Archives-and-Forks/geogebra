@@ -1,9 +1,6 @@
 package org.geogebra.web.full.gui.toolbarpanel;
 
-import org.geogebra.common.gui.dialog.handler.DefineFunctionHandler;
-import org.geogebra.common.gui.view.table.TableValuesView;
-import org.geogebra.common.kernel.StringTemplate;
-import org.geogebra.common.util.debug.Log;
+import org.geogebra.common.gui.view.table.ScientificDataTableController;
 import org.geogebra.web.full.gui.view.probcalculator.MathTextFieldW;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.AppW;
@@ -15,8 +12,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 public class DefineFunctionsDialogTV extends ComponentDialog {
-	private final TableValuesView view;
-	private final DefineFunctionHandler defineFunctionHandler;
+	private final ScientificDataTableController controller;
 	private MathTextFieldW f;
 	private MathTextFieldW g;
 
@@ -25,9 +21,8 @@ public class DefineFunctionsDialogTV extends ComponentDialog {
 	 * @param app - see {@link AppW}
 	 * @param dialogData - contains trans keys for title and buttons
 	 */
-	public DefineFunctionsDialogTV(AppW app, DialogData dialogData, TableValuesView view) {
+	public DefineFunctionsDialogTV(AppW app, DialogData dialogData) {
 		super(app, dialogData, false, true);
-		this.view = view;
 		addStyleName("defineFunctionsDialog");
 		buildGUI();
 		if (!app.isWhiteboardActive()) {
@@ -37,7 +32,7 @@ public class DefineFunctionsDialogTV extends ComponentDialog {
 			app.unregisterPopup(this);
 			app.hideKeyboard();
 		});
-		defineFunctionHandler = new DefineFunctionHandler(app.getKernel());
+		this.controller = new ScientificDataTableController(app.getKernel());
 	}
 
 	private void buildGUI() {
@@ -61,9 +56,10 @@ public class DefineFunctionsDialogTV extends ComponentDialog {
 
 	@Override
 	public void onPositiveAction() {
-		boolean fHasError = processInput(f, 1);
-		boolean gHasError = processInput(g, 2);
-		if (!fHasError && !gHasError) {
+		boolean success = controller.defineFunctions(f.getText(), g.getText());
+		setErrorState(f, controller.hasFDefinitionErrorOccurred());
+		setErrorState(g, controller.hasGDefinitionErrorOccurred());
+		if (!success) {
 			hide();
 			app.storeUndoInfo();
 		}
@@ -85,28 +81,15 @@ public class DefineFunctionsDialogTV extends ComponentDialog {
 		});
 	}
 
-	private boolean processInput(MathTextFieldW field, int idx) {
-			try {
-				defineFunctionHandler.handle(field.getText(), view.getEvaluatable(idx));
-			} catch (Error e) {
-				Log.error("Error happened on processing the input");
-			} finally {
-				Dom.toggleClass(field.asWidget().getParent(), "error",
-						defineFunctionHandler.hasErrorOccurred());
-			}
-		return defineFunctionHandler.hasErrorOccurred();
+	private void setErrorState(MathTextFieldW field, boolean error) {
+		Dom.toggleClass(field.asWidget().getParent(), "error", error);
 	}
 
 	/**
 	 * reset fields from construction
 	 */
 	public void resetFields() {
-		f.setText(getInputValue(1));
-		g.setText(getInputValue(2));
-	}
-
-	private String getInputValue(int i) {
-		String value = view.getEvaluatable(i).toValueString(StringTemplate.editorTemplate);
-		return "?".equals(value) ? "" : value;
+		f.setText(controller.getDefinitionOfF());
+		g.setText(controller.getDefinitionOfG());
 	}
 }
