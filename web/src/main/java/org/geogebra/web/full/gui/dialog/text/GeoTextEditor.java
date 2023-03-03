@@ -10,6 +10,7 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.html5.awt.GFontW;
+import org.geogebra.web.html5.gui.textbox.GTextBox;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.AppW;
 
@@ -56,7 +57,6 @@ public class GeoTextEditor extends FocusWidget {
 		super(DOM.createDiv());
 		this.app = (AppW) app;
 		this.editPanel = editPanel;
-		getElement().setAttribute("contenteditable", "true");
 		getElement().setAttribute("spellcheck", "false");
 		getElement().setAttribute("oncontextmenu", "return false");
 		getElement().setAttribute("word-wrap", "normal");
@@ -353,7 +353,6 @@ public class GeoTextEditor extends FocusWidget {
 		} else {
 			textEditPopup.hide();
 		}
-
 	}
 
 	protected void createEditPopup() {
@@ -374,5 +373,9 @@ public class GeoTextEditor extends FocusWidget {
 
 	public String getText() {
 		return getElement().getInnerText();
+	}
+
+	public GTextBox getEditor() {
+		return editBox;
 	}
 }

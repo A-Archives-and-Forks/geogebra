@@ -4,15 +4,11 @@ import org.geogebra.common.main.App;
 import org.geogebra.web.full.gui.dialog.text.TextEditPanel;
 import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * @author gabor
- * 
- *         Creates an InputPanel for GeoGebraWeb
- * 
+ * Creates an InputPanel for GeoGebraWeb
  */
 public class InputPanelW extends FlowPanel {
 
@@ -126,17 +122,6 @@ public class InputPanelW extends FlowPanel {
 	 */
 	public void addTextComponentKeyUpHandler(KeyUpHandler k) {
 		getTextComponent().addKeyUpHandler(k);
-	}
-
-	/**
-	 * Focus text component
-	 */
-	public void setTextComponentFocus() {
-		if (textComponent != null) {
-			textComponent.getTextBox().getElement().focus();
-		} else {
-			Scheduler.get().scheduleDeferred(() -> focusTextImmediate());
-		}
 	}
 	
 	/**
