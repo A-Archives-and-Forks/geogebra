@@ -22,8 +22,7 @@ import org.geogebra.web.html5.gui.util.CancelEventTimer;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.keyboard.KeyboardManagerInterface;
 import org.geogebra.web.shared.components.dialog.DialogData;
-
-import com.google.gwt.user.client.ui.TextBox;
+import org.gwtproject.user.client.ui.TextBox;
 
 /**
  * Web implementation of Text Dialog

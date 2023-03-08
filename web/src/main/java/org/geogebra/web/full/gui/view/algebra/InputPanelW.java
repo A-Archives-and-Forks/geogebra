@@ -3,9 +3,8 @@ package org.geogebra.web.full.gui.view.algebra;
 import org.geogebra.common.main.App;
 import org.geogebra.web.full.gui.dialog.text.TextEditPanel;
 import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
-
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.gwtproject.event.dom.client.KeyUpHandler;
+import org.gwtproject.user.client.ui.FlowPanel;
 
 /**
  * Creates an InputPanel for GeoGebraWeb

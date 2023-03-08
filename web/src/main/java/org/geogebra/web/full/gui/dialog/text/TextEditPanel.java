@@ -16,24 +16,23 @@ import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.css.GuiResources;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.dialog.TextEditAdvancedPanel;
-import org.geogebra.web.full.gui.util.ImageResourceConverter;
 import org.geogebra.web.html5.gui.HasKeyboardTF;
 import org.geogebra.web.html5.gui.util.FastClickHandler;
 import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.main.AppW;
+import org.gwtproject.dom.style.shared.Float;
+import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.event.dom.client.BlurHandler;
+import org.gwtproject.event.dom.client.FocusEvent;
+import org.gwtproject.event.dom.client.FocusHandler;
+import org.gwtproject.event.dom.client.KeyPressHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.DisclosurePanel;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.HorizontalPanel;
+import org.gwtproject.user.client.ui.VerticalPanel;
+import org.gwtproject.user.client.ui.Widget;
 
-import com.google.gwt.dom.client.Style.Float;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Panel to manage editing of GeoText strings.
@@ -80,10 +79,8 @@ public class TextEditPanel extends VerticalPanel
 		previewer = advancedPanel.getPreviewer();
 
 		disclosurePanel = new DisclosurePanel(
-				ImageResourceConverter
-						.convertToOldImageResource(GuiResources.INSTANCE.triangle_down()),
-				ImageResourceConverter
-						.convertToOldImageResource(GuiResources.INSTANCE.triangle_right()),
+				GuiResources.INSTANCE.triangle_down(),
+				GuiResources.INSTANCE.triangle_right(),
 				loc.getMenu("Advanced"));
 		disclosurePanel.setContent(advancedPanel);
 		disclosurePanel.getContent().removeStyleName("content");
