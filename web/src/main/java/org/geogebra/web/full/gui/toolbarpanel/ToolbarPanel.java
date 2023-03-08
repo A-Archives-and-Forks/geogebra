@@ -57,7 +57,6 @@ import org.gwtproject.layout.client.Layout.AnimationCallback;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.FlowPanel;
-import org.gwtproject.user.client.ui.ScrollPanel;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.dom.CanvasRenderingContext2D;

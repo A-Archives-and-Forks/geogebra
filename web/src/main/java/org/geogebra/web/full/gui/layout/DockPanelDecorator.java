@@ -6,7 +6,6 @@ import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.Panel;
 import org.gwtproject.user.client.ui.Widget;
 
-
 /**
  * Adds UI elements to view panels
  */

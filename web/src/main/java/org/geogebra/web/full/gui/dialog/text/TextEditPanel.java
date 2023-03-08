@@ -33,7 +33,6 @@ import org.gwtproject.user.client.ui.HorizontalPanel;
 import org.gwtproject.user.client.ui.VerticalPanel;
 import org.gwtproject.user.client.ui.Widget;
 
-
 /**
  * Panel to manage editing of GeoText strings.
  */
