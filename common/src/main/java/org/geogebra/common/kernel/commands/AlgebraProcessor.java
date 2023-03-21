@@ -3421,7 +3421,7 @@ public class AlgebraProcessor {
 			ret.setDefinition(n);
 
 		} else {
-			ret = (new AlgoDependentBoolean(cons, n)).getGeoBoolean();
+			ret = (new AlgoDependentBoolean(cons, n, true)).getGeoBoolean();
 		}
 		ret.setLabel(label);
 		return array(ret);
