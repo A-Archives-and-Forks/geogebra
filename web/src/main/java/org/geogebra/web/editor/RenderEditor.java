@@ -4,14 +4,14 @@ import org.geogebra.gwtutil.JsConsumer;
 import org.geogebra.keyboard.web.TabbedKeyboard;
 import org.geogebra.web.html5.bridge.RenderGgbElement.RenderGgbElementFunction;
 import org.geogebra.web.resources.StyleInjector;
+import org.gwtproject.canvas.client.Canvas;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.user.client.DOM;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.RootPanel;
 
-import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.himamis.retex.editor.web.MathFieldW;
 
 import elemental2.dom.DomGlobal;
