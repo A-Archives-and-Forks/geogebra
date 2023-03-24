@@ -6,7 +6,7 @@ import org.geogebra.web.html5.bridge.RenderGgbElement.RenderGgbElementFunction;
 import org.geogebra.web.resources.StyleInjector;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.style.shared.Overflow;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
@@ -66,7 +66,7 @@ public final class RenderEditor implements RenderGgbElementFunction {
 		Canvas canvas = Canvas.createIfSupported();
 		FlowPanel wrapper = new FlowPanel();
 		wrapper.setWidth("100%");
-		wrapper.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+		wrapper.getElement().getStyle().setOverflow(Overflow.HIDDEN);
 		mathField = new MathFieldW(null, wrapper, canvas, listener);
 		EditorParams editorParams = new EditorParams(el, mathField);
 		listener.setMathField(mathField);
