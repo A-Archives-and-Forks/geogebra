@@ -19,7 +19,8 @@ public class EditorEntry implements EntryPoint {
 	public void onModuleLoad() {
 		initFontAndCss();
 		initJlmLibrary();
-		RenderGgbElement.setRenderGGBElement(new RenderEditor());
+		EditorKeyboard keyboard = new EditorKeyboard();
+		RenderGgbElement.setRenderGGBElement(new RenderEditor(keyboard));
 		RenderGgbElement.renderGGBElementReady();
 	}
 

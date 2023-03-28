@@ -1,9 +1,7 @@
 package org.geogebra.web.editor;
 
 import org.geogebra.gwtutil.JsConsumer;
-import org.geogebra.keyboard.web.TabbedKeyboard;
 import org.geogebra.web.html5.bridge.RenderGgbElement.RenderGgbElementFunction;
-import org.geogebra.web.resources.StyleInjector;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Overflow;
@@ -17,49 +15,37 @@ import com.himamis.retex.editor.web.MathFieldW;
 import elemental2.dom.DomGlobal;
 
 public final class RenderEditor implements RenderGgbElementFunction {
-	private TabbedKeyboard tabbedKeyboard = null;
+	private final EditorKeyboard editorKeyboard;
 	private EditorApi editorApi;
-	private MathFieldW mathField;
+
+	public RenderEditor(EditorKeyboard editorKeyboard) {
+		this.editorKeyboard = editorKeyboard;
+	}
 
 	@Override
-	public void render(Element el, JsConsumer<Object> callback) {
+	public void render(Element element, JsConsumer<Object> callback) {
+		editorKeyboard.create(element);
 		EditorListener listener = new EditorListener();
-		mathField = initMathField(el, listener);
-		if (tabbedKeyboard == null) {
-			tabbedKeyboard = initKeyboard(el);
-			DomGlobal.window.addEventListener("resize", evt -> onResize());
-			StyleInjector.onStylesLoaded(tabbedKeyboard::show);
-			editorApi = new EditorApi(mathField, tabbedKeyboard, listener);
-			tabbedKeyboard.setListener((visible, field) -> {
-				if (!visible) {
-					editorApi.closeKeyboard();
-				} else {
-					editorApi.openKeyboard();
-				}
-				return false;
-			});
-		}
+		MathFieldW mathField = initMathField(element, listener);
+		DomGlobal.window.addEventListener("resize", evt -> onResize(mathField));
+		editorApi = new EditorApi(mathField, editorKeyboard.getTabbedKeyboard(), listener);
+		editorKeyboard.setListener((show, textField) -> keyBoardNeeded(show));
 		if (callback != null) {
 			callback.accept(editorApi);
 		}
 	}
 
-	private void onResize() {
-		tabbedKeyboard.onResize();
-		mathField.setPixelRatio(DomGlobal.window.devicePixelRatio);
+	private boolean keyBoardNeeded(boolean show) {
+		if (!show) {
+			editorApi.closeKeyboard();
+		} else {
+			editorApi.openKeyboard();
+		}
+		return false;
 	}
 
-	private TabbedKeyboard initKeyboard(Element el) {
-		EditorKeyboardContext editorKeyboardContext = new EditorKeyboardContext(el);
-		TabbedKeyboard tabbedKeyboard = new TabbedKeyboard(editorKeyboardContext, false);
-		tabbedKeyboard.addStyleName("detached");
-		FlowPanel keyboardWrapper = new FlowPanel();
-		keyboardWrapper.setStyleName("GeoGebraFrame");
-		keyboardWrapper.add(tabbedKeyboard);
-		RootPanel.get().add(keyboardWrapper);
-		tabbedKeyboard.setProcessing(new MathFieldProcessing(mathField));
-		tabbedKeyboard.clearAndUpdate();
-		return tabbedKeyboard;
+	private void onResize(MathFieldW mathField) {
+		mathField.setPixelRatio(DomGlobal.window.devicePixelRatio);
 	}
 
 	private MathFieldW initMathField(Element el, EditorListener listener) {
@@ -67,12 +53,11 @@ public final class RenderEditor implements RenderGgbElementFunction {
 		FlowPanel wrapper = new FlowPanel();
 		wrapper.setWidth("100%");
 		wrapper.getElement().getStyle().setOverflow(Overflow.HIDDEN);
-		mathField = new MathFieldW(null, wrapper, canvas, listener);
+		MathFieldW mathField = new MathFieldW(null, wrapper, canvas, listener);
 		EditorParams editorParams = new EditorParams(el, mathField);
 		listener.setMathField(mathField);
 		mathField.parse("");
 		wrapper.add(mathField);
-		setBackgroundColor(canvas);
 
 		if (!editorParams.isPreventFocus()) {
 			mathField.requestViewFocus();
@@ -80,22 +65,26 @@ public final class RenderEditor implements RenderGgbElementFunction {
 
 		mathField.setPixelRatio(DomGlobal.window.devicePixelRatio);
 		mathField.getInternal().setSyntaxAdapter(new EditorSyntaxAdapter());
-		RootPanel rootPanel = newRoot(el);
-		rootPanel.add(wrapper);
+		RootPanel editorPanel = newRoot(el);
 
-		rootPanel.addDomHandler(evt -> onFocus(), ClickEvent.getType());
+		editorPanel.add(wrapper);
+		String cssColor = mathField.getBackgroundColor().getCssColor();
+		setBackgroundColor(canvas.getElement(), cssColor);
+
+		MathFieldProcessing processing = new MathFieldProcessing(mathField);
+		editorPanel.addDomHandler(evt -> onFocus(mathField, processing), ClickEvent.getType());
+
+		canvas.getElement().setTabIndex(-1);
 		return mathField;
 	}
 
-	private void setBackgroundColor(Canvas canvas) {
-		canvas.getElement().getStyle()
-				.setBackgroundColor(mathField.getBackgroundColor().getCssColor());
+	private void setBackgroundColor(Element element, String cssColor) {
+		element.getStyle().setBackgroundColor(cssColor);
 	}
 
-	private void onFocus() {
+	private void onFocus(MathFieldW mathField, MathFieldProcessing processing) {
 		mathField.requestViewFocus();
-		MathFieldProcessing processing = new MathFieldProcessing(mathField);
-		tabbedKeyboard.setProcessing(processing);
+		editorKeyboard.setProcessing(processing);
 	}
 
 	private RootPanel newRoot(Element el) {
