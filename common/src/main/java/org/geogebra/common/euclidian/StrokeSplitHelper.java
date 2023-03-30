@@ -62,9 +62,17 @@ public class StrokeSplitHelper {
 	public StrokeSplitHelper(List<GeoElement> originalGeos, List<GeoElement> initialStrokes) {
 		this.initialStrokes = initialStrokes;
 		this.originalGeos = originalGeos;
-
-		initialStateXML = initialStrokes.stream().map(GeoElement::getParentAlgorithm)
-						.map(AlgoElement::getXML).collect(Collectors.toList());
+		initialStateXML = initialStrokes.stream().map(
+						stroke -> {
+							if (stroke.getParentAlgorithm() != null) {
+								return stroke.getParentAlgorithm().getXML();
+							} else {
+								return stroke.getXML();
+							}
+						}
+				).collect(Collectors.toList());
+				//initialStrokes.stream().map(GeoElement::getParentAlgorithm)
+				//		.map(AlgoElement::getXML).collect(Collectors.toList());
 	}
 
 	/**
@@ -73,8 +81,15 @@ public class StrokeSplitHelper {
 	 */
 	public void addUpdatedStrokes(List<GeoElement> updatedStrokes) {
 		this.updatedStrokes = updatedStrokes;
-		modifiedStateXML = updatedStrokes.stream().map(GeoElement::getParentAlgorithm)
-				.map(AlgoElement::getXML).collect(Collectors.toList());
+		modifiedStateXML = updatedStrokes.stream().map(
+				stroke -> {
+					if (stroke.getParentAlgorithm() != null) {
+						return stroke.getParentAlgorithm().getXML();
+					} else {
+						return stroke.getXML();
+					}
+				}
+		).collect(Collectors.toList());
 	}
 
 	/**
