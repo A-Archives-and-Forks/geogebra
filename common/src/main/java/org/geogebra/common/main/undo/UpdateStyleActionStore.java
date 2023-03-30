@@ -3,7 +3,6 @@ package org.geogebra.common.main.undo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geogebra.common.kernel.algos.AlgoElement;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.plugin.ActionType;
 

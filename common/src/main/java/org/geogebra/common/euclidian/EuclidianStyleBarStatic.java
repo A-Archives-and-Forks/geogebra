@@ -1,7 +1,6 @@
 package org.geogebra.common.euclidian;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,8 +32,6 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.MyError.Errors;
 import org.geogebra.common.main.settings.EuclidianSettings;
-import org.geogebra.common.main.undo.UpdateStyleActionStore;
-import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.debug.Log;
 
@@ -45,7 +42,7 @@ public class EuclidianStyleBarStatic {
 	private final static String[] bracketArray2 = { "\u00D8", "{ }", "( )",
 			"[ ]", "||", "||||" };
 
-	public final static ArrayList<StrokeSplitHelper> updatedStrokes = new ArrayList<>();
+	private final static ArrayList<StrokeSplitHelper> updatedStrokes = new ArrayList<>();
 
 	public static ArrayList<StrokeSplitHelper> getUpdatedStrokes() {
 		return updatedStrokes;
