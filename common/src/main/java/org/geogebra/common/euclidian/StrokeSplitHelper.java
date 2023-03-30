@@ -71,8 +71,6 @@ public class StrokeSplitHelper {
 							}
 						}
 				).collect(Collectors.toList());
-				//initialStrokes.stream().map(GeoElement::getParentAlgorithm)
-				//		.map(AlgoElement::getXML).collect(Collectors.toList());
 	}
 
 	/**
