@@ -9,6 +9,7 @@ import org.geogebra.common.awt.GRectangle;
 import org.geogebra.common.awt.GRectangle2D;
 import org.geogebra.common.euclidian.DrawableND;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.euclidian.StrokeSplitHelper;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.EquationSolver;
@@ -22,6 +23,7 @@ import org.geogebra.common.kernel.arithmetic.NumberValue;
 import org.geogebra.common.kernel.kernelND.GeoLineND;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.kernel.matrix.Coords;
+import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.DoubleUtil;
@@ -391,11 +393,23 @@ public class GeoLocusStroke extends GeoLocus
 				split.setLabel(null);
 			}
 
+			storeUndoableStrokeSplit(this, splits);
+
 			if (removeOriginal) {
 				this.remove();
 			}
 		}
 		return splits;
+	}
+
+	private void storeUndoableStrokeSplit(GeoElement geo, List<GeoElement> splitParts) {
+		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geo, splitParts);
+		app.getUndoManager().storeUndoableAction(
+				ActionType.MERGE_STROKE,
+				splitHelper.toActionArray(ActionType.MERGE_STROKE),
+				ActionType.SPLIT_STROKE,
+				splitHelper.toActionArray(ActionType.SPLIT_STROKE)
+		);
 	}
 
 	/**

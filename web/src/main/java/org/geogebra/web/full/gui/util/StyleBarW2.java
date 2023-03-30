@@ -3,11 +3,13 @@ package org.geogebra.web.full.gui.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianStyleBarStatic;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.euclidian.StrokeSplitHelper;
 import org.geogebra.common.gui.dialog.handler.ColorChangeHandler;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFormula;
@@ -21,6 +23,7 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.OptionType;
 import org.geogebra.common.main.undo.UpdateStyleActionStore;
+import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.euclidian.EuclidianLineStylePopup;
@@ -64,12 +67,20 @@ public abstract class StyleBarW2 extends StyleBarW {
 				.setMaximum(app.isWhiteboardActive()
 						? 2 * EuclidianConstants.MAX_PEN_HIGHLIGHTER_SIZE : 13);
 		btnLineStyle.getSlider().setTickSpacing(1);
-		setPopupHandlerWithUndoAction(btnLineStyle, this::processLineStyle);
+		setPopupHandlerWithUndoStrokeAction(btnLineStyle, this::processLineStyle);
 	}
 
 	protected void setPopupHandlerWithUndoAction(PopupMenuButtonW popupBtn,
 			Function<ArrayList<GeoElement>, Boolean> action) {
 		popupBtn.addPopupHandler(w -> processSelectionWithUndoAction(action));
+		// no undo in slider handler
+		UndoableSliderHandler ush = new UndoableSliderHandler(action, this);
+		popupBtn.setChangeEventHandler(ush);
+	}
+
+	protected void setPopupHandlerWithUndoStrokeAction(PopupMenuButtonW popupBtn,
+			Function<ArrayList<GeoElement>, Boolean> action) {
+		popupBtn.addPopupHandler(w -> processSelectionWithUndoStrokeAction(action));
 		// no undo in slider handler
 		UndoableSliderHandler ush = new UndoableSliderHandler(action, this);
 		popupBtn.setChangeEventHandler(ush);
@@ -234,6 +245,35 @@ public abstract class StyleBarW2 extends StyleBarW {
 		}
 	}
 
+	/**
+	 * Process selected geos and create undoable stroke action if necessary
+	 * @param action action to be executed on geos
+	 */
+	public void processSelectionWithUndoStrokeAction(Function<ArrayList<GeoElement>,
+			Boolean> action) {
+		ArrayList<GeoElement> geos = getTargetGeos();
+		boolean needUndo = action.apply(getTargetGeos());
+		if (needUndo) {
+			storeUndoableStrokeUpdate(geos);
+		}
+	}
+
+	private void storeUndoableStrokeUpdate(ArrayList<GeoElement> geoElements) {
+		ArrayList<StrokeSplitHelper> updatedStokes = EuclidianStyleBarStatic.getUpdatedStrokes();
+		List<StrokeSplitHelper> contestants = updatedStokes.stream().filter(strokeSplitHelper ->
+				strokeSplitHelper.containsGeo(geoElements)).collect(Collectors.toList());
+		if (!contestants.isEmpty()) {
+			StrokeSplitHelper splitStroke = contestants.get(0);
+			app.getUndoManager().storeUndoableAction(
+					ActionType.UPDATE,
+					splitStroke.toUpdateArray(ActionType.ADD),
+					ActionType.UPDATE,
+					splitStroke.toUpdateArray(ActionType.REMOVE)
+			);
+			EuclidianStyleBarStatic.removeStrokeHelper(splitStroke);
+		}
+	}
+
 	protected abstract ArrayList<GeoElement> getTargetGeos();
 
 	protected boolean applyColor(ArrayList<GeoElement> targetGeos, GColor color,
@@ -351,7 +391,7 @@ public abstract class StyleBarW2 extends StyleBarW {
 				onColorClicked();
 			}
 		};
-		setPopupHandlerWithUndoAction(btnColor, this::processColor);
+		setPopupHandlerWithUndoStrokeAction(btnColor, this::processColor);
 	}
 
 	public boolean hasTextColor(GeoElement geoElement) {

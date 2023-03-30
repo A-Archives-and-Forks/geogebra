@@ -1,5 +1,7 @@
 package org.geogebra.common.main.undo;
 
+import static org.geogebra.common.euclidian.StrokeSplitHelper.DEL;
+
 import org.geogebra.common.main.App;
 import org.geogebra.common.plugin.ActionType;
 
@@ -27,10 +29,23 @@ public class ConstructionActionExecutor
 			for (String arg: args) {
 				if (arg.charAt(0) == '<') {
 					evalXML(arg);
-				} else {
+				} else if (arg.startsWith(DEL)) {
+						app.getGgbApi().deleteObject(arg.substring(DEL.length()));
+					}
+				else {
 					app.getGgbApi().evalCommand(arg);
 				}
 			}
+		} else if (action == ActionType.SPLIT_STROKE || action == ActionType.MERGE_STROKE) {
+			for (String arg: args) {
+				if (arg.startsWith(DEL)) {
+					app.getGgbApi().deleteObject(arg.substring(DEL.length()));
+				} else  {
+					evalXML(arg);
+				}
+			}
+			app.getActiveEuclidianView().invalidateDrawableList();
+			return true;
 		} else {
 			return false;
 		}

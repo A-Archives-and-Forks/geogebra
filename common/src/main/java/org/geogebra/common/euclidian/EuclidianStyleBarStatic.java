@@ -1,6 +1,7 @@
 package org.geogebra.common.euclidian;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,6 +33,8 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.MyError.Errors;
 import org.geogebra.common.main.settings.EuclidianSettings;
+import org.geogebra.common.main.undo.UpdateStyleActionStore;
+import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.debug.Log;
 
@@ -41,6 +44,16 @@ public class EuclidianStyleBarStatic {
 			"| |", "|| ||" };
 	private final static String[] bracketArray2 = { "\u00D8", "{ }", "( )",
 			"[ ]", "||", "||||" };
+
+	public final static ArrayList<StrokeSplitHelper> updatedStrokes = new ArrayList<>();
+
+	public static ArrayList<StrokeSplitHelper> getUpdatedStrokes() {
+		return updatedStrokes;
+	}
+
+	public static void removeStrokeHelper(StrokeSplitHelper strokeHelper) {
+		updatedStrokes.remove(strokeHelper);
+	}
 
 	/**
 	 * @param geos
@@ -430,7 +443,11 @@ public class EuclidianStyleBarStatic {
 				List<GeoElement> geos) {
 		int lineStyle = EuclidianView.getLineType(lineStyleIndex);
 		boolean needUndo = false;
-		for (GeoElement geo : splitStrokes(geos, app)) {
+
+		List<GeoElement> splitStrokes = splitStrokes(geos, app);
+		StrokeSplitHelper updatedStrokeHelper = new StrokeSplitHelper(geos, splitStrokes);
+
+		for (GeoElement geo : splitStrokes) {
 			boolean thicknessChanged = geo.getLineThickness() != lineSize;
 			if (geo.getLineType() != lineStyle
 					|| thicknessChanged) {
@@ -440,6 +457,12 @@ public class EuclidianStyleBarStatic {
 				needUndo = needUndo || !thicknessChanged;
 			}
 		}
+
+		if (needUndo) {
+			updatedStrokeHelper.addUpdatedStrokes(splitStrokes);
+			updatedStrokes.add(updatedStrokeHelper);
+		}
+
 		return needUndo;
 	}
 
@@ -491,7 +514,10 @@ public class EuclidianStyleBarStatic {
 	 */
 	public static boolean applyColor(GColor color, double alpha, App app, List<GeoElement> geos) {
 		boolean needUndo = false;
-		for (GeoElement geo : splitStrokes(geos, app)) {
+		List<GeoElement> splitStrokes = splitStrokes(geos, app);
+		StrokeSplitHelper updatedStrokeHelper = new StrokeSplitHelper(geos, splitStrokes);
+
+		for (GeoElement geo : splitStrokes) {
 			boolean alphaChanged = false;
 			// apply object color to all other geos except images
 			// (includes texts since MOW-441)
@@ -511,6 +537,10 @@ public class EuclidianStyleBarStatic {
 		}
 		if (!geos.isEmpty()) {
 			geos.get(0).getKernel().notifyRepaint();
+		}
+		if (needUndo) {
+			updatedStrokeHelper.addUpdatedStrokes(splitStrokes);
+			updatedStrokes.add(updatedStrokeHelper);
 		}
 		return needUndo;
 	}
