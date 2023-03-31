@@ -266,9 +266,9 @@ public abstract class StyleBarW2 extends StyleBarW {
 			StrokeSplitHelper splitStroke = contestants.get(0);
 			app.getUndoManager().storeUndoableAction(
 					ActionType.UPDATE,
-					splitStroke.toUpdateArray(ActionType.ADD),
+					splitStroke.toStyledStrokeArray(),
 					ActionType.UPDATE,
-					splitStroke.toUpdateArray(ActionType.REMOVE)
+					splitStroke.toUnStyledStrokeArray()
 			);
 			EuclidianStyleBarStatic.removeStrokeHelper(splitStroke);
 		}
