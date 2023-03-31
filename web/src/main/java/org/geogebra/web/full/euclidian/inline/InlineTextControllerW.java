@@ -29,12 +29,11 @@ import org.geogebra.web.richtext.Editor;
 import org.geogebra.web.richtext.EditorChangeListener;
 import org.geogebra.web.richtext.impl.CarotaEditor;
 import org.geogebra.web.richtext.impl.CarotaUtil;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.style.shared.Position;
+import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  * Web implementation of the inline text controller.
@@ -157,9 +156,8 @@ public class InlineTextControllerW implements InlineTextController {
 			public void onContentChanged(String content) {
 				String oldContent = geo.getContent();
 				if (!content.equals(oldContent)) {
-					String oldXML = geo.getXML();
 					geo.setContent(content);
-					storeUndoAction(geo, oldContent, oldXML);
+					storeUndoAction(geo, oldContent);
 					geo.notifyUpdate();
 				}
 			}
@@ -188,12 +186,14 @@ public class InlineTextControllerW implements InlineTextController {
 		});
 	}
 
-	private void storeUndoAction(GeoInline geo, String oldContent, String oldXML) {
-		String newXML = geo.getXML();
+	private void storeUndoAction(GeoInline geo, String oldContent) {
 		if (oldContent != null) {
+			String label = geo.getLabelSimple();
 			geo.getConstruction().getUndoManager()
-					.storeUndoableAction(ActionType.UPDATE,
-							new String[]{newXML}, ActionType.UPDATE, oldXML);
+					.buildAction(ActionType.SET_CONTENT, label, geo.getContent())
+					.withUndo(ActionType.SET_CONTENT, label, oldContent)
+					.withLabels(label)
+					.storeAndNotifyUnsaved();
 		} else {
 			geo.getConstruction().getUndoManager().storeAddGeo(geo);
 		}

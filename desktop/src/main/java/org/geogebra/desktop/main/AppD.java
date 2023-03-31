@@ -80,7 +80,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import javax.imageio.ImageIO;
-import javax.naming.OperationNotSupportedException;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -1489,15 +1488,12 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 
 	/**
 	 * @return whether  just the euclidian view is visible in the document just loaded.
-	 *
-	 * @throws OperationNotSupportedException if perspective is not set
 	 */
-	private boolean isJustEuclidianVisible()
-			throws OperationNotSupportedException {
+	private boolean isJustEuclidianVisible() {
 		Perspective docPerspective = getTmpPerspective();
 
 		if (docPerspective == null) {
-			throw new OperationNotSupportedException();
+			return false;
 		}
 
 		boolean justEuclidianVisible = false;
@@ -3267,13 +3263,6 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 		}
 	}
 
-	public void restoreCurrentUndoInfo() {
-		if (isUndoActive()) {
-			kernel.restoreCurrentUndoInfo();
-			setUnsaved();
-		}
-	}
-
 	@Override
 	protected int getWindowWidth() {
 		if ((frame != null) && (frame.getWidth() > 0)) {
@@ -4007,7 +3996,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 
 	@Override
 	public UndoManagerD getUndoManager(Construction cons) {
-		return new UndoManagerD(cons, false);
+		return new UndoManagerD(cons);
 	}
 
 	@Override
