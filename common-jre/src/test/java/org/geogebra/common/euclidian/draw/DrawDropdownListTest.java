@@ -1,15 +1,29 @@
 package org.geogebra.common.euclidian.draw;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import org.geogebra.common.AppCommonFactory;
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.DrawableND;
 import org.geogebra.common.euclidian.draw.dropdown.DrawDropDownList;
+import org.geogebra.common.jre.headless.AppCommon;
 import org.geogebra.common.kernel.geos.GeoList;
+import org.junit.Before;
 import org.junit.Test;
 
 public class DrawDropdownListTest extends BaseUnitTest {
+
+	@Before
+	public void setUp() {
+		getApp().set3dConfig();
+	}
+
+	@Override
+	public AppCommon createAppCommon() {
+		return AppCommonFactory.create3D();
+	}
 
 	@Test
 	public void dropdownShouldSelectFirstItem() {
@@ -40,4 +54,11 @@ public class DrawDropdownListTest extends BaseUnitTest {
 		dropDownList.draw(getApp().getActiveEuclidianView().getGraphicsForPen());
 		assertEquals(3, dropDownList.getOptionCount());
 	}
-}
+
+	@Test
+	public void createdTextItemsShouldNotBe3DVisible() {
+		GeoList dropdown = add("{\"a\", \"b\", \"c\"}");
+		dropdown.setDrawAsComboBox(true);
+		assertFalse(dropdown.get(0).isVisibleInView3D());
+   }
+ }
