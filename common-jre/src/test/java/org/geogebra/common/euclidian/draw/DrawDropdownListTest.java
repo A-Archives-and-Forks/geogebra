@@ -59,6 +59,8 @@ public class DrawDropdownListTest extends BaseUnitTest {
 	public void createdTextItemsShouldNotBe3DVisible() {
 		GeoList dropdown = add("{\"a\", \"b\", \"c\"}");
 		dropdown.setDrawAsComboBox(true);
+		dropdown.setEuclidianVisible(true);
+		dropdown.updateRepaint();
 		assertFalse(dropdown.get(0).isVisibleInView3D());
    }
  }
