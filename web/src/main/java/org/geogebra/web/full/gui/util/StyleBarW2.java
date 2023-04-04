@@ -3,7 +3,6 @@ package org.geogebra.web.full.gui.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.euclidian.EuclidianConstants;
@@ -22,7 +21,6 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.OptionType;
 import org.geogebra.common.main.undo.UpdateStyleActionStore;
-import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.euclidian.EuclidianLineStylePopup;
