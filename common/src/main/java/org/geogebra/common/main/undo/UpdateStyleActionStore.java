@@ -17,7 +17,7 @@ public class UpdateStyleActionStore {
 	public UpdateStyleActionStore(ArrayList<GeoElement> geosAsList) {
 		this.geos = geosAsList;
 		for (GeoElement geo: geosAsList) {
-			initialXML.add(geo.getParentAlgorithm().getXML());
+			initialXML.add(geo.getStyleXML());
 		}
 		this.undoManager = geosAsList.get(0).getConstruction().getUndoManager();
 	}
