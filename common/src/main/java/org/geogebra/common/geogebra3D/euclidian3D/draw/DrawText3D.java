@@ -125,7 +125,9 @@ public final class DrawText3D extends Drawable3DCurves {
 
 	@Override
 	public void addToDrawable3DLists(Drawable3DLists lists) {
-		addToDrawable3DLists(lists, DRAW_TYPE_TEXTS);
+		if  (!createdByDrawList()) {
+			addToDrawable3DLists(lists, DRAW_TYPE_TEXTS);
+		}
 	}
 
 	@Override
@@ -148,4 +150,12 @@ public final class DrawText3D extends Drawable3DCurves {
 		}
 	}
 
+	@Override
+	public boolean isVisible() {
+		if  (!getGeoElement().isLabelSet()) {
+			return false;
+		}
+
+		return super.isVisible();
+	}
 }

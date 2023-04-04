@@ -529,11 +529,7 @@ public class GeoList extends GeoElement
 		final int size = elements.size();
 		for (int i = 0; i < size; i++) {
 			final GeoElement geo = get(i);
-			if (geo.isGeoText()) {
-				geo.setVisibleInView3D(false);
-			} else {
-				setElementEuclidianVisible(geo, visible);
-			}
+			setElementEuclidianVisible(geo, visible);
 		}
 	}
 
