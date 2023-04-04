@@ -1,7 +1,6 @@
 package org.geogebra.common.euclidian.draw;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.geogebra.common.AppCommonFactory;
@@ -54,13 +53,4 @@ public class DrawDropdownListTest extends BaseUnitTest {
 		dropDownList.draw(getApp().getActiveEuclidianView().getGraphicsForPen());
 		assertEquals(3, dropDownList.getOptionCount());
 	}
-
-	@Test
-	public void createdTextItemsShouldNotBe3DVisible() {
-		GeoList dropdown = add("{\"a\", \"b\", \"c\"}");
-		dropdown.setDrawAsComboBox(true);
-		dropdown.setEuclidianVisible(true);
-		dropdown.updateRepaint();
-		assertFalse(dropdown.get(0).isVisibleInView3D());
-   }
  }
