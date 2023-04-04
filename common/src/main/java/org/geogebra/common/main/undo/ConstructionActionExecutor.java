@@ -30,11 +30,12 @@ public class ConstructionActionExecutor
 			}
 			app.getActiveEuclidianView().invalidateDrawableList();
 		} else if (action == ActionType.UPDATE || action == ActionType.MERGE_STROKE
-					|| action == ActionType.SPLIT_STROKE )
-		{
+					|| action == ActionType.SPLIT_STROKE) {
 			for (String arg: args) {
 				if (arg.charAt(0) == '<') {
 					evalXML(arg);
+				} else if (arg.startsWith(DEL)) {
+					app.getGgbApi().deleteObject(arg.substring(DEL.length()));
 				}
 				else {
 					app.getGgbApi().evalCommand(arg);

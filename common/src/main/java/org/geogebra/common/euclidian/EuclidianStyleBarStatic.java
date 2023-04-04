@@ -42,16 +42,6 @@ public class EuclidianStyleBarStatic {
 	private final static String[] bracketArray2 = { "\u00D8", "{ }", "( )",
 			"[ ]", "||", "||||" };
 
-	private final static ArrayList<StrokeSplitHelper> updatedStrokes = new ArrayList<>();
-
-	public static ArrayList<StrokeSplitHelper> getUpdatedStrokes() {
-		return updatedStrokes;
-	}
-
-	public static void removeStrokeHelper(StrokeSplitHelper strokeHelper) {
-		updatedStrokes.remove(strokeHelper);
-	}
-
 	/**
 	 * @param geos
 	 *            elements
@@ -442,7 +432,8 @@ public class EuclidianStyleBarStatic {
 		boolean needUndo = false;
 
 		List<GeoElement> splitStrokes = splitStrokes(geos, app);
-		StrokeSplitHelper updatedStrokeHelper = new StrokeSplitHelper(geos, splitStrokes);
+		UpdateStrokeStyleStore stylingHelper = new UpdateStrokeStyleStore(splitStrokes,
+				app.getUndoManager());
 
 		for (GeoElement geo : splitStrokes) {
 			boolean thicknessChanged = geo.getLineThickness() != lineSize;
@@ -456,8 +447,8 @@ public class EuclidianStyleBarStatic {
 		}
 
 		if (needUndo) {
-			updatedStrokeHelper.addUpdatedStrokes(splitStrokes);
-			updatedStrokes.add(updatedStrokeHelper);
+			stylingHelper.addUpdatedStrokes(splitStrokes);
+			stylingHelper.storeUndoableStrokeStyleUpdate();
 		}
 
 		return needUndo;
@@ -512,7 +503,8 @@ public class EuclidianStyleBarStatic {
 	public static boolean applyColor(GColor color, double alpha, App app, List<GeoElement> geos) {
 		boolean needUndo = false;
 		List<GeoElement> splitStrokes = splitStrokes(geos, app);
-		StrokeSplitHelper updatedStrokeHelper = new StrokeSplitHelper(geos, splitStrokes);
+		UpdateStrokeStyleStore strokeStyleHelper = new UpdateStrokeStyleStore(splitStrokes,
+				app.getUndoManager());
 
 		for (GeoElement geo : splitStrokes) {
 			boolean alphaChanged = false;
@@ -536,8 +528,8 @@ public class EuclidianStyleBarStatic {
 			geos.get(0).getKernel().notifyRepaint();
 		}
 		if (needUndo) {
-			updatedStrokeHelper.addUpdatedStrokes(splitStrokes);
-			updatedStrokes.add(updatedStrokeHelper);
+			strokeStyleHelper.addUpdatedStrokes(splitStrokes);
+			strokeStyleHelper.storeUndoableStrokeStyleUpdate();
 		}
 		return needUndo;
 	}

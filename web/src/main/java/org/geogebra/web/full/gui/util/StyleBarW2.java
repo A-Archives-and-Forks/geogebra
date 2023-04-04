@@ -9,7 +9,6 @@ import org.geogebra.common.awt.GColor;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianStyleBarStatic;
 import org.geogebra.common.euclidian.EuclidianView;
-import org.geogebra.common.euclidian.StrokeSplitHelper;
 import org.geogebra.common.gui.dialog.handler.ColorChangeHandler;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFormula;
@@ -80,7 +79,7 @@ public abstract class StyleBarW2 extends StyleBarW {
 
 	protected void setPopupHandlerWithUndoStrokeAction(PopupMenuButtonW popupBtn,
 			Function<ArrayList<GeoElement>, Boolean> action) {
-		popupBtn.addPopupHandler(w -> processSelectionWithUndoStrokeAction(action));
+		popupBtn.addPopupHandler(w -> action.apply(getTargetGeos()));
 		// no undo in slider handler
 		UndoableSliderHandler ush = new UndoableSliderHandler(action, this);
 		popupBtn.setChangeEventHandler(ush);
@@ -132,8 +131,7 @@ public abstract class StyleBarW2 extends StyleBarW {
 			int selectedIndex = btnLineStyle.getSelectedIndex();
 			int lineSize = btnLineStyle.getSliderValue();
 			btnLineStyle.setSelectedIndex(selectedIndex);
-			return EuclidianStyleBarStatic.applyLineStyle(selectedIndex,
-					lineSize, app, targetGeos);
+			return EuclidianStyleBarStatic.applyLineStyle(selectedIndex, lineSize, app, targetGeos);
 		}
 		return false;
 	}
@@ -242,35 +240,6 @@ public abstract class StyleBarW2 extends StyleBarW {
 		boolean needUndo = action.apply(getTargetGeos());
 		if (needUndo) {
 			store.storeUndo();
-		}
-	}
-
-	/**
-	 * Process selected geos and create undoable stroke action if necessary
-	 * @param action action to be executed on geos
-	 */
-	public void processSelectionWithUndoStrokeAction(Function<ArrayList<GeoElement>,
-			Boolean> action) {
-		ArrayList<GeoElement> geos = getTargetGeos();
-		boolean needUndo = action.apply(getTargetGeos());
-		if (needUndo) {
-			storeUndoableStrokeUpdate(geos);
-		}
-	}
-
-	private void storeUndoableStrokeUpdate(ArrayList<GeoElement> geoElements) {
-		ArrayList<StrokeSplitHelper> updatedStokes = EuclidianStyleBarStatic.getUpdatedStrokes();
-		List<StrokeSplitHelper> contestants = updatedStokes.stream().filter(strokeSplitHelper ->
-				strokeSplitHelper.containsGeo(geoElements)).collect(Collectors.toList());
-		if (!contestants.isEmpty()) {
-			StrokeSplitHelper splitStroke = contestants.get(0);
-			app.getUndoManager().storeUndoableAction(
-					ActionType.UPDATE,
-					splitStroke.toStyledStrokeArray(),
-					ActionType.UPDATE,
-					splitStroke.toUnStyledStrokeArray()
-			);
-			EuclidianStyleBarStatic.removeStrokeHelper(splitStroke);
 		}
 	}
 
