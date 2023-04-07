@@ -4,7 +4,10 @@ import org.geogebra.common.kernel.Locateable;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInline;
+import org.geogebra.common.kernel.geos.GeoLocusStroke;
+import org.geogebra.common.kernel.geos.GeoPolyLine;
 import org.geogebra.common.kernel.geos.GeoWidget;
+import org.geogebra.common.plugin.GeoClass;
 
 class UndoItem {
 	private final String previousContent;
@@ -13,7 +16,8 @@ class UndoItem {
 
 	public UndoItem(GeoElement geo) {
 		this.geo = geo;
-		isXml = geo instanceof Locateable || geo instanceof GeoWidget || geo instanceof GeoInline;
+		isXml = geo instanceof Locateable || geo instanceof GeoWidget || geo instanceof GeoInline
+				|| geo instanceof GeoLocusStroke;
 		previousContent = content();
 	}
 
@@ -23,7 +27,7 @@ class UndoItem {
 	}
 
 	public String content() {
-		return isXml ? geo.getStyleXML() : getDefinition();
+		return isXml ? geo.getParentAlgorithm().getXML() : getDefinition();
 	}
 
 	public String previousContent() {
