@@ -68,6 +68,7 @@ public abstract class Analytics {
 		public static final String LOGIN = "login";
 		public static final String SEARCH = "search";
 		public static final String TOOL_SELECTED = "tool_selected";
+		public static final String EXCEPTION = "exception";
 
 		protected Event() {
 		}
@@ -94,6 +95,7 @@ public abstract class Analytics {
 		public static final String SUB_APP_PROBABILITY = "probability";
 		public static final String SEARCH_TERM = "search_term";
 		public static final String TOOL_NAME = "tool_name";
+		public static final String MATERIAL_ID = "material_id";
 
 		/**
 		 * Convert sub app code to analyitcs sub app parameter
