@@ -1193,12 +1193,6 @@ public class MyXMLHandler implements DocHandler {
 
 			geoHandler.updatePointStyle(attrs);
 
-			String strBooleanSize = attrs.get("checkboxSize");
-			if (strBooleanSize != null) {
-				app.setCheckboxSize(Integer.parseInt(strBooleanSize));
-			}
-			// ev.setBooleanSize(Integer.parseInt(strBooleanSize));
-
 			boolean asm = parseBoolean(attrs.get("allowShowMouseCoords"));
 			ev.setAllowShowMouseCoords(asm);
 
@@ -3571,7 +3565,8 @@ public class MyXMLHandler implements DocHandler {
 			GeoElementND[] result = getAlgProcessor()
 					.processValidExpression(ve,
 							new EvalInfo(!cons.isSuppressLabelsActive(), true)
-									.withSymbolicMode(mode));
+									.withSymbolicMode(mode)
+									.withForceFunctionsEnabled(true));
 			cons.registerFunctionVariable(null);
 			// ensure that labels are set for invisible objects too
 			if (result != null && label != null && result.length == 1) {

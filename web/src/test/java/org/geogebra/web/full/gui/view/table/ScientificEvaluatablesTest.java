@@ -52,11 +52,10 @@ public class ScientificEvaluatablesTest {
 	}
 
 	private void changeColumns(String fBody, String gBody) {
-		DefineFunctionHandler handler = new DefineFunctionHandler(app);
+		DefineFunctionHandler handler = new DefineFunctionHandler(app.getKernel());
 		handler.handle(fBody, f());
 		handler.handle(gBody, g());
 		app.storeUndoInfo();
-
 	}
 
 	private void functionShouldBe(String expected, GeoEvaluatable geoEvaluatable) {

@@ -180,7 +180,6 @@ public class Construction {
 	private GeoPoint origin;
 
 	private Stack<GeoElement> selfGeoStack = new Stack<>();
-	private boolean undoEnabled = true;
 
 	private boolean isGettingXMLForReplace;
 	private boolean spreadsheetTraces;
@@ -1421,21 +1420,6 @@ public class Construction {
 		statement.getAlgorithmList().get(0).getXML_OGP(sb);
 	}
 
-	/**
-	 * @return true if undo is enabled
-	 */
-	public boolean isUndoEnabled() {
-		return undoEnabled;
-	}
-
-	/**
-	 * @param b
-	 *            true to enable undo
-	 */
-	public void setUndoEnabled(boolean b) {
-		undoEnabled = b;
-	}
-
 	/*
 	 * Construction List Management
 	 */
@@ -2378,7 +2362,8 @@ public class Construction {
 
 		// if we get here, nothing worked:
 		// possibly auto-create new GeoElement with that name
-		if (allowAutoCreate && getApplication().getKernel()
+		if (allowAutoCreate
+				&& getApplication().getKernel()
 				.getAlgebraProcessor().enableStructures()) {
 			return autoCreateGeoElement(label1);
 		}
@@ -2980,9 +2965,6 @@ public class Construction {
 	 * @see UndoManager#storeUndoInfo()
 	 */
 	public void storeUndoInfo() {
-		if (!isUndoEnabled()) {
-			return;
-		}
 		undoManager.storeUndoInfo();
 	}
 
