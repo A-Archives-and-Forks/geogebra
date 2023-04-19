@@ -752,6 +752,7 @@ public abstract class CommandDispatcher implements Restrictable {
 			case HistogramRight:
 			case HyperGeometric:
 			case InverseBinomial:
+			case InverseBinomialMinimumTrials:
 			case InverseCauchy:
 			case InverseChiSquared:
 			case InverseExponential:
