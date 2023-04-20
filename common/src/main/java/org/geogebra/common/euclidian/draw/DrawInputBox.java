@@ -567,7 +567,6 @@ public class DrawInputBox extends CanvasDrawable {
 
 	private void showWidget() {
 		if (geoInputBox.isSymbolicMode()) {
-			recomputeSize();
 			attachMathField(view.getEuclidianController().getMouseLoc());
 			return;
 		}
@@ -617,6 +616,7 @@ public class DrawInputBox extends CanvasDrawable {
 	 * Attach the symbolic editor
 	 */
 	public void attachMathField(GPoint caretPos) {
+		recomputeSize();
 		hideTextField();
 		inputBoxBounds.update(view, getLabelTop(), textFont, labelDesc);
 		view.attachSymbolicEditor(geoInputBox, inputBoxBounds.getBounds(),
