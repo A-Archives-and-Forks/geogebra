@@ -521,7 +521,10 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 
 	@Override
 	public final void hideKeyboard() {
-		getAppletFrame().showKeyBoard(false, null, false);
+		if (getGuiManager().getKeyboardListener() != null) {
+			getGuiManager().getKeyboardListener().setFocus(false);
+		}
+		getAppletFrame().closeKeyboard();
 	}
 
 	@Override
@@ -1550,21 +1553,11 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 		}
 	}
 
-	@Override
-	public void onUnhandledClick() {
+	protected void onUnhandledClick() {
 		updateAVStylebar();
 
 		if (!isWhiteboardActive() && !CancelEventTimer.cancelKeyboardHide()) {
-			Timer timer = new Timer() {
-				@Override
-				public void run() {
-					if (getGuiManager().getKeyboardListener() != null) {
-						getGuiManager().getKeyboardListener().setFocus(false);
-					}
-					getAppletFrame().keyBoardNeeded(false, null);
-				}
-			};
-			timer.schedule(0);
+			DomGlobal.setTimeout(ignore -> hideKeyboard() , 0);
 		}
 	}
 
