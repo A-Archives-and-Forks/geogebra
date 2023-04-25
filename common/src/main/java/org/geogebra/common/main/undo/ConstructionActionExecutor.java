@@ -35,7 +35,7 @@ public class ConstructionActionExecutor
 				if (arg.charAt(0) == '<') {
 					evalXML(arg);
 				} else if (arg.startsWith(DEL)) {
-					app.getGgbApi().deleteObject(arg.substring(DEL.length()));
+					app.getKernel().lookupLabel(arg.substring(DEL.length())).remove();
 				}
 				else {
 					app.getGgbApi().evalCommand(arg);

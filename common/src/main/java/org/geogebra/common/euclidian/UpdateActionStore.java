@@ -79,4 +79,12 @@ public class UpdateActionStore {
 		}
 		return undoItems.isEmpty();
 	}
+
+	/**
+	 * Store undo
+	 * @return if there is items in undo list.
+	 */
+	public boolean isEmpty() {
+		return undoItems.isEmpty();
+	}
 }

@@ -1,7 +1,6 @@
 package org.geogebra.common.euclidian;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.undo.UndoManager;
@@ -30,24 +29,20 @@ public class UpdateStrokeStyleStore extends StrokeHelper {
 		this.undoManager = undoManager;
 	}
 
-	/**
-	 * returns an array of XMLs with the styled strokes, and XMLS of the unstyled strokes that
-	 * need to be removed on undo
+	/***
+	 * returns an array of XMLs of the styled/modified strokes
 	 * @return array of XMLs
 	 */
 	public String[] toStyledStrokeArray() {
-		return Stream.concat(initialSplitStrokes.stream().map(s -> DEL + s.getLabelSimple()),
-				modifiedStateXML.stream()).toArray(String[]::new);
+		return modifiedStateXML.stream().toArray(String[]::new);
 	}
 
 	/**
-	 * returns an array of XMLs with the initial unstyled stroke xml, and
-	 * XMLs of the styled strokes that need to be removed on undo
+	 * returns an array of XMLs with the initial unstyled/unmodified stroke xml
 	 * @return array of XMLs
 	 */
 	public String[] toUnStyledStrokeArray() {
-		return Stream.concat(updatedStrokes.stream().map(s -> DEL + s.getLabelSimple()),
-				initialStateXML.stream()).toArray(String[]::new);
+		return initialStateXML.stream().toArray(String[]::new);
 	}
 
 	/**
@@ -63,12 +58,17 @@ public class UpdateStrokeStyleStore extends StrokeHelper {
 	/**
 	 * stores an undo for the stroke style update
 	 */
-	public void storeUndoableStrokeStyleUpdate() {
-		undoManager.storeUndoableAction(
-				ActionType.UPDATE,
-				toStyledStrokeArray(),
-				ActionType.UPDATE,
-				toUnStyledStrokeArray()
-			);
+	public void storeStrokeStyleUpdateUndo() {
+		undoManager.buildAction(ActionType.UPDATE, toStyledStrokeArray())
+				.withUndo(ActionType.UPDATE, toUnStyledStrokeArray())
+				.withLabels(getLabelsThatNeedRemoval())
+				.storeAndNotifyUnsaved();
+	}
+
+	private String[] getLabelsThatNeedRemoval() {
+		return updatedStrokes
+				.stream()
+				.map(s -> DEL + s.getLabelSimple())
+				.toArray(String[]::new);
 	}
 }

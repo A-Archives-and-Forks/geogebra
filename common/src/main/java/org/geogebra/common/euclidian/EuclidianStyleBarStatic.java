@@ -448,7 +448,7 @@ public class EuclidianStyleBarStatic {
 
 		if (needUndo) {
 			stylingHelper.addUpdatedStrokes(splitStrokes);
-			stylingHelper.storeUndoableStrokeStyleUpdate();
+			stylingHelper.storeStrokeStyleUpdateUndo();
 		}
 
 		return needUndo;
@@ -529,7 +529,7 @@ public class EuclidianStyleBarStatic {
 		}
 		if (needUndo) {
 			strokeStyleHelper.addUpdatedStrokes(splitStrokes);
-			strokeStyleHelper.storeUndoableStrokeStyleUpdate();
+			strokeStyleHelper.storeStrokeStyleUpdateUndo();
 		}
 		return needUndo;
 	}

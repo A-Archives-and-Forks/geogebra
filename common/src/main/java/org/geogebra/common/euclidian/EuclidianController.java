@@ -163,6 +163,7 @@ import org.geogebra.common.main.SpecialPointsListener;
 import org.geogebra.common.main.SpecialPointsManager;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.media.VideoManager;
+import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
@@ -6015,7 +6016,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	protected void moveDependent() {
 		translationVec.setX(xRW - getStartPointX());
 		translationVec.setY(yRW - getStartPointY());
-		this.splitSelectedStrokes(true);
 		setStartPointLocation(xRW, yRW);
 
 		// we don't specify screen coords for translation as all objects are
@@ -6028,18 +6028,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		MoveGeos.moveObjects(translateableGeos, translationVec, tmpCoordsL3,
 				null, view);
 		kernel.movedGeoSet(translateableGeos);
-	}
-
-	private void storeUpdatedStrokesUndo(UpdateStrokeStyleStore stylingHelper) {
-		stylingHelper.addUpdatedStrokes(app.getSelectionManager().getSelectedGeos());
-		stylingHelper.storeUndoableStrokeStyleUpdate();
-	}
-
-	private UpdateStrokeStyleStore initializeStrokeSplittingHelper() {
-		List<GeoElement> splitStrokes = app.getSelectionManager().getSelectedGeos();
-		UpdateStrokeStyleStore stylingHelper = new UpdateStrokeStyleStore(splitStrokes,
-				app.getUndoManager());
-		return stylingHelper;
 	}
 
 	protected final void moveAttached() {
@@ -6068,7 +6056,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		tmpCoordsL3.setX(xRW);
 		tmpCoordsL3.setY(yRW);
 		tmpCoordsL3.setZ(0);
-		splitSelectedStrokes(true);
 		ArrayList<GeoElement> moveMultipleObjectsList = companion
 				.removeParentsOfView(getAppSelectedGeos());
 		storeUndo.store(moveMultipleObjectsList);
@@ -7489,12 +7476,13 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			return;
 		}
 
+		if (storeUndo.isEmpty()) {
+			splitSelectedStrokes(true);
+		}
 		storeUndo.storeSelection();
-/*
+
 		// handle rotation
 		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
-			splitSelectedStrokes(true);
-			//UpdateStrokeStyleStore stylingHelper = initializeStrokeSplittingHelper();
 			GRectangle2D bounds = view.getBoundingBox().getRectangle();
 			// bounds exist
 			if (bounds != null) {
@@ -7507,11 +7495,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 					return;
 				}
 			}
-			//storeUpdatedStrokesUndo(stylingHelper);
-			//storeUndo.store(app.getSelectionManager().getSelectedGeos());
 		} else {
-
- */
 			// resize, single selection
 			if (getResizedShape() != null) {
 				setBoundingBoxCursor();
@@ -7526,16 +7510,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				view.repaintView();
 				return;
 			}
-			/*
 			// resize, multi-selection
 			else if (isMultiResize) {
-				//UpdateStrokeStyleStore stylingHelper = initializeStrokeSplittingHelper();
 				handleResizeMultiple(event, view.getHitHandler());
-				//storeUpdatedStrokesUndo(stylingHelper);
 				return;
 			}
-
-			 */
+		}
 		if (freehandModePrepared()) {
 			// no repaint, so that the line drawn by the freehand mode will not
 			// disappear
@@ -7633,24 +7613,19 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		case MOVE_DEPENDENT:
 			if (Algos.isUsedFor(Commands.AttachCopyToView, movedGeoElement)) {
 				moveAttached();
-			} /* else {
-				//UpdateStrokeStyleStore stylingHelper = initializeStrokeSplittingHelper();
+			} else {
 				moveDependent();
-				//storeUpdatedStrokesUndo(stylingHelper);
 			}
-			*/
 			break;
 
 		case MOVE_PLANE:
 			companion.movePlane(repaint, event);
 			break;
-/*
+
 		case MOVE_MULTIPLE_OBJECTS:
-		//	UpdateStrokeStyleStore stylingHelper = initializeStrokeSplittingHelper();
 			moveMultipleObjects();
-		//	storeUpdatedStrokesUndo(stylingHelper);
 			break;
- */
+
 		case MOVE_VIEW:
 			if (repaint) {
 				if (temporaryMode
@@ -7688,55 +7663,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		kernel.notifyRepaint();
 	}
 
-	protected final void handleMouseDraggedWithUndo(boolean repaint,
-			AbstractEvent event, boolean manual) {
-
-		UpdateStrokeStyleStore stylingHelper = initializeStrokeSplittingHelper();
-		// handle rotation
-		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
-			splitSelectedStrokes(true);
-			//UpdateStrokeStyleStore stylingHelper = initializeStrokeSplittingHelper();
-			GRectangle2D bounds = view.getBoundingBox().getRectangle();
-			// bounds exist
-			if (bounds != null) {
-				if (rotateBoundingBox == null) {
-					rotateBoundingBox = new RotateBoundingBox(this);
-					rotateBoundingBox.setView(view);
-				}
-
-				if (rotateBoundingBox.rotate(bounds, event.getX(), event.getY())) {
-					return;
-				}
-			}
-		} else {
-			// resize, multi-selection
-			if (isMultiResize) {
-				handleResizeMultiple(event, view.getHitHandler());
-				return;
-			}
-		}
-		// moveMode was set in mousePressed()
-		switch (moveMode) {
-
-		case MOVE_DEPENDENT:
-			if (Algos.isUsedFor(Commands.AttachCopyToView, movedGeoElement)) {
-				moveAttached();
-			} else {
-				moveDependent();
-			}
-			break;
-
-		case MOVE_MULTIPLE_OBJECTS:
-			moveMultipleObjects();
-			break;
-
-		default: // do nothing
-		}
-
-		storeUpdatedStrokesUndo(stylingHelper);
-		kernel.notifyRepaint();
-	}
-
 	private void disableLiveFeedback() {
 		view.getCoordSystemInfo().setInteractive(true);
 	}
@@ -7744,7 +7670,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	private void handleResizeMultiple(AbstractEvent event,
 			EuclidianBoundingBoxHandler handler) {
 		// if for some reason there was no state initialized
-		splitSelectedStrokes(true);
 		if (startBoundingBoxState == null) {
 			startBoundingBoxState = new BoundingBoxResizeState(
 					view.getBoundingBox().getRectangle(),
@@ -8637,18 +8562,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			}
 		}
 
-		handleSplitStrokeUndo(event, startCapture);
 		handleMouseDragged(true, event, startCapture);
-	}
-
-	private void handleSplitStrokeUndo(AbstractEvent event, boolean startCapture) {
-		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION ||
-				isMultiResize || (moveMode == MOVE_DEPENDENT && !Algos.isUsedFor(Commands.AttachCopyToView, movedGeoElement))
-			|| (moveMode == MOVE_MULTIPLE_OBJECTS)) {
-		//	UpdateStrokeStyleStore stylingHelper  = initializeStrokeSplittingHelper();
-			handleMouseDraggedWithUndo(true, event, startCapture);
-		//	storeUpdatedStrokesUndo(stylingHelper);
-		}
 	}
 
 	protected void updatePreviewableForMouseDragged() {
@@ -9941,16 +9855,13 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			if (!isDraggingOccuredBeyondThreshold()) {
 				showDynamicStylebar();
 			}
-			storeUndo.storeUndo(); //TODO, maybe fix here?
+			storeUndo.storeUndo();
 			setResizedShape(null);
 			decreaseTargets();
 			return;
 		} else if (isMultiResize) { // resize, multi selection
-			view.resetHitHandler(); //TODO, maybe fix here?
-			if (storeUndo.storeUndo()) {
-				storeUndoInfo();
-			}
-
+			view.resetHitHandler();
+			storeUndo.storeUndo();
 			isMultiResize = false;
 			setBoundingBoxFromList(selection.getSelectedGeos());
 			decreaseTargets();

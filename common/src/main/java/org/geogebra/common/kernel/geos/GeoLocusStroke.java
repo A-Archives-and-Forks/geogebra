@@ -404,12 +404,9 @@ public class GeoLocusStroke extends GeoLocus
 
 	private void storeUndoableStrokeSplit(GeoElement geo, List<GeoElement> splitParts) {
 		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geo, splitParts);
-		app.getUndoManager().storeUndoableAction(
-				ActionType.MERGE_STROKE,
-				splitHelper.toMergeActionArray(),
-				ActionType.SPLIT_STROKE,
-				splitHelper.toSplitActionArray()
-		);
+		app.getUndoManager().buildAction(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
+				.withUndo(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
+				.storeAndNotifyUnsaved();
 	}
 
 	/**
