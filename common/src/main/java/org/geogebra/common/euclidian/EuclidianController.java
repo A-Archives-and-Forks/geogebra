@@ -7477,8 +7477,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		if (storeUndo.isEmpty()) {
 			splitSelectedStrokes(true);
+		} else {
+			storeUndo.storeSelection();
 		}
-		storeUndo.storeSelection();
 
 		// handle rotation
 		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
