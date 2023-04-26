@@ -5,9 +5,7 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInline;
 import org.geogebra.common.kernel.geos.GeoLocusStroke;
-import org.geogebra.common.kernel.geos.GeoPolyLine;
 import org.geogebra.common.kernel.geos.GeoWidget;
-import org.geogebra.common.plugin.GeoClass;
 
 class UndoItem {
 	private final String previousContent;

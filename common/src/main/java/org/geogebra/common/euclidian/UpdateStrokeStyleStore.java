@@ -14,8 +14,6 @@ public class UpdateStrokeStyleStore extends StrokeHelper {
 
 	List<String> modifiedStateXML;
 
-	List<GeoElement> initialSplitStrokes;
-
 	private final UndoManager undoManager;
 
 	/**
@@ -24,7 +22,6 @@ public class UpdateStrokeStyleStore extends StrokeHelper {
 	 * @param initialSplitStrokes reference to the children stroke created after splitting
 	 */
 	public UpdateStrokeStyleStore(List<GeoElement> initialSplitStrokes, UndoManager undoManager) {
-		this.initialSplitStrokes = initialSplitStrokes;
 		initialStateXML = getStrokesXML(initialSplitStrokes);
 		this.undoManager = undoManager;
 	}
