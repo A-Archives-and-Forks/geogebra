@@ -17,7 +17,7 @@ public abstract class CASgiacB extends CASgiac {
 	/**
 	 * Giac's context.
 	 */
-	private Context context;
+	protected Context context;
 	/** result from thread */
 	protected volatile String threadResult;
 
@@ -56,7 +56,7 @@ public abstract class CASgiacB extends CASgiac {
 	 * @param timeoutMilliseconds timeout in milliseconds
 	 * @return String from Giac
 	 */
-	final String evalRaw(String exp0, long timeoutMilliseconds) {
+	protected String evalRaw(String exp0, long timeoutMilliseconds) {
 		CASGiacBinding binding = createBinding();
 		// #5439
 		// reset Giac before each call
@@ -96,7 +96,7 @@ public abstract class CASgiacB extends CASgiac {
 
 	}
 
-	private void init(String exp, long timeoutMilliseconds) {
+	protected void init(String exp, long timeoutMilliseconds) {
 		CASGiacBinding binding = createBinding();
 		Gen g = binding.createGen(initString, context);
 		g.eval(1, context);
