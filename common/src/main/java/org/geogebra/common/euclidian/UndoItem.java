@@ -1,5 +1,7 @@
 package org.geogebra.common.euclidian;
 
+import java.util.stream.Collectors;
+
 import org.geogebra.common.kernel.Locateable;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -25,7 +27,11 @@ class UndoItem {
 	}
 
 	public String content() {
-		return isXml ? geo.getParentAlgorithm().getXML() : getDefinition();
+		return isXml ?
+				(geo.getParentAlgorithm() != null)?
+						geo.getParentAlgorithm().getXML()
+						: geo.getXML()
+				: getDefinition();
 	}
 
 	public String previousContent() {

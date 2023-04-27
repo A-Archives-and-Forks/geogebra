@@ -7477,8 +7477,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		if (storeUndo.isEmpty()) {
 			splitSelectedStrokes(true);
-		} else {
-			storeUndo.storeSelection();
 		}
 
 		// handle rotation
@@ -9855,13 +9853,13 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			if (!isDraggingOccuredBeyondThreshold()) {
 				showDynamicStylebar();
 			}
-			storeUndo.storeUndo();
+			storeUndo();
 			setResizedShape(null);
 			decreaseTargets();
 			return;
 		} else if (isMultiResize) { // resize, multi selection
 			view.resetHitHandler();
-			storeUndo.storeUndo();
+			storeUndo();
 			isMultiResize = false;
 			setBoundingBoxFromList(selection.getSelectedGeos());
 			decreaseTargets();
@@ -9961,6 +9959,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 
 		decreaseTargets();
+	}
+
+	private void storeUndo() {
+		if (storeUndo.storeUndo()) {
+			storeUndoInfo();
+		}
 	}
 
 	private boolean shouldShowDynamicStylebarAfterMouseRelease(boolean newSelection,
