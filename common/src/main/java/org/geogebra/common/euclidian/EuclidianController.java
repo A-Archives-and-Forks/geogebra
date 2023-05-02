@@ -7479,6 +7479,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			splitSelectedStrokes(true);
 		}
 
+		storeUndo.storeSelection();
+
 		// handle rotation
 		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
 			GRectangle2D bounds = view.getBoundingBox().getRectangle();

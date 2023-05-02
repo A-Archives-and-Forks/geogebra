@@ -16,8 +16,7 @@ class UndoItem {
 
 	public UndoItem(GeoElement geo) {
 		this.geo = geo;
-		isXml = geo instanceof Locateable || geo instanceof GeoWidget || geo instanceof GeoInline
-				|| geo instanceof GeoLocusStroke;
+		isXml = geo instanceof Locateable || geo instanceof GeoWidget || geo instanceof GeoInline;
 		previousContent = content();
 	}
 
@@ -27,11 +26,7 @@ class UndoItem {
 	}
 
 	public String content() {
-		return isXml ?
-				(geo.getParentAlgorithm() != null)?
-						geo.getParentAlgorithm().getXML()
-						: geo.getXML()
-				: getDefinition();
+		return isXml ? geo.getStyleXML() : getDefinition();
 	}
 
 	public String previousContent() {
