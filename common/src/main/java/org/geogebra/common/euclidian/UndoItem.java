@@ -1,12 +1,9 @@
 package org.geogebra.common.euclidian;
 
-import java.util.stream.Collectors;
-
 import org.geogebra.common.kernel.Locateable;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInline;
-import org.geogebra.common.kernel.geos.GeoLocusStroke;
 import org.geogebra.common.kernel.geos.GeoWidget;
 
 class UndoItem {
