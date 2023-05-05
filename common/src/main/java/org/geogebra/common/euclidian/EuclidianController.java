@@ -163,6 +163,7 @@ import org.geogebra.common.main.SpecialPointsListener;
 import org.geogebra.common.main.SpecialPointsManager;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.media.VideoManager;
+import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
@@ -7744,9 +7745,11 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		boolean changed = false;
 		ArrayList<GeoElement> newSelection = new ArrayList<>();
 		ArrayList<GeoElement> oldSelection = new ArrayList<>(selection.getSelectedGeos());
+		ArrayList<GeoElement> splitStrokes = new ArrayList<>();
 		for (GeoElement geo : oldSelection) {
 			List<GeoElement> splitParts = geo.getPartialSelection(removeOriginal);
 			GeoElement replacement = splitParts.get(0);
+			splitStrokes.addAll(splitParts);
 			newSelection.add(replacement);
 			if (replacement != geo) {
 				changed = true;
@@ -7763,8 +7766,16 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			updateBoundingBoxFromSelection(false);
 			showDynamicStylebar();
 			startBoundingBoxState = null;
+			storeUndoableStrokeSplit(oldSelection, splitStrokes);
 		}
 		return changed;
+	}
+
+	private void storeUndoableStrokeSplit(List<GeoElement> geos, List<GeoElement> splitParts) {
+		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geos, splitParts);
+		app.getUndoManager().buildAction(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
+				.withUndo(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
+				.storeAndNotifyUnsaved();
 	}
 
 	/**

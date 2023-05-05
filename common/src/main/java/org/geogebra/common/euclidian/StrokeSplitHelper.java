@@ -1,6 +1,5 @@
 package org.geogebra.common.euclidian;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -9,7 +8,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
 
 public class StrokeSplitHelper extends StrokeHelper {
 
-	GeoElement initialStroke;
+	List<GeoElement> initialStrokes;
 
 	List<GeoElement> splitParts;
 
@@ -20,13 +19,13 @@ public class StrokeSplitHelper extends StrokeHelper {
 	/**
 	 * Creates a new helper data structure that stores the original stroke & the split
 	 * up parts.
-	 * @param initialStroke parent stroke
+	 * @param initialStrokes parent stroke
 	 * @param splitParts children stroke created after selection
 	 */
-	public StrokeSplitHelper(GeoElement initialStroke, List<GeoElement> splitParts) {
-		this.initialStroke = initialStroke;
+	public StrokeSplitHelper(List<GeoElement> initialStrokes, List<GeoElement> splitParts) {
+		this.initialStrokes = initialStrokes;
 		this.splitParts = splitParts;
-		initialStateXML = getStrokesXML(Arrays.asList(initialStroke));
+		initialStateXML = getStrokesXML(initialStrokes);
 		splitStrokesXML = getStrokesXML(splitParts);
 	}
 
@@ -36,8 +35,8 @@ public class StrokeSplitHelper extends StrokeHelper {
 	 * @return array of XMLs
 	 */
 	public String[] toMergeActionArray() {
-		return Stream.concat(Collections.singletonList(DEL + initialStroke.getLabelSimple())
-				.stream(), splitStrokesXML.stream()).toArray(String[]::new);
+		return Stream.concat(initialStrokes.stream().map(s -> DEL + s.getLabelSimple()),
+				splitStrokesXML.stream()).toArray(String[]::new);
 	}
 
 	/**

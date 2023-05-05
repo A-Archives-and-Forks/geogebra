@@ -1,5 +1,7 @@
 package org.geogebra.common.euclidian;
 
+import static org.geogebra.common.kernel.StringTemplate.xmlTemplate;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,14 +16,17 @@ public class StrokeHelper {
 	 * @return xmls
 	 */
 	public List<String> getStrokesXML(List<GeoElement> strokes) {
-		return strokes.stream().map(
-				stroke -> {
-					if (stroke.getParentAlgorithm() != null) {
-						return stroke.getParentAlgorithm().getXML();
-					} else {
-						return stroke.getXML();
-					}
-				}
-		).collect(Collectors.toList());
+		return strokes.stream().map(stroke -> getXML(stroke)).collect(Collectors.toList());
+	}
+
+	/**
+	 * getXml
+	 * @param stroke stroke
+	 * @return style xml
+	 */
+	public String getXML(GeoElement stroke) {
+		return "<expression label=\"" + stroke.getLabelSimple() + "\" exp=\""
+				+ stroke.getRedefineString(false, true, xmlTemplate)
+				+ "\"/>\n" + stroke.getStyleXML();
 	}
 }

@@ -393,20 +393,11 @@ public class GeoLocusStroke extends GeoLocus
 				split.setLabel(null);
 			}
 
-			storeUndoableStrokeSplit(this, splits);
-
 			if (removeOriginal) {
 				this.remove();
 			}
 		}
 		return splits;
-	}
-
-	private void storeUndoableStrokeSplit(GeoElement geo, List<GeoElement> splitParts) {
-		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geo, splitParts);
-		app.getUndoManager().buildAction(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
-				.withUndo(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
-				.storeAndNotifyUnsaved();
 	}
 
 	/**

@@ -18,7 +18,7 @@ import org.geogebra.common.euclidian.EuclidianStyleBarSelection;
 import org.geogebra.common.euclidian.EuclidianStyleBarStatic;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.settings.config.AppConfigNotes;
-import org.geogebra.common.main.undo.UndoManager;
+import org.geogebra.common.main.undo.AppState;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,6 +59,25 @@ public class StrokeSplittingTest extends BaseControllerTest {
 	}
 
 	/**
+	 * drawMultipleStrokes
+	 */
+	public void drawMultipleStrokes(int y) {
+		setMode(EuclidianConstants.MODE_PEN);
+		dragStart(100, y);
+		dragEnd(400, y);
+		setMode(EuclidianConstants.MODE_SELECT_MOW);
+	}
+
+	/**
+	 * selectPartOfMultipleStrokes
+	 */
+	public void selectPartOfMultipleStrokes() {
+		setMode(EuclidianConstants.MODE_SELECT_MOW);
+		dragStart(150, 0);
+		dragEnd(250, 1500);
+	}
+
+	/**
 	 * selectPartOfStroke
 	 */
 	public void selectPartOfStroke() {
@@ -74,6 +93,27 @@ public class StrokeSplittingTest extends BaseControllerTest {
 		dragStart(250, 100);
 		dragEnd(400, 200);
 		assertSelected(lookup("stroke2"));
+	}
+
+	@Test
+	public void splitMultipleStrokesByDragging() {
+		init();
+		drawMultipleStrokes(100);
+		drawMultipleStrokes(500);
+		selectPartOfMultipleStrokes();
+		dragStart(250, 100);
+		dragEnd(500, 500);
+
+		String s3XMLOriginal = lookup("stroke3").getXML();
+		getConstruction().undo();
+		assertNotEquals(s3XMLOriginal, lookup("stroke3").getXML());
+		getConstruction().undo();
+		//assertEquals(s3XMLOriginal, lookup("stroke3").getXML());
+
+		AppState appState = getConstruction().getUndoManager().getCurrentUndoInfo();
+		int s = getConstruction().getUndoManager().getHistorySize();
+		//assertSelected(lookup("stroke2"));
+		getConstruction().getUndoManager().getHistorySize();
 	}
 
 	@Test
