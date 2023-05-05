@@ -7,9 +7,11 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import org.geogebra.common.awt.GDimension;
 import org.geogebra.common.euclidian.EmbedManager;
 import org.geogebra.common.io.ObjectLabelHandler;
 import org.geogebra.common.main.App.ExportType;
+import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.undo.AppState;
 import org.geogebra.common.main.undo.UndoCommand;
 import org.geogebra.common.main.undo.UndoManager;
@@ -150,12 +152,23 @@ public class PageListController implements PageListControllerInterface,
 			app.loadEmptySlide();
 		} else {
 			try {
+				final EuclidianSettings evSettings =
+						app.getSettings().getEuclidian(1);
+				GDimension oldPreferredSize = evSettings.getPreferredSize();
 				// load last status of file
 				saveMaterialProperties();
 				app.resetPerspectiveParam();
 				// in case page was added through API, thumbnail may be outdated
 				app.registerOpenFileListener(() -> {
-					DomGlobal.requestAnimationFrame(ignore -> slides.get(i).updatePreviewImage());
+					DomGlobal.requestAnimationFrame(ignore -> {
+								slides.get(i).updatePreviewImage();
+								GDimension preferredSize = evSettings.getPreferredSize();
+								if (preferredSize.getWidth() > app.getWidth()) {
+									evSettings.setPreferredSize(oldPreferredSize);
+									Log.debug("Pleeease!");
+								}
+					}
+					);
 					return true;
 				});
 				app.loadGgbFile(slides.get(i).getFile(), true);
