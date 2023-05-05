@@ -160,15 +160,8 @@ public class PageListController implements PageListControllerInterface,
 				app.resetPerspectiveParam();
 				// in case page was added through API, thumbnail may be outdated
 				app.registerOpenFileListener(() -> {
-					DomGlobal.requestAnimationFrame(ignore -> {
-								slides.get(i).updatePreviewImage();
-								GDimension preferredSize = evSettings.getPreferredSize();
-								if (preferredSize.getWidth() > app.getWidth()) {
-									evSettings.setPreferredSize(oldPreferredSize);
-									Log.debug("Pleeease!");
-								}
-					}
-					);
+					DomGlobal.requestAnimationFrame(ignore -> onSideLoad(i, evSettings,
+							oldPreferredSize));
 					return true;
 				});
 				app.loadGgbFile(slides.get(i).getFile(), true);
@@ -178,6 +171,18 @@ public class PageListController implements PageListControllerInterface,
 			} catch (Exception e) {
 				Log.debug(e);
 			}
+		}
+	}
+
+	private void onSideLoad(int i, EuclidianSettings evSettings, GDimension oldPreferredSize) {
+		slides.get(i).updatePreviewImage();
+		GDimension preferredSize = evSettings.getPreferredSize();
+		if (oldPreferredSize.getWidth() > preferredSize.getWidth()
+			|| oldPreferredSize.getHeight() > preferredSize.getHeight()) {
+			evSettings.setPreferredSize(oldPreferredSize);
+			app.getAppletFrame().setSize(oldPreferredSize.getWidth(),
+					oldPreferredSize.getHeight());
+
 		}
 	}
 
