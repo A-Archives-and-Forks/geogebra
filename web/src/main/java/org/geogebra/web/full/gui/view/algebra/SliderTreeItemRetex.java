@@ -180,6 +180,7 @@ public class SliderTreeItemRetex extends RadioTreeItem {
 			styleContentPanel();
 		}
 		updateTextItems();
+		updateDataTest();
 	}
 
 	@Override
@@ -287,5 +288,13 @@ public class SliderTreeItemRetex extends RadioTreeItem {
 	@Override
 	public void onStopEdit() {
 		// nothing to do here
+	}
+
+	@Override
+	public void updateDataTest(int index) {
+		if (minMaxPanel != null) {
+			minMaxPanel.updateDataTest(index);
+		}
+		super.updateDataTest(index);
 	}
 }
