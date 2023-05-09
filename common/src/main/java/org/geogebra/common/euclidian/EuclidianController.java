@@ -6058,7 +6058,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		tmpCoordsL3.setZ(0);
 		ArrayList<GeoElement> moveMultipleObjectsList = companion
 				.removeParentsOfView(getAppSelectedGeos());
-		storeUndo.store(moveMultipleObjectsList);
 		MoveGeos.moveObjects(moveMultipleObjectsList, translationVec, tmpCoordsL3, null, view);
 	}
 
@@ -7478,6 +7477,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		if (storeUndo.isEmpty()) {
 			splitSelectedStrokes(true);
+			storeUndo.setActionSplitTheStroke();
 		}
 
 		storeUndo.storeSelection();
@@ -7773,8 +7773,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	private void storeUndoableStrokeSplit(List<GeoElement> geos, List<GeoElement> splitParts) {
 		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geos, splitParts);
-		app.getUndoManager().buildAction(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
-				.withUndo(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
+		app.getUndoManager().buildAction(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
+				.withUndo(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
 				.storeAndNotifyUnsaved();
 	}
 
@@ -9975,8 +9975,14 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	private void storeUndo() {
-		if (storeUndo.storeUndo()) {
-			storeUndoInfo();
+		if (!storeUndo.actionSplitTheStroke()) {
+			if (storeUndo.storeUndo()) {
+				storeUndoInfo();
+			}
+		} else {
+			if (storeUndo.isEmpty()) {
+				storeUndoInfo();
+			}
 		}
 	}
 
@@ -12245,7 +12251,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 */
 	public void setBoundingBoxFromList(List<GeoElement> geos) {
 		// do not update during rotation
-		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
+		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION
+				&& view.getBoundingBox() != null) {
 			return;
 		}
 

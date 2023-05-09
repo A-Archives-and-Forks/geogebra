@@ -1,6 +1,5 @@
 package org.geogebra.common.euclidian;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -34,7 +33,7 @@ public class StrokeSplitHelper extends StrokeHelper {
 	 * used for the undoing of splitting the stroke
 	 * @return array of XMLs
 	 */
-	public String[] toMergeActionArray() {
+	public String[] toSplitActionArray() {
 		return Stream.concat(initialStrokes.stream().map(s -> DEL + s.getLabelSimple()),
 				splitStrokesXML.stream()).toArray(String[]::new);
 	}
@@ -44,7 +43,7 @@ public class StrokeSplitHelper extends StrokeHelper {
 	 * used for the redoing of splitting the stroke
 	 * @return array of XMLs
 	 */
-	public String[] toSplitActionArray() {
+	public String[] toMergeActionArray() {
 		return Stream.concat(splitParts.stream().map(s -> DEL + s.getLabelSimple()),
 				initialStateXML.stream()).toArray(String[]::new);
 	}

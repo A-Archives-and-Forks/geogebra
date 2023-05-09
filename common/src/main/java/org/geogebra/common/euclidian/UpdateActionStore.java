@@ -1,9 +1,12 @@
 package org.geogebra.common.euclidian;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoLocusStroke;
 import org.geogebra.common.main.SelectionManager;
 import org.geogebra.common.main.undo.UndoManager;
 import org.geogebra.common.plugin.ActionType;
@@ -12,6 +15,9 @@ import com.google.j2objc.annotations.Weak;
 
 public class UpdateActionStore {
 	private final List<UndoItem> undoItems = new ArrayList<>();
+
+	private boolean actionInvolvedSplitting = false;
+
 	@Weak
 	protected final SelectionManager selection;
 	private final UndoManager undoManager;
@@ -48,6 +54,17 @@ public class UpdateActionStore {
 
 	public void clear() {
 		undoItems.clear();
+		actionInvolvedSplitting = false;
+	}
+
+
+	public boolean actionSplitTheStroke() {
+		return actionInvolvedSplitting;
+	}
+
+
+	public void setActionSplitTheStroke() {
+		this.actionInvolvedSplitting = true;
 	}
 
 	/**

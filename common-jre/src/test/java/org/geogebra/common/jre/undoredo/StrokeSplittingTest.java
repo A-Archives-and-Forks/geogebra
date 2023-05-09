@@ -69,15 +69,6 @@ public class StrokeSplittingTest extends BaseControllerTest {
 	}
 
 	/**
-	 * selectPartOfMultipleStrokes
-	 */
-	public void selectPartOfMultipleStrokes() {
-		setMode(EuclidianConstants.MODE_SELECT_MOW);
-		dragStart(150, 0);
-		dragEnd(250, 1500);
-	}
-
-	/**
 	 * selectPartOfStroke
 	 */
 	public void selectPartOfStroke() {
@@ -99,21 +90,33 @@ public class StrokeSplittingTest extends BaseControllerTest {
 	public void splitMultipleStrokesByDragging() {
 		init();
 		drawMultipleStrokes(100);
-		drawMultipleStrokes(500);
-		selectPartOfMultipleStrokes();
+		drawMultipleStrokes(100);
+		drawMultipleStrokes(100);
+		drawMultipleStrokes(100);
+		selectPartOfStroke();
 		dragStart(250, 100);
-		dragEnd(500, 500);
+		dragEnd(400, 200);
 
+		int undoPoints = getConstruction().getUndoManager().getHistorySize();
+		assertEquals(undoPoints, 6);
 		String s3XMLOriginal = lookup("stroke3").getXML();
-		getConstruction().undo();
+		getConstruction().undo(); //undos dragging
 		assertNotEquals(s3XMLOriginal, lookup("stroke3").getXML());
+		getConstruction().undo(); //undos split stroke
+		assertEquals(getConstruction().getUndoManager().getHistorySize(), 4);
 		getConstruction().undo();
-		//assertEquals(s3XMLOriginal, lookup("stroke3").getXML());
-
-		AppState appState = getConstruction().getUndoManager().getCurrentUndoInfo();
-		int s = getConstruction().getUndoManager().getHistorySize();
-		//assertSelected(lookup("stroke2"));
-		getConstruction().getUndoManager().getHistorySize();
+		getConstruction().undo();
+		getConstruction().undo();
+		getConstruction().undo();
+		assertEquals(getConstruction().getUndoManager().getHistorySize(), 0);
+		getConstruction().redo();
+		getConstruction().redo();
+		getConstruction().redo();
+		getConstruction().redo();
+		getConstruction().redo();
+		getConstruction().redo();
+		assertEquals(getConstruction().getUndoManager().getHistorySize(), 6);
+		assertThat(lookup("stroke3"), notNullValue());
 	}
 
 	@Test
