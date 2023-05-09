@@ -7747,15 +7747,17 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		ArrayList<GeoElement> splitStrokes = new ArrayList<>();
 		for (GeoElement geo : oldSelection) {
 			List<GeoElement> splitParts = geo.getPartialSelection(removeOriginal);
-			GeoElement replacement = splitParts.get(0);
-			splitStrokes.addAll(splitParts);
-			newSelection.add(replacement);
-			if (replacement != geo) {
-				changed = true;
-				replaceTranslated(geo, replacement);
-				if (!removeOriginal && splitParts.size() > 1) {
-					for (GeoElement part : splitParts) {
-						splitPartsToRemove.add(part);
+			if (!splitParts.isEmpty()) {
+				GeoElement replacement = splitParts.get(0);
+				splitStrokes.addAll(splitParts);
+				newSelection.add(replacement);
+				if (replacement != geo) {
+					changed = true;
+					replaceTranslated(geo, replacement);
+					if (!removeOriginal && splitParts.size() > 1) {
+						for (GeoElement part : splitParts) {
+							splitPartsToRemove.add(part);
+						}
 					}
 				}
 			}
