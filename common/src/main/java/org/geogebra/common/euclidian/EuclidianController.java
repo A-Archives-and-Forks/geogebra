@@ -7477,7 +7477,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		if (storeUndo.isEmpty()) {
 			splitSelectedStrokes(true);
-			storeUndo.setActionSplitTheStroke();
 		}
 
 		storeUndo.storeSelection();
@@ -9975,14 +9974,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	private void storeUndo() {
-		if (!storeUndo.actionSplitTheStroke()) {
-			if (storeUndo.storeUndo()) {
-				storeUndoInfo();
-			}
-		} else {
-			if (storeUndo.isEmpty()) {
-				storeUndoInfo();
-			}
+		if (storeUndo.storeUndo()) {
+			storeUndoInfo();
 		}
 	}
 

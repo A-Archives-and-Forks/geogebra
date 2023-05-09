@@ -16,8 +16,6 @@ import com.google.j2objc.annotations.Weak;
 public class UpdateActionStore {
 	private final List<UndoItem> undoItems = new ArrayList<>();
 
-	private boolean actionInvolvedSplitting = false;
-
 	@Weak
 	protected final SelectionManager selection;
 	private final UndoManager undoManager;
@@ -54,17 +52,6 @@ public class UpdateActionStore {
 
 	public void clear() {
 		undoItems.clear();
-		actionInvolvedSplitting = false;
-	}
-
-
-	public boolean actionSplitTheStroke() {
-		return actionInvolvedSplitting;
-	}
-
-
-	public void setActionSplitTheStroke() {
-		this.actionInvolvedSplitting = true;
 	}
 
 	/**
