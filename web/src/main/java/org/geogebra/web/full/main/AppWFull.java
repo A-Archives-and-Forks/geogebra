@@ -1620,6 +1620,8 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 			if (!isUnbundled()) {
 				setPerspectives(p);
 			}
+		} else {
+			updateContentPane();
 		}
 
 		getEuclidianView1().synCanvasSize();
