@@ -1,12 +1,9 @@
 package org.geogebra.common.euclidian;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoLocusStroke;
 import org.geogebra.common.main.SelectionManager;
 import org.geogebra.common.main.undo.UndoManager;
 import org.geogebra.common.plugin.ActionType;

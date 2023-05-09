@@ -1,7 +1,5 @@
 package org.geogebra.common.euclidian;
 
-import static org.geogebra.common.kernel.StringTemplate.xmlTemplate;
-
 import org.geogebra.common.kernel.Locateable;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
