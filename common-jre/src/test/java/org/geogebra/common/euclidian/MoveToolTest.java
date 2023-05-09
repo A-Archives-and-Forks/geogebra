@@ -1,6 +1,5 @@
 package org.geogebra.common.euclidian;
 
-import static org.geogebra.common.BaseUnitTest.hasValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

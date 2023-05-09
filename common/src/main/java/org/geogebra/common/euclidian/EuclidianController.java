@@ -163,6 +163,7 @@ import org.geogebra.common.main.SpecialPointsListener;
 import org.geogebra.common.main.SpecialPointsManager;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.media.VideoManager;
+import org.geogebra.common.plugin.ActionType;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
@@ -6014,7 +6015,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	protected void moveDependent() {
 		translationVec.setX(xRW - getStartPointX());
 		translationVec.setY(yRW - getStartPointY());
-		this.splitSelectedStrokes(true);
 		setStartPointLocation(xRW, yRW);
 
 		// we don't specify screen coords for translation as all objects are
@@ -6055,10 +6055,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		tmpCoordsL3.setX(xRW);
 		tmpCoordsL3.setY(yRW);
 		tmpCoordsL3.setZ(0);
-		splitSelectedStrokes(true);
 		ArrayList<GeoElement> moveMultipleObjectsList = companion
 				.removeParentsOfView(getAppSelectedGeos());
-		storeUndo.store(moveMultipleObjectsList);
 		MoveGeos.moveObjects(moveMultipleObjectsList, translationVec, tmpCoordsL3, null, view);
 	}
 
@@ -7449,11 +7447,14 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			return;
 		}
 
+		if (storeUndo.isEmpty()) {
+			splitSelectedStrokes(true);
+		}
+
 		storeUndo.storeSelection();
 
 		// handle rotation
 		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
-			splitSelectedStrokes(true);
 			GRectangle2D bounds = view.getBoundingBox().getRectangle();
 			// bounds exist
 			if (bounds != null) {
@@ -7641,7 +7642,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	private void handleResizeMultiple(AbstractEvent event,
 			EuclidianBoundingBoxHandler handler) {
 		// if for some reason there was no state initialized
-		splitSelectedStrokes(true);
 		if (startBoundingBoxState == null) {
 			startBoundingBoxState = new BoundingBoxResizeState(
 					view.getBoundingBox().getRectangle(),
@@ -7716,16 +7716,20 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		boolean changed = false;
 		ArrayList<GeoElement> newSelection = new ArrayList<>();
 		ArrayList<GeoElement> oldSelection = new ArrayList<>(selection.getSelectedGeos());
+		ArrayList<GeoElement> splitStrokes = new ArrayList<>();
 		for (GeoElement geo : oldSelection) {
 			List<GeoElement> splitParts = geo.getPartialSelection(removeOriginal);
-			GeoElement replacement = splitParts.get(0);
-			newSelection.add(replacement);
-			if (replacement != geo) {
-				changed = true;
-				replaceTranslated(geo, replacement);
-				if (!removeOriginal && splitParts.size() > 1) {
-					for (GeoElement part : splitParts) {
-						splitPartsToRemove.add(part);
+			if (!splitParts.isEmpty()) {
+				GeoElement replacement = splitParts.get(0);
+				splitStrokes.addAll(splitParts);
+				newSelection.add(replacement);
+				if (replacement != geo) {
+					changed = true;
+					replaceTranslated(geo, replacement);
+					if (!removeOriginal && splitParts.size() > 1) {
+						for (GeoElement part : splitParts) {
+							splitPartsToRemove.add(part);
+						}
 					}
 				}
 			}
@@ -7735,8 +7739,16 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			updateBoundingBoxFromSelection(false);
 			showDynamicStylebar();
 			startBoundingBoxState = null;
+			storeUndoableStrokeSplit(oldSelection, splitStrokes);
 		}
 		return changed;
+	}
+
+	private void storeUndoableStrokeSplit(List<GeoElement> geos, List<GeoElement> splitParts) {
+		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geos, splitParts);
+		app.getUndoManager().buildAction(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
+				.withUndo(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
+				.storeAndNotifyUnsaved();
 	}
 
 	/**
@@ -9827,16 +9839,13 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			if (!isDraggingOccuredBeyondThreshold()) {
 				showDynamicStylebar();
 			}
-			storeUndo.storeUndo();
+			storeUndo();
 			setResizedShape(null);
 			decreaseTargets();
 			return;
 		} else if (isMultiResize) { // resize, multi selection
 			view.resetHitHandler();
-			if (storeUndo.storeUndo()) {
-				storeUndoInfo();
-			}
-
+			storeUndo();
 			isMultiResize = false;
 			setBoundingBoxFromList(selection.getSelectedGeos());
 			decreaseTargets();
@@ -9936,6 +9945,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 
 		decreaseTargets();
+	}
+
+	private void storeUndo() {
+		if (storeUndo.storeUndo()) {
+			storeUndoInfo();
+		}
 	}
 
 	private boolean shouldShowDynamicStylebarAfterMouseRelease(boolean newSelection,
@@ -12214,7 +12229,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 */
 	public void setBoundingBoxFromList(List<GeoElement> geos) {
 		// do not update during rotation
-		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION) {
+		if (view.getHitHandler() == EuclidianBoundingBoxHandler.ROTATION
+				&& view.getBoundingBox() != null) {
 			return;
 		}
 
