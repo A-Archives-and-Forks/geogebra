@@ -51,6 +51,7 @@ abstract class AbstractAppConfig implements AppConfig {
 	public boolean hasOneVarStatistics() {
 		return true;
 	}
+
     @Override
     public CommandFilter getCommandFilter() {
         return commandFilter;
