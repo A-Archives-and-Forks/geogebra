@@ -673,7 +673,9 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 				getKernel().getAlgebraProcessor().getCommandDispatcher();
 
 		for (String cmd : commandDictContent) {
-			commandDictCAS.addEntry(cmd);
+			if (commandDispatcher.isAllowedByNameFilter(Commands.stringToCommand(cmd))) {
+				commandDictCAS.addEntry(cmd);
+			}
 		}
 
 		// iterate through all available CAS commands, add them (translated if
