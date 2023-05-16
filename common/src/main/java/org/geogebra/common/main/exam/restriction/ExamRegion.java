@@ -36,7 +36,7 @@ public enum ExamRegion {
 			// no restrictions -> no default needed
 		}
 	},
-	/*MMS() {
+	MMS() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
 			return "Deutschland IQB MMS Abitur";
@@ -51,13 +51,14 @@ public enum ExamRegion {
 		public void applyRestrictions(ExamRestrictionModel model) {
 			model.setSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE);
 			model.setCommandFilter(CommandFilterFactory.createMmsFilter());
+			model.setFeatureRestrictions(FeatureRestriction.DATA_TABLE_REGRESSION);
 		}
 
 		@Override
 		public void setDefaultSubAppCode(ExamRestrictionModel model) {
 			model.setDefaultAppCode(CAS_APPCODE);
 		}
-	},*/
+	},
 	NIEDERSACHSEN() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
