@@ -11,6 +11,7 @@ import org.geogebra.common.io.layout.Perspective;
 import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.ScientificCommandArgumentFilter;
+import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
@@ -90,8 +91,8 @@ public class AppConfigScientific extends AppConfigGraphing {
 	}
 
 	@Override
-	public void createCommandFilter() {
-		commandFilter = CommandFilterFactory.createSciCalcCommandFilter();
+	public CommandFilter createCommandFilter() {
+		return CommandFilterFactory.createSciCalcCommandFilter();
 	}
 
 	@Override
