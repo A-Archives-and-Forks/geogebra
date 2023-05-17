@@ -33,6 +33,7 @@ public class DefaultUndoManager extends UndoManager {
      *            string builder with construction XML
      */
     private synchronized void doStoreUndoInfo(final StringBuilder undoXML) {
+		Log.error("old undo!");
         AppState appStateToAdd = new StringAppState(undoXML.toString());
         UndoCommand command = createUndoCommand(appStateToAdd);
         maybeStoreUndoCommand(command);

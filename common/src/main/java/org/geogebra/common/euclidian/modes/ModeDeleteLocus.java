@@ -14,6 +14,7 @@ import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoImage;
 import org.geogebra.common.kernel.geos.GeoLocusStroke;
+import org.geogebra.common.main.undo.UndoableDeletionExecutor;
 
 /**
  * Delete mode controller for locus based penstrokes
@@ -67,13 +68,7 @@ public class ModeDeleteLocus {
 		Iterator<GeoElement> it = hits.iterator();
 		while (it.hasNext()) {
 			GeoElement geo = it.next();
-			// delete tool should delete the object for dragging
-			// at whiteboard
-			// see MOW-97
-			if (view.getApplication().isWhiteboardActive()
-					&& ec.getMode() == EuclidianConstants.MODE_DELETE) {
-				removeOrSetUndefinedIfHasFixedDescendent(geo);
-			} else if (geo instanceof GeoLocusStroke) {
+			if (geo instanceof GeoLocusStroke) {
 				boolean hasVisiblePart = deletePartOfPenStroke((GeoLocusStroke) geo);
 
 				if (hasVisiblePart) { // still something visible, don't delete
@@ -90,14 +85,16 @@ public class ModeDeleteLocus {
 		}
 		// do not delete images using eraser
 		hits.removeImages();
+		UndoableDeletionExecutor deletionExecutor = new UndoableDeletionExecutor();
 		for (GeoElement hit : hits) {
-			removeOrSetUndefinedIfHasFixedDescendent(hit);
+			removeOrSetUndefinedIfHasFixedDescendent(hit, deletionExecutor);
 		}
+		deletionExecutor.storeUndoAction(ec.getKernel());
 	}
 
-	private void removeOrSetUndefinedIfHasFixedDescendent(GeoElement geo) {
+	private void removeOrSetUndefinedIfHasFixedDescendent(GeoElement geo, UndoableDeletionExecutor deletionExecutor) {
 		if (!view.getApplication().isApplet() || !geo.isLockedPosition()) {
-			geo.removeOrSetUndefinedIfHasFixedDescendent();
+			deletionExecutor.delete(geo);
 		}
 	}
 
@@ -114,6 +111,7 @@ public class ModeDeleteLocus {
 		}
 		ec.addSelectedGeo(hits, 1, false, selPreview);
 		if (ec.selGeos() == 1) {
+			UndoableDeletionExecutor deletionExecutor = new UndoableDeletionExecutor();
 			GeoElement[] geos = ec.getSelectedGeos();
 			// delete only parts of GeoLocusStroke, not the whole object
 			// when eraser tool is used
@@ -134,12 +132,14 @@ public class ModeDeleteLocus {
 
 				if (!hasVisiblePart) { // still something visible, don't delete
 					// remove this Stroke
-					removeOrSetUndefinedIfHasFixedDescendent(geos[0]);
+					removeOrSetUndefinedIfHasFixedDescendent(geos[0], deletionExecutor);
+				} else {
+					return true;
 				}
 			} else if (!(geos[0] instanceof GeoImage)) { // delete this object
-				removeOrSetUndefinedIfHasFixedDescendent(geos[0]);
+				removeOrSetUndefinedIfHasFixedDescendent(geos[0], deletionExecutor);
 			}
-			return true;
+			deletionExecutor.storeUndoAction(ec.getKernel());
 		}
 		return false;
 	}
