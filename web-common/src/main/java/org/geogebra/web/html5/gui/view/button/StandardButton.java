@@ -9,6 +9,7 @@ import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.util.GlobalHandlerRegistry;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.resources.client.ResourcePrototype;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtproject.user.client.ui.Widget;
@@ -117,10 +118,10 @@ public class StandardButton extends Widget implements HasResource {
 		SimplePanel imgPanel = new SimplePanel();
 		imgPanel.addStyleName("imgHolder");
 		btnImage = new NoDragImage(image, width, height);
-		btnImage.getElement().setTabIndex(-1);
+		btnImage.getElement().tabIndex = -1;
 		imgPanel.add(btnImage);
 
-		this.getElement().removeAllChildren();
+		DOM.removeAllChildren(this.getElement());
 		this.getElement().appendChild(imgPanel.getElement());
 		this.getElement().appendChild(new Label(label).getElement());
 		btnImage.setPresentation();
@@ -129,7 +130,7 @@ public class StandardButton extends Widget implements HasResource {
 	}
 
 	private void buildColorIcon() {
-		this.getElement().removeAllChildren();
+		DOM.removeAllChildren(this.getElement());
 		this.getElement().appendChild(colorLbl.getElement());
 	}
 
@@ -139,10 +140,10 @@ public class StandardButton extends Widget implements HasResource {
 		this.height = height;
 		this.icon = image;
 		this.label = label;
-		this.getElement().removeAllChildren();
+		DOM.removeAllChildren(this.getElement());
 		if (image != null) {
 			btnImage = new NoDragImage(image, width, height);
-			btnImage.getElement().setTabIndex(-1);
+			btnImage.getElement().tabIndex = -1;
 
 			this.getElement().appendChild(btnImage.getElement());
 
@@ -280,6 +281,6 @@ public class StandardButton extends Widget implements HasResource {
 	}
 
 	public void setTabIndex(int i) {
-		getElement().setTabIndex(i);
+		getElement().tabIndex = i;
 	}
 }

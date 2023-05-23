@@ -198,7 +198,7 @@ public class SliderPropertiesPanelW extends OptionPanel implements ISliderOption
 		AnimationStepModel animationModel = new AnimationStepModel(app);
 		stepPanel = new OptionsTab.TextPropertyPanel(animationModel, app, false);
 		animationModel.setPartOfSlider(true);
-		stepPanel.getWidget().getElement().setClassName("inlineOption");
+		stepPanel.getWidget().getElement().className = "inlineOption";
 		intervalPanel.add(stepPanel.getWidget());
 
 		speedPanel = new AnimationSpeedPanelW(app);

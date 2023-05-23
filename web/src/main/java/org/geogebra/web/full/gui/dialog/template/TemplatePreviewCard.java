@@ -94,12 +94,12 @@ public class TemplatePreviewCard extends FlowPanel
     private void setBackgroundImgPanel(Material m) {
         final String thumb = m == null ? "" : m.getThumbnail();
         if (thumb != null && thumb.length() > 0) {
-            imgPanel.getElement().getStyle().setBackgroundImage(
-                    "url(" + Browser.normalizeURL(thumb) + ")");
+            imgPanel.getElement().style.backgroundImage =
+                    "url(" + Browser.normalizeURL(thumb) + ")";
         } else {
-            imgPanel.getElement().getStyle().setBackgroundImage("url("
+            imgPanel.getElement().style.backgroundImage = "url("
                     + AppResources.INSTANCE.empty().getSafeUri().asString()
-                    + ")");
+                    + ")";
         }
     }
 
@@ -110,7 +110,7 @@ public class TemplatePreviewCard extends FlowPanel
 
     @Override
     public void remove() {
-        if (getParent().getElement().getChildCount() == 7) {
+        if (getParent().getElement().childNodes.length == 7) {
             // no border style if after remove we will have only 6 cards in the panel
             getParent().removeStyleName("withBorder");
         }

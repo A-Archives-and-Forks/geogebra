@@ -4,11 +4,12 @@ import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.main.App;
 import org.geogebra.web.html5.main.DrawEquationW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.HasText;
 import org.gwtproject.user.client.ui.IsWidget;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * CAS input panel
@@ -78,7 +79,7 @@ public interface InputPanel extends IsWidget, HasText {
 		}
 
 		@Override
-		public Element getElement() {
+		public HTMLElement getElement() {
 			return c.getElement();
 		}
 
@@ -117,7 +118,7 @@ public interface InputPanel extends IsWidget, HasText {
 	/**
 	 * @return element
 	 */
-	Element getElement();
+	HTMLElement getElement();
 
 	/**
 	 * @param laTeX

@@ -18,6 +18,11 @@ import org.gwtproject.user.client.ui.DockLayoutPanel;
 import org.gwtproject.user.client.ui.SplitLayoutPanel;
 import org.gwtproject.user.client.ui.Widget;
 
+import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
+import elemental2.dom.TouchEvent;
+import jsinterop.base.Js;
+
 /**
  * A panel that adds user-positioned splitters between each of its child
  * widgets.
@@ -79,13 +84,13 @@ public class ZoomSplitLayoutPanel extends DockLayoutPanel {
     }
 
 	@Override
-	protected int getEventPosition(Event event) {
+	protected int getEventPosition(elemental2.dom.Event event) {
 		int type = DOM.eventGetType(event);
 		return type == Event.ONTOUCHSTART
 				|| type == Event.ONTOUCHMOVE
 				|| type == Event.ONTOUCHEND
-				? (int) (event.getTouches().get(0).getClientX() * getZoom())
-				: (int) (event.getClientX() * getZoom());
+				?  (int) (((TouchEvent) event).touches.getAt(0).clientX * getZoom())
+				: (int) (((MouseEvent) event).clientX * getZoom());
 	}
 
     @Override
@@ -146,25 +151,25 @@ public class ZoomSplitLayoutPanel extends DockLayoutPanel {
 		}
 
 		@Override
-		public void onBrowserEvent(Event event) {
+		public void onBrowserEvent(elemental2.dom.Event event) {
 			if (!impl.shouldHandleEvent(event, mouseDown)) {
 				return;
 			}
-			Element splitter = impl.getSplitterElement();
+			HTMLElement splitter = impl.getSplitterElement();
 			switch (DOM.eventGetType(event)) {
 			default:
 				// do nothing
 				break;
 			case Event.ONTOUCHSTART:
-				splitter.addClassName("gwt-SplitLayoutPanel-Dragger-ACTIVE");
-				startDrag(event, splitter.hasClassName("gwt-SplitLayoutPanel-HDragger"));
+				splitter.classList.add("gwt-SplitLayoutPanel-Dragger-ACTIVE");
+				startDrag(event, splitter.classList.contains("gwt-SplitLayoutPanel-HDragger"));
 				break;
 			case Event.ONMOUSEDOWN:
-				startDrag(event, splitter.hasClassName("gwt-SplitLayoutPanel-HDragger"));
+				startDrag(event, splitter.classList.contains("gwt-SplitLayoutPanel-HDragger"));
 				break;
 	
 			case Event.ONTOUCHEND:
-				splitter.removeClassName("gwt-SplitLayoutPanel-Dragger-ACTIVE");
+				splitter.classList.remove("gwt-SplitLayoutPanel-Dragger-ACTIVE");
 				endDrag(event);
 				break;
 			case Event.ONMOUSEUP:
@@ -194,7 +199,7 @@ public class ZoomSplitLayoutPanel extends DockLayoutPanel {
 				}
 		}
 
-		private void endDrag(Event event) {
+		private void endDrag(elemental2.dom.Event event) {
 			if (splitPanel.hasSplittersFrozen()) {
 				event.preventDefault();
 				return;
@@ -231,7 +236,7 @@ public class ZoomSplitLayoutPanel extends DockLayoutPanel {
 			splitPanel.onDragEnd();
 		}
 
-		private void startDrag(Event event, boolean horizontal) {
+		private void startDrag(elemental2.dom.Event event, boolean horizontal) {
 			if (splitPanel.hasSplittersFrozen()) {
 				event.preventDefault();
 				return;
@@ -285,7 +290,7 @@ public class ZoomSplitLayoutPanel extends DockLayoutPanel {
 
 		protected abstract double getCenterSize();
 
-		protected abstract int getEventPosition(Event event);
+		protected abstract int getEventPosition(elemental2.dom.Event event);
 
 		protected abstract int getTargetPosition();
 
@@ -365,13 +370,13 @@ public class ZoomSplitLayoutPanel extends DockLayoutPanel {
     }
 
     @Override
-	protected int getEventPosition(Event event) {
+	protected int getEventPosition(elemental2.dom.Event event) {
 		int type = DOM.eventGetType(event);
 		return type == Event.ONTOUCHSTART
 				|| type == Event.ONTOUCHMOVE
 				|| type == Event.ONTOUCHEND
-				? (int) (event.getTouches().get(0).getClientY() * getZoom())
-				: (int) (event.getClientY() * getZoom());
+				? (int) (((TouchEvent) event).touches.getAt(0).clientY * getZoom())
+				: (int) (((MouseEvent) event).clientY * getZoom());
 	}
 
     @Override
@@ -588,9 +593,9 @@ public class ZoomSplitLayoutPanel extends DockLayoutPanel {
 
 		LayoutData layoutData = (LayoutData) splitter.getLayoutData();
 		splitter.impl.splitterInsertedIntoLayer(layoutData.layer);
-		Element parentDiv = splitter.getElement().getParentElement();
-		parentDiv.setClassName("y".equals(cssdir) ? "draggerParentHorizontal"
-				: "draggerParentVertical");
+		HTMLElement parentDiv = Js.uncheckedCast(splitter.getElement().parentElement);
+		parentDiv.className = "y".equals(cssdir) ? "draggerParentHorizontal"
+				: "draggerParentVertical";
 		parentDiv.setAttribute("style", parentDiv.getAttribute("style")
 				+ ";overflow-" + cssdir + ":hidden !important");
 	}

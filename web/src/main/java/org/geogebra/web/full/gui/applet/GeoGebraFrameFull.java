@@ -61,8 +61,6 @@ import org.geogebra.web.html5.util.keyboard.VirtualKeyboardW;
 import org.geogebra.web.shared.GlobalHeader;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyUpEvent;
 import org.gwtproject.timer.client.Timer;
@@ -72,6 +70,8 @@ import org.gwtproject.user.client.Event.NativePreviewEvent;
 import org.gwtproject.user.client.Event.NativePreviewHandler;
 import org.gwtproject.user.client.ui.RootPanel;
 import org.gwtproject.user.client.ui.SimplePanel;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Frame for applets with GUI
@@ -184,7 +184,7 @@ public class GeoGebraFrameFull
 	 * @param clb
 	 *            call this after rendering
 	 */
-	public static void renderArticleElement(Element el, AppletFactory factory,
+	public static void renderArticleElement(HTMLElement el, AppletFactory factory,
 			GLookAndFeel laf, JsConsumer<Object> clb) {
 		GeoGebraElement element = GeoGebraElement.as(el);
 		removeExistingInstance(el);
@@ -903,7 +903,7 @@ public class GeoGebraFrameFull
 	 * @param event
 	 *            browser event
 	 */
-	private void closePopupsAndMaybeMenu(NativeEvent event) {
+	private void closePopupsAndMaybeMenu(elemental2.dom.Event event) {
 		if (!Dom.eventTargetsElement(event, getMenuElement())
 				&& !Dom.eventTargetsElement(event, getToolbarMenuElement())
 				&& !getGlassPane().isDragInProgress()
@@ -913,17 +913,17 @@ public class GeoGebraFrameFull
 		}
 	}
 
-	private Element getMenuElement() {
+	private HTMLElement getMenuElement() {
 		return ggwMenuBar == null ? null : ggwMenuBar.getElement();
 	}
 
-	private Element getToolbarMenuElement() {
+	private HTMLElement getToolbarMenuElement() {
 		return getToolbar() == null ? null
 				: getToolbar().getOpenMenuButtonElement();
 	}
 
 	@Override
-	public void onBrowserEvent(Event event) {
+	public void onBrowserEvent(elemental2.dom.Event event) {
 		if (app == null || !app.isUsingFullGui()) {
 			return;
 		}
@@ -1012,7 +1012,7 @@ public class GeoGebraFrameFull
 		if (event.getTypeInt() == Event.ONMOUSEDOWN
 				|| event.getTypeInt() == Event.ONTOUCHSTART) {
 
-			Object js = event.getNativeEvent().getEventTarget();
+			Object js = event.getNativeEvent().target;
 			JsEval.callNativeGlobalFunction("hideAppPicker", js);
 		}
 	}

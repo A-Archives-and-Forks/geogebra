@@ -2,7 +2,6 @@ package org.geogebra.web.html5.euclidian;
 
 import org.geogebra.common.euclidian.EuclidianView;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.Panel;
 
@@ -25,9 +24,9 @@ public class MyEuclidianViewPanel extends AbsolutePanel implements
 		this.ev = ev;
 		canvas = createCanvas();
 		if (canvas != null) {
-			canvas.getElement().getStyle()
-					.setPosition(Position.RELATIVE);
-			canvas.getElement().getStyle().setZIndex(0);
+			canvas.getElement().style
+					.position = "relative";
+			canvas.getElement().style.setProperty("zIndex", "0");
 			add(canvas);
 		}
 	}

@@ -6,9 +6,9 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.Persistable;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.RootPanel;
 
+import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 
 /**
@@ -60,10 +60,10 @@ public class MenuToggleButton extends ToggleButton
 	public void addToGlobalHeader() {
 		removeFromParent();
 		RootPanel root = RootPanel.get("headerID");
-		Element dummy = Dom.querySelectorForElement(root.getElement(),
+		HTMLElement dummy = Dom.querySelectorForElement(root.getElement(),
 				".menuBtn");
 		if (dummy != null) {
-			dummy.removeFromParent();
+			dummy.remove();
 		}
 		root.insert(this, 0);
 	}

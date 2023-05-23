@@ -51,14 +51,14 @@ import org.geogebra.web.html5.util.ArchiveEntry;
 import org.geogebra.web.html5.util.GeoGebraElement;
 import org.geogebra.web.html5.util.ImageManagerW;
 import org.geogebra.web.resources.SVGResource;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Frame;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.core.Global;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -120,7 +120,7 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 
 	@Override
 	public void setLayer(DrawWidget embed, int layer) {
-		Element element = null;
+		HTMLElement element = null;
 		if (embed instanceof DrawVideo) {
 			if (!app.getVideoManager().hasPlayer((DrawVideo) embed)) {
 				return;
@@ -129,8 +129,8 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 		} else if (widgets.get(embed) != null) {
 			element = widgets.get(embed).getGreatParent().getElement();
 		}
-		if (element != null && element.hasClassName("background")) {
-			element.getStyle().setZIndex(layer);
+		if (element != null && element.classList.contains("background")) {
+			element.style.zIndex = CSSProperties.ZIndexUnionType.of(layer);
 		}
 	}
 
@@ -215,8 +215,9 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 	}
 
 	private void addDragHandler(elemental2.dom.Element element) {
-		Style evPanelStyle = ((EuclidianViewWInterface) app.getActiveEuclidianView())
-				.getCanvasElement().getParentElement().getStyle();
+		HTMLElement parentElement = Js.uncheckedCast(((EuclidianViewWInterface) app.getActiveEuclidianView())
+				.getCanvasElement().parentElement);
+		CSSStyleDeclaration evPanelStyle = parentElement.style;
 
 		element.addEventListener("dragstart", (event) -> {
 			evPanelStyle.setProperty("pointerEvents", "none");
@@ -239,8 +240,7 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 	private void addToGraphics(FlowPanel scaler) {
 		FlowPanel container = new FlowPanel();
 		container.add(scaler);
-		container.getElement().addClassName("embedContainer");
-		container.getElement().addClassName("mowWidget");
+		container.getElement().classList.add("embedContainer", "mowWidget");
 		DockPanelW panel = app.getGuiManager().getLayout().getDockManager()
 				.getPanel(App.VIEW_EUCLIDIAN);
 		((EuclidianDockPanelW) panel).getEuclidianPanel().add(container);
@@ -308,8 +308,8 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 	private static FlowPanel createGraspableMathContainer(DrawEmbed embed) {
 		FlowPanel panel = new FlowPanel();
 		String id = "gm-div" + embed.getEmbedID();
-		panel.getElement().setId(id);
-		panel.getElement().addClassName("gwt-Frame");
+		panel.getElement().id = id;
+		panel.getElement().classList.add("gwt-Frame");
 		return panel;
 	}
 
@@ -317,7 +317,7 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 		FlowPanel container = new FlowPanel();
 		String id = "h5p-content" + embedID;
 		container.addStyleName("h5pEmbed");
-		container.getElement().setId(id);
+		container.getElement().id = id;
 		return container;
 	}
 
@@ -337,9 +337,9 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 		if (embedElement == null) {
 			return;
 		}
-		Style style = embedElement.getGreatParent().getElement().getStyle();
-		style.setTop(drawEmbed.getTop(), Unit.PX);
-		style.setLeft(drawEmbed.getLeft(), Unit.PX);
+		CSSStyleDeclaration style = embedElement.getGreatParent().getElement().style;
+		style.top = drawEmbed.getTop() + "px";
+		style.left = drawEmbed.getLeft() + "px";
 		style.setProperty("transformOrigin", "0 0");
 		style.setProperty("transform", "rotate(" + drawEmbed.getGeoElement().getAngle() + "rad)");
 		if (drawEmbed.getWidth() > 0) {
@@ -361,7 +361,7 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 				background);
 		if (!background) {
 			app.getMaskWidgets().masksToForeground();
-			frame.getGreatParent().getElement().getStyle().clearZIndex();
+			frame.getGreatParent().getElement().style.zIndex = null;
 		}
 	}
 
@@ -430,7 +430,7 @@ public class EmbedManagerW implements EmbedManager, EventRenderable, ActionExecu
 
 	private static void removeFrame(EmbedElement frame) {
 		frame.getGreatParent().removeFromParent();
-		frame.getGreatParent().getElement().removeFromParent();
+		frame.getGreatParent().getElement().remove();
 	}
 
 	@Override

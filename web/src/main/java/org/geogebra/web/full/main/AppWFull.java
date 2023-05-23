@@ -171,9 +171,6 @@ import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.geogebra.web.shared.ggtapi.LoginOperationW;
 import org.geogebra.web.shared.ggtapi.models.MaterialCallback;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.HorizontalPanel;
@@ -185,6 +182,7 @@ import com.himamis.retex.editor.web.MathFieldW;
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.File;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.URL;
 import elemental2.webstorage.StorageEvent;
 import jsinterop.base.Js;
@@ -289,7 +287,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 		getSettingsUpdater().getFontSettingsUpdater().resetFonts();
 		Browser.removeDefaultContextMenu(geoGebraElement.getElement());
 		if (getAppletParameters().getDataParamApp() && !this.getLAF().isSmart()) {
-			RootPanel.getBodyElement().addClassName("application");
+			RootPanel.getBodyElement().classList.add("application");
 			setupHeader();
 		}
 
@@ -847,7 +845,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 	}
 
 	@Override
-	public final Element getFrameElement() {
+	public final HTMLElement getFrameElement() {
 		return getAppletFrame().getElement();
 	}
 
@@ -1005,9 +1003,9 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 	 * Removed element called ggbsplash
 	 */
 	protected static void removeSplash() {
-		Element el = DOM.getElementById("ggbsplash");
+		HTMLElement el = DOM.getElementById("ggbsplash");
 		if (el != null) {
-			el.removeFromParent();
+			el.remove();
 		}
 	}
 
@@ -1776,7 +1774,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 
 	@Override
 	public boolean hasFocus() {
-		return frame.getElement().isOrHasChild(Dom.getActiveElement());
+		return frame.getElement().contains(Dom.getActiveElement());
 	}
 
 	@Override
@@ -1819,8 +1817,8 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 		this.oldSplitLayoutPanel.setPixelSize(spWidth, getSpHeight());
 		// we need relative position to make sure the menubar / toolbar are not
 		// hidden
-		this.oldSplitLayoutPanel.getElement().getStyle()
-				.setPosition(Position.RELATIVE);
+		this.oldSplitLayoutPanel.getElement().style
+				.position = "relative";
 		if (!isUnbundled() && getGuiManager().hasAlgebraView()
 				&& showView(App.VIEW_ALGEBRA)) {
 			getAlgebraView().setShowAlgebraInput(showAlgebraInput()
@@ -1908,8 +1906,8 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 				frame.getMenuBar(this).getMenubar().updateMenubar();
 			}
 			getGuiManager().refreshDraggingViews();
-			oldSplitLayoutPanel.getElement().getStyle()
-					.setOverflow(Overflow.HIDDEN);
+			oldSplitLayoutPanel.getElement().style
+					.overflow = "hidden";
 			frame.getMenuBar(this).getMenubar().dispatchOpenEvent();
 		} else {
 			if (menuViewController != null) {
@@ -1959,8 +1957,8 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 			if (this.splitPanelWrapper != null) {
 				this.splitPanelWrapper.remove(frame.getMenuBar(this));
 			}
-			oldSplitLayoutPanel.getElement().getStyle()
-					.setOverflow(Overflow.VISIBLE);
+			oldSplitLayoutPanel.getElement().style
+					.overflow = "visible";
 		}
 		this.menuShowing = false;
 
@@ -2298,7 +2296,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 
 	@Override
 	public InlineTextController createInlineTextController(EuclidianView view, GeoInline geo) {
-		Element parentElement = ((EuclidianViewW) view).getAbsolutePanel().getParent().getElement();
+		HTMLElement parentElement = ((EuclidianViewW) view).getAbsolutePanel().getParent().getElement();
 		return new InlineTextControllerW(geo, view, parentElement);
 	}
 
@@ -2312,7 +2310,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 
 	@Override
 	public InlineTableController createTableController(EuclidianView view, GeoInlineTable geo) {
-		Element parentElement = ((EuclidianViewW) view).getAbsolutePanel().getParent().getElement();
+		HTMLElement parentElement = ((EuclidianViewW) view).getAbsolutePanel().getParent().getElement();
 		return new InlineTableControllerW(geo, view, parentElement);
 	}
 

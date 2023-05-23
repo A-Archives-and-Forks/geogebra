@@ -182,7 +182,7 @@ public class ShareLinkDialog extends ComponentDialog {
 	}
 
 	@Override
-	public void onBrowserEvent(Event event) {
+	public void onBrowserEvent(elemental2.dom.Event event) {
 		if (DOM.eventGetType(event) != Event.ONMOUSEMOVE) {
 			super.onBrowserEvent(event);
 		}

@@ -26,13 +26,6 @@ import org.geogebra.web.html5.Browser;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.animation.client.Animation;
 import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Display;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.logical.shared.CloseEvent;
 import org.gwtproject.event.logical.shared.CloseHandler;
 import org.gwtproject.event.logical.shared.HasCloseHandlers;
@@ -52,8 +45,13 @@ import org.gwtproject.user.client.ui.impl.PopupImpl;
 
 import com.himamis.retex.editor.share.util.GWTKeycodes;
 
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
+import elemental2.dom.EventTarget;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
 import jsinterop.base.Js;
 
 /**
@@ -123,7 +121,7 @@ public class GPopupPanel extends SimplePanel implements
 			if (glass == null) {
 				return;
 			}
-			Style style = glass.getStyle();
+			CSSStyleDeclaration style = glass.style;
 
 			int winWidth = getRootPanel().getOffsetWidth();
 			int winHeight = getRootPanel().getOffsetHeight();
@@ -132,12 +130,12 @@ public class GPopupPanel extends SimplePanel implements
 			// the
 			// document's scroll size.
 			int headerHeight = ((AppW) app).getAppletParameters().getDataParamMarginTop();
-			style.setWidth(winWidth, Unit.PX);
-			style.setHeight(winHeight + headerHeight, Unit.PX);
-			style.setTop(-headerHeight, Unit.PX);
+			style.width = CSSProperties.WidthUnionType.of(winWidth + "px");
+			style.height = CSSProperties.HeightUnionType.of(winHeight + headerHeight + "px");
+			style.top = -headerHeight + "px";
 
 			// The size is set. Show the glass again.
-			style.setDisplay(Display.BLOCK);
+			style.display = "block";
 		}
 	};
 
@@ -149,7 +147,7 @@ public class GPopupPanel extends SimplePanel implements
 	private boolean showing;
 	private boolean autoHideOnHistoryEvents;
 
-	private List<Element> autoHidePartners;
+	private List<HTMLElement> autoHidePartners;
 
 	// Used to track requested size across changing child widgets
 	private String desiredHeight;
@@ -159,7 +157,7 @@ public class GPopupPanel extends SimplePanel implements
 	/**
 	 * The glass element.
 	 */
-	private Element glass;
+	private HTMLElement glass;
 
 	private String glassStyleName = "gwt-PopupPanelGlass";
 
@@ -325,7 +323,7 @@ public class GPopupPanel extends SimplePanel implements
 					// the PopupPanel will appear to 'jump' from its
 					// static/relative
 					// position to its absolute position (issue #1231).
-					curPanel.getElement().getStyle()
+					curPanel.getElement().style
 							.setProperty("position", "absolute");
 					if (curPanel.topPosition != -1) {
 						curPanel.setPopupPosition(curPanel.leftPosition,
@@ -365,14 +363,14 @@ public class GPopupPanel extends SimplePanel implements
 				}
 			}
 			impl.setClip(curPanel.getElement(), "rect(auto, auto, auto, auto)");
-			curPanel.getElement().getStyle().setProperty("overflow", "");
+			curPanel.getElement().style.setProperty("overflow", "");
 		}
 
 		@Override
 		protected void onStart() {
 			offsetHeight = curPanel.getOffsetHeight();
 			offsetWidth = curPanel.getOffsetWidth();
-			curPanel.getElement().getStyle().setProperty("overflow", "hidden");
+			curPanel.getElement().style.setProperty("overflow", "hidden");
 			super.onStart();
 		}
 
@@ -455,7 +453,7 @@ public class GPopupPanel extends SimplePanel implements
 				// Otherwise,
 				// the PopupPanel will appear to 'jump' from its static/relative
 				// position to its absolute position (issue #1231).
-				curPanel.getElement().getStyle()
+				curPanel.getElement().style
 						.setProperty("position", "absolute");
 				if (curPanel.topPosition != -1) {
 					curPanel.setPopupPosition(curPanel.leftPosition,
@@ -467,7 +465,7 @@ public class GPopupPanel extends SimplePanel implements
 					getRootPanel().remove(curPanel);
 				}
 			}
-			curPanel.getElement().getStyle().setProperty("overflow", "");
+			curPanel.getElement().style.setProperty("overflow", "");
 		}
 
 		private Panel getRootPanel() {
@@ -536,8 +534,8 @@ public class GPopupPanel extends SimplePanel implements
 	 */
 	protected void addMainChildClass() {
 		if (this instanceof HasKeyboardPopup) {
-			super.getContainerElement().getFirstChildElement()
-					.addClassName("mainChild");
+			HTMLElement container = Js.uncheckedCast(super.getContainerElement().firstElementChild);
+			container.classList.add("mainChild");
 		}
 	}
 
@@ -548,7 +546,7 @@ public class GPopupPanel extends SimplePanel implements
 	 * @param partner
 	 *            the auto hide partner to add
 	 */
-	public void addAutoHidePartner(Element partner) {
+	public void addAutoHidePartner(HTMLElement partner) {
 		assert partner != null : "partner cannot be null";
 		if (autoHidePartners == null) {
 			autoHidePartners = new ArrayList<>();
@@ -576,10 +574,10 @@ public class GPopupPanel extends SimplePanel implements
 	 *            keyboard height
 	 */
 	public void centerAndResize(double keyboardHeight) {
-		Element childElement = super.getContainerElement()
-				.getFirstChildElement();
+		HTMLElement childElement = Js.uncheckedCast(super.getContainerElement()
+				.firstElementChild);
 		
-		childElement.getStyle().clearHeight();
+		childElement.style.height = null;
 
 		center(keyboardHeight);
 		glassResizer.onResize(null);
@@ -587,11 +585,11 @@ public class GPopupPanel extends SimplePanel implements
 		int maxHeight = (int) Math.min(getRootPanel().getOffsetHeight() - keyboardHeight
 				- VERTICAL_PADDING, getMaxHeight());
 
-		if (childElement.getOffsetHeight() > maxHeight) {
-			childElement.getStyle().setHeight(maxHeight, Unit.PX);
-			super.getContainerElement().addClassName("hasBorder");
+		if (childElement.offsetHeight > maxHeight) {
+			childElement.style.height = CSSProperties.HeightUnionType.of(maxHeight + "px");
+			super.getContainerElement().classList.add("hasBorder");
 		} else {
-			super.getContainerElement().removeClassName("hasBorder");
+			super.getContainerElement().classList.remove("hasBorder");
 		}
 	}
 
@@ -614,9 +612,9 @@ public class GPopupPanel extends SimplePanel implements
 		// content
 		// is wrapping (giving a lower offset width) then it would without the
 		// previous left. Setting left/top back to 0 avoids this.
-		Element elem = getElement();
-		elem.getStyle().setPropertyPx("left", 0);
-		elem.getStyle().setPropertyPx("top", 0);
+		HTMLElement elem = getElement();
+		elem.style.left = "0";
+		elem.style.top = "0";
 
 		int left = (getRootPanel().getOffsetWidth() - getOffsetWidth()) >> 1;
 		int top = (getRootPanel().getOffsetHeight() - Math.min(getOffsetHeight(), getMaxHeight())
@@ -654,7 +652,7 @@ public class GPopupPanel extends SimplePanel implements
 	 * @return the popup's left position
 	 */
 	public int getPopupLeft() {
-		return getElement().getAbsoluteLeft();
+		return DOM.getAbsoluteLeft(getElement());
 	}
 
 	/**
@@ -663,12 +661,12 @@ public class GPopupPanel extends SimplePanel implements
 	 * @return the popup's top position
 	 */
 	public int getPopupTop() {
-		return getElement().getAbsoluteTop();
+		return DOM.getAbsoluteTop(getElement());
 	}
 
 	@Override
 	public String getTitle() {
-		return getContainerElement().getPropertyString("title");
+		return getContainerElement().title;
 	}
 
 	/**
@@ -798,7 +796,7 @@ public class GPopupPanel extends SimplePanel implements
 	 */
 	@Override
 	public boolean isVisible() {
-		return !"hidden".equals(getElement().getStyle().getProperty(
+		return !"hidden".equals(getElement().style.getPropertyValue(
 				"visibility"));
 	}
 
@@ -808,7 +806,7 @@ public class GPopupPanel extends SimplePanel implements
 	 * @param partner
 	 *            the auto hide partner to remove
 	 */
-	public void removeAutoHidePartner(Element partner) {
+	public void removeAutoHidePartner(HTMLElement partner) {
 		assert partner != null : "partner cannot be null";
 		if (autoHidePartners != null) {
 			autoHidePartners.remove(partner);
@@ -854,12 +852,12 @@ public class GPopupPanel extends SimplePanel implements
 	public void setGlassEnabled(boolean enabled) {
 		this.isGlassEnabled = enabled;
 		if (enabled && glass == null) {
-			glass = Document.get().createDivElement();
-			glass.setClassName(glassStyleName);
+			glass = DOM.createDiv();
+			glass.className = glassStyleName;
 
-			glass.getStyle().setPosition(Position.ABSOLUTE);
-			glass.getStyle().setLeft(0, Unit.PX);
-			glass.getStyle().setTop(0, Unit.PX);
+			glass.style.position = "absolute";
+			glass.style.left = "0";
+			glass.style.top = "0";
 		}
 	}
 
@@ -873,7 +871,7 @@ public class GPopupPanel extends SimplePanel implements
 	public void setGlassStyleName(String glassStyleName) {
 		this.glassStyleName = glassStyleName;
 		if (glass != null) {
-			glass.setClassName(glassStyleName);
+			glass.className = glassStyleName;
 		}
 	}
 
@@ -937,9 +935,9 @@ public class GPopupPanel extends SimplePanel implements
 		// called before show() is called (so a popup can be positioned without
 		// it
 		// 'jumping' on the screen).
-		Element elem = getElement();
-		elem.getStyle().setPropertyPx("left", left1);
-		elem.getStyle().setPropertyPx("top", top1);
+		HTMLElement elem = getElement();
+		elem.style.left = left1 + "px";
+		elem.style.top = top1 + "px";
 	}
 
 	/**
@@ -982,7 +980,7 @@ public class GPopupPanel extends SimplePanel implements
 
 	@Override
 	public void setTitle(String title) {
-		Element containerElement = getContainerElement();
+		HTMLElement containerElement = getContainerElement();
 		if (title == null || title.length() == 0) {
 			containerElement.removeAttribute("title");
 		} else {
@@ -1007,14 +1005,14 @@ public class GPopupPanel extends SimplePanel implements
 		// Because the panel is absolutely positioned, this will not create
 		// "holes" in displayed contents and it allows normal layout passes
 		// to occur so the size of the PopupPanel can be reliably determined.
-		getElement().getStyle().setProperty("visibility",
+		getElement().style.setProperty("visibility",
 				visible ? "visible" : "hidden");
 
 		// If the PopupImpl creates an iframe shim, it's also necessary to hide
 		// it
 		// as well.
 		if (glass != null) {
-			glass.getStyle().setProperty("visibility",
+			glass.style.setProperty("visibility",
 					visible ? "visible" : "hidden");
 		}
 	}
@@ -1087,8 +1085,8 @@ public class GPopupPanel extends SimplePanel implements
 	}
 
 	@Override
-	protected Element getContainerElement() {
-		return impl.getContainerElement(getPopupImplElement()).cast();
+	protected HTMLElement getContainerElement() {
+		return getPopupImplElement();
 	}
 
 	/**
@@ -1097,13 +1095,13 @@ public class GPopupPanel extends SimplePanel implements
 	 *
 	 * @return the glass element, or null if not created
 	 */
-	protected Element getGlassElement() {
+	protected HTMLElement getGlassElement() {
 		return glass;
 	}
 
 	@Override
-	protected Element getStyleElement() {
-		return impl.getStyleElement(getPopupImplElement()).cast();
+	protected HTMLElement getStyleElement() {
+		return super.getContainerElement();
 	}
 
 	protected void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -1179,15 +1177,15 @@ public class GPopupPanel extends SimplePanel implements
 	 *            the native event
 	 * @return true if the event targets a partner
 	 */
-	private boolean eventTargetsPartner(NativeEvent event) {
+	private boolean eventTargetsPartner(elemental2.dom.Event event) {
 		if (autoHidePartners == null) {
 			return false;
 		}
 
-		EventTarget target = event.getEventTarget();
-		if (Element.is(target)) {
-			for (Element elem : autoHidePartners) {
-				if (elem.isOrHasChild(Element.as(target))) {
+		EventTarget target = event.target;
+		if (DOM.isElement(target)) {
+			for (HTMLElement elem : autoHidePartners) {
+				if (elem.contains(Js.uncheckedCast(target))) {
 					return true;
 				}
 			}
@@ -1202,10 +1200,10 @@ public class GPopupPanel extends SimplePanel implements
 	 *            the native event
 	 * @return true if the event targets the popup
 	 */
-	private boolean eventTargetsPopup(NativeEvent event) {
-		EventTarget target = event.getEventTarget();
-		if (Element.is(target)) {
-			return getElement().isOrHasChild(Element.as(target));
+	private boolean eventTargetsPopup(elemental2.dom.Event event) {
+		EventTarget target = event.target;
+		if (DOM.isElement(target)) {
+			return getElement().contains(Js.uncheckedCast(target));
 		}
 		return false;
 	}
@@ -1218,7 +1216,7 @@ public class GPopupPanel extends SimplePanel implements
 	 *
 	 * @return the Element that {@link PopupImpl} creates and expects
 	 */
-	private Element getPopupImplElement() {
+	private HTMLElement getPopupImplElement() {
 		return DOM.getFirstChild(super.getContainerElement());
 	}
 
@@ -1382,18 +1380,18 @@ public class GPopupPanel extends SimplePanel implements
 		return left;
 	}
 
-	private static double getScale(Element start, String dir) {
+	private static double getScale(HTMLElement start, String dir) {
 		return Browser.isSafariByVendor() ? 1 : getScaleNative(start, dir);
 	}
 
-	private static double getScaleNative(Element start, String dir) {
-		Element current = start;
+	private static double getScaleNative(HTMLElement start, String dir) {
+		HTMLElement current = start;
 		while (Js.isTruthy(current)) {
 			String scaleAttr = current.getAttribute("data-scale" + dir);
 			if (!StringUtil.empty(scaleAttr)) {
 				return Double.parseDouble(scaleAttr);
 			}
-			current = current.getParentElement();
+			current = Js.uncheckedCast(current.parentElement);
 		}
 		return 1;
 	}
@@ -1424,7 +1422,7 @@ public class GPopupPanel extends SimplePanel implements
 		}
 
 		// If the event targets the popup or the partner, consume it
-		Event nativeEvent = Event.as(event.getNativeEvent());
+		elemental2.dom.Event nativeEvent = event.getNativeEvent();
 		boolean eventTargetsPopupOrPartner = eventTargetsPopup(nativeEvent)
 				|| eventTargetsPartner(nativeEvent);
 		if (eventTargetsPopupOrPartner) {
@@ -1441,8 +1439,9 @@ public class GPopupPanel extends SimplePanel implements
 		int type = DOM.eventGetType(nativeEvent);
 		switch (type) {
 		case Event.ONKEYDOWN: {
-			if (nativeEvent.getKeyCode() == GWTKeycodes.KEY_X
-					&& nativeEvent.getCtrlKey() && nativeEvent.getAltKey()) {
+			if (DOM.getKeyCode(nativeEvent) == GWTKeycodes.KEY_X
+					&& ((KeyboardEvent) nativeEvent).ctrlKey
+					&& ((KeyboardEvent) nativeEvent).altKey) {
 				hide(true, false);
 				app.getAccessibilityManager().focusInput(true, true);
 				event.getNativeEvent().preventDefault();
@@ -1479,7 +1478,7 @@ public class GPopupPanel extends SimplePanel implements
 		}
 
 		case Event.ONFOCUS: {
-			Element target = nativeEvent.getTarget();
+			HTMLElement target = Js.uncheckedCast(nativeEvent.target);
 			if (modal && !eventTargetsPopupOrPartner && (target != null)) {
 				target.blur();
 				event.cancel();

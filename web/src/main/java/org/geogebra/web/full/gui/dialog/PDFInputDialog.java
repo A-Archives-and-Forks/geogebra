@@ -18,9 +18,9 @@ import org.geogebra.web.html5.util.pdf.PDFWrapper.PDFListener;
 import org.geogebra.web.resources.SVGResource;
 import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.FileUpload;
 import org.gwtproject.user.client.ui.FlowPanel;
@@ -31,6 +31,7 @@ import org.gwtproject.user.client.ui.Widget;
 import elemental2.dom.DragEvent;
 import elemental2.dom.File;
 import elemental2.dom.FileList;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
 
@@ -117,8 +118,7 @@ public class PDFInputDialog extends ComponentDialog
 		pdfContainerPanel.add(imgTextPanel);
 	}
 
-	private void addDropHandler(Element element) {
-		elemental2.dom.Element el = Js.uncheckedCast(element);
+	private void addDropHandler(HTMLElement el) {
 		el.addEventListener("drop", evt -> {
 			FileList files = ((DragEvent) evt).dataTransfer.files;
 			loadPdf(files.item(0));
@@ -160,7 +160,7 @@ public class PDFInputDialog extends ComponentDialog
 
 	private void initPreviewActions() {
 		curPageNrField.addKeyPressHandler(event -> {
-			if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			if (DOM.getKeyCode(event.getNativeEvent()) == KeyCodes.KEY_ENTER) {
 				changePageFromTextField();
 			}
 		});

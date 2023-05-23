@@ -73,7 +73,7 @@ public class AccessibleGraphicsView implements AccessibleWidget, HasSliders {
 	public void update() {
 		for (int i = 0; i < sliderTypes.size(); i++) {
 			updateNumericRange(sliders.get(i), sliderTypes.get(i));
-			sliders.get(i).getElement().setTitle(sliderTypes.get(i).getDescription());
+			sliders.get(i).getElement().title = sliderTypes.get(i).getDescription();
 		}
 	}
 

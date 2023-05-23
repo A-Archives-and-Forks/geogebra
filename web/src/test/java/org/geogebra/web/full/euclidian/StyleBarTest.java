@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import com.google.gwtmockito.WithClassesToStub;
 
 @RunWith(GgbMockitoTestRunner.class)
-@WithClassesToStub({ComplexPanel.class})
 public class StyleBarTest {
 
 	@Test

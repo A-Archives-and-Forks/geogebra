@@ -190,7 +190,7 @@ public class CheckboxCreationDialogW extends ComponentDialog implements
 
 		FlowPanel listPanel = new FlowPanel();
 		listPanel.add(gbObjects);
-		gbList.getElement().addClassName("cbCreationList");
+		gbList.getElement().classList.add("cbCreationList");
 		StandardButton btnRemove = new StandardButton(MaterialDesignResources
 				.INSTANCE.delete_black(), 20);
 		listPanel.add(LayoutUtilW.panelRow(gbList, btnRemove));

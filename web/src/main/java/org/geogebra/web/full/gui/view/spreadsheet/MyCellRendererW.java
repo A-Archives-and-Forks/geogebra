@@ -16,11 +16,6 @@ import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.DrawEquationW;
 import org.geogebra.web.html5.main.MyImageW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.FontStyle;
-import org.gwtproject.dom.style.shared.FontWeight;
-import org.gwtproject.dom.style.shared.TextAlign;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.event.dom.client.MouseDownHandler;
 import org.gwtproject.event.dom.client.MouseUpEvent;
@@ -31,6 +26,8 @@ import org.gwtproject.user.client.ui.ListBox;
 import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtproject.user.client.ui.Widget;
 
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.CanvasRenderingContext2D;
 import jsinterop.base.Js;
 
@@ -81,39 +78,39 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 	 *            column
 	 */
 	public void updateCellFormat(GeoElement cell, int row, int column) {
-		Style s = table.getCellFormatter().getElement(row, column).getStyle();
+		CSSStyleDeclaration s = table.getCellFormatter().getElement(row, column).style;
 		//cellPoint.setLocation(column, row);
 
 		// Font style
 		Integer fontStyle = (Integer) formatHandler.getCellFormat(column, row,
 		        CellFormat.FORMAT_FONTSTYLE);
-		s.setFontSize(app.getFontSize(), Unit.PX);
+		s.fontSize = CSSProperties.FontSizeUnionType.of(app.getFontSize() + "px");
 		if (fontStyle == null) {
-			s.setFontStyle(FontStyle.NORMAL);
-			s.setFontWeight(FontWeight.NORMAL);
+			s.fontStyle = "normal";
+			s.fontWeight = "normal";
 
 		} else {
 			if (fontStyle == CellFormat.STYLE_ITALIC
 			        || fontStyle == CellFormat.STYLE_BOLD_ITALIC) {
-				s.setFontStyle(FontStyle.ITALIC);
+				s.fontStyle = "italic";
 			} else {
-				s.setFontStyle(FontStyle.NORMAL);
+				s.fontStyle = "normal";
 			}
 
 			if (fontStyle == CellFormat.STYLE_BOLD
 			        || fontStyle == CellFormat.STYLE_BOLD_ITALIC) {
-				s.setFontWeight(FontWeight.BOLD);
+				s.fontWeight = "bold";
 			} else {
-				s.setFontWeight(FontWeight.NORMAL);
+				s.fontWeight = "normal";
 			}
 		}
 
 		// Foreground color
 		if (cell != null) {
 			if (cell.getLabelColor() != null) {
-				s.setColor(cell.getLabelColor().toString());
+				s.color = cell.getLabelColor().toString();
 			} else {
-				s.clearColor();
+				s.color = null;
 			}
 		}
 
@@ -149,9 +146,9 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 	 *            column
 	 */
 	public void clearBorder(int row, int column) {
-		Style s = table.getCellFormatter().getElement(row, column).getStyle();
-		s.clearProperty("borderBottomColor");
-		s.clearProperty("borderRightColor");
+		CSSStyleDeclaration s = table.getCellFormatter().getElement(row, column).style;
+		s.borderBottomColor = null;
+		s.borderRightColor = null;
 	}
 
 	/**
@@ -168,8 +165,8 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 					// border
 					// will be colored.
 					if (column > 0) {
-						Style sLeft = table.getCellFormatter()
-								.getElement(row, column - 1).getStyle();
+						CSSStyleDeclaration sLeft = table.getCellFormatter()
+								.getElement(row, column - 1).style;
 						sLeft.setProperty("borderRightColor", "#000000");
 					}
 				}
@@ -177,8 +174,8 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 
 			if (!CellFormat.isZeroBit(border, 2)) {
 				for (int row = 0; row < 20; row++) {
-					Style s = table.getCellFormatter().getElement(row, column)
-							.getStyle();
+					CSSStyleDeclaration s = table.getCellFormatter().getElement(row, column)
+							.style;
 					s.setProperty("borderRightColor", "#000000");
 				}
 			}
@@ -198,16 +195,16 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 				// will be colored.
 				for (int column = 0; column < 20; column++) {
 					if (row > 0) {
-						Style sTop = table.getCellFormatter()
-								.getElement(row - 1, column).getStyle();
+						CSSStyleDeclaration sTop = table.getCellFormatter()
+								.getElement(row - 1, column).style;
 						sTop.setProperty("borderBottomColor", "#000000");
 					}
 				}
 			}
 			if (!CellFormat.isZeroBit(border, 3)) {
 				for (int column = 0; column < 20; column++) {
-					Style s = table.getCellFormatter()
-							.getElement(row - 1, column).getStyle();
+					CSSStyleDeclaration s = table.getCellFormatter()
+							.getElement(row - 1, column).style;
 					s.setProperty("borderBottomColor", "#000000");
 
 				}
@@ -278,7 +275,7 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 		borderWidth += bottom ? LINE : NONE;
 		borderWidth += left ? LINE : NONE;
 
-		Style s = table.getCellFormatter().getElement(row, column).getStyle();
+		CSSStyleDeclaration s = table.getCellFormatter().getElement(row, column).style;
 		s.setProperty("borderStyle", "solid");
 		// top right bottom left
 		s.setProperty("borderWidth", borderWidth);
@@ -328,11 +325,11 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 			}
 		}
 
-		Style s = table.getCellFormatter().getElement(row, column).getStyle();
+		CSSStyleDeclaration s = table.getCellFormatter().getElement(row, column).style;
 		if (bgColor != null) {
-			s.setBackgroundColor(bgColor.toString());
+			s.backgroundColor = bgColor.toString();
 		} else {
-			s.clearBackgroundColor();
+			s.backgroundColor = null;
 		}
 	}
 
@@ -372,13 +369,13 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 				sp.add(canv);
 				table1.setWidget(row, column, sp);
 				table1.getCellFormatter().getElement(row, column)
-						.addClassName("SVCenterTD");
+						.classList.add("SVCenterTD");
 				return;
 			}
 		}
 
 		table1.getCellFormatter().getElement(row, column)
-				.removeClassName("SVCenterTD");
+				.classList.remove("SVCenterTD");
 
 		// Set text according to algebra style
 		String text = "";
@@ -479,7 +476,7 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 			}, MouseDownEvent.getType());
 
 			fp.add(checkbox);
-			fp.getElement().getStyle().setTextAlign(TextAlign.CENTER);
+			fp.getElement().style.textAlign = "center";
 
 			checkbox.setDisabled(!cellGeo.isIndependent());
 			checkbox.setSelected(((GeoBoolean) cellGeo).getBoolean());
@@ -492,13 +489,12 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 			final GeoButton gb = (GeoButton) cellGeo;
 			final StandardButton button = new StandardButton("");
 			button.getElement()
-			        .getStyle()
-			        .setBackgroundColor(
-			                grid.getElement().getStyle().getBackgroundColor());
+			        .style.backgroundColor =
+			                grid.getElement().style.backgroundColor;
 			button.setText(cellGeo.getCaption(StringTemplate.defaultTemplate));
-			button.getElement().getStyle()
-			        .setColor(cellGeo.getObjectColor().toString());
-			button.getElement().addClassName("buttonSpreadsheet");
+			button.getElement().style
+			        .color = cellGeo.getObjectColor().toString();
+			button.getElement().classList.add("buttonSpreadsheet");
 
 			button.addFastClickHandler(ce -> {
 				gb.runClickScripts(null);
@@ -514,11 +510,9 @@ public class MyCellRendererW implements MouseDownHandler, MouseUpHandler {
 			lb.setVisibleItemCount(1);
 			lb.setEnabled(true);
 
-			lb.getElement()
-			        .getStyle()
-			        .setBackgroundColor(
-			                grid.getElement().getStyle().getBackgroundColor());
-			lb.getElement().addClassName("geogebraweb-select-spreadsheet");
+			lb.getElement().style.backgroundColor =
+			                grid.getElement().style.backgroundColor;
+			lb.getElement().classList.add("geogebraweb-select-spreadsheet");
 
 			if (list.size() > 0) {
 				for (int i = 0; i < list.size(); i++) {

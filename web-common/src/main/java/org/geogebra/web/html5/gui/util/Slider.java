@@ -1,5 +1,7 @@
 package org.geogebra.web.html5.gui.util;
 
+import org.geogebra.common.util.StringUtil;
+
 public class Slider extends SliderAbstract<Integer> {
 
 	/**
@@ -16,7 +18,7 @@ public class Slider extends SliderAbstract<Integer> {
 
 	@Override
 	protected Integer convert(String val) {
-		return "".equals(val) ? 0 : Integer.parseInt(val); // empty string happens in Mockito
+		return StringUtil.empty(val) ? 0 : (int) Double.parseDouble(val); // empty string happens in Mockito
 	}
 
 }

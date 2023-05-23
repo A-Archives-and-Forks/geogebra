@@ -2,11 +2,9 @@ package org.geogebra.web.html5.gui.accessibility;
 
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.util.sliderPanel.SliderW;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSStyleDeclaration;
 
 /**
  * Creates widgets for navigating the construction with Voiceover (iOS) or
@@ -20,12 +18,12 @@ public class WidgetFactory {
 	 * For sliders we want more restrictive hide than for other widgets
 	 */
 	private static void hideSlider(Widget ui) {
-		Style style = ui.getElement().getStyle();
-		style.setOpacity(.01);
-		style.setPosition(Position.FIXED);
-		style.setWidth(1, Unit.PX);
-		style.setHeight(1, Unit.PX);
-		style.setOverflow(Overflow.HIDDEN);
+		CSSStyleDeclaration style = ui.getElement().style;
+		style.setProperty("opacity", ".01");
+		style.position = "fixed";
+		style.setProperty("width", "1px");
+		style.setProperty("height", "1px");
+		style.overflow = "hidden";
 	}
 
 	/**
@@ -37,9 +35,9 @@ public class WidgetFactory {
 			BaseWidgetFactory factory) {
 		final SliderW range = factory.newSlider(0, 100);
 		hideSlider(range);
-		range.getElement().addClassName("slider");
+		range.getElement().classList.add("slider");
 		range.addValueChangeHandler(event -> source.onValueChange(index, event.getValue()));
-		range.getElement().setTabIndex(5000);
+		range.getElement().tabIndex = 5000;
 		return range;
 	}
 

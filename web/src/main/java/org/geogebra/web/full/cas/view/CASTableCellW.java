@@ -12,7 +12,6 @@ import org.geogebra.web.full.cas.view.InputPanel.InputPanelLabel;
 import org.geogebra.web.html5.gui.util.ClickEndHandler;
 import org.geogebra.web.html5.main.DrawEquationW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.VerticalPanel;
@@ -23,6 +22,8 @@ import com.himamis.retex.editor.share.io.latex.Parser;
 import com.himamis.retex.editor.share.meta.MetaModel;
 import com.himamis.retex.editor.share.model.MathFormula;
 import com.himamis.retex.editor.share.serializer.TeXSerializer;
+
+import elemental2.dom.CSSProperties;
 
 /**
  * Graphical representation of CAS cells in Web
@@ -93,9 +94,9 @@ public class CASTableCellW extends VerticalPanel {
 			} else {
 				commentLabel.setText(casCell.getCommandAndComment() + " ");
 			}
-			commentLabel.getElement().getStyle()
-					.setFontSize(app.getFontSize(), Unit.PX);
-			// commentLabel.getElement().getStyle().setColor("gray");
+			commentLabel.getElement().style
+					.fontSize = CSSProperties.FontSizeUnionType.of(app.getFontSize() + "px");
+			// commentLabel.getElement().style.setColor("gray");
 			outputPanel.add(commentLabel);
 		}
 		outputPanel.add(canvas == null ? outputLabel : canvas);
@@ -120,7 +121,7 @@ public class CASTableCellW extends VerticalPanel {
 	private Label renderPlain() {
 		Label outputLabel = new Label();
 		if (casCell.isError()) {
-			outputLabel.getElement().getStyle().setColor("red");
+			outputLabel.getElement().style.color = "red";
 		}
 		// #5119
 		outputLabel.setText(casCell.getOutput(StringTemplate.numericDefault));
@@ -224,8 +225,8 @@ public class CASTableCellW extends VerticalPanel {
 	 */
 	public void setColor() {
 		GColor newColor = casCell.getFontColor();
-		inputPanel.getElement().getStyle()
-				.setColor(GColor.getColorString(newColor));
+		inputPanel.getElement().style
+				.color = GColor.getColorString(newColor);
 	}
 
 	/**
@@ -275,10 +276,10 @@ public class CASTableCellW extends VerticalPanel {
 				if (this.commentLabel != null) {
 					this.commentLabel
 						.getElement()
-						.getStyle()
-						.setFontSize(
+						.style
+						.fontSize = CSSProperties.FontSizeUnionType.of(
 								casCell.getKernel().getApplication()
-										.getFontSize(), Unit.PX);
+										.getFontSize() + "px");
 					this.outputPanel.add(this.commentLabel);
 				}
 				this.outputPanel.add(DrawEquationW.paintOnCanvasOutput(casCell,

@@ -2,7 +2,6 @@ package org.geogebra.web.full.gui.layout.panels;
 
 import org.geogebra.web.full.gui.layout.DockPanelW;
 import org.geogebra.web.full.gui.view.consprotocol.ConstructionProtocolNavigationW;
-import org.gwtproject.dom.style.shared.Overflow;
 import org.gwtproject.resources.client.ResourcePrototype;
 import org.gwtproject.user.client.ui.InsertPanel;
 import org.gwtproject.user.client.ui.Panel;
@@ -88,7 +87,7 @@ public abstract class NavigableDockPanelW extends DockPanelW {
 	@Override
 	protected void initWidget(Widget widget) {
 		if (widget != null) {
-			widget.getElement().getStyle().setOverflow(Overflow.HIDDEN);
+			widget.getElement().style.overflow = "hidden";
 		}
 		super.initWidget(widget);
 	}

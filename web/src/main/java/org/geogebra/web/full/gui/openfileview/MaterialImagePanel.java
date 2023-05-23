@@ -25,7 +25,7 @@ class MaterialImagePanel extends FlowPanel {
 	}
 
 	private void setBackgroundImageUrl(String url) {
-		getElement().getStyle().setBackgroundImage(
-				"url(" + url + ")");
+		getElement().style.backgroundImage =
+				"url(" + url + ")";
 	}
 }

@@ -17,7 +17,6 @@ import org.geogebra.web.html5.util.DataTest;
 import org.geogebra.web.html5.util.HasDataTest;
 import org.geogebra.web.html5.util.TestHarness;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 
 /**
@@ -336,7 +335,7 @@ public class ItemControls extends FlowPanel
 
 		Scheduler.get().scheduleDeferred(() -> {
 			int right = getItemRightOffset();
-			getElement().getStyle().setRight(right, Unit.PX);
+			getElement().style.right = right + "px";
 		});
 	}
 

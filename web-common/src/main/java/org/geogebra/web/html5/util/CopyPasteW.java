@@ -28,7 +28,6 @@ import org.geogebra.web.html5.gui.util.BrowserStorage;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.Clipboard;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
 
 import com.himamis.retex.editor.web.DocumentUtil;
 
@@ -43,6 +42,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
 import elemental2.dom.EventTarget;
 import elemental2.dom.FileReader;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.HTMLTextAreaElement;
 import elemental2.dom.Response;
@@ -387,7 +387,7 @@ public class CopyPasteW extends CopyPaste {
 	 * @param app application
 	 * @param element event target
 	 */
-	public static void installCutCopyPaste(AppW app, Element element) {
+	public static void installCutCopyPaste(AppW app, HTMLElement element) {
 		EventTarget target = Js.uncheckedCast(element);
 		app.getGlobalHandlers().addEventListener(target, "paste", (event) -> {
 			if (incorrectTarget(event.target)) {

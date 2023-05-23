@@ -25,12 +25,12 @@ import org.geogebra.web.shared.ShareLinkDialog;
 import org.geogebra.web.shared.SignInController;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.geogebra.web.shared.ggtapi.LoginOperationW;
-import org.gwtproject.dom.client.Element;
 
 import com.himamis.retex.editor.web.MathFieldW;
 
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 /**
  * App for solver
@@ -115,7 +115,7 @@ public class AppWsolver extends AppW implements HasKeyboard {
     }
 
     @Override
-    public Element getFrameElement() {
+    public HTMLElement getFrameElement() {
         return frame.getElement();
     }
 

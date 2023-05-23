@@ -4,9 +4,6 @@ import java.util.ArrayList;
 
 import org.geogebra.web.html5.Browser;
 import org.geogebra.web.html5.gui.util.Dom;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.UListElement;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
@@ -16,6 +13,10 @@ import org.gwtproject.user.client.ui.ComplexPanel;
 import org.gwtproject.user.client.ui.IsWidget;
 import org.gwtproject.user.client.ui.UIObject;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import jsinterop.base.Js;
 
 /**
  * List implementation of GWT StackPanel with aria support.
@@ -31,16 +32,16 @@ public class AriaStackPanel extends ComplexPanel
 
 	private int visibleStack = -1;
 	private int lastVisibleStack = -1;
-	private UListElement ul;
+	private HTMLUListElement ul;
 	private ArrayList<Widget> items = new ArrayList<>();
-	private ArrayList<Element> headers = new ArrayList<>();
-	private ArrayList<Element> contents = new ArrayList<>();
+	private ArrayList<HTMLElement> headers = new ArrayList<>();
+	private ArrayList<HTMLElement> contents = new ArrayList<>();
 
 	/**
 	 * Creates an empty stack panel.
 	 **/
 	public AriaStackPanel() {
-		ul = Document.get().createULElement();
+		ul = DOM.createElement("UL");
 		setElement(ul);
 		addStyleName("gwt-StackPanel");
 		sinkEvents(Event.ONCLICK | Event.ONMOUSEOVER | Event.ONMOUSEOUT
@@ -130,10 +131,10 @@ public class AriaStackPanel extends ComplexPanel
 	@Override
 	public void insert(Widget w, int beforeIndex) {
 		// header
-		Element li = DOM.createElement("LI");
+		HTMLElement li = DOM.createElement("LI");
 		getElement().appendChild(li);
 
-		Element button = Dom.createDefaultButton();
+		HTMLElement button = Dom.createDefaultButton();
 
 		if (!(Browser.isIPad())) {
 			li.setAttribute("role", "menuitem");
@@ -143,10 +144,10 @@ public class AriaStackPanel extends ComplexPanel
 
 		li.setAttribute("hasPopup", "true");
 		li.appendChild(button);
-		button.setTabIndex(0);
+		button.tabIndex = 0;
 		headers.add(button);
 
-		Element content = DOM.createElement("DIV");
+		HTMLElement content = DOM.createElement("DIV");
 		items.add(beforeIndex, w);
 		content.appendChild(w.getElement());
 		contents.add(content);
@@ -155,16 +156,16 @@ public class AriaStackPanel extends ComplexPanel
 
 		// header styling
 		setStyleName(button, DEFAULT_ITEM_STYLENAME, true);
-		button.setPropertyInt("__owner", hashCode());
-		button.setPropertyInt("__index", beforeIndex);
-		content.setPropertyInt("__index", beforeIndex);
-		w.getElement().setPropertyInt("__index", beforeIndex);
+		Js.asPropertyMap(button).set("__owner", (double) hashCode());
+		Js.asPropertyMap(button).set("__index", (double) beforeIndex);
+		Js.asPropertyMap(content).set("__index", (double) beforeIndex);
+		Js.asPropertyMap(w.getElement()).set("__index", (double) beforeIndex);
 
 		updateIndicesFrom(beforeIndex);
 
 		// body styling
 		setStyleName(content, DEFAULT_STYLENAME + "Content", true);
-		content.setPropertyString("height", "100%");
+		//content.setPropertyString("height", "100%");
 
 		// Correct visible stack for new location.
 		if (visibleStack == -1) {
@@ -238,7 +239,7 @@ public class AriaStackPanel extends ComplexPanel
 		if (index >= getWidgetCount()) {
 			return;
 		}
-		headers.get(index).setInnerHTML(text);
+		headers.get(index).innerHTML = text;
 	}
 
 	/**
@@ -277,7 +278,7 @@ public class AriaStackPanel extends ComplexPanel
 		if (index >= getWidgetCount()) {
 			return;
 		}
-		headers.get(index).addClassName(styleName);
+		headers.get(index).classList.add(styleName);
 	}
 
 	/**
@@ -295,7 +296,7 @@ public class AriaStackPanel extends ComplexPanel
 		if (index >= getWidgetCount()) {
 			return;
 		}
-		headers.get(index).removeClassName(styleName);
+		headers.get(index).classList.remove(styleName);
 	}
 
 	@Override
@@ -308,16 +309,16 @@ public class AriaStackPanel extends ComplexPanel
 	 *            DOM element
 	 * @return item that's parent of given element
 	 */
-	protected int findDividerIndex(Element target) {
-		Element elem = target;
+	protected int findDividerIndex(HTMLElement target) {
+		HTMLElement elem = target;
 		String expando = null;
 		while (elem != null) {
-			expando = elem.getPropertyString("__index");
+			expando = (String) Js.asPropertyMap(elem).get("__index");
 			if (expando != null) {
 				int index = headers.indexOf(elem);
 				return index;
 			}
-			elem = elem.getParentElement();
+			elem = Js.uncheckedCast(elem.parentElement);
 		}
 		return -1;
 	}
@@ -344,7 +345,7 @@ public class AriaStackPanel extends ComplexPanel
 	public void removeStack(Widget menu) {
 		int index = items.indexOf(menu);
 		if (index >= 0 && index < headers.size()) {
-			headers.get(index).getParentElement().removeFromParent();
+			headers.get(index).parentElement.remove();
 			removeFromLists(index);
 			if (index == visibleStack) {
 				visibleStack = -1;
@@ -364,8 +365,8 @@ public class AriaStackPanel extends ComplexPanel
 		if (index < 0 || index >= headers.size()) {
 			return;
 		}
-		Element header = headers.get(index);
-		Element content = contents.get(index);
+		HTMLElement header = headers.get(index);
+		HTMLElement content = contents.get(index);
 		setStyleName(header, DEFAULT_ITEM_STYLENAME + "-selected", visible);
 		if (visible) {
 			items.get(index).setVisible(true);
@@ -379,7 +380,7 @@ public class AriaStackPanel extends ComplexPanel
 	}
 
 	private void updateIndicesFrom(int beforeIndex) {
-		Element header = headers.get(beforeIndex);
+		HTMLElement header = headers.get(beforeIndex);
 		if (beforeIndex == 0) {
 			setStyleName(header, DEFAULT_ITEM_STYLENAME + "-first", true);
 		} else {
@@ -394,10 +395,10 @@ public class AriaStackPanel extends ComplexPanel
 	}
 
 	@Override
-	public void onBrowserEvent(Event event) {
+	public void onBrowserEvent(elemental2.dom.Event event) {
 		int eventType = DOM.eventGetType(event);
 
-		Element target = DOM.eventGetTarget(event);
+		HTMLElement target = DOM.eventGetTarget(event);
 		int index = findDividerIndex(target);
 		if (eventType == Event.ONMOUSEOVER || eventType == Event.ONKEYDOWN
 				|| eventType == Event.ONCLICK) {
@@ -420,14 +421,14 @@ public class AriaStackPanel extends ComplexPanel
 	 *            event target
 	 * @return index of parent element
 	 */
-	public int getContentIndex(Element target) {
-		Element current = target.getParentElement();
+	public int getContentIndex(HTMLElement target) {
+		HTMLElement current = Js.uncheckedCast(target.parentElement);
 		while (current != null) {
-			String idx = current.getPropertyString("__index");
+			String idx = (String) Js.asPropertyMap(current).get("__index");
 			if (idx != null) {
 				return Integer.parseInt(idx);
 			}
-			current = current.getParentElement();
+			current = Js.uncheckedCast(current.parentElement);
 		}
 		return -1;
 	}
@@ -446,8 +447,8 @@ public class AriaStackPanel extends ComplexPanel
 		if (index < 0 || index > headers.size()) {
 			return;
 		}
-		Element head = headers.get(index);
-		Element li = head.getParentElement();
+		HTMLElement head = headers.get(index);
+		HTMLElement li = Js.uncheckedCast(head.parentElement);
 		li.setAttribute("aria-label", label);
 		if (expanded != null) {
 			head.setAttribute("aria-expanded", expanded.toString());

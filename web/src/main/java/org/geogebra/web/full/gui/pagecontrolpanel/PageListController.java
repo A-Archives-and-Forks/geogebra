@@ -40,7 +40,6 @@ import org.geogebra.web.html5.main.PageContent;
 import org.geogebra.web.html5.main.PageListControllerInterface;
 import org.geogebra.web.html5.util.ArchiveEntry;
 import org.geogebra.web.html5.util.PDFEncoderW;
-import org.gwtproject.dom.client.Touch;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.event.dom.client.MouseDownHandler;
 import org.gwtproject.event.dom.client.MouseMoveEvent;
@@ -57,6 +56,7 @@ import org.gwtproject.event.dom.client.TouchStartEvent;
 import org.gwtproject.event.dom.client.TouchStartHandler;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Touch;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -724,14 +724,14 @@ public class PageListController implements PageListControllerInterface,
 
 	@Override
 	public void onTouchStart(TouchStartEvent event) {
-		Touch t = event.getTargetTouches().get(0);
-		dragCtrl.start(t.getClientX(), t.getClientY());
+		Touch t = event.getTargetTouches().getAt(0);
+		dragCtrl.start((int) t.clientX, (int) t.clientY);
 	}
 
 	@Override
 	public void onTouchMove(TouchMoveEvent event) {
-		Touch t = event.getTargetTouches().get(0);
-		if (dragCtrl.move(t.getClientY(), true)) {
+		Touch t = event.getTargetTouches().getAt(0);
+		if (dragCtrl.move((int) t.clientY, true)) {
 			event.preventDefault();
 			event.stopPropagation();
 		}

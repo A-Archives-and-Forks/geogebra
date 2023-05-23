@@ -129,17 +129,17 @@ public class ImageOrText {
 	public void applyToLabel(Label button) {
 		if (url != null) {
 			if (bgSize > 0) {
-				button.getElement().getStyle()
+				button.getElement().style
 						.setProperty("backgroundSize",
 								bgSize + "px " + bgSize + "px");
 			}
-			button.getElement().getStyle()
-					.setBackgroundImage("url(" + url + ")");
+			button.getElement().style
+					.backgroundImage = "url(" + url + ")";
 			if (text != null) {
 				button.addStyleName("textIconButton");
 			} else if (className != null) {
-				button.getElement().addClassName("borderButton");
-				button.getElement().addClassName(className);
+				button.getElement().classList.add("borderButton");
+				button.getElement().classList.add(className);
 			} else {
 				button.addStyleName("stylebarButton");
 			}
@@ -147,12 +147,12 @@ public class ImageOrText {
 		if (text != null) {
 			button.setText(text);
 			if (fgColor != null) {
-				button.getElement().getStyle()
-						.setColor(GColor.getColorString(fgColor));
+				button.getElement().style
+						.color = GColor.getColorString(fgColor);
 			}
 			if ("+".equals(text)) {
-				button.getElement().addClassName("borderButton");
-				button.getElement().addClassName("plusButton");
+				button.getElement().classList.add("borderButton");
+				button.getElement().classList.add("plusButton");
 			} else {
 				button.setWidth("auto");
 			}
@@ -160,18 +160,18 @@ public class ImageOrText {
 		}
 		if (fgColor != null) {
 			button.getElement()
-					.getStyle()
-					.setBorderColor(
+					.style
+					.borderColor =
 							"rgba(" + fgColor.getRed() + ", "
 								+ fgColor.getGreen() + ", "
-								+ fgColor.getBlue() + ", 1)");
-			button.getElement().addClassName("borderButton");
-			button.getElement().getStyle()
-					.setBackgroundColor(GColor.getColorString(fgColor));
+								+ fgColor.getBlue() + ", 1)";
+			button.getElement().classList.add("borderButton");
+			button.getElement().style
+					.backgroundColor = (GColor.getColorString(fgColor));
 		}
 		if (bgColor != null) {
-			button.getElement().getStyle()
-					.setBackgroundColor(GColor.getColorString(bgColor));
+			button.getElement().style
+					.backgroundColor = GColor.getColorString(bgColor);
 		}
 	    
     }

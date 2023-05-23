@@ -13,6 +13,7 @@ import org.geogebra.common.main.settings.ConstructionProtocolSettings;
 import org.geogebra.common.main.settings.SettingListener;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.css.GuiResources;
+import org.geogebra.web.full.gui.util.Resizer;
 import org.geogebra.web.full.javax.swing.GCheckmarkMenuItem;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.awt.PrintableW;
@@ -27,9 +28,6 @@ import org.gwtproject.cell.client.SafeHtmlCell;
 import org.gwtproject.cell.client.TextInputCell;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NodeList;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.DragEndEvent;
@@ -39,9 +37,15 @@ import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.gwtproject.user.cellview.client.CellTable;
 import org.gwtproject.user.cellview.client.Column;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.AbstractImagePrototype;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.ScrollPanel;
+
+import elemental2.dom.DragEvent;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableRowElement;
+import jsinterop.base.Js;
 
 /**
  * Web implementation of ConstructionProtocol
@@ -63,7 +67,7 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 	/** possible drop index **/
 	int maxIndex;
 	/** the dragged row **/
-	protected Element draggedRow;
+	protected HTMLTableRowElement draggedRow;
 	/** index of dragged row **/
 	protected int dragIndex;
 	GPopupMenuW popupMenu;
@@ -162,24 +166,24 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 
 		Scheduler.get().scheduleDeferred(() -> {
 			// TODO Auto-generated method stub
-			NodeList<Element> tableRows = table.getElement()
-					.getElementsByTagName("tbody").getItem(0)
+			elemental2.dom.NodeList<elemental2.dom.Element> tableRows = table.getElement()
+					.getElementsByTagName("tbody").getAt(0)
 					.getElementsByTagName("tr");
 			if (tableRows.getLength() == 0) {
 				return;
 			}
 
-			NodeList<Element> firstRow = tableRows.getItem(0)
+			elemental2.dom.NodeList<elemental2.dom.Element>firstRow = tableRows.getAt(0)
 					.getElementsByTagName("td");
 
 			for (int i = 0; i < table.getColumnCount(); i++) {
-				int w = firstRow.getItem(i).getOffsetWidth();
+				HTMLElement cell = Js.uncheckedCast(firstRow.getAt(i));
+				int w = cell.offsetWidth;
 				headerTable.setColumnWidth(i, w + "px");
 			}
 
 			int tableWidth = table.getOffsetWidth();
-			headerTable.getElement().getStyle().setWidth(tableWidth,
-					Unit.PX);
+			Resizer.setPixelWidth(headerTable.getElement(), tableWidth);
 
 		});
 
@@ -197,21 +201,21 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 	 * adds handlers for dragging rows. Overridden for touch.
 	 */
 	protected void addDragDropHandlers() {
-		table.addDomHandler(event -> handleDrag(event.getNativeEvent().getClientY()),
+		table.addDomHandler(event -> handleDrag((int) ((DragEvent) event.getNativeEvent()).clientY),
 				DragStartEvent.getType());
 
 		table.addDomHandler(event -> {
 			if (draggedRow != null) {
-				draggedRow.removeClassName("isDragging");
+				draggedRow.classList.remove("isDragging");
 			}
-
-			if (event.getNativeEvent().getClientX() > table.getElement()
-					.getAbsoluteRight()
-					|| event.getNativeEvent().getClientX() < table
-							.getElement().getAbsoluteLeft()) {
+			DragEvent dragEvent = (DragEvent) event.getNativeEvent();
+			if (dragEvent.clientX > DOM.getAbsoluteLeft(table.getElement())
+					+ table.getElement().offsetHeight
+					|| dragEvent.clientX < DOM.getAbsoluteLeft(table
+							.getElement())) {
 				return;
 			}
-			handleDrop(event.getNativeEvent().getClientY());
+			handleDrop((int) dragEvent.clientY);
 		}, DragEndEvent.getType());
 	}
 
@@ -221,10 +225,10 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 	 */
 	protected void handleDrag(int y) {
 		for (int i = 0; i < table.getRowCount(); i++) {
-			if (y > table.getRowElement(i).getAbsoluteTop()
-					&& y < table.getRowElement(i).getAbsoluteBottom()) {
+			if (y > DOM.getAbsoluteTop(table.getRowElement(i))
+					&& y < DOM.getAbsoluteTop(table.getRowElement(i)) + table.getRowElement(i).offsetHeight) {
 				draggedRow = table.getRowElement(i);
-				draggedRow.addClassName("isDragging");
+				draggedRow.classList.add("isDragging");
 				GeoElement geo = data.getRow(i).getGeo();
 				dragIndex = geo.getConstructionIndex();
 				minIndex = geo.getMinConstructionIndex();
@@ -241,10 +245,9 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 	protected void handleDrop(int y) {
 		for (int i = 0; i < table.getRowCount(); i++) {
 			// row hit or y is far down and this is last row
-			if ((y > table.getRowElement(i).getAbsoluteTop()
-					&& y < table.getRowElement(i).getAbsoluteBottom())
-					|| (i == table.getRowCount() - 1 && y > table
-							.getRowElement(i).getAbsoluteBottom())) {
+			if ((y > DOM.getAbsoluteTop(table.getRowElement(i))
+					&& y < DOM.getAbsoluteTop(table.getRowElement(i)) + table.getRowElement(i).offsetHeight)
+					|| (i == table.getRowCount() - 1 && y > DOM.getAbsoluteTop(table.getRowElement(i)) + table.getRowElement(i).offsetHeight)) {
 				int dropIndex = data.getConstructionIndex(i);
 				if (dropIndex == dragIndex) {
 					// no changes necessary
@@ -323,8 +326,8 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 		if (tb.getStyleName().indexOf("headerTable") > 0) {
 			sb.append(SafeHtmlUtils
 					.fromSafeConstant("<div class=\"CP_popupImage\">"));
-			sb.append(AbstractImagePrototype.create(GuiResources.INSTANCE.menu_dots())
-					.getSafeHtml());
+			sb.append(SafeHtmlUtils.fromTrustedString(AbstractImagePrototype.create(GuiResources.INSTANCE.menu_dots())
+					.getSafeHtml().outerHTML));
 			sb.append(SafeHtmlUtils.fromSafeConstant("</div>"));
 		}
 
@@ -390,12 +393,11 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 
 	private void addHeaderClickHandler() {
 		ClickHandler popupMenuClickHandler = event -> {
-			Element el = Element
-					.as(event.getNativeEvent().getEventTarget());
-			if (el != null && el.getParentNode() != null && el
-					.getParentElement().hasClassName("CP_popupImage")) { // three-dot
+			HTMLElement el = Js.uncheckedCast(event.getNativeEvent().target);
+			if (el != null && el.parentNode != null && el
+					.parentElement.classList.contains("CP_popupImage")) { // three-dot
 																// menu
-				popupMenu.show(el, 0, el.getOffsetHeight());
+				popupMenu.show(el, 0, el.offsetHeight);
 			}
 		};
 
@@ -672,7 +674,7 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 	void makeTableRowsDragable() {
 		for (int i = 0; i < table.getRowCount(); i++) {
 			try {
-				table.getRowElement(i).setDraggable(Element.DRAGGABLE_TRUE);
+				table.getRowElement(i).draggable = true;
 			} catch (Exception e) {
 				Log.debug("Out of bounds");
 			}
@@ -859,7 +861,7 @@ public class ConstructionProtocolViewW extends ConstructionProtocolView
 			Log.debug("width: " + previewTable.getOffsetWidth());
 			Log.debug(
 					"zoom: " + scaledWidth / previewTable.getOffsetWidth());
-			previewTable.getElement().getStyle().setProperty("zoom",
+			previewTable.getElement().style.setProperty("zoom",
 					(scaledWidth / previewTable.getOffsetWidth()) + "");
 		});
 	}

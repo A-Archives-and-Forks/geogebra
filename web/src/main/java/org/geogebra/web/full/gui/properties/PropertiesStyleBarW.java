@@ -108,7 +108,7 @@ public class PropertiesStyleBarW extends
 	private void buildGUI() {
 		final AriaMenuBar toolbar = new AriaMenuBar() {
 			@Override
-			public void onBrowserEvent(Event event) {
+			public void onBrowserEvent(elemental2.dom.Event event) {
 				super.onBrowserEvent(event);
 				// by default first click gives focus, second click executes: we
 				// want execute on first click
@@ -141,7 +141,7 @@ public class PropertiesStyleBarW extends
 				GuiResourcesSimple.INSTANCE.close(), 24, 24);
 		closeImage.addStyleName("closeButton");
 		TestHarness.setAttr(closeImage, "closeButton");
-		toolbar.addItem(new AriaMenuItem(closeImage.getElement().getString(),
+		toolbar.addItem(new AriaMenuItem(closeImage.getElement().outerHTML,
 				true, propertiesView::close));
 		buttonMap = new HashMap<>();
 		

@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import org.geogebra.common.main.Localization;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.RequiresResize;
 import org.gwtproject.user.client.ui.SimplePanel;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 
 public class ComponentTab extends FlowPanel implements RequiresResize {
 	private Localization loc;
@@ -80,13 +81,13 @@ public class ComponentTab extends FlowPanel implements RequiresResize {
 		selectedBtn = tabBtns.get(tabIdx);
 		selectedTabIdx = tabIdx;
 
-		Style indicatorStyle = indicator.getElement().getStyle();
-		indicatorStyle.setLeft(calculateLeft(tabIdx), Unit.PX);
-		indicatorStyle.setWidth(selectedBtn.getOffsetWidth(), Unit.PX);
+		CSSStyleDeclaration indicatorStyle = indicator.getElement().style;
+		indicatorStyle.left = calculateLeft(tabIdx) + "px";
+		indicatorStyle.width = CSSProperties.WidthUnionType.of(selectedBtn.getOffsetWidth() + "px");
 
 		panelContainer.addStyleName("transition");
-		Scheduler.get().scheduleDeferred(() -> panelContainer.getElement().getStyle()
-				.setRight(tabIdx * getOffsetWidth(), Unit.PX));
+		Scheduler.get().scheduleDeferred(() -> panelContainer.getElement().style
+				.right = (tabIdx * getOffsetWidth()) + "px");
 	}
 
 	public FlowPanel getPanelContainer() {
@@ -96,7 +97,6 @@ public class ComponentTab extends FlowPanel implements RequiresResize {
 	@Override
 	public void onResize() {
 		panelContainer.removeStyleName("transition");
-		panelContainer.getElement().getStyle().setRight(selectedTabIdx * getOffsetWidth(),
-				Unit.PX);
+		panelContainer.getElement().style.right = (selectedTabIdx * getOffsetWidth()) + "px";
 	}
 }

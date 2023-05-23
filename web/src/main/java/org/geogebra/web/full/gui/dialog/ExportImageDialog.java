@@ -8,13 +8,12 @@ import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.ClipboardUtil;
 import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
-import org.gwtproject.dom.client.IFrameElement;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Frame;
 import org.gwtproject.user.client.ui.Label;
 
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.HTMLIFrameElement;
 import elemental2.dom.HTMLImageElement;
 import jsinterop.base.Js;
@@ -115,15 +114,15 @@ public class ExportImageDialog extends ComponentDialog {
 
 			if (imgStr.startsWith(StringUtil.pdfMarker)) {
 				iframePDF = new Frame(imgStr);
-				IFrameElement iframe = iframePDF.getElement().cast();
+				HTMLIFrameElement iframe = (HTMLIFrameElement) iframePDF.getElement();
 
-				Style style = iframe.getStyle();
-				style.setHeight(600, Unit.PX);
-				style.setWidth(600, Unit.PX);
+				CSSStyleDeclaration style = iframe.style;
+				style.width = CSSProperties.WidthUnionType.of(600 + "px");
+				style.height = CSSProperties.HeightUnionType.of(600 + "px");
 
-				iframe.setFrameBorder(0);
-				iframe.setTabIndex(-1);
-				iframe.setSrc(imgStr);
+				iframe.frameBorder = "0";
+				iframe.tabIndex = -1;
+				iframe.src = imgStr;
 
 				Js.<HTMLIFrameElement>uncheckedCast(iframe)
 						.addEventListener("load", (event) -> center());

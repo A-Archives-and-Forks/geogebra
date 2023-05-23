@@ -25,13 +25,11 @@ import org.geogebra.web.richtext.impl.Carota;
 import org.geogebra.web.richtext.impl.CarotaTable;
 import org.geogebra.web.richtext.impl.CarotaUtil;
 import org.geogebra.web.richtext.impl.EventThrottle;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.dom.style.shared.Visibility;
 import org.gwtproject.user.client.DOM;
 
 import elemental2.core.Global;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -40,8 +38,8 @@ public class InlineTableControllerW implements InlineTableController {
 	private GeoInlineTable table;
 	private final EuclidianView view;
 
-	private Element tableElement;
-	private Style style;
+	private HTMLElement tableElement;
+	private CSSStyleDeclaration style;
 
 	private CarotaTable tableImpl;
 
@@ -50,7 +48,7 @@ public class InlineTableControllerW implements InlineTableController {
 	 * @param view view
 	 * @param table editable table
 	 */
-	public InlineTableControllerW(GeoInlineTable table, EuclidianView view, Element parent) {
+	public InlineTableControllerW(GeoInlineTable table, EuclidianView view, HTMLElement parent) {
 		this.table = table;
 		this.view = view;
 		CarotaUtil.ensureInitialized(view.getFontSize());
@@ -121,7 +119,7 @@ public class InlineTableControllerW implements InlineTableController {
 
 	@Override
 	public boolean isInEditMode() {
-		return Visibility.VISIBLE.getCssName().equals(style.getVisibility());
+		return "visible".equals(style.visibility);
 	}
 
 	@Override
@@ -154,7 +152,7 @@ public class InlineTableControllerW implements InlineTableController {
 	@Override
 	public void toForeground(int x, int y) {
 		if (style != null) {
-			style.setVisibility(Visibility.VISIBLE);
+			style.visibility = "visible";
 			tableImpl.startEditing(x, y);
 		}
 	}
@@ -165,7 +163,7 @@ public class InlineTableControllerW implements InlineTableController {
 			if (isInEditMode()) {
 				table.unlockForMultiuser();
 			}
-			style.setVisibility(Visibility.HIDDEN);
+			style.visibility = "hidden";
 			tableImpl.stopEditing();
 			tableImpl.removeSelection();
 		}
@@ -355,26 +353,26 @@ public class InlineTableControllerW implements InlineTableController {
 
 	@Override
 	public void setLocation(int x, int y) {
-		style.setLeft(x, Unit.PX);
-		style.setTop(y, Unit.PX);
+		style.left = x + "px";
+		style.top = y + "px";
 	}
 
 	@Override
 	public void setWidth(double width) {
-		style.setWidth(width, Unit.PX);
+		style.setProperty("width", width + "px");
 		tableImpl.setWidth(width);
 	}
 
 	@Override
 	public void setHeight(double height) {
-		style.setHeight(height, Unit.PX);
+		style.setProperty("height", height + "px");
 		tableImpl.setHeight(height);
 	}
 
 	@Override
 	public void removeFromDom() {
 		if (tableElement != null) {
-			tableElement.removeFromParent();
+			tableElement.remove();
 		}
 	}
 
@@ -394,20 +392,20 @@ public class InlineTableControllerW implements InlineTableController {
 		return Global.JSON.stringify(tableImpl.save());
 	}
 
-	private void initTable(Element parent) {
+	private void initTable(HTMLElement parent) {
 		tableElement = DOM.createDiv();
-		tableElement.addClassName("mowWidget");
+		tableElement.classList.add("mowWidget");
 		EventUtil.stopPointerEvents(tableElement, btn  -> btn <= 0);
 		parent.appendChild(tableElement);
 
-		style = tableElement.getStyle();
+		style = tableElement.style;
 		style.setProperty("transformOrigin", "0 0");
-		style.setVisibility(Visibility.HIDDEN);
+		style.visibility = "hidden";
 		tableImpl = Carota.get().getTable().create(tableElement);
 		tableImpl.setExternalPaint(true);
 		tableImpl.init(2, 2);
 		// re-parent the textarea to make sure focus stays in view (MOW-1330)
-		Element textareaWrapper = Dom.querySelectorForElement(tableElement, ".murokTextArea");
+		HTMLElement textareaWrapper = Dom.querySelectorForElement(tableElement, ".murokTextArea");
 		parent.appendChild(textareaWrapper);
 
 		updateContent();

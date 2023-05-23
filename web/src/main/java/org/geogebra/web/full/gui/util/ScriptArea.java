@@ -11,6 +11,7 @@ import org.gwtproject.event.dom.client.KeyPressEvent;
 import org.gwtproject.event.dom.client.KeyPressHandler;
 import org.gwtproject.event.dom.client.KeyUpEvent;
 import org.gwtproject.event.dom.client.KeyUpHandler;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.TextArea;
 
 import com.himamis.retex.editor.share.util.AltKeys;
@@ -139,8 +140,8 @@ public class ScriptArea extends TextArea
 		}
 		if (Browser.isTabletBrowser()
 				&& !app.isWhiteboardActive()
-				&& e.getNativeEvent().getKeyCode() != GWTKeycodes.KEY_BACKSPACE
-				&& e.getNativeEvent().getKeyCode() != 0) {
+				&& DOM.getKeyCode(e.getNativeEvent()) != GWTKeycodes.KEY_BACKSPACE
+				&& DOM.getKeyCode(e.getNativeEvent()) != 0) {
 			insertString(Character.toString(e.getCharCode()));
 		}
 	}

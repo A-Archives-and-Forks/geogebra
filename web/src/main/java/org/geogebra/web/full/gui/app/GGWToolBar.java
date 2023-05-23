@@ -29,8 +29,6 @@ import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.animation.client.AnimationScheduler;
 import org.gwtproject.animation.client.AnimationScheduler.AnimationCallback;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.TextDecoration;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyUpEvent;
@@ -220,9 +218,9 @@ public class GGWToolBar extends Composite
 	// timer for GeoGebraExam
 	private FlowPanel getTimer() {
 		final Label timer = new Label();
-		timer.getElement().setClassName("timer");
-		timer.getElement().setId("timer");
-		timer.getElement().setPropertyBoolean("started", false);
+		timer.getElement().className = "timer";
+		timer.getElement().id = "timer";
+		Js.asPropertyMap(timer.getElement()).set("started", false);
 
 		// https://groups.google.com/forum/#!msg/google-web-toolkit/VrF3KD1iLh4/-y4hkIDt5BUJ
 		AnimationScheduler.get().requestAnimationFrame(new AnimationCallback() {
@@ -302,17 +300,15 @@ public class GGWToolBar extends Composite
 					.getCommandDispatcher().isCASAllowed();
 			if (!supportsCAS) {
 				Label nocas = new Label("CAS");
-				nocas.getElement().getStyle()
-						.setTextDecoration(TextDecoration.LINE_THROUGH);
-				nocas.getElement().setClassName("timer");
+				nocas.getElement().style.textDecoration = "line-through";
+				nocas.getElement().className = "timer";
 				// do not add CAS to toolBar for tablet exam apps
 				rightButtonPanel.add(nocas);
 			}
 			if (!app.getSettings().getEuclidian(-1).isEnabled()) {
 				Label no3d = new Label("3D");
-				no3d.getElement().getStyle()
-						.setTextDecoration(TextDecoration.LINE_THROUGH);
-				no3d.getElement().setClassName("timer");
+				no3d.getElement().style.textDecoration = "line-through";
+				no3d.getElement().className = "timer";
 				// do not add 3D to toolBar for tablet exam apps
 				rightButtonPanel.add(no3d);
 			}
@@ -973,9 +969,9 @@ public class GGWToolBar extends Composite
 		deselectButtons();
 
 		if (index == 0 && this.openSearchButton != null) {
-			this.openSearchButton.getElement().addClassName("selectedButton");
+			this.openSearchButton.getElement().classList.add("selectedButton");
 		} else if (this.openMenuButton != null) {
-			this.openMenuButton.getElement().addClassName("selectedButton");
+			this.openMenuButton.getElement().classList.add("selectedButton");
 		}
 
 	}
@@ -985,8 +981,8 @@ public class GGWToolBar extends Composite
 	 */
 	public void deselectButtons() {
 		if (this.openMenuButton != null && openSearchButton != null) {
-			this.openSearchButton.getElement().removeClassName("selectedButton");
-			this.openMenuButton.getElement().removeClassName("selectedButton");
+			this.openSearchButton.getElement().classList.remove("selectedButton");
+			this.openMenuButton.getElement().classList.remove("selectedButton");
 		}
 	}
 
@@ -1101,7 +1097,7 @@ public class GGWToolBar extends Composite
 	/**
 	 * @return the Element object of the open menu button
 	 */
-	public @CheckForNull Element getOpenMenuButtonElement() {
+	public @CheckForNull HTMLElement getOpenMenuButtonElement() {
 		return openMenuButton == null ? null : openMenuButton.getElement();
 	}
 

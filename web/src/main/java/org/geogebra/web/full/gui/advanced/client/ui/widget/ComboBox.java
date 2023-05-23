@@ -34,9 +34,6 @@ import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
 import org.geogebra.web.html5.gui.util.FastClickHandler;
 import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.ChangeEvent;
@@ -65,6 +62,11 @@ import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.EventTarget;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
+import jsinterop.base.Js;
 
 /**
  * This is a combo box widget implementation.
@@ -944,13 +946,13 @@ public class ComboBox<T extends ListDataModel> extends TextButtonPanel<String>
 		/** See class docs */
 		@Override
 		public void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-			NativeEvent nativeEvent = event.getNativeEvent();
-			EventTarget eventTarget = nativeEvent.getEventTarget();
-			if (!Element.is(eventTarget)) {
+			elemental2.dom.Event nativeEvent = event.getNativeEvent();
+			EventTarget eventTarget = nativeEvent.target;
+			if (!DOM.isElement(eventTarget)) {
 				return;
 			}
 
-			Element target = Element.as(eventTarget);
+			HTMLElement target = Js.uncheckedCast(eventTarget);
 
 			int type = event.getTypeInt();
 			if (type == Event.ONKEYDOWN) {
@@ -960,11 +962,12 @@ public class ComboBox<T extends ListDataModel> extends TextButtonPanel<String>
 				}
 
 				boolean eventTargetsPopup = (target != null)
-						&& getElement().isOrHasChild(target);
-				int button = nativeEvent.getKeyCode();
-				boolean alt = nativeEvent.getAltKey();
-				boolean ctrl = nativeEvent.getCtrlKey();
-				boolean shift = nativeEvent.getShiftKey();
+						&& getElement().contains(target);
+				KeyboardEvent keyboardEvent = (KeyboardEvent) nativeEvent;
+				int button = DOM.getKeyCode(keyboardEvent);
+				boolean alt = keyboardEvent.altKey;
+				boolean ctrl = keyboardEvent.ctrlKey;
+				boolean shift = keyboardEvent.shiftKey;
 
 				boolean hasModifiers = alt || ctrl || shift;
 

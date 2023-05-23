@@ -17,7 +17,6 @@ import org.geogebra.web.html5.gui.util.MenuHoverListener;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.user.client.DOM;
@@ -26,6 +25,9 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
 
 import com.himamis.retex.editor.share.util.JavaKeyCodes;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
 
 /**
  * Popup menu for web.
@@ -182,9 +184,9 @@ public class GPopupMenuW implements AttachedToDOM, MenuHoverListener {
 	 * @param y
 	 *            coord to show popup
 	 */
-	public void show(Element c, int x, int y) {
-		show((int) (c.getAbsoluteLeft() / getScaleX() + x),
-				(int) (c.getAbsoluteTop() / getScaleY() + y));
+	public void show(HTMLElement c, int x, int y) {
+		show((int) (DOM.getAbsoluteLeft(c) / getScaleX() + x),
+				(int) (DOM.getAbsoluteTop(c) / getScaleY() + y));
 	}
 
 	@Override
@@ -585,9 +587,9 @@ public class GPopupMenuW implements AttachedToDOM, MenuHoverListener {
 			expandItems.put(ci.getMenuItem(), ci);
 		}
 
-		private AriaMenuItem findItem(Element hItem) {
+		private AriaMenuItem findItem(HTMLElement hItem) {
 			for (AriaMenuItem item : getItems()) {
-				if (item.getElement().isOrHasChild(hItem)) {
+				if (item.getElement().contains(hItem)) {
 					return item;
 				}
 			}
@@ -595,7 +597,7 @@ public class GPopupMenuW implements AttachedToDOM, MenuHoverListener {
 		}
 
 		@Override
-		public void onBrowserEvent(Event event) {
+		public void onBrowserEvent(elemental2.dom.Event event) {
 			if (DOM.eventGetType(event) == Event.ONMOUSEOVER) {
 				AriaMenuItem item = findItem(DOM.eventGetTarget(event));
 				if (item != null) {
@@ -606,11 +608,11 @@ public class GPopupMenuW implements AttachedToDOM, MenuHoverListener {
 					}
 				}
 			} else if (DOM.eventGetType(event) == Event.ONKEYDOWN) {
-				char keyCode = (char) event.getKeyCode();
+				char keyCode = (char) DOM.getKeyCode(event);
 				if (keyCode == KeyCodes.KEY_ESCAPE) {
 					hide();
 				} else if (keyCode == KeyCodes.KEY_TAB) {
-					if (event.getShiftKey()) {
+					if (((KeyboardEvent) event).shiftKey) {
 						if (!moveSelectionUp()) {
 							hide();
 						}

@@ -7,8 +7,6 @@ import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.Node;
 import org.gwtproject.dom.client.NodeList;
-import org.gwtproject.dom.client.TableSectionElement;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.cellview.client.CellTable;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Panel;
@@ -16,6 +14,8 @@ import org.gwtproject.user.client.ui.ScrollPanel;
 import org.gwtproject.view.client.ListDataProvider;
 
 import elemental2.dom.EventListener;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableSectionElement;
 import jsinterop.base.Js;
 
 /**
@@ -129,16 +129,16 @@ public abstract class StickyTable<T> extends FlowPanel {
 	 * @param column to get
 	 * @return the header element.
 	 */
-	public Element getHeaderElement(int column) {
+	public HTMLElement getHeaderElement(int column) {
 		return Dom.querySelectorForElement(cellTable.getTableHeadElement(),
 				".values tr th:nth-child(" + (column + 1) + ") .content");
 	}
 
-	public Element getHeaderElementByClassName(String className) {
+	public HTMLElement getHeaderElementByClassName(String className) {
 		return Dom.querySelectorForElement(cellTable.getTableHeadElement(), className);
 	}
 
-	public Element getTableElementByClassName(String className) {
+	public HTMLElement getTableElementByClassName(String className) {
 		return Dom.querySelectorForElement(cellTable.getTableBodyElement(), className);
 	}
 
@@ -160,7 +160,7 @@ public abstract class StickyTable<T> extends FlowPanel {
 	 *            to set.
 	 */
 	protected void setBodyHeight(int height) {
-		scroller.getElement().getStyle().setHeight(height, Unit.PX);
+		scroller.getElement().style.setProperty("height", height + "px");
 	}
 
 	/**
@@ -225,8 +225,8 @@ public abstract class StickyTable<T> extends FlowPanel {
 		return (Panel) scroller.getWidget();
 	}
 
-	public Element getCell(int row, int column) {
-		return cellTable.getTableBodyElement().getChild(row).getChild(column).cast();
+	public HTMLElement getCell(int row, int column) {
+		return Js.uncheckedCast(cellTable.getTableBodyElement().childNodes.getAt(row).childNodes.getAt(column));
 	}
 
 	public void flush() {
@@ -246,12 +246,12 @@ public abstract class StickyTable<T> extends FlowPanel {
 	private class CellTableWithBody extends CellTable<T> {
 
 		@Override
-		public TableSectionElement getTableBodyElement() {
+		public HTMLTableSectionElement getTableBodyElement() {
 			return super.getTableBodyElement();
 		}
 
 		@Override
-		public TableSectionElement getTableHeadElement() {
+		public HTMLTableSectionElement getTableHeadElement() {
 			return super.getTableHeadElement();
 		}
 	}

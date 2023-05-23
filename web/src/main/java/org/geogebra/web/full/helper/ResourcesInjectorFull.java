@@ -6,11 +6,12 @@ import org.geogebra.web.full.css.GuiResources;
 import org.geogebra.web.html5.js.ResourcesInjector;
 import org.geogebra.web.html5.util.AppletParameters;
 import org.geogebra.web.resources.StyleInjector;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.LinkElement;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.RootPanel;
 
 import com.google.gwt.core.client.GWT;
+
+import elemental2.dom.HTMLLinkElement;
 
 /**
  * Resource injector that includes UI styles.
@@ -32,9 +33,9 @@ public class ResourcesInjectorFull extends ResourcesInjector {
 	@Override
 	public void loadWebFont(String fontUrl) {
 		if (!StringUtil.empty(fontUrl)) {
-			LinkElement link = Document.get().createLinkElement();
-			link.setHref(fontUrl);
-			link.setRel("stylesheet");
+			HTMLLinkElement link = DOM.createElement("link");
+			link.href = fontUrl;
+			link.rel = "stylesheet";
 			RootPanel.getBodyElement().appendChild(link);
 		}
 	}

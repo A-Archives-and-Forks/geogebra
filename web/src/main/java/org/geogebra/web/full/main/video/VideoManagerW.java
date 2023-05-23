@@ -18,8 +18,8 @@ import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.css.GuiResourcesSimple;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.MyImageW;
-import org.gwtproject.dom.client.Element;
 
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 
 /**
@@ -224,7 +224,7 @@ public class VideoManagerW implements VideoManager {
 		return playerOf(video).isOffline();
 	}
 
-	public Element getElement(DrawVideo drawable) {
+	public HTMLElement getElement(DrawVideo drawable) {
 		return playerOf(drawable).asWidget().getElement();
 	}
 }

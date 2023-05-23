@@ -20,7 +20,6 @@ import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.SharedResources;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.DragEnterEvent;
 import org.gwtproject.event.dom.client.DragEnterHandler;
 import org.gwtproject.event.dom.client.DragLeaveEvent;
@@ -37,6 +36,9 @@ import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.ScrollPanel;
 import org.gwtproject.user.client.ui.Tree;
 import org.gwtproject.user.client.ui.TreeItem;
+
+import elemental2.dom.DragEvent;
+import jsinterop.base.Js;
 
 /**
  * A GUI to customize the toolbar
@@ -255,7 +257,7 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 			return (DraggableTool) getLastItem().getUserObject();
 		}
 
-		public boolean hitLastItem(int y) {
+		public boolean hitLastItem(double y) {
 			TreeItem last = getLastItem();
 			return y > last.getAbsoluteTop() + last.getOffsetHeight();
 		}
@@ -439,7 +441,7 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 					return;
 				}
 
-				if (tool.afterLastLeaf(event.getNativeEvent().getClientY())) {
+				if (tool.afterLastLeaf(((DragEvent) event.getNativeEvent()).clientY)) {
 					Log.debug("Adding as last leaf!");
 					addTool(draggingTool);
 				} else {
@@ -451,7 +453,7 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 			});
 
 			tool.addDragOverHandler(event -> {
-				if (tool.afterLastLeaf(event.getNativeEvent().getClientY())) {
+				if (tool.afterLastLeaf(((DragEvent) event.getNativeEvent()).clientY)) {
 					tool.addStyleName("insertAfterLeaf");
 				} else {
 					tool.addStyleName("insertBeforeLeaf");
@@ -463,7 +465,7 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 			return leaf;
 		}
 
-		boolean afterLastLeaf(int y) {
+		boolean afterLastLeaf(double y) {
 			if (treeItem == null) {
 				return false;
 			}
@@ -483,7 +485,7 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 		private void initDrag() {
 			addDomHandler(event -> {
 				draggingTool = this;
-				event.getDataTransfer().setDragImage(getElement(), 10, 10);
+				event.getDataTransfer().setDragImage(Js.uncheckedCast(getElement()), 10, 10);
 				event.stopPropagation();
 			}, DragStartEvent.getType());
 		}
@@ -510,13 +512,13 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 			Label text = new Label(str);
 			add(LayoutUtilW.panelRow(btn, text));
 			getElement().setAttribute("mode", mode + " ");
-			getElement().setDraggable(Element.DRAGGABLE_TRUE);
+			getElement().draggable = true;
 			initDrag();
 		}
 
-		public boolean isTopHit(int y) {
+		public boolean isTopHit(double y) {
 			return y > getAbsoluteTop() && y < getAbsoluteTop()
-					+ getOffsetHeight() / 2;
+					+ getOffsetHeight() / 2.0;
 		}
 
 		public void addDropHandler(DropHandler handler) {
@@ -566,7 +568,7 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 		addContent();
 		addFooter();
 		setToolbarId(-1);
-		getElement().getStyle().setBackgroundColor("white");
+		getElement().style.backgroundColor = "white";
 		update();
 	}
 
@@ -701,8 +703,8 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 			event.preventDefault();
 			boolean emptyTree = toolTree.getItemCount() == 0;
 			if (emptyTree
-					|| toolTree.hitLastItem(event.getNativeEvent()
-							.getClientY())) {
+					|| toolTree.hitLastItem(((DragEvent) event.getNativeEvent())
+							.clientY)) {
 				toolTree.addTool(draggingTool, true);
 
 				if (!emptyTree) {
@@ -713,7 +715,7 @@ public class CustomizeToolbarGUI extends MyHeaderPanel implements
 		}, DropEvent.getType());
 
 		usedToolsPanelContent.addDomHandler(event -> {
-			if (toolTree.hitLastItem(event.getNativeEvent().getClientY())) {
+			if (toolTree.hitLastItem(((DragEvent) event.getNativeEvent()).clientY)) {
 				toolTree.getLastTool().addStyleName("insertAfterBranch");
 			}
 		}, DragOverEvent.getType());

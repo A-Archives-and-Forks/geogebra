@@ -12,7 +12,9 @@ import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.util.TestHarness;
 import org.geogebra.web.shared.components.infoError.ComponentInfoErrorPanel;
 import org.geogebra.web.shared.components.infoError.InfoErrorData;
-import org.gwtproject.dom.style.shared.Unit;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * Tab of Table Values View.
@@ -36,7 +38,8 @@ public class TableTab extends ToolbarPanel.ToolbarTab {
 		TestHarness.setAttr(table, "TV_table");
 		table.setStyleName("tvTable", true);
 		CustomScrollbar.apply(this);
-		this.getElement().getFirstChildElement().getStyle().setHeight(100, Unit.PCT);
+		HTMLElement first = Js.uncheckedCast(this.getElement().firstElementChild);
+		first.style.setProperty("height", "100%");
 		buildEmptyTablePanel();
 	}
 

@@ -21,11 +21,10 @@ import org.geogebra.web.full.gui.dialog.MediaDialog;
 import org.geogebra.web.full.gui.dialog.MediaInputPanel;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.ggtapi.MarvlURLChecker;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NodeList;
 import org.gwtproject.user.client.DOM;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 public class EmbedFactory implements AsyncOperation<URLStatus>, MaterialCallbackI {
 	private URLChecker urlChecker;
@@ -80,11 +79,11 @@ public class EmbedFactory implements AsyncOperation<URLStatus>, MaterialCallback
 
 	private static String extractURL(String input) {
 		if (input.startsWith("<")) {
-			Element el = DOM.createDiv();
-			el.setInnerHTML(input);
-			NodeList<Element> frames = el.getElementsByTagName("iframe");
+			HTMLElement el = DOM.createDiv();
+			el.innerHTML = input;
+			elemental2.dom.NodeList<elemental2.dom.Element> frames = el.getElementsByTagName("iframe");
 			if (frames.getLength() > 0) {
-				return MediaDialog.addProtocol(frames.getItem(0).getAttribute("src"));
+				return MediaDialog.addProtocol(frames.getAt(0).getAttribute("src"));
 			}
 		}
 		return MediaDialog.addProtocol(input);

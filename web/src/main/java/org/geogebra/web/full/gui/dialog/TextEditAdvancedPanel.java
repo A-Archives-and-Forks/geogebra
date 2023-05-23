@@ -19,7 +19,6 @@ import org.geogebra.web.full.gui.dialog.text.TextPreviewPanelW;
 import org.geogebra.web.html5.gui.inputfield.SymbolTableW;
 import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.BorderStyle;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.user.client.ui.HTML;
@@ -134,7 +133,7 @@ public class TextEditAdvancedPanel extends TabLayoutPanel implements SetLabels {
 		geoPanel = new VerticalPanel();
 		geoPanel.setWidth("100%");
 		geoPanel.setHeight("100%");
-		geoPanel.getElement().getStyle().setBorderStyle(BorderStyle.NONE);
+		geoPanel.getElement().style.borderStyle = "none";
 	}
 
 	/**

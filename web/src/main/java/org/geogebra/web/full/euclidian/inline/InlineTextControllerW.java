@@ -28,11 +28,10 @@ import org.geogebra.web.richtext.Editor;
 import org.geogebra.web.richtext.EditorChangeListener;
 import org.geogebra.web.richtext.impl.CarotaEditor;
 import org.geogebra.web.richtext.impl.CarotaUtil;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 
 /**
  * Web implementation of the inline text controller.
@@ -42,12 +41,12 @@ public class InlineTextControllerW implements InlineTextController {
 	private static final String INVISIBLE = "invisible";
 	private final GeoInline geo;
 
-	private final Element parent;
+	private final HTMLElement parent;
 	private Editor editor;
-	private Style style;
+	private CSSStyleDeclaration style;
 
 	private int contentDefaultSize;
-	private Element textareaWrapper;
+	private HTMLElement textareaWrapper;
 
 	/**
 	 * @param geo
@@ -55,7 +54,7 @@ public class InlineTextControllerW implements InlineTextController {
 	 * @param parent
 	 *            parent div
 	 */
-	public InlineTextControllerW(GeoInline geo, EuclidianView view, Element parent) {
+	public InlineTextControllerW(GeoInline geo, EuclidianView view, HTMLElement parent) {
 		this.geo = geo;
 		this.parent = parent;
 		CarotaUtil.ensureInitialized(view.getFontSize());
@@ -141,9 +140,9 @@ public class InlineTextControllerW implements InlineTextController {
 		final Widget widget = editor.getWidget();
 		widget.addStyleName(INVISIBLE);
 		EventUtil.stopPointerEvents(widget.getElement(), btn -> btn <= 0);
-		style = widget.getElement().getStyle();
-		style.setPosition(Position.ABSOLUTE);
-		Element editorElement = editor.getWidget().getElement();
+		style = widget.getElement().style;
+		style.position = "absolute";
+		HTMLElement editorElement = editor.getWidget().getElement();
 		parent.appendChild(editorElement);
 		// re-parent the textarea to make sure focus stays in view (MOW-1330)
 		textareaWrapper = Dom.querySelectorForElement(editorElement, ".murokTextArea");
@@ -185,19 +184,19 @@ public class InlineTextControllerW implements InlineTextController {
 	}
 
 	private void updateVerticalAlign() {
-		style.setPaddingTop(getValignPadding(), Unit.PX);
+		style.setProperty("paddingTop", getValignPadding() + "px");
 	}
 
 	@Override
 	public void discard() {
-		editor.getWidget().getElement().removeFromParent();
-		textareaWrapper.removeFromParent();
+		editor.getWidget().getElement().remove();
+		textareaWrapper.remove();
 	}
 
 	@Override
 	public void setLocation(int x, int y) {
-		style.setLeft(x, Unit.PX);
-		style.setTop(y, Unit.PX);
+		style.left = x + "px";
+		style.top = y + "px";
 	}
 
 	@Override
@@ -216,21 +215,21 @@ public class InlineTextControllerW implements InlineTextController {
 
 	@Override
 	public void setWidth(int width) {
-		style.setWidth(width, Unit.PX);
+		style.setProperty("width", width + "px");
 		editor.setWidth(width);
 	}
 
 	@Override
 	public void setHeight(int height) {
-		style.setHeight(height, Unit.PX);
+		style.setProperty("height", height + "px");
 	}
 
 	@Override
 	public void toBackground() {
 		editor.deselect();
-		if (!editor.getWidget().getElement().hasClassName(INVISIBLE)) {
+		if (!editor.getWidget().getElement().classList.contains(INVISIBLE)) {
 			editor.getWidget().addStyleName(INVISIBLE);
-			textareaWrapper.removeFromParent(); // make sure no editable element on Android
+			textareaWrapper.remove(); // make sure no editable element on Android
 			geo.updateRepaint();
 			geo.unlockForMultiuser();
 		}
@@ -361,7 +360,7 @@ public class InlineTextControllerW implements InlineTextController {
 
 	@Override
 	public boolean isEditing() {
-		return !editor.getWidget().getElement().hasClassName(INVISIBLE);
+		return !editor.getWidget().getElement().classList.contains(INVISIBLE);
 	}
 
 }

@@ -30,7 +30,7 @@ public class FocusableWidget implements MayHaveFocus {
 			int maxGroupSize = AccessibilityGroup.ViewControlId.values().length;
 			int tabIndex = 1 + accessibilityGroup.ordinal() * maxGroupSize + subgroupOrdinal;
 			for (Widget btn: btns) {
-				btn.getElement().setTabIndex(tabIndex);
+				btn.getElement().tabIndex = tabIndex;
 			}
 		}
 	}
@@ -40,7 +40,7 @@ public class FocusableWidget implements MayHaveFocus {
 		Widget btn = btns[0];
 		if (btn.isVisible() && btn.isAttached()
 				&& !"true".equals(btn.getElement().getAttribute("aria-hidden"))
-				&& !btn.getElement().hasClassName("hideButton")) {
+				&& !btn.getElement().classList.contains("hideButton")) {
 			if (reverse) {
 				focus(btns[btns.length - 1]);
 			} else {
@@ -79,7 +79,7 @@ public class FocusableWidget implements MayHaveFocus {
 	private int findFocus() {
 		int index = 0;
 		for (Widget btn: btns) {
-			if (btn.getElement().isOrHasChild(Dom.getActiveElement())) {
+			if (btn.getElement().contains(Dom.getActiveElement())) {
 				return index;
 			}
 			index++;

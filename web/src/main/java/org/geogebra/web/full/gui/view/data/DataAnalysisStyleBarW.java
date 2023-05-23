@@ -46,7 +46,7 @@ public class DataAnalysisStyleBarW extends StyleBarW {
 		btnSwapXY = new ToggleButton(getSwapXYString(app.getLocalization()));
 		btnSwapXY.setSelected(!daView.getController().isLeftToRight());
 		btnSwapXY.addFastClickHandler(this::actionPerformed);
-		btnSwapXY.getElement().addClassName("daSwapXYButton");
+		btnSwapXY.getElement().classList.add("daSwapXYButton");
 
 		add(btnShowStatistics);
 		add(btnShowData);

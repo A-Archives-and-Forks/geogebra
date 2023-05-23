@@ -1,8 +1,9 @@
 package org.geogebra.web.full.main.embed;
 
 import org.geogebra.common.plugin.EventType;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Embedded element for a website or GeoGebra calculator.
@@ -22,7 +23,7 @@ public class EmbedElement {
 	/**
 	 * @return element of the widget
 	 */
-	protected Element getElement() {
+	protected HTMLElement getElement() {
 		return widget.getElement();
 	}
 

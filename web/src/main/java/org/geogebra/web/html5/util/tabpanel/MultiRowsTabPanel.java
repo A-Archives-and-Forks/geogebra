@@ -16,7 +16,8 @@ public class MultiRowsTabPanel extends Composite
 	DeckPanel deck = new DeckPanel();
 
 	public MultiRowsTabPanel() {
-		this("propertiesPanel propView_deckPanel");
+		this("propertiesPanel");
+		addStyleName("propView_deckPanel");
 	}
 
 	/**

@@ -16,9 +16,7 @@ import org.geogebra.web.html5.gui.util.ListItem;
 import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.gui.util.UnorderedList;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.DomEvent;
 import org.gwtproject.event.dom.client.HumanInputEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
@@ -38,6 +36,8 @@ import org.gwtproject.event.dom.client.TouchStartEvent;
 import org.gwtproject.event.dom.client.TouchStartHandler;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 public class ModeToggleMenuW extends ListItem
 		implements MouseDownHandler, MouseUpHandler, TouchStartHandler,
@@ -133,7 +133,7 @@ public class ModeToggleMenuW extends ListItem
 	 *            tab index
 	 */
 	public void setButtonTabIndex(int index) {
-		tbutton.getElement().setTabIndex(index);
+		tbutton.getElement().tabIndex = index;
 	}
 
 	/**
@@ -307,8 +307,8 @@ public class ModeToggleMenuW extends ListItem
 		for (int i = 0; i < modeToggleMenus.size(); i++) {
 			ModeToggleMenuW mtm = modeToggleMenus.get(i);
 			if (mtm != this) {
-				mtm.getToolbarButtonPanel().getElement().getStyle()
-						.setBorderWidth(1, Unit.PX);
+				mtm.getToolbarButtonPanel().getElement().style
+						.setProperty("borderWidth", "1px");
 				mtm.getToolbarButtonPanel().getElement()
 						.setAttribute("isSelected", "false");
 			}
@@ -316,8 +316,7 @@ public class ModeToggleMenuW extends ListItem
 		// Set border width explicitly to make sure browser actually does that
 		// (otherwise the thicker border applies on next browser event)
 		getToolbarButtonPanel().getElement().setAttribute("isSelected", "true");
-		getToolbarButtonPanel().getElement().getStyle().setBorderWidth(2,
-				Unit.PX);
+		getToolbarButtonPanel().getElement().style.setProperty("borderWidth", "2px");
 	}
 
 	/**
@@ -502,11 +501,11 @@ public class ModeToggleMenuW extends ListItem
 		setHovered(event.getRelativeElement(), false);
 	}
 
-	private static void setHovered(Element el, boolean hovered) {
+	private static void setHovered(HTMLElement el, boolean hovered) {
 		if (hovered) {
-			el.addClassName("hovered");
+			el.classList.add("hovered");
 		} else {
-			el.removeClassName("hovered");
+			el.classList.remove("hovered");
 		}
 	}
 
@@ -546,20 +545,19 @@ public class ModeToggleMenuW extends ListItem
 					this.getItemList().getWidget(0).getElement().focus();
 				}
 			} else {
-				Element nextSiblingElement = event.getRelativeElement()
-						.getNextSiblingElement();
+				elemental2.dom.Element nextSiblingElement = event.getRelativeElement()
+						.nextElementSibling;
 				if (nextSiblingElement != null) {
 					nextSiblingElement.focus();
 				} else {
-					event.getRelativeElement().getParentElement()
-							.getFirstChildElement().focus();
+					event.getRelativeElement().parentElement.firstElementChild.focus();
 				}
 			}
 			break;
 		case KeyCodes.KEY_UP:
 			if (event.getSource() instanceof ListItem) {
-				Element previousSiblingElement = event.getRelativeElement()
-						.getPreviousSiblingElement();
+				elemental2.dom.Element previousSiblingElement = event
+						.getRelativeElement().previousElementSibling;
 				if (previousSiblingElement != null) {
 					previousSiblingElement.focus();
 				} else {

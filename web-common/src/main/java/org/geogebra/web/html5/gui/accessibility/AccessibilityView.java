@@ -23,12 +23,12 @@ import org.geogebra.common.main.App;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.sliderPanel.SliderW;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 /**
  * View for representation of geo elements as hidden DOM controls
@@ -302,7 +302,7 @@ public class AccessibilityView implements View {
 	 * @param unit  unit
 	 */
 	public void updateValueText(SliderW range, double value, String unit) {
-		Element el = range.getElement();
+		HTMLElement el = range.getElement();
 		String label = el.getAttribute("aria-label");
 		el.removeAttribute("aria-label");
 		el.setAttribute("aria-valuetext",
@@ -332,5 +332,9 @@ public class AccessibilityView implements View {
 			geo.addAuralLabel(sb);
 		}
 		return sb.toString();
+	}
+
+	public FlowPanel getControls() {
+		return controls;
 	}
 }

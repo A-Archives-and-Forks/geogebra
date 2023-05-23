@@ -10,6 +10,7 @@ import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.GlobalHeader;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.RootPanel;
 
@@ -69,12 +70,12 @@ public class SuiteHeaderAppPicker extends StandardButton {
 	public void setIconAndLabel(String appCode) {
 		AppDescription description = AppDescription.get(appCode);
 		NoDragImage btnImage = new NoDragImage(description.getIcon(), 24, 24);
-		btnImage.getElement().setTabIndex(-1);
+		btnImage.getElement().tabIndex = -1;
 		String label = description.getNameKey();
 		Label btnLabel = new Label(appW.getLocalization().getMenu(label));
 		AriaHelper.setAttribute(btnLabel, "data-trans-key", label);
 
-		this.getElement().removeAllChildren();
+		DOM.removeAllChildren(this.getElement());
 		this.getElement().appendChild(btnImage.getElement());
 		this.getElement().appendChild(btnLabel.getElement());
 

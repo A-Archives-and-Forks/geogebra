@@ -502,7 +502,7 @@ public class StatisticsCalculatorW extends StatisticsCalculator
 
 	@Override
 	protected void updateResultText(String str) {
-		resultPane.getElement().setInnerHTML(str);
+		resultPane.getElement().innerHTML = str;
 	}
 
 	/**

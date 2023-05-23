@@ -1,9 +1,9 @@
 package org.geogebra.web.full.gui.util;
 
 import org.geogebra.gwtutil.JsConsumer;
-import org.gwtproject.dom.client.Element;
 
 import elemental2.dom.BaseRenderingContext2D;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -18,7 +18,7 @@ public class Domvas {
 	@JsProperty(name = "domvas")
 	public static native Domvas get();
 
-	public native void toImage(Element el,
+	public native void toImage(HTMLElement el,
 			JsConsumer<BaseRenderingContext2D.DrawImageImageUnionType> callback);
 
 }

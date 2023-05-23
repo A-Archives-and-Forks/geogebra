@@ -5,14 +5,15 @@ import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.geos.GeoPolygon;
 import org.geogebra.common.kernel.matrix.Coords;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.user.client.ui.FlowPanel;
+
+import elemental2.dom.CSSStyleDeclaration;
 
 /**
  * DOM widget representing mask, used to mask embedded elements
  */
 class MaskWidget extends FlowPanel {
-	private final Style style;
+	private final CSSStyleDeclaration style;
 	private EuclidianView view;
 	private GeoPolygon polygon;
 
@@ -25,7 +26,7 @@ class MaskWidget extends FlowPanel {
 		this.polygon = polygon;
 		this.view = view;
 		addStyleName("maskWidget");
-		style = getElement().getStyle();
+		style = getElement().style;
 		update();
 	}
 
@@ -36,7 +37,7 @@ class MaskWidget extends FlowPanel {
 
 	private void updateColor() {
 		GColor background = polygon.getObjectColor();
-		style.setBackgroundColor(background.toString());
+		style.backgroundColor = background.toString();
 	}
 
 	private void transformWithMatrix() {

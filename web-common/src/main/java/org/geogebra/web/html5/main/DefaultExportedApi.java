@@ -3,11 +3,11 @@ package org.geogebra.web.html5.main;
 import org.geogebra.common.gui.view.table.InvalidValuesException;
 import org.geogebra.web.html5.util.JsRunnable;
 import org.geogebra.web.html5.util.StringConsumer;
-import org.gwtproject.dom.client.Element;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
@@ -894,7 +894,7 @@ public class DefaultExportedApi implements ExportedApi {
 		return getGgbAPI().getEmbeddedCalculators(Js.isTruthy(includeGraspableMath));
 	}
 
-	public Element getFrame() {
+	public HTMLElement getFrame() {
 		return getGgbAPI().getFrame();
 	}
 

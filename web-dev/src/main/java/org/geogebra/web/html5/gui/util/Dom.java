@@ -2,15 +2,13 @@ package org.geogebra.web.html5.gui.util;
 
 import org.geogebra.common.util.debug.Log;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.UIObject;
 
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
+import elemental2.dom.EventTarget;
 import elemental2.dom.HTMLCollection;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
@@ -50,7 +48,7 @@ public final class Dom {
 	 *            selector
 	 * @return first Element found by selector className
 	 */
-	public static Element querySelectorForElement(Object elem,
+	public static HTMLElement querySelectorForElement(Object elem,
 			String selector) {
 		elemental2.dom.Element parent = Js.uncheckedCast(elem);
 		return Js.uncheckedCast(parent.querySelector(selector));
@@ -64,10 +62,9 @@ public final class Dom {
 	 * @param val
 	 *            property value
 	 */
-	public static void setImportant(Style style, String property,
+	public static void setImportant(CSSStyleDeclaration style, String property,
 			String val) {
-		CSSStyleDeclaration css = Js.uncheckedCast(style);
-		css.setProperty(property, val, "important");
+		style.setProperty(property, val, "important");
 	}
 
 	/**
@@ -78,10 +75,10 @@ public final class Dom {
 	 *            the element to be tested
 	 * @return true iff event targets the element or its children
 	 */
-	public static boolean eventTargetsElement(NativeEvent event, Element element) {
-		EventTarget target = event.getEventTarget();
-		if (Element.is(target) && element != null) {
-			return element.isOrHasChild(Element.as(target));
+	public static boolean eventTargetsElement(elemental2.dom.Event event, HTMLElement element) {
+		EventTarget target = event.target;
+		if (DOM.isElement(target) && element != null) {
+			return element.contains(Js.uncheckedCast(target));
 		}
 		return false;
 	}
@@ -96,9 +93,9 @@ public final class Dom {
 	 */
 	public static void toggleClass(UIObject ui, String className, boolean add) {
 		if (add) {
-			ui.getElement().addClassName(className);
+			ui.getElement().classList.add(className);
 		} else {
-			ui.getElement().removeClassName(className);
+			ui.getElement().classList.remove(className);
 		}
 	}
 
@@ -127,22 +124,22 @@ public final class Dom {
 	 * @param add
 	 *            whether to add or remove
 	 */
-	public static void toggleClass(Element elem, String classTrue,
+	public static void toggleClass(HTMLElement elem, String classTrue,
 			String classFalse, boolean add) {
 		if (add) {
-			elem.addClassName(classTrue);
-			elem.removeClassName(classFalse);
+			elem.classList.add(classTrue);
+			elem.classList.remove(classFalse);
 		} else {
-			elem.removeClassName(classTrue);
-			elem.addClassName(classFalse);
+			elem.classList.remove(classTrue);
+			elem.classList.add(classFalse);
 		}
 	}
 
 	/**
 	 * @return active element
 	 */
-	public static Element getActiveElement() {
-		return Js.uncheckedCast(DomGlobal.document.activeElement);
+	public static elemental2.dom.Element getActiveElement() {
+		return DomGlobal.document.activeElement;
 	}
 
 	/**
@@ -151,9 +148,8 @@ public final class Dom {
 	 * @param name event name
 	 * @param listener listener
 	 */
-	public static void addEventListener(Element element, String name, EventListener listener) {
-		elemental2.dom.Element el = Js.uncheckedCast(element);
-		el.addEventListener(name, listener);
+	public static void addEventListener(elemental2.dom.Element element, String name, EventListener listener) {
+		element.addEventListener(name, listener);
 	}
 
 	/**
@@ -178,8 +174,8 @@ public final class Dom {
 	/**
 	 * @return create button with default type (not submitting)
 	 */
-	public static Element createDefaultButton() {
-		Element btn = DOM.createElement("button");
+	public static HTMLElement createDefaultButton() {
+		HTMLElement btn = DOM.createElement("button");
 		// avoid default "submit" behavior when GeoGebra is in a form
 		btn.setAttribute("type", "button");
 		return btn;
@@ -193,5 +189,9 @@ public final class Dom {
 		HTMLElement div = Js.uncheckedCast(DomGlobal.document.createElement("div"));
 		div.className = cls;
 		return div;
+	}
+
+	public static CSSStyleDeclaration style(HTMLElement element) {
+		return element.style;
 	}
 }

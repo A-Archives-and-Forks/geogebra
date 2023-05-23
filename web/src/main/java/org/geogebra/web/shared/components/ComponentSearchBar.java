@@ -73,7 +73,7 @@ public class ComponentSearchBar extends FlowPanel {
 		Dom.addEventListener(clearButton.getElement(), "pointerdown", (event) -> {
 			inputTextField.getTextComponent().setText("");
 			clearButton.setVisible(false);
-			if (!getElement().isOrHasChild(Dom.getActiveElement())) {
+			if (!getElement().contains(Dom.getActiveElement())) {
 				startSearch();
 			} else {
 				event.preventDefault(); // do not lose focus

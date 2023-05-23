@@ -433,11 +433,11 @@ class NavigationRail extends FlowPanel {
 	}
 
 	private void clearWidth() {
-		getElement().getStyle().clearWidth();
+		getElement().style.width = null;
 	}
 
 	private void clearHeight() {
-		getElement().getStyle().clearHeight();
+		getElement().style.height = null;
 	}
 
 	/**
@@ -465,7 +465,7 @@ class NavigationRail extends FlowPanel {
 	 */
 	public void onLandscapeAnimationEnd() {
 		if (!isOpen()) {
-			getElement().getStyle().clearWidth();
+			getElement().style.width = null;
 			toolbarPanel.updateUndoRedoPosition();
 		} else {
 			toolbarPanel.resizeTabs();

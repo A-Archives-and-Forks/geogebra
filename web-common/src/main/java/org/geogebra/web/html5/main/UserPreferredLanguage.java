@@ -67,7 +67,7 @@ public class UserPreferredLanguage {
 	public static void translate(App app, String selector) {
 		Element elem = DomGlobal.document.querySelector(selector);
 		// childNodes can be null in GwtMockito ...
-		if (Js.isTruthy(elem) && elem.childNodes != null) {
+		if (elem != null && elem.childNodes != null) {
 			translate(app, elem);
 		}
 	}

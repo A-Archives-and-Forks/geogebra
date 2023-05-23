@@ -42,9 +42,10 @@ import org.geogebra.web.html5.gui.util.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.CopyPasteW;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.resources.client.ResourcePrototype;
 import org.gwtproject.user.client.Command;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * @author gabor
@@ -862,7 +863,7 @@ public class ContextMenuGeoElementW extends ContextMenuGeoElement
 	 * @param y
 	 *            coord
 	 */
-	public void showScaled(Element c, int x, int y) {
+	public void showScaled(HTMLElement c, int x, int y) {
 		wrappedPopup.show(c, x, y);
 		focusDeferred();
 	}

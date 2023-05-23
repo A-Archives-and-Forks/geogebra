@@ -56,7 +56,7 @@ public final class WarningErrorHandler implements ErrorLogger {
 			helpPanel.focusCommand(
 					app2.getLocalization().getCommand(command));
 			input.getHelpToggle().asWidget().getElement()
-					.setTitle(app2.getLocalization().getInvalidInputError());
+					.title = app2.getLocalization().getInvalidInputError();
 		}
 	}
 

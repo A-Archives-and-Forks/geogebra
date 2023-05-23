@@ -1,9 +1,9 @@
 package org.geogebra.web.html5.multiuser;
 
 import org.geogebra.common.awt.GColor;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.Label;
+
+import elemental2.dom.CSSStyleDeclaration;
 
 public class TooltipChip extends Label {
 	public static final int LEFT_MARGIN = 8;
@@ -16,12 +16,12 @@ public class TooltipChip extends Label {
 	public TooltipChip(String user, GColor color) {
 		addStyleName("tooltipChip");
 		setText(user);
-		Style style = getElement().getStyle();
-		style.setBackgroundColor(color.toString());
+		CSSStyleDeclaration style = getElement().style;
+		style.backgroundColor = color.toString();
 	}
 
 	public void hide() {
-		getElement().addClassName("invisible");
+		getElement().classList.add("invisible");
 	}
 
 	/**
@@ -30,9 +30,9 @@ public class TooltipChip extends Label {
 	 * @param y y pixel coordinate
 	 */
 	public void show(double x, double y) {
-		getElement().removeClassName("invisible");
-		Style style = getElement().getStyle();
-		style.setLeft(x + LEFT_MARGIN, Unit.PX);
-		style.setTop(y - (getOffsetHeight() / 2d), Unit.PX);
+		getElement().classList.remove("invisible");
+		CSSStyleDeclaration style = getElement().style;
+		style.left = (x + LEFT_MARGIN) + "px";
+		style.top = (y - (getOffsetHeight() / 2d)) + "px";
 	}
 }

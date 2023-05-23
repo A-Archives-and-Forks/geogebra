@@ -51,7 +51,7 @@ public class AlgebraViewScroller {
 
 		int splitterHeight = panel.getOffsetHeight();
 
-		int absoluteItemTop = item.getElement().getOffsetTop();
+		int absoluteItemTop = item.getElement().offsetTop;
 
 		int itemTop = absoluteItemTop - savedPosition;
 

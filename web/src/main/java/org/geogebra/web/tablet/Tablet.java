@@ -7,10 +7,11 @@ import org.geogebra.web.html5.bridge.RenderGgbElement;
 import org.geogebra.web.html5.util.GeoGebraElement;
 import org.geogebra.web.html5.util.SuperDevUncaughtExceptionHandler;
 import org.geogebra.web.tablet.main.TabletDevice;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.RootPanel;
 
 import com.google.gwt.core.client.EntryPoint;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -58,7 +59,7 @@ public class Tablet implements EntryPoint {
 	 * @param clb
 	 *            rendering finished callback
 	 */
-	public void renderArticleElement(final Element el,
+	public void renderArticleElement(final HTMLElement el,
 			JsConsumer<Object> clb) {
 		GeoGebraFrameFull.renderArticleElement(el,
 				new AppletFactory3D(), new TabletLookAndFeel(), clb);

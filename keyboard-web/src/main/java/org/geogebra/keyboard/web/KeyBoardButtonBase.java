@@ -3,15 +3,16 @@ package org.geogebra.keyboard.web;
 import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.web.html5.gui.util.ClickEndHandler;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.FontStyle;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.MouseOutEvent;
 import org.gwtproject.event.dom.client.MouseOutHandler;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.SimplePanel;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 /**
  * A button of the {@link TabbedKeyboard}.
@@ -82,8 +83,8 @@ public class KeyBoardButtonBase extends SimplePanel implements MouseOutHandler {
 		this(caption, caption, handler);
 	}
 
-	private static void addWave(Element element) {
-		element.addClassName("ripple");
+	private static void addWave(HTMLElement element) {
+		element.classList.add("ripple");
 	}
 
 	/**
@@ -144,21 +145,21 @@ public class KeyBoardButtonBase extends SimplePanel implements MouseOutHandler {
 		if (caption.length() > 1 && caption.indexOf('^') > -1) {
 			int index = caption.indexOf('^');
 			this.label.setText(caption.substring(0, index));
-			Element sup = Document.get().createElement("sup");
-			sup.appendChild(Document.get().createTextNode(
+			HTMLElement sup = DOM.createElement("sup");
+			sup.appendChild(DomGlobal.document.createTextNode(
 			        caption.substring(index + 1)));
-			sup.getStyle().setFontSize(14, Unit.PX);
-			sup.getStyle().setFontStyle(FontStyle.NORMAL);
+			sup.style.fontSize = CSSProperties.FontSizeUnionType.of("14px");
+			sup.style.fontStyle = "normal";
 			this.label.getElement().appendChild(sup);
 			addStyleName("sup");
 		} else if (caption.length() > 1 && caption.indexOf('_') > -1) {
 			int index = caption.indexOf('_');
 			this.label.setText(caption.substring(0, index));
-			Element sub = Document.get().createElement("sub");
-			sub.appendChild(Document.get().createTextNode(
+			HTMLElement sub = DOM.createElement("sub");
+			sub.appendChild(DomGlobal.document.createTextNode(
 			        caption.substring(index + 1)));
-			sub.getStyle().setFontSize(14, Unit.PX);
-			sub.getStyle().setFontStyle(FontStyle.NORMAL);
+			sub.style.fontSize = CSSProperties.FontSizeUnionType.of("14px");
+			sub.style.fontStyle = "normal";
 			this.label.getElement().appendChild(sub);
 			addStyleName("sub");
 		} else {

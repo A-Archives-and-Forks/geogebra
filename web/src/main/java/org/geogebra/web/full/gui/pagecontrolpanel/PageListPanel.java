@@ -342,9 +342,9 @@ public class PageListPanel
 	@Override
 	public void updateContentPanelHeight() {
 		int count = pageController.getCardCount();
-		contentPanel.getElement().getStyle().setProperty("minHeight",
+		contentPanel.getElement().style.setProperty("minHeight",
 				PagePreviewCard.computeTop(count) + "px");
-		contentPanel.getElement().getStyle().setProperty("maxHeight",
+		contentPanel.getElement().style.setProperty("maxHeight",
 				PagePreviewCard.computeTop(count) + "px");
 	}
 }

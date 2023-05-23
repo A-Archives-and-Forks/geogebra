@@ -16,8 +16,6 @@ import org.geogebra.web.full.gui.view.algebra.RadioTreeItem;
 import org.geogebra.web.html5.gui.inputfield.AutoCompleteW;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.Float;
-import org.gwtproject.dom.style.shared.TextAlign;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.HasVerticalAlignment;
 import org.gwtproject.user.client.ui.HorizontalPanel;
@@ -78,7 +76,7 @@ public class InputBarHelpPanelW extends FlowPanel implements SetLabels, BooleanR
 
 		// button panel
 		FlowPanel pnlButton = new FlowPanel();
-		pnlButton.getElement().getStyle().setFloat(Float.RIGHT);
+		pnlButton.getElement().style.cssFloat = "right";
 
 		// create help button
 		btnOnlineHelp = new StandardButton(app.getLocalization().getMenu("ShowOnlineHelp"));
@@ -96,7 +94,7 @@ public class InputBarHelpPanelW extends FlowPanel implements SetLabels, BooleanR
 
 		// create detail title panel
 		lblSyntax = new InlineLabel();
-		lblSyntax.getElement().getStyle().setTextAlign(TextAlign.LEFT);
+		lblSyntax.getElement().style.textAlign= "left";
 
 		HorizontalPanel detailTitlePanel = new HorizontalPanel();
 		detailTitlePanel
@@ -193,7 +191,7 @@ public class InputBarHelpPanelW extends FlowPanel implements SetLabels, BooleanR
 			return null;
 		}
 		return indexTree.getSelectedItem().getWidget().getElement()
-		        .getInnerText();
+		        .textContent;
 	}
 
 	@Override
@@ -500,7 +498,7 @@ public class InputBarHelpPanelW extends FlowPanel implements SetLabels, BooleanR
 				continue;
 			}
 			for (int j = 0; j < group.getChildCount(); j++) {
-				if (group.getChild(j).getElement().getInnerText()
+				if (group.getChild(j).getElement().textContent
 						.equalsIgnoreCase(currentCommand)) {
 					group.setState(true);
 					indexTree.setSelectedItem(group.getChild(j), false);

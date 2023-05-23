@@ -15,7 +15,6 @@ import org.geogebra.common.kernel.geos.GeoEmbed;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.web.html5.util.EventUtil;
 import org.geogebra.web.html5.util.TestHarness;
-import org.gwtproject.dom.style.shared.Unit;
 
 /**
  * Dynamically positioned stylebar
@@ -130,7 +129,7 @@ public class DynamicStyleBar extends EuclidianStyleBarW {
 			return;
 		}
 
-		this.getElement().getStyle().setTop(-10000, Unit.PX);
+		this.getElement().style.top = "-10000px";
 
 		if (app.getMode() == EuclidianConstants.MODE_SELECT) {
 			GRectangle selectionRectangle = app.getActiveEuclidianView().getSelectionRectangle();
@@ -199,8 +198,8 @@ public class DynamicStyleBar extends EuclidianStyleBarW {
 		if (newPos == null) {
 			return;
 		}
-		this.getElement().getStyle().setLeft(newPos.x, Unit.PX);
-		this.getElement().getStyle().setTop(newPos.y, Unit.PX);
+		this.getElement().style.left = newPos.x + "px";
+		this.getElement().style.top = newPos.y + "px";
 	}
 
 	@Override

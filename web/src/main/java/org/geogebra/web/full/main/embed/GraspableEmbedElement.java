@@ -2,9 +2,9 @@ package org.geogebra.web.full.main.embed;
 
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.plugin.EventType;
+import org.geogebra.web.full.gui.util.Resizer;
 import org.geogebra.web.full.main.EmbedManagerW;
 import org.geogebra.web.html5.Browser;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.Widget;
 
 import jsinterop.base.Js;
@@ -81,10 +81,10 @@ public class GraspableEmbedElement extends EmbedElement {
 
 	@Override
 	public void setSize(int contentWidth, int contentHeight) {
-		getElement().getStyle().setWidth(contentWidth - 2, Unit.PX);
-		getElement().getStyle().setHeight(contentHeight - 2, Unit.PX);
+		Resizer.setPixelWidth(getElement(), contentWidth - 2);
+		Resizer.setPixelHeight(getElement(), contentHeight - 2);
 		Browser.scale(getElement(),
-				getGreatParent().getElement().getOffsetWidth()
+				getGreatParent().getElement().offsetWidth
 						/ (double) contentWidth,
 				0, 0);
 	}

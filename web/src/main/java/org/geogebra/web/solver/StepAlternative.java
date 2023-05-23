@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.geogebra.common.kernel.stepbystep.solution.SolutionStep;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
-import org.gwtproject.dom.style.shared.Display;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.VerticalPanel;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 public class StepAlternative extends VerticalPanel {
 
@@ -46,10 +48,9 @@ public class StepAlternative extends VerticalPanel {
         for (int i = 0; i < getWidgetCount(); i++) {
             boolean visible = !getWidget(i).isVisible();
             getWidget(i).setVisible(visible);
-            getWidget(i).getElement().getParentElement()
-                    .getParentElement().getStyle()
-                    .setDisplay(visible ? Display.BLOCK
-                            : Display.NONE);
+            HTMLElement gp = Js.uncheckedCast(getWidget(i).getElement().parentElement.parentElement);
+            gp.style.display = visible ? "block"
+                            : "none";
         }
 
         if (needsRender) {

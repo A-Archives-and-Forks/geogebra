@@ -1,11 +1,12 @@
 package org.geogebra.web.html5.gui.util;
 
 import org.geogebra.common.util.StringUtil;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.LabelElement;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.UIObject;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Label for form elements
@@ -20,7 +21,7 @@ public class FormLabel extends FlowPanel {
 		/**
 		 * @return wrapped input element
 		 */
-		Element getInputElement();
+		HTMLElement getInputElement();
 	}
 
 	/**
@@ -29,7 +30,7 @@ public class FormLabel extends FlowPanel {
 	 */
 	public FormLabel(String string) {
 		this();
-		getElement().setInnerText(string);
+		getElement().textContent = string;
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class FormLabel extends FlowPanel {
 	 *            (plain) text content
 	 */
 	public void setText(String string) {
-		getElement().setInnerText(string);
+		getElement().textContent = string;
 	}
 
 	/**
@@ -54,14 +55,14 @@ public class FormLabel extends FlowPanel {
 	 * @return this
 	 */
 	public FormLabel setFor(UIObject ui) {
-		Element target = ui.getElement();
+		HTMLElement target = ui.getElement();
 		if (ui instanceof HasInputElement) {
 			target = ((HasInputElement) ui).getInputElement();
 		}
-		if (StringUtil.empty(target.getId())) {
-			target.setId(DOM.createUniqueId());
+		if (StringUtil.empty(target.id)) {
+			target.id = DOM.createUniqueId();
 		}
-		getElement().setAttribute("for", target.getId());
+		getElement().setAttribute("for", target.id);
 		return this;
 	}
 }

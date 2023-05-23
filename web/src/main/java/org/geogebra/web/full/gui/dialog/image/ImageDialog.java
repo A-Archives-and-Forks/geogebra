@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.geogebra.web.full.css.MaterialDesignResources;
+import org.geogebra.web.full.gui.util.Resizer;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
@@ -15,7 +16,6 @@ import org.geogebra.web.shared.components.infoError.InfoErrorData;
 import org.geogebra.web.shared.components.tab.ComponentTab;
 import org.geogebra.web.shared.components.tab.TabData;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FileUpload;
 import org.gwtproject.user.client.ui.FlowPanel;
 
@@ -141,8 +141,8 @@ public class ImageDialog extends ComponentDialog implements WebcamDialogInterfac
 		super.onResize();
 		tab.onResize();
 		if (!cameraPanel.getStyleName().contains("error")) {
-			cameraPanel.getElement().getStyle().setHeight(webcamInputPanel.getOffsetHeight() + 28,
-					Unit.PX);
+			Resizer.setPixelHeight(cameraPanel.getElement(),
+					webcamInputPanel.getOffsetHeight() + 28);
 		}
 	}
 }

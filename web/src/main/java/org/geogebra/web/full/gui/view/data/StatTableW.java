@@ -1,12 +1,14 @@
 package org.geogebra.web.full.gui.view.data;
 
 import org.geogebra.common.util.debug.Log;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Grid;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * @author gabor
@@ -145,7 +147,7 @@ public class StatTableW extends FlowPanel {
 				for (int i = 0; i < columnNames.length; i++) {
 					this.setWidget(0, i, new Label(columnNames[i]));
 					this.getCellFormatter().getElement(0, i)
-							.addClassName("headercell");
+							.classList.add("headercell");
 				}
 				firstRow = 1;
 			}
@@ -159,17 +161,17 @@ public class StatTableW extends FlowPanel {
 		 */
 		public void handleSelection(ClickEvent event) {
 			Cell c = this.getCellForEvent(event);
-			Element parentRow = c.getElement().getParentElement();
-			if (c.getElement().hasClassName("headercell")) {
-				parentRow.removeClassName("selected");
+			HTMLElement parentRow = Js.uncheckedCast(c.getElement().parentElement);
+			if (c.getElement().classList.contains("headercell")) {
+				parentRow.classList.remove("selected");
 				return;
 			}
 
 			if (!event.isShiftKeyDown()) {
 				toggleSelection(parentRow);
 				if (isSelected(parentRow)) {
-					if (!(isSelected(parentRow.getPreviousSiblingElement())
-							|| isSelected(parentRow.getNextSiblingElement()))) {
+					if (!(isSelected(Js.uncheckedCast(parentRow.previousElementSibling))
+							|| isSelected(Js.uncheckedCast(parentRow.nextElementSibling)))) {
 						clearSelection(c);
 					}
 				} else {
@@ -180,22 +182,22 @@ public class StatTableW extends FlowPanel {
 			}
 		}
 
-		private static boolean isSelected(Element row) {
-			return row != null && row.hasClassName("selected");
+		private static boolean isSelected(HTMLElement row) {
+			return row != null && row.classList.contains("selected");
 		}
 
-		private static void toggleSelection(Element parentRow) {
-			if (parentRow.hasClassName("selected")) {
-				parentRow.removeClassName("selected");
+		private static void toggleSelection(HTMLElement parentRow) {
+			if (parentRow.classList.contains("selected")) {
+				parentRow.classList.remove("selected");
 			} else {
-				parentRow.addClassName("selected");
+				parentRow.classList.add("selected");
 			}
 		}
 
 		private void clearSelectionFrom(Cell c) {
 			if (c != null) {
 				for (int i = c.getRowIndex(); i < this.getRowCount(); i++) {
-					getRowFormatter().getElement(i).removeClassName("selected");
+					getRowFormatter().getElement(i).classList.remove("selected");
 				}
 			}
 		}
@@ -205,10 +207,10 @@ public class StatTableW extends FlowPanel {
 				if (c != null) {
 					if (c.getRowIndex() != i) {
 						getRowFormatter().getElement(i)
-								.removeClassName("selected");
+								.classList.remove("selected");
 					}
 				} else {
-					getRowFormatter().getElement(i).removeClassName("selected");
+					getRowFormatter().getElement(i).classList.remove("selected");
 				}
 			}
 		}
@@ -222,7 +224,7 @@ public class StatTableW extends FlowPanel {
 			int[] result;
 			for (int i = firstRow; i < this.getRowCount(); i++) {
 				if (this.getRowFormatter().getElement(i)
-						.hasClassName("selected")) {
+						.classList.contains("selected")) {
 					if (end == 0) {
 						start = i;
 					}
@@ -241,7 +243,7 @@ public class StatTableW extends FlowPanel {
 			int t = to > -1 ? to : this.getRowCount();
 			for (int i = firstRow; i < this.getRowCount(); i++) {
 				if (this.getRowFormatter().getElement(i)
-						.hasClassName("selected") && i <= t) {
+						.classList.contains("selected") && i <= t) {
 					return i;
 				}
 			}
@@ -266,7 +268,7 @@ public class StatTableW extends FlowPanel {
 
 		private void selectCells(int from, int to, RowFormatter rowFormatter) {
 			for (int i = from; i <= to; i++) {
-				rowFormatter.getElement(i).addClassName("selected");
+				rowFormatter.getElement(i).classList.add("selected");
 			}
 		}
 
@@ -285,7 +287,7 @@ public class StatTableW extends FlowPanel {
 				if (!toggle && !extend) {
 					clearSelection(null);
 					this.getRowFormatter().getElement(r)
-							.addClassName("selected");
+							.classList.add("selected");
 				} else if (!toggle && extend) {
 					start = getFirstSelectedRow(r);
 					if (start > -1) {

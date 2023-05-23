@@ -7,8 +7,8 @@ import org.geogebra.common.awt.GDimension;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.StyleInjector;
-import org.gwtproject.dom.client.Element;
 
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLStyleElement;
 
 public class FullScreenState {
@@ -32,13 +32,13 @@ public class FullScreenState {
 	 * @param container
 	 *            to reset.
 	 */
-	protected void resetStyleAfterFullscreen(Element container, AppW app) {
+	protected void resetStyleAfterFullscreen(HTMLElement container, AppW app) {
 		if (container != null) {
 			for (Map.Entry<String, String> e : containerProps.entrySet()) {
 				if (!StringUtil.empty(e.getValue())) {
-					container.getStyle().setProperty(e.getKey(), e.getValue());
+					container.style.setProperty(e.getKey(), e.getValue());
 				} else {
-					container.getStyle().clearProperty(e.getKey());
+					container.style.setProperty(e.getKey(), null);
 				}
 			}
 		}
@@ -55,16 +55,16 @@ public class FullScreenState {
 	 * @param value
 	 *            value of property
 	 */
-	public void setContainerProp(Element container, String propName,
+	public void setContainerProp(HTMLElement container, String propName,
 			String value) {
 		containerProps.put(propName,
-				container.getStyle().getProperty(propName));
-		container.getStyle().setProperty(propName, value);
+				container.style.getPropertyValue(propName));
+		container.style.setProperty(propName, value);
 	}
 
-	protected void store(Element container, AppW app, double scale) {
-		String containerPositionBefore = container.getStyle()
-				.getPosition();
+	protected void store(HTMLElement container, AppW app, double scale) {
+		String containerPositionBefore = container.style
+				.position;
 		if (StringUtil.empty(containerPositionBefore)) {
 			containerPositionBefore = "static";
 		}
@@ -82,7 +82,7 @@ public class FullScreenState {
 		if (emulated) {
 			overrideParentTransform();
 			setContainerProp(container, "left", "0px");
-			container.addClassName("GeoGebraFullscreenContainer");
+			container.classList.add("GeoGebraFullscreenContainer");
 		}
 	}
 

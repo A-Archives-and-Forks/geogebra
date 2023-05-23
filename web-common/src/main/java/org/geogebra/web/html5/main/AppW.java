@@ -153,9 +153,8 @@ import org.geogebra.web.html5.util.debug.LoggerW;
 import org.geogebra.web.html5.util.keyboard.KeyboardManagerInterface;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.timer.client.Timer;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.RequiresResize;
 import org.gwtproject.user.client.ui.RootPanel;
 import org.gwtproject.user.client.ui.Widget;
@@ -165,10 +164,13 @@ import com.google.gwt.core.client.RunAsyncCallback;
 
 import elemental2.core.ArrayBuffer;
 import elemental2.core.Uint8Array;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventTarget;
 import elemental2.dom.File;
 import elemental2.dom.FileReader;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.URL;
 import jsinterop.base.Js;
@@ -317,14 +319,14 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		Log.debug("RESIZE: Start");
 		if (!StringUtil
 				.empty(getAppletParameters().getParamScaleContainerClass())) {
-			Element parent = getParent(
+			HTMLElement parent = getParent(
 					getAppletParameters().getParamScaleContainerClass());
 			if (parent != null) {
-				scaleTo(parent.getOffsetWidth(),
+				scaleTo(parent.offsetWidth,
 						Math.max(
 								getAppletParameters().getParamAutoHeight()
-								? parent.getOffsetWidth()
-								: 0, parent.getOffsetHeight()));
+								? parent.offsetWidth
+								: 0, parent.offsetHeight));
 				if (parent != this.getScalerParent()) {
 					resizeContainer();
 				}
@@ -348,19 +350,19 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 	private void resizeContainer() {
 		if (getScalerParent() != null) {
-			Style style = getScalerParent().getStyle();
+			CSSStyleDeclaration style = getScalerParent().style;
 			double scale = geoGebraElement.getScaleX();
 			// check for zero size needed if applet is not visible in DOM
 			if (getWidth() > 0 && getHeight() > 0) {
-				style.setWidth(getWidth() * scale, Unit.PX);
-				style.setHeight(getHeight() * scale, Unit.PX);
+				style.width = CSSProperties.WidthUnionType.of(getWidth() * scale + "px");
+				style.height = CSSProperties.HeightUnionType.of(getHeight() * scale + "px");
 			}
 		}
 	}
 
-	private Element getScalerParent() {
+	private HTMLElement getScalerParent() {
 		return geoGebraElement.getParentElement() == null ? null
-				: geoGebraElement.getParentElement().getParentElement();
+				: Js.uncheckedCast(geoGebraElement.getParentElement().parentElement);
 	}
 
 	private void scaleTo(int width, int height) {
@@ -384,13 +386,13 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		deferredForceResize();
 	}
 
-	private Element getParent(String containerClass) {
-		Element current = geoGebraElement.getParentElement();
+	private HTMLElement getParent(String containerClass) {
+		HTMLElement current = geoGebraElement.getParentElement();
 		while (current != null) {
-			if (current.hasClassName(containerClass)) {
+			if (current.classList.contains(containerClass)) {
 				return current;
 			}
-			current = current.getParentElement();
+			current = Js.uncheckedCast(current.parentElement);
 		}
 		return null;
 	}
@@ -593,7 +595,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 		notifyLocalizationLoaded();
 		// importatnt for accessibility
-		getFrameElement().setLang(lang == null ? "" : lang.replace("_", "-"));
+		getFrameElement().lang = lang == null ? "" : lang.replace("_", "-");
 	}
 
 	/**
@@ -1743,7 +1745,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	/**
 	 * @return element of the AppFrame / GeoGebraFrame
 	 */
-	public abstract Element getFrameElement();
+	public abstract HTMLElement getFrameElement();
 
 	@Override
 	public void setWaitCursor() {
@@ -2262,7 +2264,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 * @param el
 	 *            element that can be cliked without closingpopups
 	 */
-	public void addAsAutoHidePartnerForPopups(Element el) {
+	public void addAsAutoHidePartnerForPopups(HTMLElement el) {
 		for (HasHide popup : popups) {
 			if (popup instanceof GPopupPanel
 					&& ((GPopupPanel) popup).isModal()) {
@@ -2575,7 +2577,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		if (getFrameElement() == null) {
 			return 0;
 		}
-		return getFrameElement().getOffsetWidth();
+		return getFrameElement().offsetWidth;
 	}
 
 	@Override
@@ -2583,7 +2585,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		if (getFrameElement() == null) {
 			return 0;
 		}
-		return getFrameElement().getOffsetHeight();
+		return getFrameElement().offsetHeight;
 	}
 
 	/**
@@ -2808,14 +2810,14 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 * @return left within the page
 	 */
 	public double getAbsLeft() {
-		return this.getFrameElement().getAbsoluteLeft();
+		return DOM.getAbsoluteLeft(this.getFrameElement());
 	}
 
 	/**
 	 * @return top within the page
 	 */
 	public double getAbsTop() {
-		return this.getFrameElement().getAbsoluteTop();
+		return DOM.getAbsoluteTop(this.getFrameElement());
 	}
 
 	/**
@@ -3592,7 +3594,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 */
 	public void moveFocusToLastWidget() {
 		if (lastFocusableWidget != null) {
-			lastFocusableWidget.getElement().setInnerText("");
+			lastFocusableWidget.getElement().textContent = "";
 			lastFocusableWidget.getElement().focus();
 		}
 	}

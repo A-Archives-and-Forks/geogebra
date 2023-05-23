@@ -6,8 +6,6 @@ import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.Panel;
 import org.gwtproject.user.client.ui.RequiresResize;
@@ -40,13 +38,13 @@ public class EuclidianSimplePanelW extends AbsolutePanel implements
 
 	private void loadComponent() {
 		eview1 = Canvas.createIfSupported();
-		eview1.getElement().getStyle().setPosition(Position.RELATIVE);
-		eview1.getElement().getStyle().setZIndex(0);
+		eview1.getElement().style.position = "relative";
+		eview1.getElement().style.setProperty("zIndex", "0");
 		eview1.setWidth("1px");
 		eview1.setHeight("1px");
 		eview1.setCoordinateSpaceHeight(1);
 		eview1.setCoordinateSpaceWidth(1);
-		getElement().getStyle().setOverflow(Overflow.VISIBLE);
+		getElement().style.overflow = "visible";
 		add(eview1);
 
 	}

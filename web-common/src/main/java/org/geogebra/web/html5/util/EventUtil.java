@@ -3,10 +3,14 @@ package org.geogebra.web.html5.util;
 import org.apache.commons.collections15.Predicate;
 import org.geogebra.gwtutil.NativePointerEvent;
 import org.geogebra.web.html5.gui.util.Dom;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.DomEvent;
 
+import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
+import elemental2.dom.KeyboardEventInit;
+import elemental2.dom.MouseEvent;
+import elemental2.dom.TouchEvent;
 import jsinterop.base.Js;
 
 /**
@@ -32,8 +36,8 @@ public final class EventUtil {
 	 *            the event to be checked
 	 * @return True if the event is a touch event.
 	 */
-	public static boolean isTouchEvent(NativeEvent event) {
-		return event.getType().contains("touch");
+	public static boolean isTouchEvent(Event event) {
+		return event.type.contains("touch");
 	}
 
 	/**
@@ -42,11 +46,11 @@ public final class EventUtil {
 	 * @return The x coordinate of the event (in case of touch the coordinate is
 	 *         taken from the first touch).
 	 */
-	public static int getTouchOrClickClientX(NativeEvent event) {
+	public static int getTouchOrClickClientX(Event event) {
 		if (isTouchEvent(event)) {
-			return event.getChangedTouches().get(0).getClientX();
+			return (int) ((TouchEvent) event).changedTouches.getAt(0).clientX;
 		}
-		return event.getClientX();
+		return (int) ((MouseEvent) event).clientX;
 	}
 
 	/**
@@ -55,11 +59,11 @@ public final class EventUtil {
 	 * @return The y coordinate of the event (in case of touch the coordinate is
 	 *         taken from the first touch).
 	 */
-	public static int getTouchOrClickClientY(NativeEvent event) {
+	public static int getTouchOrClickClientY(Event event) {
 		if (isTouchEvent(event)) {
-			return event.getChangedTouches().get(0).getClientY();
+			return (int) ((TouchEvent) event).changedTouches.getAt(0).clientY;
 		}
-		return event.getClientY();
+		return (int) ((MouseEvent) event).clientY;
 	}
 
 	/**
@@ -86,7 +90,7 @@ public final class EventUtil {
 	 * Stop propagating all pointer events
 	 * @param element target element
 	 */
-	public static void stopPointer(Element element) {
+	public static void stopPointer(HTMLElement element) {
 		stopPointerEvents(element, evt -> true);
 	}
 
@@ -96,7 +100,7 @@ public final class EventUtil {
 	 * for native types in lambdas...)
 	 * @param element target element
 	 */
-	public static void stopPointerEvents(Element element, Predicate<Integer> check) {
+	public static void stopPointerEvents(HTMLElement element, Predicate<Integer> check) {
 		for (String evtName : new String[]{"pointerup", "pointerdown"}) {
 			Dom.addEventListener(element, evtName, e -> {
 				NativePointerEvent ptrEvent = Js.uncheckedCast(e);
@@ -105,5 +109,18 @@ public final class EventUtil {
 				}
 			});
 		}
+	}
+
+
+
+	public static KeyboardEvent createKeyEvent(String type, boolean ctrlKey, boolean altKey, boolean shiftKey, boolean metaKey, int keyCode) {
+		KeyboardEventInit init = KeyboardEventInit.create();
+		init.setCtrlKey(ctrlKey);
+		init.setAltKey(altKey);
+		init.setShiftKey(shiftKey);
+		init.setMetaKey(metaKey);
+		init.setBubbles(true);
+		Js.asPropertyMap(init).set("keyCode", keyCode);
+		return new KeyboardEvent(type, init);
 	}
 }

@@ -7,13 +7,13 @@ import org.geogebra.web.full.gui.view.consprotocol.ConstructionProtocolViewW;
 import org.geogebra.web.html5.Browser;
 import org.geogebra.web.html5.gui.view.browser.BrowseViewI;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Image;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.File;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
 
@@ -27,8 +27,8 @@ public class BrowserDevice implements GDevice {
 	 *
 	 */
 	public static class FileOpenButton extends FlowPanel {
-		private Element input;
-		private Element div;
+		private HTMLElement input;
+		private HTMLElement div;
 
 		/**
 		 * New button
@@ -37,7 +37,7 @@ public class BrowserDevice implements GDevice {
 			super();
 			this.setStyleName("button");
 			final Image icon = new Image(BrowseResources.INSTANCE.location_local());
-			final Element span = DOM.createElement("span");
+			final HTMLElement span = DOM.createElement("span");
 			span.setAttribute("style",
 					"position: absolute; top: 0px; left: 0px; "
 							+ "width: 50px; height: 50px; padding: 10px;  overflow: hidden;");
@@ -88,14 +88,14 @@ public class BrowserDevice implements GDevice {
 		 *            button text
 		 */
 		public void setImageAndText(String imgUrl, String text) {
-			Element form = DOM.createElement("form");
+			HTMLElement form = DOM.createElement("form");
 			input = DOM.createElement("input");
 			input.setAttribute("type", "file");
 			form.appendChild(input);
 
-			div.setInnerHTML(" <img src=\"" + imgUrl
+			div.innerHTML = "<img src=\"" + imgUrl
 					+ "\"  class=\"gwt-Image\" draggable=\"false\" role=\"button\"> "
-					+ "<div class=\"gwt-Label\"/>" + text + "</div>");
+					+ "<div class=\"gwt-Label\"/>" + text + "</div>";
 			div.appendChild(form);
 			DOM.insertChild(getElement(), div, 0);
 		}

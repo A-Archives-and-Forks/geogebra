@@ -3,9 +3,9 @@ package org.geogebra.web.full.main.video;
 import org.geogebra.common.euclidian.draw.DrawVideo;
 import org.geogebra.common.kernel.geos.GeoVideo;
 import org.geogebra.common.main.App;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.IsWidget;
+
+import elemental2.dom.CSSStyleDeclaration;
 
 public abstract class AbstractVideoPlayer implements IsWidget {
 
@@ -30,16 +30,16 @@ public abstract class AbstractVideoPlayer implements IsWidget {
 	protected void stylePlayer(int id) {
 		asWidget().addStyleName("mowVideo");
 		asWidget().addStyleName("mowWidget");
-		asWidget().getElement().setId("video_player" + id);
+		asWidget().getElement().id = "video_player" + id;
 	}
 
 	/**
 	 * Updates the player based on video object.
 	 */
 	public void update() {
-		Style style = asWidget().getElement().getStyle();
-		style.setLeft(video.getLeft(), Unit.PX);
-		style.setTop(video.getTop(), Unit.PX);
+		CSSStyleDeclaration style = asWidget().getElement().style;
+		style.left = video.getLeft() + "px";
+		style.top = video.getTop() + "px";
 
 		if (getVideo().hasSize()) {
 			asWidget().setWidth(getVideo().getWidth() + "px");
@@ -68,7 +68,7 @@ public abstract class AbstractVideoPlayer implements IsWidget {
 		video.setBackground(background);
 		update();
 		if (!background) {
-			asWidget().getElement().getStyle().clearZIndex();
+			asWidget().getElement().style.zIndex = null;
 		}
 	}
 

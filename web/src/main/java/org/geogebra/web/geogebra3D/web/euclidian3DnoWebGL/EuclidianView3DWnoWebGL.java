@@ -6,12 +6,12 @@ import org.geogebra.common.geogebra3D.euclidian3D.EuclidianController3D;
 import org.geogebra.common.geogebra3D.euclidian3D.openGL.Renderer;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.util.debug.Log;
+import org.geogebra.web.full.gui.util.Resizer;
 import org.geogebra.web.geogebra3D.web.euclidian3D.EuclidianView3DW;
 import org.geogebra.web.html5.gawt.GBufferedImageW;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.GgbFile;
-import org.gwtproject.dom.style.shared.Unit;
 
 import elemental2.dom.HTMLImageElement;
 
@@ -84,10 +84,10 @@ public class EuclidianView3DWnoWebGL extends EuclidianView3DW {
 	 */
 	public void onResize() {
 		getG2P().setCoordinateSpaceSize(this.getWidth(), this.getHeight());
-		getG2P().getElement().getParentElement().getStyle()
-				.setWidth(getG2P().getCoordinateSpaceWidth(), Unit.PX);
-		getG2P().getElement().getParentElement().getStyle()
-				.setHeight(getG2P().getCoordinateSpaceHeight(), Unit.PX);
+		Resizer.setPixelWidth(getG2P().getElement().parentElement,
+				getG2P().getCoordinateSpaceWidth());
+		Resizer.setPixelHeight(getG2P().getElement().parentElement,
+				getG2P().getCoordinateSpaceHeight());
 	}
 
 }

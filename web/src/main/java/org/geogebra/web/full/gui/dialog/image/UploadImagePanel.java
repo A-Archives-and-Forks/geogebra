@@ -3,7 +3,6 @@ package org.geogebra.web.full.gui.dialog.image;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.html5.gui.laf.LoadSpinner;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.FileUpload;
 import org.gwtproject.user.client.ui.Image;
 import org.gwtproject.user.client.ui.VerticalPanel;
@@ -11,6 +10,7 @@ import org.gwtproject.user.client.ui.VerticalPanel;
 import elemental2.dom.File;
 import elemental2.dom.FileList;
 import elemental2.dom.FileReader;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
 
@@ -57,7 +57,7 @@ public class UploadImagePanel extends VerticalPanel {
 	 */
 	public static FileUpload getUploadButton(AppW app, UploadImageCallback callback) {
 		FileUpload upload = new FileUpload();
-		Element el = upload.getElement();
+		HTMLElement el = upload.getElement();
 		el.setAttribute("accept", "image/*");
 		HTMLInputElement input = Js.uncheckedCast(el);
 		app.getAppletFrame().add(upload); // needs to be in DOM to work for iPad Chrome

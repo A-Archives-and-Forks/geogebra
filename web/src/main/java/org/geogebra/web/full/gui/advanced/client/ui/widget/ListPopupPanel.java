@@ -24,7 +24,6 @@ import org.geogebra.web.full.gui.advanced.client.ui.widget.combo.DropDownPositio
 import org.geogebra.web.full.gui.advanced.client.ui.widget.combo.ListItemFactory;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.ChangeEvent;
 import org.gwtproject.event.dom.client.ChangeHandler;
 import org.gwtproject.event.dom.client.ClickEvent;
@@ -43,6 +42,9 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.FocusPanel;
 import org.gwtproject.user.client.ui.ScrollPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * This widget displays a scrollable list of items.
@@ -342,8 +344,8 @@ public class ListPopupPanel<T extends ListDataModel> extends GPopupPanel
 	protected void adjustSize() {
 		ScrollPanel table = getScrollPanel();
 		int rowsVisible = getVisibleRows();
-		int delta = getElement().getOffsetWidth()
-				- getElement().getClientWidth();
+		int delta = getElement().offsetWidth
+				- getElement().clientWidth;
 		getScrollPanel()
 				.setWidth((getComboBox().getOffsetWidth() - delta) + "px");
 
@@ -556,7 +558,7 @@ public class ListPopupPanel<T extends ListDataModel> extends GPopupPanel
 		panel.addMouseOverHandler(getMouseEventsHandler());
 		panel.addMouseOutHandler(getMouseEventsHandler());
 		panel.setStyleName("item");
-		panel.getElement().getStyle().clearProperty("tabindex");
+		panel.getElement().removeAttribute("tabindex");
 		return panel;
 	}
 
@@ -607,9 +609,9 @@ public class ListPopupPanel<T extends ListDataModel> extends GPopupPanel
 		return scrollPanel;
 	}
 
-	private static void setStyleAttribute(Element elem, String attr,
+	private static void setStyleAttribute(HTMLElement elem, String attr,
 			String value) {
-		elem.getStyle().setProperty(attr, value);
+		elem.style.setProperty(attr, value);
 
 	}
 
@@ -732,8 +734,8 @@ public class ListPopupPanel<T extends ListDataModel> extends GPopupPanel
 			return;
 		}
 
-		int delta = getElement().getOffsetWidth()
-				- getElement().getClientWidth();
+		int delta = getElement().offsetWidth
+				- getElement().clientWidth;
 		getScrollPanel()
 				.setWidth((getComboBox().getOffsetWidth() - delta) + "px");
 		adjustSize();
@@ -753,10 +755,9 @@ public class ListPopupPanel<T extends ListDataModel> extends GPopupPanel
 				return;
 			}
 
-			Element source = Element
-					.as(nativePreviewEvent.getNativeEvent().getEventTarget());
-			if (!getElement().isOrHasChild(source)
-					&& !getComboBox().getElement().isOrHasChild(source)) {
+			HTMLElement source = Js.uncheckedCast(nativePreviewEvent.getNativeEvent().target);
+			if (!getElement().contains(source)
+					&& !getComboBox().getElement().contains(source)) {
 				hide();
 				getComboBox().getChoiceButton().setSelected(false);
 			}

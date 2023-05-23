@@ -33,9 +33,9 @@ public class CarotaEditor implements Editor {
 		HTML html = new HTML();
 		html.setStyleName("mowWidget");
 		String origin = "-" + padding + "px ";
-		html.getElement().getStyle().setProperty("transformOrigin", origin + origin);
-		html.getElement().getStyle().setProperty("boxSizing", "border-box");
-		html.getElement().getStyle().setMargin(8, Unit.PX);
+		html.getElement().style.setProperty("transformOrigin", origin + origin);
+		html.getElement().style.setProperty("boxSizing", "border-box");
+		html.getElement().style.setProperty("margin", "8px");
 		return html;
 	}
 
@@ -168,6 +168,6 @@ public class CarotaEditor implements Editor {
 	}
 
 	private boolean isEditing() {
-		return !getWidget().getElement().hasClassName(INVISIBLE);
+		return !getWidget().getElement().classList.contains(INVISIBLE);
 	}
 }

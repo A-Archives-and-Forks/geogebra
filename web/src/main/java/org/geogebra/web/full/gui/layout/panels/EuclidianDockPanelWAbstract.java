@@ -15,7 +15,6 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.gui.zoompanel.ZoomPanel;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.Overflow;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.InsertPanel;
@@ -151,8 +150,7 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 			this.dockPanel = dockPanel;
 			add(absoluteEuclidianPanel = absPanel);
 			absoluteEuclidianPanel.addStyleName(EuclidianViewW.ABSOLUTE_PANEL_CLASS);
-			absoluteEuclidianPanel.getElement().getStyle()
-					.setOverflow(Overflow.HIDDEN);
+			absoluteEuclidianPanel.getElement().style.overflow = "hidden";
 			checkFocus();
 			getElement().setAttribute("role", "application");
 		}

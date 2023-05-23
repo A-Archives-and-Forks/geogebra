@@ -1,12 +1,11 @@
 package org.geogebra.web.html5.util;
 
 import org.geogebra.regexp.shared.RegExp;
-import org.gwtproject.dom.client.Element;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
-import jsinterop.base.Js;
+import elemental2.dom.HTMLElement;
 
 /**
  * Utility class for CSS events
@@ -45,8 +44,8 @@ public class CSSEvents {
 	 * @param classname
 	 *            class to be checked for the animation and removed afterwards
 	 */
-	public static void runOnAnimation(Runnable runnable, Element root,
+	public static void runOnAnimation(Runnable runnable, HTMLElement root,
 			String classname) {
-		runOnEvent(runnable, "animationend", Js.uncheckedCast(root), classname);
+		runOnEvent(runnable, "animationend", root, classname);
 	}
 }

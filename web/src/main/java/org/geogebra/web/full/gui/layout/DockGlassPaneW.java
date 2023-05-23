@@ -9,9 +9,6 @@ import org.geogebra.ggbjdk.java.awt.geom.Rectangle;
 import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.html5.gui.util.ClickEndHandler;
 import org.geogebra.web.html5.util.GeoGebraElement;
-import org.gwtproject.dom.style.shared.BorderStyle;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.MouseMoveEvent;
 import org.gwtproject.event.dom.client.MouseMoveHandler;
 import org.gwtproject.event.dom.client.TouchMoveEvent;
@@ -20,6 +17,8 @@ import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.SimplePanel;
+
+import elemental2.dom.CSSProperties;
 
 /**
  * Glass pane is used to draw the drag-preview area on the panels if the user
@@ -60,16 +59,16 @@ public class DockGlassPaneW extends AbsolutePanel
 		setStyleName("DockGlassPane");
 
 		previewPanel = new SimplePanel();
-		previewPanel.getElement().getStyle()
-		        .setBorderWidth(BORDER_WIDTH, Unit.PX);
-		previewPanel.getElement().getStyle()
-		        .setBorderStyle(BorderStyle.SOLID);
-		previewPanel.getElement().getStyle().setBorderColor("gray");
+		previewPanel.getElement().style
+		        .setProperty("borderWidth", BORDER_WIDTH + "px");
+		previewPanel.getElement().style
+		        .borderStyle = "solid";
+		previewPanel.getElement().style.borderColor = "gray";
 
 		previewPanel.setVisible(false);
 		add(previewPanel);
 
-		this.getElement().getStyle().setZIndex(5000);
+		this.getElement().style.setProperty("zIndex", "5000");
 	}
 	
 	public void setGeoGebraElement(GeoGebraElement element) {
@@ -87,11 +86,11 @@ public class DockGlassPaneW extends AbsolutePanel
 	public void attach(DockManagerW dockManager1, int w, int h) {
 		this.dockManager = dockManager1;
 		if (h > 0 && w > 0) {
-			this.getElement().getStyle().setPosition(Position.ABSOLUTE);
+			this.getElement().style.position = "absolute";
 			this.setWidth(w + "px");
 			this.setHeight(h + "px");
-			this.getElement().getStyle().setTop(0, Unit.PX);
-			this.getElement().getStyle().setLeft(0, Unit.PX);
+			this.getElement().style.top ="0";
+			this.getElement().style.left = "0";
 		}
 	}
 
@@ -122,7 +121,7 @@ public class DockGlassPaneW extends AbsolutePanel
 			}
 		});
 		
-		// this.getElement().getStyle().setZIndex(50);
+		// this.getElement().style.setZIndex(50);
 		if (dragInProgress) {
 			return;
 		}
@@ -178,7 +177,7 @@ public class DockGlassPaneW extends AbsolutePanel
 		previewPanel.setVisible(false);
 		dragInProgress = false;
 
-		// this.getElement().getStyle().setZIndex(-5000);
+		// this.getElement().style.setZIndex(-5000);
 
 		dockManager.drop(dndState);
 		dndState = null;
@@ -373,8 +372,8 @@ public class DockGlassPaneW extends AbsolutePanel
 					- (int) (this.getAbsoluteLeft() / ae.getScaleX()), y2
 					- (int) (this.getAbsoluteTop() / ae.getScaleY()));
 			previewPanel.setPixelSize(w, h);
-			previewPanel.getElement().getStyle().setBackgroundColor(color);
-			previewPanel.getElement().getStyle().setOpacity(0.6f);
+			previewPanel.getElement().style.backgroundColor = color;
+			previewPanel.getElement().style.opacity = CSSProperties.OpacityUnionType.of(0.6f);
 			previewPanel.setVisible(true);
 
 		} else {
@@ -395,12 +394,12 @@ public class DockGlassPaneW extends AbsolutePanel
 	@Override
 	public void onTouchMove(TouchMoveEvent event) {
 		if (dragInProgress) {
-			if (event.getTouches().length() == 1) {
+			if (event.getTouches().length == 1) {
 				event.preventDefault();
-				mouseDragged(
-						event.getTouches().get(0).getClientX()
-								+ NavigatorUtil.getWindowScrollLeft(), event.getTouches()
-								.get(0).getClientY()
+				mouseDragged((int)
+						event.getTouches().getAt(0).clientX
+								+ NavigatorUtil.getWindowScrollLeft(), (int) event.getTouches()
+								.getAt(0).clientY
 								+ NavigatorUtil.getWindowScrollTop());
 			}
 		}

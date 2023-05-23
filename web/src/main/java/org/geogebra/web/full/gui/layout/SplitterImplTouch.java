@@ -1,14 +1,14 @@
 package org.geogebra.web.full.gui.layout;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.layout.client.Layout.Layer;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.EventTarget;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * Override splitter behavior on touch devices: add glass dragging zone
@@ -16,28 +16,28 @@ import org.gwtproject.user.client.Event;
  */
 public class SplitterImplTouch extends SplitterImpl {
 
-	private Element mainDivElement;
-	private Element glassDivElement;
+	private HTMLElement mainDivElement;
+	private HTMLElement glassDivElement;
 
 	private static final int GLASS_SIZE = 30;
 
 	@Override
-	public Element createElement() {
+	public HTMLElement createElement() {
 		super.createElement();
 		createElements();
 		return baseDivElement;
 	}
 
 	private void createElements() {
-		mainDivElement = Document.get().createDivElement();
-		glassDivElement = Document.get().createDivElement();
+		mainDivElement = DOM.createDiv();
+		glassDivElement = DOM.createDiv();
 
 		glassDivElement.appendChild(mainDivElement);
 		baseDivElement.appendChild(glassDivElement);
 	}
 
 	@Override
-	public boolean shouldHandleEvent(Event event, boolean mouseDown) {
+	public boolean shouldHandleEvent(elemental2.dom.Event event, boolean mouseDown) {
 		if (mouseDown) {
 			return true;
 		}
@@ -45,8 +45,8 @@ public class SplitterImplTouch extends SplitterImpl {
 		case Event.ONMOUSEDOWN:
 		case Event.ONMOUSEMOVE:
 		case Event.ONMOUSEUP:
-			EventTarget tg = event.getEventTarget();
-			if (Element.is(tg) && (Element.as(tg) == glassDivElement)) {
+			EventTarget tg = event.target;
+			if (DOM.isElement(tg) && (Js.<HTMLElement>uncheckedCast(tg) == glassDivElement)) {
 				return false;
 			}
 			break;
@@ -56,47 +56,47 @@ public class SplitterImplTouch extends SplitterImpl {
 
 	@Override
 	public void setToHorizontal(int splitterSize) {
-		baseDivElement.removeClassName("splitPaneDragger");
-		mainDivElement.addClassName("gwt-SplitLayoutPanel-HDragger splitPaneDragger");
-		Style mainDivStyle = mainDivElement.getStyle();
-		mainDivStyle.setPropertyPx("width", splitterSize);
+		baseDivElement.classList.remove("splitPaneDragger");
+		mainDivElement.classList.add("gwt-SplitLayoutPanel-HDragger", "splitPaneDragger");
+		CSSStyleDeclaration mainDivStyle = mainDivElement.style;
+		mainDivStyle.setProperty("width", splitterSize + "px");
 		mainDivStyle.setProperty("height", "100%");
 		mainDivStyle.setProperty("position", "absolute");
-		mainDivStyle.setLeft(15, Unit.PX);
+		mainDivStyle.left = "15px";
 
-		Style glassDivStyle = glassDivElement.getStyle();
+		CSSStyleDeclaration glassDivStyle = glassDivElement.style;
 		glassDivStyle.setProperty("width", (splitterSize + GLASS_SIZE) + "px");
 		glassDivStyle.setProperty("height", "100%");
 		glassDivStyle.setProperty("position", "absolute");
 		glassDivStyle.setProperty("left", (-(GLASS_SIZE / 2)) + "px");
-		glassDivStyle.setZIndex(10);
+		glassDivStyle.zIndex = CSSProperties.ZIndexUnionType.of(10);
 	}
 
 	@Override
 	public void setToVertical(int splitterSize) {
-		baseDivElement.removeClassName("splitPaneDragger");
-		mainDivElement.addClassName("gwt-SplitLayoutPanel-VDragger splitPaneDragger");
-		Style mainDivStyle = mainDivElement.getStyle();
-		mainDivStyle.setPropertyPx("height", splitterSize);
+		baseDivElement.classList.remove("splitPaneDragger");
+		mainDivElement.classList.add("gwt-SplitLayoutPanel-VDragger splitPaneDragger");
+		CSSStyleDeclaration mainDivStyle = mainDivElement.style;
+		mainDivStyle.setProperty("height", splitterSize + "px");
 		mainDivStyle.setProperty("width", "100%");
 		mainDivStyle.setProperty("position", "absolute");
-		mainDivStyle.setTop(15, Unit.PX);
+		mainDivStyle.top = "15px";
 
-		Style glassDivStyle = glassDivElement.getStyle();
+		CSSStyleDeclaration glassDivStyle = glassDivElement.style;
 		glassDivStyle.setProperty("height", (splitterSize + GLASS_SIZE) + "px");
 		glassDivStyle.setProperty("width", "100%");
 		glassDivStyle.setProperty("position", "absolute");
 		glassDivStyle.setProperty("top", (-(GLASS_SIZE / 2)) + "px");
-		glassDivStyle.setZIndex(10);
+		glassDivStyle.zIndex = CSSProperties.ZIndexUnionType.of(10);
 	}
 
 	@Override
 	public void splitterInsertedIntoLayer(Layer layer) {
-		layer.getContainerElement().getStyle().setOverflow(Overflow.VISIBLE);
+		layer.getContainerElement().style.overflow = "visible";
 	}
 	
 	@Override
-	public Element getSplitterElement() {
+	public HTMLElement getSplitterElement() {
 	    return mainDivElement;
 	}
 }

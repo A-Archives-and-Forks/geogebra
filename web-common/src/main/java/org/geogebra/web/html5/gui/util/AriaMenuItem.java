@@ -1,7 +1,7 @@
 package org.geogebra.web.html5.gui.util;
 
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Document;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtproject.user.client.ui.Widget;
 
@@ -48,10 +48,10 @@ public class AriaMenuItem extends SimplePanel {
 	 * Constructor
 	 */
 	public AriaMenuItem() {
-		super(Document.get().createLIElement());
-		getElement().setClassName("gwt-MenuItem listMenuItem");
+		super(DOM.createElement("LI"));
+		getElement().className = "gwt-MenuItem listMenuItem";
 		getElement().setAttribute("role", "menuitem");
-		getElement().setTabIndex(0);
+		getElement().tabIndex = 0;
 	}
 
 	/**
@@ -62,9 +62,9 @@ public class AriaMenuItem extends SimplePanel {
 	 */
 	public void setContent(String text, boolean asHTML) {
 		if (asHTML) {
-			getElement().setInnerHTML(text);
+			getElement().innerHTML = text;
 		} else {
-			getElement().setInnerText(text);
+			getElement().textContent = text;
 		}
 	}
 
@@ -107,11 +107,11 @@ public class AriaMenuItem extends SimplePanel {
 	 * @return content as HTML
 	 */
 	public String getHTML() {
-		return getElement().getInnerHTML();
+		return getElement().innerHTML;
 	}
 
 	public String getText() {
-		return getElement().getInnerText();
+		return getElement().textContent;
 	}
 
 	/**

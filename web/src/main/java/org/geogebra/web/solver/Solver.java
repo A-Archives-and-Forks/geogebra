@@ -26,7 +26,6 @@ import org.geogebra.web.solver.keyboard.SolverKeyboard;
 import org.geogebra.web.solver.keyboard.SolverKeyboardButton;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.FlowPanel;
@@ -37,6 +36,7 @@ import org.gwtproject.user.client.ui.VerticalPanel;
 import com.himamis.retex.editor.web.MathFieldW;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 public class Solver {
 
@@ -67,7 +67,7 @@ public class Solver {
 
 		rootPanel.add(solverPanel);
 
-		Element el = DOM.createDiv();
+		HTMLElement el = DOM.createDiv();
 		el.appendChild(canvas.getCanvasElement());
 
 		editorPanel = new HorizontalPanel();

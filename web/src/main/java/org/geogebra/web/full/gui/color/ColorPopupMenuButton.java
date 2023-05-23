@@ -188,15 +188,15 @@ public class ColorPopupMenuButton extends PopupMenuButtonW
 			if (!app.isUnbundledOrWhiteboard()) {
 				this.setIcon(
 						GeoGebraIconW.createColorSwatchIcon(alpha, gc, null));
-				this.getElement().getStyle().setBorderColor(gc.toString());
+				this.getElement().style.borderColor = gc.toString();
 			}
 		} else {
 			this.setIcon(GeoGebraIconW.createNullSymbolIcon());
 			if (!app.isUnbundled()) {
-				this.getElement().getStyle()
-						.setBorderColor(this.app.isUnbundled()
+				this.getElement().style
+						.borderColor = this.app.isUnbundled()
 								? GColor.newColor(220, 220, 220, 255).toString()
-								: GColor.BLACK.toString());
+								: GColor.BLACK.toString();
 			}
 		}
 	}

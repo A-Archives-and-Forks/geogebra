@@ -190,7 +190,7 @@ public class Opentype implements FontLoaderWrapper {
 			return false;
 		};
 		script.src = path;
-		DomGlobal.document.head.append(script);
+		DomGlobal.document.head.appendChild(script);
 	}
 
 	private void ensureMapExists() {

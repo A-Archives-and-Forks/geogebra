@@ -1,7 +1,6 @@
 package com.himamis.retex.editor.web;
 
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.RootPanel;
 
 import com.himamis.retex.editor.share.event.MathFieldListener;
@@ -14,12 +13,14 @@ import com.himamis.retex.renderer.share.TeXFormula;
 import com.himamis.retex.renderer.share.platform.FactoryProvider;
 import com.himamis.retex.renderer.web.JlmLib;
 
+import elemental2.dom.HTMLElement;
+
 public class JlmEditorLib extends JlmLib {
 	/**
 	 * @param el
 	 *            element
 	 */
-	public void edit(Element el) {
+	public void edit(HTMLElement el) {
 		Canvas canvas = Canvas.createIfSupported();
 		el.appendChild(canvas.getCanvasElement());
 		MathFieldW fld = new MathFieldW(null, RootPanel.get(), canvas,

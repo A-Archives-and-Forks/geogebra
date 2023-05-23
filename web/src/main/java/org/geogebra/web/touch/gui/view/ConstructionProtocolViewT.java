@@ -7,6 +7,7 @@ import org.gwtproject.event.dom.client.TouchEndEvent;
 import org.gwtproject.event.dom.client.TouchMoveEvent;
 import org.gwtproject.event.dom.client.TouchMoveHandler;
 import org.gwtproject.event.dom.client.TouchStartEvent;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.RootPanel;
 
@@ -49,8 +50,8 @@ public class ConstructionProtocolViewT extends ConstructionProtocolViewW {
 		table.addBitlessDomHandler(event -> {
 			isDragging = false;
 			startOfTap = System.currentTimeMillis();
-			yStart = event.getTouches().get(0).getClientY();
-			xStart = event.getTouches().get(0).getClientX();
+			yStart = (int) event.getTouches().getAt(0).clientY;
+			xStart = (int) event.getTouches().getAt(0).clientX;
 		}, TouchStartEvent.getType());
 
 		table.addBitlessDomHandler(new TouchMoveHandler() {
@@ -58,15 +59,15 @@ public class ConstructionProtocolViewT extends ConstructionProtocolViewW {
 			@Override
 			public void onTouchMove(TouchMoveEvent event) {
 				// used to get coordinates for TouchEnd
-				yMove = event.getTouches().get(0).getClientY();
-				xMove = event.getTouches().get(0).getClientX();
+				yMove = (int) event.getTouches().getAt(0).clientY;
+				xMove = (int) event.getTouches().getAt(0).clientX;
 				if (!isDragging && isLongTap()) {
 					//start dragging, select row to drag, show dummyDragElement
 					isDragging = true;
 					handleDrag(yStart);
 					dummyDragElem = new FlowPanel();
 					dummyDragElem.addStyleName("dummyDragElem");
-					dummyDragElem.getElement().setInnerHTML(draggedRow.getInnerHTML());
+					dummyDragElem.getElement().innerHTML = draggedRow.innerHTML;
 					RootPanel.get().add(dummyDragElem);
 					event.preventDefault(); //to avoid scrolling
 				} else if (isDragging) {
@@ -81,12 +82,12 @@ public class ConstructionProtocolViewT extends ConstructionProtocolViewW {
 			 * @return String - the style for the {@link ConstructionProtocolViewW#dummyDragElem dummy drag-element}
 			 */
 			private String getStyleString() {
-				int width = draggedRow.getOffsetWidth();
+				int width = draggedRow.offsetWidth;
 				String color = draggedRow.getAttribute("style");
 				return color + "; width: " + width
 						+ "px; background-color: #CCCCFF; opacity: 0.5;"
 						+ " z-index: 900; position: absolute; left: "
-						+ table.getElement().getAbsoluteLeft() + "px; top: "
+						+ DOM.getAbsoluteLeft(table.getElement()) + "px; top: "
 						+ (yMove - DUMMY_DRAG_ELEM_OFFSET_Y)
 						+ "px; overflow: hidden; display: -webkit-inline-box;font-family: "
 						+ GFontW.GEOGEBRA_FONT_SANSERIF + ";";
@@ -107,7 +108,7 @@ public class ConstructionProtocolViewT extends ConstructionProtocolViewW {
 
 		table.addBitlessDomHandler(event -> {
 			if (draggedRow != null) {
-				draggedRow.removeClassName("isDragging");
+				draggedRow.classList.remove("isDragging");
 			}
 			if (!isDragging) {
 				return;

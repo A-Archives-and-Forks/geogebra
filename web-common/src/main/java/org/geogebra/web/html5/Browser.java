@@ -10,9 +10,6 @@ import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.html5.bridge.GeoGebraJSNativeBridge;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.event.shared.HandlerRegistration;
 
 import com.himamis.retex.editor.share.util.GWTKeycodes;
@@ -23,8 +20,10 @@ import elemental2.core.JsArray;
 import elemental2.core.Uint8Array;
 import elemental2.dom.Blob;
 import elemental2.dom.BlobPropertyBag;
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 import elemental2.dom.MutationObserver;
 import elemental2.dom.MutationObserverInit;
@@ -181,7 +180,7 @@ public class Browser {
 	 * @param y
 	 *            origin y-coord in %
 	 */
-	public static void scale(Element parent, double externalScale, int x, int y) {
+	public static void scale(HTMLElement parent, double externalScale, int x, int y) {
 		if (externalScale < 0 || parent == null) {
 			return;
 		}
@@ -192,22 +191,22 @@ public class Browser {
 		}
 
 		String transform = "scale(" + externalScale + ")";
-		parent.addClassName("ggbTransform");
+		parent.classList.add("ggbTransform");
 
 		if (DoubleUtil.isEqual(externalScale, 1)) {
 			transform = "none";
 		}
 		String pos = x + "% " + y + "%";
 
-		Style style = parent.getStyle();
+		CSSStyleDeclaration style = parent.style;
 		if (style != null) {
 			style.setProperty("transform", transform);
 			style.setProperty("transformOrigin", pos);
 		}
 	}
 
-	private static void zoom(Element parent, double externalScale) {
-		Style style = parent.getStyle();
+	private static void zoom(HTMLElement parent, double externalScale) {
+		CSSStyleDeclaration style = parent.style;
 		if (style == null) {
 			return;
 		}
@@ -420,7 +419,7 @@ public class Browser {
 		return Global.decodeURIComponent(Global.escape(DomGlobal.atob(base64)));
 	}
 
-	public static void removeDefaultContextMenu(Element element) {
+	public static void removeDefaultContextMenu(HTMLElement element) {
 		setAllowContextMenu(element, false);
 	}
 
@@ -432,7 +431,7 @@ public class Browser {
 	 * @param allow
 	 *            whether to allow context menu
 	 */
-	public static void setAllowContextMenu(Element element, boolean allow) {
+	public static void setAllowContextMenu(HTMLElement element, boolean allow) {
 		Dom.addEventListener(element, "contextmenu", (event) -> {
 			if (allow) {
 				event.stopPropagation();
@@ -481,9 +480,9 @@ public class Browser {
 	 * @param element
 	 *            element to be scaled
 	 */
-	public static void toggleFullscreen(boolean full, Element element) {
+	public static void toggleFullscreen(boolean full, HTMLElement element) {
 		elemental2.dom.HTMLElement el = element != null
-				? Js.uncheckedCast(element)
+				? element
 				: DomGlobal.document.documentElement;
 		if (full) { // current working methods
 			if (hasProperty(el, "requestFullscreen")) {
@@ -542,9 +541,9 @@ public class Browser {
 	 *            callback
 	 * @return handler registration
 	 */
-	public static HandlerRegistration addMutationObserver(Element el, Runnable asyncOperation) {
+	public static HandlerRegistration addMutationObserver(HTMLElement el, Runnable asyncOperation) {
 		try {
-			elemental2.dom.Element current = Js.uncheckedCast(el);
+			elemental2.dom.Element current = el;
 			MutationObserver observer = new MutationObserver((mutations, _0) -> {
 				JsArray<?> actualMutations = Js.uncheckedCast(mutations);
 				if (actualMutations.length > 0) {
@@ -576,7 +575,7 @@ public class Browser {
 	 *            native key event
 	 * @return JavaKeyCodes of arrow keys, -1 if pressed key was not an arrow
 	 */
-	public static int getIOSArrowKeys(NativeEvent event) {
+	public static int getIOSArrowKeys(elemental2.dom.Event event) {
 		String key = Js.<KeyboardEvent>uncheckedCast(event).key;
 		switch (key) {
 		case "UIKeyInputUpArrow":

@@ -7,8 +7,6 @@ import org.geogebra.web.full.gui.GuiManagerW;
 import org.geogebra.web.html5.event.PointerEvent;
 import org.geogebra.web.html5.event.ZeroOffset;
 import org.geogebra.web.html5.gui.util.CancelEventTimer;
-import org.gwtproject.core.client.JsArray;
-import org.gwtproject.dom.client.Touch;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.event.dom.client.MouseDownHandler;
 import org.gwtproject.event.dom.client.MouseMoveEvent;
@@ -19,6 +17,8 @@ import org.gwtproject.event.dom.client.TouchMoveEvent;
 import org.gwtproject.event.dom.client.TouchMoveHandler;
 import org.gwtproject.event.dom.client.TouchStartEvent;
 import org.gwtproject.event.dom.client.TouchStartHandler;
+
+import elemental2.dom.TouchList;
 
 /**
  * Algebra controller for web;
@@ -74,8 +74,8 @@ public class AlgebraControllerW extends AlgebraController
 
 	@Override
 	public void onTouchStart(TouchStartEvent event) {
-		JsArray<Touch> targets = event.getTargetTouches();
-		AbstractEvent e = PointerEvent.wrapEvent(targets.get(0),
+		TouchList targets = event.getTargetTouches();
+		AbstractEvent e = PointerEvent.wrapEvent(targets.getAt(0),
 				ZeroOffset.INSTANCE);
 
 		mousePressed(e);

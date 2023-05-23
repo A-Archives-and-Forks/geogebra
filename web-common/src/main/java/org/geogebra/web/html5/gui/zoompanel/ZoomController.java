@@ -16,8 +16,11 @@ import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.timer.client.Timer;
 
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * @author csilla
@@ -112,8 +115,8 @@ public class ZoomController {
 	 * @param elem
 	 *            element
 	 */
-	protected void scaleApplet(Element scaler, Element container,
-			Element elem) {
+	protected void scaleApplet(HTMLElement scaler, HTMLElement container,
+			HTMLElement elem) {
 		double scale = 1;
 		if (app.isUnbundled()) {
 			app.getGgbApi().setSize(NavigatorUtil.getWindowWidth(),
@@ -125,8 +128,8 @@ public class ZoomController {
 			scale = LayoutUtilW.getDeviceScale(xscale, yscale, true);
 			Browser.scale(scaler, scale, 0, 0);
 			Browser.scale(elem, 1 / scale, 120, 100);
-			container.getStyle().setPosition(state.emulated
-					? Position.FIXED : Position.ABSOLUTE);
+			container.style.position = state.emulated
+					? "fixed" : "absolute";
 			double marginLeft = 0;
 			double marginTop = 0;
 			if (xscale > yscale) {
@@ -142,8 +145,8 @@ public class ZoomController {
 				marginTop /= scale;
 			}
 
-			scaler.getStyle().setMarginLeft(marginLeft, Unit.PX);
-			scaler.getStyle().setMarginTop(marginTop, Unit.PX);
+			scaler.style.marginLeft = CSSProperties.MarginLeftUnionType.of(marginLeft + "px");
+			scaler.style.marginTop = CSSProperties.MarginTopUnionType.of(marginTop + "px");
 		}
 		app.getGeoGebraElement().resetScale();
 		app.recalculateEnvironments();
@@ -163,18 +166,18 @@ public class ZoomController {
 	 * @param fullscreenButton
 	 *            fullscreen button
 	 */
-	public void onExitFullscreen(Element elem,
+	public void onExitFullscreen(HTMLElement elem,
 			ToggleButton fullscreenButton) {
 		setFullScreenActive(false, fullscreenButton);
 		if (!app.getAppletParameters().getDataParamFitToScreen()) {
-			final Element scaler = app.getGeoGebraElement().getParentElement();
+			final HTMLElement scaler = app.getGeoGebraElement().getParentElement();
 			// check for null in case external website removed applet from DOM
 			if (scaler != null) {
-				scaler.removeClassName("fullscreen");
-				scaler.getStyle().setMarginLeft(0, Unit.PX);
-				scaler.getStyle().setMarginTop(0, Unit.PX);
+				scaler.classList.remove("fullscreen");
+				scaler.style.marginLeft = CSSProperties.MarginLeftUnionType.of("0");
+				scaler.style.marginTop = CSSProperties.MarginTopUnionType.of("0");
 				dispatchResize();
-				Element container = scaler.getParentElement();
+				HTMLElement container = Js.uncheckedCast(scaler.parentElement);
 				state.resetStyleAfterFullscreen(container, app);
 				double scale = state.getCssScale() > 0 ? state.getCssScale()
 						: app.getAppletParameters().getDataParamScale();
@@ -196,10 +199,10 @@ public class ZoomController {
 	 * @param fullscreenBtn
 	 *            fullscreen button
 	 */
-	protected void onFullscreenPressed(final Element elem,
+	protected void onFullscreenPressed(final HTMLElement elem,
 			final ToggleButton fullscreenBtn) {
 		app.closeMenuHideKeyboard();
-		final Element container;
+		final HTMLElement container;
 		state.emulated = useEmulatedFullscreen(app);
 		if (app.getAppletParameters().getDataParamFitToScreen()) {
 			container = null;
@@ -217,11 +220,11 @@ public class ZoomController {
 			handleIframeFullscreen(fullscreenBtn);
 		} else {
 			GeoGebraElement geoGebraElement = app.getGeoGebraElement();
-			final Element scaler = geoGebraElement.getParentElement();
-			container = scaler.getParentElement();
+			final HTMLElement scaler = geoGebraElement.getParentElement();
+			container = Js.uncheckedCast(scaler.parentElement);
 			if (!isFullScreenActive()) {
 				state.store(container, app, geoGebraElement.getParentScaleX());
-				scaler.addClassName("fullscreen");
+				scaler.classList.add("fullscreen");
 				Timer t = new Timer() {
 
 					@Override
@@ -235,7 +238,7 @@ public class ZoomController {
 			} else {
 				if (state.emulated) {
 					state.removeTransformOverride();
-					container.removeClassName("GeoGebraFullscreenContainer");
+					container.classList.remove("GeoGebraFullscreenContainer");
 					onExitFullscreen(elem, fullscreenBtn);
 					if (state.getCssScale() != 0) {
 						Browser.scale(scaler, state.getCssScale(),

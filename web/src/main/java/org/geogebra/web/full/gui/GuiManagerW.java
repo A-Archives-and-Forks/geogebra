@@ -126,14 +126,14 @@ import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.core.JsDate;
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.URL;
 
 public class GuiManagerW extends GuiManager
@@ -238,7 +238,7 @@ public class GuiManagerW extends GuiManager
 	}
 
 	private void showPopupMenu(final ArrayList<GeoElement> geos,
-			final Element invoker, final GPoint p) {
+			final HTMLElement invoker, final GPoint p) {
 		if (geos == null || !getApp().letShowPopupMenu()) {
 			return;
 		}
@@ -316,7 +316,7 @@ public class GuiManagerW extends GuiManager
 			showDrawingPadPopup(view, p);
 		} else {
 
-			final Element invoker = ((EuclidianViewWInterface) view)
+			final HTMLElement invoker = ((EuclidianViewWInterface) view)
 					.getCanvasElement();
 			// clear highlighting and selections in views
 			getApp().getActiveEuclidianView().resetMode();
@@ -443,7 +443,7 @@ public class GuiManagerW extends GuiManager
 		// 3D stuff
 	}
 
-	private void showDrawingPadPopup(final Element invoker, final GPoint p) {
+	private void showDrawingPadPopup(final HTMLElement invoker, final GPoint p) {
 		// clear highlighting and selections in views
 		getApp().getActiveEuclidianView().resetMode();
 		getDrawingPadpopupMenu(p.x, p.y).showScaled(invoker, p.x, p.y);
@@ -603,11 +603,11 @@ public class GuiManagerW extends GuiManager
 
 	@Override
 	public void resize(final int width, final int height) {
-		final Element geogebraFrame = getApp().getFrameElement();
+		final HTMLElement geogebraFrame = getApp().getFrameElement();
 		int borderThickness = getApp().getAppletParameters()
 				.getBorderThickness();
 		if (getLayout() != null && getLayout().getRootComponent() != null) {
-			if (geogebraFrame.getOffsetHeight() <= 0) {
+			if (geogebraFrame.offsetHeight <= 0) {
 				return; // not in DOM yet => no reliable size
 			}
 			final DockSplitPaneW root = getLayout().getRootComponent();
@@ -619,8 +619,8 @@ public class GuiManagerW extends GuiManager
 			root.setPixelSize(width - horizontalSpace, height - verticalSpace);
 			root.onResize();
 		} else {
-			geogebraFrame.getStyle().setHeight(height, Unit.PX);
-			geogebraFrame.getStyle().setWidth(width, Unit.PX);
+			geogebraFrame.style.height = CSSProperties.HeightUnionType.of(height + "px");
+			geogebraFrame.style.width = CSSProperties.WidthUnionType.of(width + "px");
 			getApp().getEuclidianViewpanel().setPixelSize(width, height);
 
 			// maybe onResize is OK too

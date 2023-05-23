@@ -3,14 +3,13 @@ package org.geogebra.web.full.gui.view.spreadsheet;
 import org.geogebra.common.awt.GPoint;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Overflow;
 import org.gwtproject.event.dom.client.ScrollEvent;
 import org.gwtproject.event.dom.client.ScrollHandler;
 import org.gwtproject.user.client.ui.AbstractNativeScrollbar;
 import org.gwtproject.user.client.ui.ScrollPanel;
 
 import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.WheelEvent;
 
 public class TableScroller extends ScrollPanel implements ScrollHandler {
@@ -130,7 +129,7 @@ public class TableScroller extends ScrollPanel implements ScrollHandler {
 	 * 
 	 */
 	public void scrollRectToVisibleCommand(int x, int y) {
-		Element view = this.getWidget().getElement();
+		HTMLElement view = this.getWidget().getElement();
 
 		if (view == null) {
 			return;
@@ -150,8 +149,8 @@ public class TableScroller extends ScrollPanel implements ScrollHandler {
 				position.y - viewPosition.y);
 		if (dx != 0 || dy != 0) {
 
-			int viewWidth = view.getOffsetWidth();
-			int viewHeight = view.getOffsetHeight();
+			int viewWidth = view.offsetWidth;
+			int viewHeight = view.offsetHeight;
 			int startX = viewPosition.x;
 			int startY = viewPosition.y;
 
@@ -247,16 +246,16 @@ public class TableScroller extends ScrollPanel implements ScrollHandler {
 	 *            true = hide the horizontal scroll bar
 	 */
 	public void setShowHScrollBar(boolean showHScrollBar) {
-		getScrollableElement().getStyle().setOverflowX(
-		        showHScrollBar ? Overflow.AUTO : Overflow.HIDDEN);
+		getScrollableElement().style.setProperty("overflowX",
+		        showHScrollBar ? "auto" : "hidden");
 	}
 
 	/**
 	 * @param showVScrollBar true = hide the vertical scroll bar
 	 */
 	public void setShowVScrollBar(boolean showVScrollBar) {
-		getScrollableElement().getStyle().setOverflowY(
-		        showVScrollBar ? Overflow.AUTO : Overflow.HIDDEN);
+		getScrollableElement().style.setProperty("overflowY",
+		        showVScrollBar ? "auto" : "hidden");
 	}
 
 }

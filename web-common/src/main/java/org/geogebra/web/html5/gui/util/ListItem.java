@@ -1,9 +1,10 @@
 package org.geogebra.web.html5.gui.util;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.ComplexPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Panel based on li tag
@@ -14,14 +15,14 @@ public class ListItem extends ComplexPanel {
 	 * New list element panel
 	 */
 	public ListItem() {
-		Element el = Document.get().createLIElement();
+		HTMLElement el = DOM.createElement("LI");
 		setElement(el);
-		el.setTabIndex(-1);
+		el.tabIndex = -1;
 	}
 
 	@Override
 	public void add(Widget w) {
-		Element el = getElement();
+		HTMLElement el = getElement();
 		add(w, el);
 	}
 
@@ -40,6 +41,6 @@ public class ListItem extends ComplexPanel {
 	}
 
 	public void setText(String text) {
-		getElement().setInnerText(text);
+		getElement().textContent = text;
 	}
 }

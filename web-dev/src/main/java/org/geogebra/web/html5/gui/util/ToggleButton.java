@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.gwtproject.resources.client.ResourcePrototype;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FocusWidget;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.impl.FocusImpl;
@@ -70,10 +71,10 @@ public class ToggleButton extends FocusWidget {
 			}
 			btnImage.setUrl(NoDragImage.safeURI(image));
 		} else {
-			this.getElement().removeAllChildren();
+			DOM.removeAllChildren(this.getElement());
 			if (image != null) {
 				btnImage = new NoDragImage(image, 24, 24);
-				btnImage.getElement().setTabIndex(-1);
+				btnImage.getElement().tabIndex = -1;
 				getElement().appendChild(btnImage.getElement());
 				btnImage.setPresentation();
 			}

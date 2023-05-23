@@ -24,7 +24,6 @@ import org.geogebra.web.html5.awt.PrintableW;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.TimerSystemW;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Touch;
 import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.gwtproject.event.dom.client.KeyPressEvent;
 import org.gwtproject.event.dom.client.KeyUpEvent;
@@ -33,6 +32,8 @@ import org.gwtproject.event.dom.client.TouchStartEvent;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.Touch;
 
 public class SpreadsheetViewW implements SpreadsheetViewInterface,
 		SettingListener, SetLabels, PrintableW {
@@ -100,24 +101,24 @@ public class SpreadsheetViewW implements SpreadsheetViewInterface,
 		settingsChanged(settings());
 
 		this.spreadsheet.addBitlessDomHandler(event -> {
-			if (event.getTouches().length() > 1) {
-				Touch t0 = event.getTouches().get(0);
-				Touch t1 = event.getTouches().get(1);
+			if (event.getTouches().length > 1) {
+				Touch t0 = event.getTouches().getAt(0);
+				Touch t1 = event.getTouches().getAt(1);
 				scrollPos.setLocation(
 						getHorizontalScrollPosition()
-								+ (t0.getScreenX() + t1.getScreenX()) / 2,
+								+ (int) (t0.screenX + t1.screenX) / 2,
 						getVerticalScrollPosition()
-								+ (t0.getScreenY() + t1.getScreenY()) / 2);
+								+ (int) (t0.screenY + t1.screenY) / 2);
 			}
 		}, TouchStartEvent.getType());
 
 		this.spreadsheet.addBitlessDomHandler(event -> {
-			if (event.getTouches().length() > 1) {
-				Touch t0 = event.getTouches().get(0);
-				Touch t1 = event.getTouches().get(1);
+			if (event.getTouches().length > 1) {
+				Touch t0 = event.getTouches().getAt(0);
+				Touch t1 = event.getTouches().getAt(1);
 
-				int x = (t0.getScreenX() + t1.getScreenX()) / 2;
-				int y = (t0.getScreenY() + t1.getScreenY()) / 2;
+				int x = (int) (t0.screenX + t1.screenX) / 2;
+				int y = (int) (t0.screenY + t1.screenY) / 2;
 
 				table.setHorizontalScrollPosition(scrollPos.x - x);
 				table.setVerticalScrollPosition(scrollPos.y - y);
@@ -589,9 +590,9 @@ public class SpreadsheetViewW implements SpreadsheetViewInterface,
 	 */
 	public void setShowGrid(boolean showGrid) {
 		if (showGrid) {
-			table.getGrid().getElement().removeClassName("off");
+			table.getGrid().getElement().classList.remove("off");
 		} else {
-			table.getGrid().getElement().addClassName("off");
+			table.getGrid().getElement().classList.add("off");
 		}
 		if (this.isVisibleStyleBar()) {
 			getSpreadsheetStyleBar().updateStyleBar();

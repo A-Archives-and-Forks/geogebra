@@ -12,7 +12,6 @@ import org.geogebra.common.main.App;
 import org.geogebra.ggbjdk.java.awt.geom.Dimension;
 import org.geogebra.web.html5.awt.GGraphics2DW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.style.shared.Unit;
 
 import com.himamis.retex.renderer.share.TeXIcon;
 import com.himamis.retex.renderer.share.platform.FactoryProvider;
@@ -171,8 +170,8 @@ public class DrawEquationW extends DrawEquation {
 		double height = roundUp(icon.getIconHeight(), ratio);
 		c.setCoordinateSpaceWidth((int) (width * ratio));
 		c.setCoordinateSpaceHeight((int) (height * ratio));
-		c.getElement().getStyle().setWidth(width, Unit.PX);
-		c.getElement().getStyle().setHeight(height, Unit.PX);
+		c.getElement().style.setProperty("width", width + "px");
+		c.getElement().style.setProperty("height", height + "px");
 
 		// c.getElement().getStyle().setMargin(4, Unit.PX);
 		ctx.scale2(ratio, ratio);

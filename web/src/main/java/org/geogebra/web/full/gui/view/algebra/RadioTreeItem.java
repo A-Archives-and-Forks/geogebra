@@ -70,8 +70,6 @@ import org.geogebra.web.html5.main.DrawEquationW;
 import org.geogebra.web.html5.util.DataTest;
 import org.geogebra.web.html5.util.HasDataTest;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.DragStartEvent;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
@@ -89,6 +87,9 @@ import com.himamis.retex.editor.share.util.Unicode;
 import com.himamis.retex.editor.web.MathFieldW;
 import com.himamis.retex.renderer.share.platform.FactoryProvider;
 import com.himamis.retex.renderer.web.FactoryProviderGWT;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * main -> marblePanel content controls
@@ -229,7 +230,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		addMarble();
 
 		getDefinitionValuePanel().addStyleName("avPlainText");
-		getElement().getStyle().setColor("black");
+		getElement().style.color = "black";
 
 		updateFont(getDefinitionValuePanel());
 
@@ -254,8 +255,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		addAVEXWidget(content);
 		if (app.isUnbundled() && geo0.getParentAlgorithm() != null
 				&& geo0.getParentAlgorithm() instanceof AlgoPointOnPath) {
-			getWidget().getElement().getStyle().setProperty("minHeight", 72,
-					Unit.PX);
+			getWidget().getElement().style.setProperty("minHeight", "72px");
 		}
 		updateDataTest(getIndex());
 	}
@@ -558,7 +558,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	}
 
 	protected void updateFont(Widget w) {
-		w.getElement().getStyle().setFontSize(app.getFontSize(), Unit.PX);
+		w.getElement().style.setProperty("fontSize", app.getFontSize() + "px");
 	}
 
 	protected void styleContentPanel() {
@@ -656,7 +656,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 
 	private void updateItemColor() {
 		if (isAlgebraStyleDefAndValue() && definitionPanel != null) {
-			definitionPanel.getElement().getStyle().setColor("black");
+			definitionPanel.getElement().style.color = "black";
 		}
 	}
 
@@ -681,8 +681,8 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	public void setItemWidth(int width) {
 		if (getOffsetWidth() != width && width >= 0) {
 			if (isInputTreeItem()) {
-				Element inputParent = getWidget().getElement()
-						.getParentElement();
+				elemental2.dom.Element inputParent = getWidget().getElement()
+						.parentElement;
 				Resizer.setPixelWidth(inputParent, width);
 			} else if (!isTextItem()) {
 				setWidth(width + "px");
@@ -707,8 +707,8 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 
 	protected void updateColor(Widget w) {
 		if (geo != null) {
-			w.getElement().getStyle()
-					.setColor(GColor.getColorString(geo.getAlgebraColor()));
+			w.getElement().style
+					.color = GColor.getColorString(geo.getAlgebraColor());
 		}
 	}
 
@@ -895,14 +895,14 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 			return;
 		}
 		if (!this.isInputTreeItem() && canvas != null
-				&& content.getElement().isOrHasChild(latexItem.getElement())) {
+				&& content.getElement().contains(latexItem.getElement())) {
 			if (geo != null) {
 				LayoutUtilW.replace(content, canvas, latexItem);
 			}
 		}
 
 		if (!latex && !this.isInputTreeItem() && getDefinitionValuePanel() != null
-				&& content.getElement().isOrHasChild(latexItem.getElement())) {
+				&& content.getElement().contains(latexItem.getElement())) {
 			LayoutUtilW.replace(content, getDefinitionValuePanel(), latexItem);
 
 		}
@@ -971,7 +971,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	 */
 	boolean showCurrentError() {
 		if (commandError != null) {
-			Element snackbar = DOM.getElementById("snackbarID");
+			HTMLElement snackbar = DOM.getElementById("snackbarID");
 			if (snackbar == null) {
 				ToolTipManagerW.sharedInstance().setBlockToolTip(false);
 				ToolTipManagerW.sharedInstance().showBottomInfoToolTip(
@@ -1039,8 +1039,8 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 			return false;
 		}
 		int itemTop = this.isInputTreeItem()
-				? main.getElement().getAbsoluteTop()
-				: getElement().getAbsoluteTop();
+				? DOM.getAbsoluteTop(main.getElement())
+				: DOM.getAbsoluteTop(getElement());
 		return itemTop - getAlgebraDockPanel().getAbsoluteTop() < 35;
 	}
 
@@ -1116,11 +1116,10 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	public void setDraggable() {
 		Widget draggableContent = main;
 		getElement().setAttribute("position", "absolute");
-		draggableContent.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-
+		draggableContent.getElement().draggable = true;
 		draggableContent.addDomHandler(event -> {
 			event.setData("text", geo.getLabelSimple());
-			event.getDataTransfer().setDragImage(getElement(), 10, 10);
+			event.getDataTransfer().setDragImage(Js.uncheckedCast(getElement()), 10, 10);
 			getAV().dragStart(geo);
 		}, DragStartEvent.getType());
 	}
@@ -1202,7 +1201,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		return (RadioTreeItem) item;
 	}
 
-	public Element getScrollElement() {
+	public HTMLElement getScrollElement() {
 		return getWidget().getElement();
 	}
 
@@ -1270,7 +1269,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 			double scale = app.getGeoGebraElement().getScaleX();
 			double renderScale = app.getAppletParameters().getDataParamApp()
 					? scale : 1;
-			helpPopup.getElement().getStyle()
+			helpPopup.getElement().style
 					.setProperty("left",
 							(marblePanel.getAbsoluteLeft() - app.getAbsLeft()
 									+ marblePanel.getOffsetWidth()) * renderScale
@@ -1283,9 +1282,9 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 				int top = toggleButtonTop
 						+ marblePanel.getOffsetHeight();
 				maxOffsetHeight = totalHeight - top;
-				helpPopup.getElement().getStyle().setProperty("top",
+				helpPopup.getElement().style.setProperty("top",
 						top * renderScale + "px");
-				helpPopup.getElement().getStyle().setProperty("bottom",
+				helpPopup.getElement().style.setProperty("bottom",
 						"auto");
 				helpPopup.removeStyleName("helpPopupAVBottom");
 				helpPopup.addStyleName("helpPopupAV");
@@ -1294,10 +1293,10 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 				int bottom = totalHeight - toggleButtonTop;
 				maxOffsetHeight = bottom > 0 ? totalHeight - bottom
 						: totalHeight - minBottom;
-				helpPopup.getElement().getStyle().setProperty("bottom",
+				helpPopup.getElement().style.setProperty("bottom",
 						(bottom > 0 ? bottom : minBottom) * renderScale
 								+ "px");
-				helpPopup.getElement().getStyle().setProperty("top",
+				helpPopup.getElement().style.setProperty("top",
 						"auto");
 				helpPopup.removeStyleName("helpPopupAV");
 				helpPopup.addStyleName("helpPopupAVBottom");
@@ -1567,7 +1566,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		content.clear();
 
 		if (!(latexItem == null || isInputTreeItem() || isSliderItem())) {
-			latexItem.getElement().getStyle().setProperty("minHeight",
+			latexItem.getElement().style.setProperty("minHeight",
 					getController().getEditHeigth() + "px");
 		}
 		ensureCanvas();
@@ -2087,7 +2086,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		return geo == null ? main.getOffsetWidth() : getOffsetWidth();
 	}
 
-	public Element getContentElement() {
+	public HTMLElement getContentElement() {
 		return content.getElement();
 	}
 
@@ -2109,7 +2108,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	 * @return the tab index of the item.
 	 */
 	public int getTabIndex() {
-		return main.getElement().getTabIndex();
+		return main.getElement().tabIndex;
 	}
 
 	/**
@@ -2137,10 +2136,11 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	 */
 	public void setFocusedStyle(boolean focused) {
 		if (isInputTreeItem()) {
+			HTMLElement parent = Js.uncheckedCast(getWidget().getElement().parentElement);
 			if (focused) {
-				getWidget().getElement().getParentElement().addClassName("focused");
+				parent.classList.add("focused");
 			} else {
-				getWidget().getElement().getParentElement().removeClassName("focused");
+				parent.classList.remove("focused");
 			}
 		}
 	}

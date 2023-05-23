@@ -2,6 +2,7 @@ package org.geogebra.web.html5.gui.inputfield;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.CheckForNull;
 
@@ -45,8 +46,6 @@ import org.geogebra.web.html5.gui.view.autocompletion.ScrollableSuggestBox;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.GlobalKeyDispatcherW;
 import org.geogebra.web.html5.util.keyboard.KeyboardManagerInterface;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.TextAlign;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.FocusHandler;
 import org.gwtproject.event.dom.client.KeyCodes;
@@ -74,6 +73,8 @@ import com.himamis.retex.editor.share.util.GWTKeycodes;
 import com.himamis.retex.editor.web.MathFieldW;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
 
 public class AutoCompleteTextFieldW extends FlowPanel
 		implements AutoComplete, AutoCompleteW, AutoCompleteTextField,
@@ -233,9 +234,9 @@ public class AutoCompleteTextFieldW extends FlowPanel
 			}
 
 			@Override
-			public void onBrowserEvent(Event event) {
+			public void onBrowserEvent(elemental2.dom.Event event) {
 				int etype = DOM.eventGetType(event);
-				if (MathFieldW.isShortcutDefaultPrevented(event)) {
+				if (event.type.startsWith("key") && MathFieldW.isShortcutDefaultPrevented(event)) {
 					event.preventDefault();
 				}
 
@@ -258,7 +259,7 @@ public class AutoCompleteTextFieldW extends FlowPanel
 				// keyboard
 				if ((etype == Event.ONKEYUP
 						|| etype == Event.ONKEYPRESS)
-						&& event.getKeyCode() == KeyCodes.KEY_ENTER) {
+						&& DOM.getKeyCode(event) == KeyCodes.KEY_ENTER) {
 					// app.hideKeyboard();
 					// prevent handling in AutoCompleteTextField
 					event.stopPropagation();
@@ -266,9 +267,9 @@ public class AutoCompleteTextFieldW extends FlowPanel
 				}
 			}
 
-			private boolean isShortcutToPrevent(Event event) {
-				boolean isCtrlShift = event.getCtrlKey() && event.getShiftKey();
-				int keyCode = event.getKeyCode();
+			private boolean isShortcutToPrevent(KeyboardEvent event) {
+				boolean isCtrlShift = event.ctrlKey && event.shiftKey;
+				int keyCode = DOM.getKeyCode(event);
 				return isCtrlShift
 						&& (keyCode == KeyCodes.KEY_B
 							|| keyCode == KeyCodes.KEY_M);
@@ -283,7 +284,7 @@ public class AutoCompleteTextFieldW extends FlowPanel
 						|| eventType == Event.ONTOUCHEND;
 			}
 
-			private void handleSelectedEvent(Event event) {
+			private void handleSelectedEvent(elemental2.dom.Event event) {
 				event.stopPropagation();
 			}
 		};
@@ -341,7 +342,7 @@ public class AutoCompleteTextFieldW extends FlowPanel
 
 	@Override
 	public void setInputMode(InputMode mode) {
-		Element element = textField.getElement();
+		HTMLElement element = textField.getElement();
 		element.setAttribute("inputmode", mode.name().toLowerCase());
 	}
 
@@ -415,9 +416,9 @@ public class AutoCompleteTextFieldW extends FlowPanel
 	@Override
 	public void setFont(GFont font) {
 		String size = font.getSize() + "px";
-		Dom.setImportant(getInputElement().getStyle(), "font-size", size);
+		Dom.setImportant(getInputElement().style, "font-size", size);
 		if (cursorOverlay != null) {
-			Dom.setImportant(cursorOverlay.getElement().getStyle(), "font-size",
+			Dom.setImportant(cursorOverlay.getElement().style, "font-size",
 					size);
 		}
 	}
@@ -425,21 +426,21 @@ public class AutoCompleteTextFieldW extends FlowPanel
 	@Override
 	public void setForeground(GColor color) {
 		if (!NavigatorUtil.isMobile()) {
-			textField.getElement().getStyle()
-					.setColor(GColor.getColorString(color));
+			textField.getElement().style
+					.color = GColor.getColorString(color);
 		}
 	}
 
 	@Override
 	public void setBackground(GColor color) {
 		if (!hasError()) {
-			main.getElement().getStyle()
-					.setBackgroundColor(GColor.getColorString(color));
-			main.getElement().getStyle().setBorderColor(drawTextField.getBorderColor() != null
-					? drawTextField.getBorderColor().toString() : GColor.DEFAULT_PURPLE.toString());
+			main.getElement().style
+					.backgroundColor = GColor.getColorString(color);
+			main.getElement().style.borderColor = drawTextField.getBorderColor() != null
+					? drawTextField.getBorderColor().toString() : GColor.DEFAULT_PURPLE.toString();
 		} else {
-			main.getElement().getStyle().clearBackgroundColor();
-			main.getElement().getStyle().clearBorderColor();
+			main.getElement().style.backgroundColor = null;
+			main.getElement().style.borderColor = null;
 		}
 	}
 
@@ -720,8 +721,8 @@ public class AutoCompleteTextFieldW extends FlowPanel
 		}
 
 		if (cursorOverlay != null
-				&& e.getNativeEvent().getKeyCode() != GWTKeycodes.KEY_BACKSPACE
-				&& e.getNativeEvent().getKeyCode() != 0) {
+				&& DOM.getKeyCode(e.getNativeEvent()) != GWTKeycodes.KEY_BACKSPACE
+				&& DOM.getKeyCode(e.getNativeEvent()) != 0) {
 			insertString(Character.toString(ch));
 			text = getText();
 		}
@@ -1501,7 +1502,7 @@ public class AutoCompleteTextFieldW extends FlowPanel
 	}
 
 	@Override
-	public Element getInputElement() {
+	public HTMLElement getInputElement() {
 		return getTextField().getElement();
 	}
 
@@ -1532,22 +1533,14 @@ public class AutoCompleteTextFieldW extends FlowPanel
 
 	@Override
 	public void setTextAlignmentsForInputBox(HorizontalAlignment alignment) {
-		getInputElement().getStyle().setTextAlign(textAlignToCssAlign(alignment));
+		getInputElement().style.textAlign = textAlignToCssAlign(alignment);
 		if (cursorOverlay != null) {
-			cursorOverlay.getElement().getStyle().setProperty("justifyContent",
+			cursorOverlay.getElement().style.setProperty("justifyContent",
 					alignment.toString());
 		}
 	}
 
-	private TextAlign textAlignToCssAlign(HorizontalAlignment alignment) {
-		switch (alignment) {
-		default:
-		case LEFT:
-				return TextAlign.LEFT;
-		case CENTER:
-				return TextAlign.CENTER;
-		case RIGHT:
-				return TextAlign.RIGHT;
-		}
+	private String textAlignToCssAlign(HorizontalAlignment alignment) {
+		return alignment.name().toLowerCase(Locale.ROOT);
 	}
 }

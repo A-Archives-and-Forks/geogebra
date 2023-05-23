@@ -1,11 +1,9 @@
 package org.geogebra.web.full.main.video;
 
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLVideoElement;
-import jsinterop.base.Js;
 
 /**
  * Widget to wrap HTML5 video tag
@@ -48,7 +46,7 @@ public class HTML5VideoWidget extends Widget {
 	public HTML5VideoWidget(VideoListener listener) {
 		this.listener = listener;
 		elem = (HTMLVideoElement) DomGlobal.document.createElement("video");
-		setElement(Js.<Element>uncheckedCast(elem));
+		setElement(elem);
 		addHandlers(elem);
 	}
 

@@ -49,7 +49,7 @@ public class InputKeyboardButtonW implements InputKeyboardButton, IsWidget {
 			return;
 		}
 
-		button.getElement().setTabIndex(-1);
+		button.getElement().tabIndex = -1;
 		Dom.toggleClass(textField, "kbdInput", true);
 	}
 

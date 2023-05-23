@@ -16,14 +16,14 @@ public class ProgressBar extends HTML {
 	}
 
 	public void setMax(int max) {
-		getElement().getFirstChildElement().setAttribute("max", String.valueOf(max));
+		getElement().firstElementChild.setAttribute("max", String.valueOf(max));
 	}
 
 	public void setValue(int value) {
-		getElement().getFirstChildElement().setAttribute("value", String.valueOf(value));
+		getElement().firstElementChild.setAttribute("value", String.valueOf(value));
 	}
 
 	public void setProgress(String progress) {
-		getElement().getFirstChildElement().setAttribute("progress", progress);
+		getElement().firstElementChild.setAttribute("progress", progress);
 	}
 }

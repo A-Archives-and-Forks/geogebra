@@ -6,16 +6,13 @@ import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.gui.view.spreadsheet.MyTableInterface;
 import org.geogebra.web.full.gui.GuiManagerW;
 import org.geogebra.web.full.gui.util.AdvancedFocusPanel;
+import org.geogebra.web.full.gui.util.Resizer;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.event.PointerEvent;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.dom.style.shared.Cursor;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.HumanInputEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyDownEvent;
@@ -29,8 +26,10 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Grid;
 import org.gwtproject.user.client.ui.Widget;
 
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.ClipboardEvent;
 import elemental2.dom.DataTransfer;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 
 /**
@@ -92,10 +91,10 @@ public class SpreadsheetRowHeaderW implements SpreadsheetHeader, CopyPasteHandle
 		grid.setCellSpacing(0);
 		grid.setHeight("0px");
 
-		grid.getElement().addClassName("geogebraweb-table-spreadsheet");
+		grid.getElement().classList.add("geogebraweb-table-spreadsheet");
 
-		grid.getColumnFormatter().getElement(0).getStyle()
-				.setWidth(SpreadsheetViewW.ROW_HEADER_WIDTH, Unit.PX);
+		Resizer.setPixelWidth(grid.getColumnFormatter().getElement(0)
+				, SpreadsheetViewW.ROW_HEADER_WIDTH);
 
 		for (int row = 0; row < grid.getRowCount(); row++) {
 			initializeCell(row);
@@ -106,11 +105,11 @@ public class SpreadsheetRowHeaderW implements SpreadsheetHeader, CopyPasteHandle
 		focusPanel.addBitlessDomHandler(this, KeyDownEvent.getType());
 		addPasteHandlerTo(focusPanel.getTextarea(), this);
 
-		Style s = focusPanel.getElement().getStyle();
+		CSSStyleDeclaration s = focusPanel.getElement().style;
 		// s.setDisplay(Display.NONE);
-		s.setPosition(Position.ABSOLUTE);
-		s.setTop(0, Unit.PX);
-		s.setLeft(0, Unit.PX);
+		s.position = "absolute";
+		s.top = "0";
+		s.left = "0";
 
 		container = new FlowPanel();
 		container.add(grid);
@@ -124,9 +123,9 @@ public class SpreadsheetRowHeaderW implements SpreadsheetHeader, CopyPasteHandle
 		int rowHeight = app.getSettings().getSpreadsheet().preferredRowHeight();
 		setRowHeight(rowIndex, rowHeight);
 
-		Element elm = grid.getCellFormatter().getElement(rowIndex, 0);
+		HTMLElement elm = grid.getCellFormatter().getElement(rowIndex, 0);
 
-		elm.addClassName("SVheader");
+		elm.classList.add("SVheader");
 		/*
 		 * elm.getStyle().setBackgroundColor(
 		 * MyTableW.BACKGROUND_COLOR_HEADER.toString());
@@ -158,15 +157,15 @@ public class SpreadsheetRowHeaderW implements SpreadsheetHeader, CopyPasteHandle
 	}
 
 	private String getCursor() {
-		return grid.getElement().getStyle().getCursor();
+		return grid.getElement().style.cursor;
 	}
 
 	private void setRowResizeCursor() {
-		grid.getElement().getStyle().setCursor(Cursor.ROW_RESIZE);
+		grid.getElement().style.cursor = "row-resize";
 	}
 
 	private void setDefaultCursor() {
-		grid.getElement().getStyle().setCursor(Cursor.DEFAULT);
+		grid.getElement().style.cursor = "default";
 	}
 
 	/**
@@ -180,8 +179,7 @@ public class SpreadsheetRowHeaderW implements SpreadsheetHeader, CopyPasteHandle
 			return;
 		}
 
-		grid.getRowFormatter().getElement(rowIndex).getStyle()
-				.setHeight(rowHeight, Unit.PX);
+		Resizer.setPixelHeight(grid.getRowFormatter().getElement(rowIndex), rowHeight);
 	}
 
 	/**
@@ -394,7 +392,7 @@ public class SpreadsheetRowHeaderW implements SpreadsheetHeader, CopyPasteHandle
 	}
 
 	public void setTop(int top) {
-		container.getElement().getStyle().setTop(top, Unit.PX);
+		container.getElement().style.top = top + "px";
 	}
 
 	/**
@@ -561,7 +559,7 @@ public class SpreadsheetRowHeaderW implements SpreadsheetHeader, CopyPasteHandle
 	 * @param elem element
 	 * @param handler copy/cut/paste handler
 	 */
-	public static void addPasteHandlerTo(Element elem, CopyPasteHandler handler) {
+	public static void addPasteHandlerTo(HTMLElement elem, CopyPasteHandler handler) {
 		Dom.addEventListener(elem, "paste", (event) -> {
 				DataTransfer data = Js.<ClipboardEvent>uncheckedCast(event).clipboardData;
 				if (Js.isTruthy(data)) {

@@ -93,14 +93,14 @@ public class Marble extends SimplePanel {
 			GColor c = gc.getGeo().getAlgebraColor();
 			GColor fillColor = this.gc.getGeo().getObjectColor()
 					.deriveWithAlpha(102);
-			this.getElement().getStyle()
-					.setBorderColor(GColor.getColorString(c));
-			this.getElement().getStyle()
-					.setBackgroundColor(GColor
-							.getColorString(fillColor));
+			this.getElement().style
+					.borderColor = GColor.getColorString(c);
+			this.getElement().style
+					.backgroundColor = GColor
+							.getColorString(fillColor);
 		}
 		else {
-			this.getElement().getStyle().setBackgroundColor(GColor.getColorString(GColor.WHITE));
+			this.getElement().style.backgroundColor = GColor.getColorString(GColor.WHITE);
 		}
 		setAltText(value ? "visible" : "not visible");
 	}

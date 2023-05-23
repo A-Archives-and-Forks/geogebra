@@ -1,9 +1,8 @@
 package com.himamis.retex.editor.web;
 
-import org.gwtproject.dom.client.Element;
-
 import com.himamis.retex.renderer.web.JlmApi;
 
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsType;
 
 @JsType
@@ -14,7 +13,7 @@ public class JlmEditorApi extends JlmApi {
 		super(library);
 	}
 
-	public void edit(Element element) {
+	public void edit(HTMLElement element) {
 		((JlmEditorLib) this.library).edit(element);
 	}
 

@@ -6,8 +6,9 @@ import org.geogebra.keyboard.base.Action;
 import org.geogebra.keyboard.base.Keyboard;
 import org.geogebra.keyboard.base.model.Row;
 import org.geogebra.keyboard.base.model.WeightedButton;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
+
+import elemental2.dom.CSSProperties;
 
 /**
  *
@@ -112,19 +113,19 @@ public class KeyPanelBase extends FlowPanel {
 				} else {
 					button = buttons.get(buttonIndex);
 					if (offset > 0) {
-						button.getElement().getStyle().setMarginLeft(
-								offset * baseSize + margins / 2d, Unit.PX);
+						button.getElement().style.marginLeft = CSSProperties.MarginLeftUnionType.of(
+								(offset * baseSize + margins / 2d) + "px");
 					}
-					button.getElement().getStyle().setWidth(
-							wb.getWeight() * baseSize - margins, Unit.PX);
+					button.getElement().style.width = CSSProperties.WidthUnionType.of((
+							wb.getWeight() * baseSize - margins) + "px");
 					offset = 0;
 					buttonIndex++;
 				}
 			}
 			if (Action.NONE.name().equals(row.getButtons()
 					.get(row.getButtons().size() - 1).getPrimaryActionName())) {
-				button.getElement().getStyle().setMarginRight(
-						offset * baseSize + margins / 2d, Unit.PX);
+				button.getElement().style.marginRight = CSSProperties.MarginRightUnionType.of(
+						(offset * baseSize + margins / 2d) + "px");
 			}
 		}
 	}

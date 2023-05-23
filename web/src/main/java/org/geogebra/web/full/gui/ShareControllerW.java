@@ -31,7 +31,6 @@ import org.geogebra.web.shared.ShareDialogMow;
 import org.geogebra.web.shared.ShareLinkDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.geogebra.web.shared.ggtapi.models.MaterialCallback;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Widget;
 
@@ -40,6 +39,7 @@ import com.google.gwt.core.client.RunAsyncCallback;
 
 import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -235,7 +235,7 @@ public class ShareControllerW implements ShareController {
 			AppletParameters parameters = new AppletParameters(
 					app.getAppletParameters().getDataParamAppName());
 			AppWFull appF = (AppWFull) app;
-			Element el = DOM.createElement("div");
+			HTMLElement el = DOM.createElement("div");
 			GDimension currentSize = app.getActiveEuclidianView().getSettings().getPreferredSize();
 			GeoGebraFrameFull fr = new GeoGebraFrameFull(
 					appF.getAppletFrame().getAppletFactory(), appF.getLAF(),

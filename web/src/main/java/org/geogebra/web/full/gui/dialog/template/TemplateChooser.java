@@ -5,6 +5,9 @@ import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.gwtproject.user.client.ui.FlowPanel;
 
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+
 public class TemplateChooser extends ComponentDialog {
     private TemplateChooserController controller;
 
@@ -29,10 +32,11 @@ public class TemplateChooser extends ComponentDialog {
         }
         addDialogContent(templatesPanel);
 
+        HTMLElement parentElement = Js.uncheckedCast(templatesPanel.getElement().parentElement);
         if (controller.getTemplates().size() > 6) {
-            templatesPanel.getElement().getParentElement().addClassName("withBorder");
+            parentElement.classList.add("withBorder");
         } else {
-            templatesPanel.getElement().getParentElement().removeClassName("withBorder");
+            parentElement.classList.remove("withBorder");
         }
     }
 }

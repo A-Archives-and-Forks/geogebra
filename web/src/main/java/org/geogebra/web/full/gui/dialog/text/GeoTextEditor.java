@@ -17,7 +17,6 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.KeyUpEvent;
 import org.gwtproject.user.client.DOM;
@@ -25,7 +24,10 @@ import org.gwtproject.user.client.ui.FocusWidget;
 
 import com.himamis.retex.editor.share.util.GWTKeycodes;
 
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import elemental2.dom.Node;
 import elemental2.dom.Range;
 import jsinterop.base.Js;
@@ -94,11 +96,10 @@ public class GeoTextEditor extends FocusWidget {
 
 			showEditPopup(false);
 
-			Element target = Element
-					.as(event.getNativeEvent().getEventTarget());
+			HTMLElement target = Js.uncheckedCast(event.getNativeEvent().target);
 
 			if (DYNAMIC_TEXT_CLASS
-					.equalsIgnoreCase(target.getClassName())) {
+					.equalsIgnoreCase(target.className)) {
 				editBox.setText(target.getAttribute("value"));
 				editBox.setTarget(target);
 				showEditPopup(true);
@@ -111,7 +112,7 @@ public class GeoTextEditor extends FocusWidget {
 	 */
 	public void updateFonts() {
 		int fontSize = app.getSettings().getFontSettings().getAppFontSize();
-		getElement().getStyle().setFontSize(fontSize, Unit.PX);
+		getElement().style.fontSize = CSSProperties.FontSizeUnionType.of(fontSize + "px");
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class GeoTextEditor extends FocusWidget {
 	 */
 	public void handlePaste() {
 		Scheduler.get().scheduleDeferred(() -> {
-			getElement().setInnerHTML(getUnformattedContent());
+			getElement().innerHTML = getUnformattedContent();
 			updateFonts();
 		});
 		editPanel.updatePreviewPanel(true);
@@ -193,12 +194,12 @@ public class GeoTextEditor extends FocusWidget {
 	}
 
 	private Node createValueElement(String value) {
-		Element elem = DOM.createElement("input");
-		elem.setClassName(DYNAMIC_TEXT_CLASS);
-		elem.setPropertyString("type", "button");
-		elem.setPropertyString("value", value);
-		elem.getStyle().setFontSize(app.getSettings().getFontSettings().getAppFontSize(),
-				Unit.PX);
+		HTMLInputElement elem = DOM.createElement("input");
+		elem.classList.add(DYNAMIC_TEXT_CLASS);
+		elem.type = "button";
+		elem.value = value;
+		elem.style.fontSize = CSSProperties.FontSizeUnionType.of(app.getSettings()
+						.getFontSettings().getAppFontSize() + "px");
 		return Js.uncheckedCast(elem);
 	}
 
@@ -251,7 +252,7 @@ public class GeoTextEditor extends FocusWidget {
 	 *            list of text elements
 	 */
 	public void setText(ArrayList<DynamicTextElement> dynamicList) {
-		getElement().setInnerHTML("");
+		getElement().innerHTML = "";
 		Node lineElement = Js.uncheckedCast(getElement());
 		for (DynamicTextElement dt : dynamicList) {
 			if (dt.type == DynamicTextType.STATIC) {
@@ -353,7 +354,7 @@ public class GeoTextEditor extends FocusWidget {
 						Scheduler.get().scheduleDeferred(
 								() -> editBox.setFocus(true));
 					});
-			textEditPopup.getElement().getStyle().setZIndex(1000);
+			textEditPopup.getElement().style.zIndex = CSSProperties.ZIndexUnionType.of(1000);
 		} else {
 			textEditPopup.hide();
 		}
@@ -377,7 +378,7 @@ public class GeoTextEditor extends FocusWidget {
 	}
 
 	public String getText() {
-		return getElement().getInnerText();
+		return getElement().textContent;
 	}
 
 	public GTextBox getEditor() {

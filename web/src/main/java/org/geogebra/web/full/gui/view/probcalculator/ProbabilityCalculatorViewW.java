@@ -18,9 +18,10 @@ import org.geogebra.web.html5.main.AsyncManager;
 import org.geogebra.web.html5.main.GlobalKeyDispatcherW;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSProperties;
 
 /**
  * Probability Calculator View for web
@@ -351,8 +352,8 @@ public class ProbabilityCalculatorViewW extends ProbabilityCalculatorView {
 				? Math.max(PlotPanelEuclidianViewW.DEFAULT_HEIGHT, maxHeight / 2)
 				: Math.max(maxHeight, 40);
 		getPlotPanel().setPreferredSize(new Dimension(width, height));
-		getPlotPanel().getCanvasElement().getStyle().setMarginTop((maxHeight - height) / 2.0,
-				Unit.PX);
+		getPlotPanel().getCanvasElement().style.marginTop = CSSProperties.MarginTopUnionType
+				.of((maxHeight - height) / 2.0 + "px");
 		getPlotPanel().repaintView();
 		getPlotPanel().getEuclidianController().calculateEnvironment();
 	}

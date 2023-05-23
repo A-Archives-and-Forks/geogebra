@@ -1,10 +1,9 @@
 package org.geogebra.web.richtext.impl;
 
-import org.gwtproject.dom.client.Element;
-
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = "carota")
 public class CarotaEditorFactory {
-	public native CarotaDocument create(Element div);
+	public native CarotaDocument create(HTMLElement div);
 }

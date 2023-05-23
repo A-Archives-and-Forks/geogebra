@@ -20,7 +20,6 @@ import org.geogebra.web.html5.gui.HasKeyboardTF;
 import org.geogebra.web.html5.gui.util.FastClickHandler;
 import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.FocusEvent;
 import org.gwtproject.event.dom.client.FocusHandler;
@@ -29,6 +28,8 @@ import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.user.client.ui.DisclosurePanel;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSProperties;
 
 /**
  * Panel to manage editing of GeoText strings.
@@ -247,7 +248,7 @@ public class TextEditPanel extends FlowPanel
 		btnLatex.addStyleName("btnLatex");
 
 		toolBar = new FlowPanel();
-		toolBar.getElement().getStyle().setFontSize(80, Unit.PCT);
+		toolBar.getElement().style.fontSize = CSSProperties.FontSizeUnionType.of("80%");
 		toolBar.add(btnBold);
 		toolBar.add(btnItalic);
 		toolBar.add(btnSerif);
@@ -316,7 +317,7 @@ public class TextEditPanel extends FlowPanel
 
 	@Override
 	public void setText(String text) {
-		editor.getElement().setInnerHTML(text);
+		editor.getElement().innerHTML = text;
 	}
 
 	@Override

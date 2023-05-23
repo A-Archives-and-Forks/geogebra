@@ -3,8 +3,6 @@ package org.geogebra.web.editor;
 import org.geogebra.gwtutil.JsConsumer;
 import org.geogebra.web.html5.bridge.RenderGgbElement.RenderGgbElementFunction;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Overflow;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
@@ -13,6 +11,7 @@ import org.gwtproject.user.client.ui.RootPanel;
 import com.himamis.retex.editor.web.MathFieldW;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 public final class RenderEditor implements RenderGgbElementFunction {
 	private final EditorKeyboard editorKeyboard;
@@ -23,7 +22,7 @@ public final class RenderEditor implements RenderGgbElementFunction {
 	}
 
 	@Override
-	public void render(Element element, JsConsumer<Object> callback) {
+	public void render(HTMLElement element, JsConsumer<Object> callback) {
 		editorKeyboard.create(element);
 		EditorListener listener = new EditorListener();
 		MathFieldW mathField = initMathField(element, listener);
@@ -39,11 +38,11 @@ public final class RenderEditor implements RenderGgbElementFunction {
 		mathField.setPixelRatio(DomGlobal.window.devicePixelRatio);
 	}
 
-	private MathFieldW initMathField(Element el, EditorListener listener) {
+	private MathFieldW initMathField(HTMLElement el, EditorListener listener) {
 		Canvas canvas = Canvas.createIfSupported();
 		FlowPanel wrapper = new FlowPanel();
 		wrapper.setWidth("100%");
-		wrapper.getElement().getStyle().setOverflow(Overflow.HIDDEN);
+		wrapper.getElement().style.overflow = "hidden";
 		MathFieldW mathField = new MathFieldW(null, wrapper, canvas, listener);
 		final EditorParams editorParams = new EditorParams(el, mathField);
 		listener.setMathField(mathField);
@@ -66,12 +65,12 @@ public final class RenderEditor implements RenderGgbElementFunction {
 			onFocus(mathField, processing);
 		}
 
-		canvas.getElement().setTabIndex(-1);
+		canvas.getElement().tabIndex = -1;;
 		return mathField;
 	}
 
-	private void setBackgroundColor(Element element, String cssColor) {
-		element.getStyle().setBackgroundColor(cssColor);
+	private void setBackgroundColor(HTMLElement element, String cssColor) {
+		element.style.backgroundColor = cssColor;
 	}
 
 	private void onFocus(MathFieldW mathField, MathFieldProcessing processing) {
@@ -79,11 +78,11 @@ public final class RenderEditor implements RenderGgbElementFunction {
 		editorKeyboard.setProcessing(processing);
 	}
 
-	private RootPanel newRoot(Element el) {
-		Element detachedKeyboardParent = DOM.createDiv();
-		detachedKeyboardParent.setClassName("GeoGebraFrame editor");
+	private RootPanel newRoot(HTMLElement el) {
+		HTMLElement detachedKeyboardParent = DOM.createDiv();
+		detachedKeyboardParent.className = "GeoGebraFrame editor";
 		String uid = DOM.createUniqueId();
-		detachedKeyboardParent.setId(uid);
+		detachedKeyboardParent.id = uid;
 		el.appendChild(detachedKeyboardParent);
 		return RootPanel.get(uid);
 	}

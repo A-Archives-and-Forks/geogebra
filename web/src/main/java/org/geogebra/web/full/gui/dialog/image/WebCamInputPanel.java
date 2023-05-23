@@ -6,6 +6,7 @@ import org.geogebra.web.full.gui.laf.BundleLookAndFeel;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.webcam.WebcamDialogInterface;
 import org.geogebra.web.shared.components.dialog.DialogData;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.SimplePanel;
 
@@ -82,7 +83,7 @@ public class WebCamInputPanel extends FlowPanel {
 	 */
 	public void startVideo() {
 		webCam.stop();
-		inputWidget.getElement().removeAllChildren();
+		DOM.removeAllChildren(inputWidget.getElement());
 		resetVideo();
 	}
 

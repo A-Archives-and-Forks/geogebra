@@ -1,16 +1,16 @@
 package org.geogebra.web.full.gui.layout;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.layout.client.Layout.Layer;
-import org.gwtproject.user.client.Event;
+import org.gwtproject.user.client.DOM;
+
+import elemental2.dom.HTMLElement;
 
 public class SplitterImpl {
 
-	protected Element baseDivElement;
+	protected HTMLElement baseDivElement;
 
-	public Element createElement() {
-		return baseDivElement = Document.get().createDivElement();
+	public HTMLElement createElement() {
+		return baseDivElement = DOM.createDiv();
 	}
 
 	/**
@@ -20,7 +20,7 @@ public class SplitterImpl {
 	 *            whether pointer is currently down
 	 * @return whether event should be handled
 	 */
-	public boolean shouldHandleEvent(Event event, boolean mouseDown) {
+	public boolean shouldHandleEvent(elemental2.dom.Event event, boolean mouseDown) {
 		return true;
 	}
 
@@ -29,8 +29,8 @@ public class SplitterImpl {
 	 *            splitter width
 	 */
 	public void setToHorizontal(int splitterSize) {
-		baseDivElement.getStyle().setPropertyPx("width", splitterSize);
-		baseDivElement.addClassName("gwt-SplitLayoutPanel-HDragger");
+		baseDivElement.style.setProperty("width", splitterSize + "px");
+		baseDivElement.classList.add("gwt-SplitLayoutPanel-HDragger");
 	}
 
 	/**
@@ -38,11 +38,11 @@ public class SplitterImpl {
 	 *            splitter height
 	 */
 	public void setToVertical(int splitterSize) {
-		baseDivElement.getStyle().setPropertyPx("height", splitterSize);
-		baseDivElement.addClassName("gwt-SplitLayoutPanel-VDragger");
+		baseDivElement.style.setProperty("height", splitterSize + "px");
+		baseDivElement.classList.add("gwt-SplitLayoutPanel-VDragger");
 	}
 	
-	public Element getSplitterElement() {
+	public HTMLElement getSplitterElement() {
 		return baseDivElement;
 	}
 	

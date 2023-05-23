@@ -15,13 +15,13 @@ import org.geogebra.web.html5.bridge.RenderGgbElement;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.util.GeoGebraElement;
 import org.geogebra.web.html5.util.SuperDevUncaughtExceptionHandler;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.RootPanel;
 
 import com.google.gwt.core.client.EntryPoint;
 
 import elemental2.core.JsArray;
 import elemental2.dom.HTMLCollection;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 
 /**
@@ -86,7 +86,7 @@ public abstract class Web implements EntryPoint {
 	 * @param clb
 	 *            callback
 	 */
-	public void renderArticleElement(Element el, JsConsumer<Object> clb) {
+	public void renderArticleElement(HTMLElement el, JsConsumer<Object> clb) {
 		GeoGebraFrameFull.renderArticleElement(el, getAppletFactory(),
 				getLAF(), clb);
 	}

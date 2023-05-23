@@ -46,7 +46,7 @@ public class RelationPaneW extends ComponentDialog
 		for (RelationRow rel : relations) {
 			Label relation = new Label();
 			String info = rel.getInfo();
-			relation.getElement().setInnerHTML(info);
+			relation.getElement().innerHTML = info;
 			numerical.add(relation);
 		}
 
@@ -76,8 +76,8 @@ public class RelationPaneW extends ComponentDialog
 	private Label getHeader(String label) {
 		Label header = new Label();
 		header.addStyleName("headerLbl");
-		header.getElement().setInnerHTML(app.getLocalization()
-				.getMenu(label));
+		header.getElement().innerHTML = app.getLocalization()
+				.getMenu(label);
 		return header;
 	}
 

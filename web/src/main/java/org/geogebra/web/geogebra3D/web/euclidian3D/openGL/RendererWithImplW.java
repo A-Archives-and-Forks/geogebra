@@ -11,10 +11,10 @@ import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.html5.gawt.GBufferedImageW;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 import elemental2.webgl.WebGLRenderingContext;
 import jsinterop.base.Js;
@@ -218,7 +218,7 @@ public class RendererWithImplW extends Renderer implements
 		}
 	}
 
-	protected static WebGLRenderingContext getWebGLContext(Element element, boolean transparent) {
+	protected static WebGLRenderingContext getWebGLContext(HTMLElement element, boolean transparent) {
 		HTMLCanvasElement canvas = Js.uncheckedCast(element);
 
 		JsPropertyMap<Object> options = JsPropertyMap.of();
@@ -231,7 +231,7 @@ public class RendererWithImplW extends Renderer implements
 	}
 
 	private static WebGLRenderingContext getBufferedContext(
-			Element element) {
+			HTMLElement element) {
 		HTMLCanvasElement canvas = Js.uncheckedCast(element);
 		JsPropertyMap<?> options = JsPropertyMap.of("preserveDrawingBuffer", true);
 		return Js.uncheckedCast(canvas.getContext("experimental-webgl", options));

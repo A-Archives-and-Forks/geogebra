@@ -21,6 +21,7 @@ import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.debug.GeoGebraProfiler;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.gwtutil.NavigatorUtil;
+import org.geogebra.web.full.gui.util.Resizer;
 import org.geogebra.web.geogebra3D.web.euclidian3D.openGL.RendererWInterface;
 import org.geogebra.web.geogebra3D.web.euclidian3D.openGL.RendererWithImplW;
 import org.geogebra.web.geogebra3D.web.euclidian3DnoWebGL.RendererWnoWebGL;
@@ -40,8 +41,6 @@ import org.geogebra.web.html5.main.GgbFile;
 import org.geogebra.web.html5.main.TimerSystemW;
 import org.gwtproject.animation.client.AnimationScheduler;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.DomEvent;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.user.client.ui.RequiresResize;
@@ -49,6 +48,7 @@ import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.WheelEvent;
 import jsinterop.base.Js;
 
@@ -113,7 +113,7 @@ public class EuclidianView3DW extends EuclidianView3D implements
 	}
 
 	private void initAriaDefaults() {
-		Element elem = g2p.getElement();
+		HTMLElement elem = g2p.getElement();
 		if (elem != null) {
 			elem.setAttribute("role", "figure");
 			elem.setAttribute("aria-label", "3D View");
@@ -346,7 +346,7 @@ public class EuclidianView3DW extends EuclidianView3D implements
 		// IMPORTANT: do nothing if we already have the classname,
 		// app.resetCursor is VERY expensive in IE
 		Canvas canvas = (Canvas) this.getRenderer().getCanvas();
-		if (canvas != null && !canvas.getElement().hasClassName(className)) {
+		if (canvas != null && !canvas.getElement().classList.contains(className)) {
 			((AppW) this.app).resetCursor();
 			canvas.setStyleName("");
 			canvas.addStyleName(className);
@@ -374,7 +374,7 @@ public class EuclidianView3DW extends EuclidianView3D implements
 	}
 
 	@Override
-	public Element getCanvasElement() {
+	public HTMLElement getCanvasElement() {
 		return g2p == null ? null : g2p.getElement();
 	}
 
@@ -553,10 +553,8 @@ public class EuclidianView3DW extends EuclidianView3D implements
 		g2p.setCoordinateSpaceSizeNoTransformNoColor(width, height);
 		try {
 			// just resizing the AbsolutePanelSmart, not the whole of DockPanel
-			g2p.getElement().getParentElement().getStyle()
-					.setWidth(width, Unit.PX);
-			g2p.getElement().getParentElement().getStyle()
-					.setHeight(height, Unit.PX);
+			Resizer.setPixelWidth(g2p.getElement().parentElement, width);
+			Resizer.setPixelHeight(g2p.getElement().parentElement, height);
 			getEuclidianController().calculateEnvironment();
 		} catch (Exception exc) {
 			Log.debug("Problem with the parent element of the canvas");

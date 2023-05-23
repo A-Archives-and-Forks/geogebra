@@ -76,7 +76,7 @@ public class PenSubMenu extends SubMenuPanel {
 		Label label = new Label();
 		AriaHelper.setLabel(label, app.getLocalization().getColor(colorData.getGgbTransKey()));
 		label.getElement().setAttribute("role", "button");
-		label.getElement().setTabIndex(0);
+		label.getElement().tabIndex = 0;
 		color.applyToLabel(label);
 		label.addStyleName("mowColorButton");
 		ClickStartHandler.init(label, new ClickStartHandler() {

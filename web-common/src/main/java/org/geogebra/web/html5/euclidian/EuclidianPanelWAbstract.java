@@ -2,9 +2,10 @@ package org.geogebra.web.html5.euclidian;
 
 import org.geogebra.common.euclidian.EuclidianView;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.Panel;
+
+import elemental2.dom.HTMLElement;
 
 public interface EuclidianPanelWAbstract {
 
@@ -28,7 +29,7 @@ public interface EuclidianPanelWAbstract {
 
 	void updateNavigationBar();
 
-	Element getElement();
+	HTMLElement getElement();
 
 	void reset();
 

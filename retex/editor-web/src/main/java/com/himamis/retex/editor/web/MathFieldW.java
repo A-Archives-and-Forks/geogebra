@@ -32,11 +32,6 @@ import java.util.function.Predicate;
 
 import org.geogebra.gwtutil.NavigatorUtil;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.dom.style.shared.VerticalAlign;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.ChangeHandler;
@@ -86,7 +81,9 @@ import elemental2.dom.CSSProperties;
 import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.ClipboardEvent;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Event;
 import elemental2.dom.EventListener;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLTextAreaElement;
 import elemental2.dom.KeyboardEvent;
 import jsinterop.base.Js;
@@ -95,7 +92,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 
 	public static final int SCROLL_THRESHOLD = 14;
 	protected static MetaModel sMetaModel = new MetaModel();
-	private static Predicate<NativeEvent> isGlobalEvent = evt -> false;
+	private static Predicate<elemental2.dom.Event> isGlobalEvent = evt -> false;
 	private MetaModel metaModel;
 
 	private final MathFieldInternal mathFieldInternal;
@@ -207,7 +204,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		}
 	}
 
-	public static void setGlobalEventCheck(Predicate<NativeEvent> globalEvent) {
+	public static void setGlobalEventCheck(Predicate<elemental2.dom.Event> globalEvent) {
 		MathFieldW.isGlobalEvent = globalEvent;
 	}
 
@@ -231,7 +228,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 	 *            label for assistive technology
 	 */
 	public void setAriaLabel(String label) {
-		Element target = getElementForAriaLabel();
+		HTMLElement target = getElementForAriaLabel();
 		if (target != null) {
 			if (expressionReader != null) {
 				expressionReader.debug(label);
@@ -240,11 +237,11 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		}
 	}
 
-	private Element getElementForAriaLabel() {
+	private HTMLElement getElementForAriaLabel() {
 		if (NavigatorUtil.isiOS() || NavigatorUtil.isMacOS()) {
 			// mobile Safari: alttext is connected to parent so that screen
 			// reader doesn't read "dimmed" for the textarea
-			Element parentElement = parent.getElement();
+			HTMLElement parentElement = parent.getElement();
 			if (!"textbox".equals(parentElement.getAttribute("role"))) {
 				parentElement.setAttribute("aria-live", "assertive");
 				parentElement.setAttribute("aria-atomic", "true");
@@ -263,7 +260,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 	 * @return aria label
 	 */
 	public String getAriaLabel() {
-		Element target = getElementForAriaLabel();
+		HTMLElement target = getElementForAriaLabel();
 		if (target != null) {
 			return target.getAttribute("aria-label");
 		}
@@ -322,7 +319,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		double value = computeWidth();
 		ctx.canvas.style.width = CSSProperties.WidthUnionType.of(value + "px");
 		parent.setHeight(height + "px");
-		parent.getElement().getStyle().setVerticalAlign(VerticalAlign.TOP);
+		parent.getElement().style.verticalAlign = "top";
 		repaintWeb();
 	}
 
@@ -359,7 +356,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 			} else {
 				if (event.getUnicodeCharCode() > 31) {
 					keyListener.onKeyTyped(
-							new KeyEvent(event.getNativeEvent().getKeyCode(), 0,
+							new KeyEvent(DOM.getKeyCode(event.getNativeEvent()), 0,
 									getChar(event.getNativeEvent())));
 				}
 				event.stopPropagation();
@@ -430,9 +427,10 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 	 * @param event to check.
 	 * @return if the default action should be prevented.
 	 */
-	public static boolean isShortcutDefaultPrevented(NativeEvent event) {
+	public static boolean isShortcutDefaultPrevented(Event event) {
 		int code = convertToJavaKeyCode(event);
-		return event.getCtrlKey() && event.getShiftKey()
+		KeyboardEvent keyEvent = (KeyboardEvent) event;
+		return keyEvent.ctrlKey && keyEvent.shiftKey
 				&& (code == JavaKeyCodes.VK_B || code == JavaKeyCodes.VK_M);
 	}
 
@@ -470,7 +468,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		event.stopPropagation();
 	}
 
-	private boolean checkPowerKeyInput(Element element) {
+	private boolean checkPowerKeyInput(HTMLElement element) {
 		HTMLTextAreaElement textArea = Js.uncheckedCast(element);
 		if (textArea.value.matches(".*\\^")) {
 			textArea.value = "";
@@ -484,7 +482,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 	 *            native event
 	 * @return whether this is right alt up/down event
 	 */
-	public static boolean isRightAlt(NativeEvent nativeEvent) {
+	public static boolean isRightAlt(Event nativeEvent) {
 		return checkCode(nativeEvent, "AltRight");
 	}
 
@@ -502,7 +500,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 	 *            native event
 	 * @return whether this is left alt up/down event
 	 */
-	public static boolean isLeftAlt(NativeEvent nativeEvent) {
+	public static boolean isLeftAlt(Event nativeEvent) {
 		return checkCode(nativeEvent, "AltLeft");
 	}
 
@@ -511,9 +509,9 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 	 *            native event
 	 * @return java key code
 	 */
-	static int convertToJavaKeyCode(NativeEvent evt) {
+	static int convertToJavaKeyCode(Event evt) {
 
-		int keyCodeGWT = evt.getKeyCode();
+		int keyCodeGWT = DOM.getKeyCode(evt);
 
 		// most keycodes are the same between Java and GWT
 		// so don't check the common ones that are the same
@@ -549,7 +547,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		return NavigatorUtil.isMacOS() ? event.isMetaKeyDown() : event.isControlKeyDown();
 	}
 
-	protected char getChar(NativeEvent nativeEvent) {
+	protected char getChar(Event nativeEvent) {
 		if (MathFieldW.checkCode(nativeEvent, "NumpadDecimal")) {
 			return '.';
 		}
@@ -557,7 +555,7 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		if (MathFieldW.checkCode(nativeEvent, "NumpadComma")) {
 			return '.';
 		}
-		return (char) nativeEvent.getCharCode();
+		return (char) Js.asPropertyMap(nativeEvent).getAsAny("charCode").asInt();
 	}
 
 	@Override
@@ -799,12 +797,12 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 	}
 
 	private void focusTextArea() {
-		Element parentElement = html.getElement().getParentElement();
+		HTMLElement parentElement = Js.uncheckedCast(html.getElement().parentElement);
 		if (parentElement != null) {
-			int scroll = parentElement.getScrollLeft();
+			double scroll = parentElement.scrollLeft;
 			inputTextArea.getElement().focus();
-			parentElement.setScrollLeft(scroll);
-			parentElement.setScrollTop(0);
+			parentElement.scrollLeft = scroll;
+			parentElement.scrollTop = 0;
 		} else {
 			inputTextArea.getElement().focus();
 		}
@@ -861,10 +859,10 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		mathFieldInternal.insertString(text);
 	}
 
-	private Element getHiddenTextArea() {
+	private HTMLElement getHiddenTextArea() {
 		if (clip == null) {
 			clip = new SimplePanel();
-			Element el = getHiddenTextAreaNative(counter++, clip.getElement());
+			HTMLElement el = getHiddenTextAreaNative(counter++, clip.getElement());
 
 			inputTextArea = MyTextArea.wrap(el);
 
@@ -943,30 +941,30 @@ public class MathFieldW implements MathField, IsWidget, MathFieldAsync, BlurHand
 		this.onTextfieldFocus = run;
 	}
 
-	private static Element getHiddenTextAreaNative(int counter,
-			Element clipDiv) {
-		Element hiddenTextArea = DOM.getElementById("hiddenCopyPasteLatexArea"
+	private static HTMLElement getHiddenTextAreaNative(int counter,
+			HTMLElement clipDiv) {
+		HTMLElement hiddenTextArea = DOM.getElementById("hiddenCopyPasteLatexArea"
 				+ counter);
 		if (hiddenTextArea == null) {
 			hiddenTextArea = DOM.createTextArea();
-			hiddenTextArea.setId("hiddenCopyPasteLatexArea" + counter);
-			hiddenTextArea.getStyle().setOpacity(0);
-			clipDiv.getStyle().setZIndex(-32000);
+			hiddenTextArea.id = "hiddenCopyPasteLatexArea" + counter;
+			hiddenTextArea.style.setProperty("opacity", "0");
+			clipDiv.style.setProperty("zIndex", "-32000");
 			//* although clip is for absolute position, necessary! 
 			//* as it is deprecated, may cause CSS challenges later 
-			clipDiv.getStyle().setProperty("clip", "rect(1em 1em 1em 1em)");
+			clipDiv.style.setProperty("clip", "rect(1em 1em 1em 1em)");
 			//* top/left will be specified dynamically, depending on scrollbar
-			clipDiv.getStyle().setHeight(1, Unit.PX);
-			clipDiv.getStyle().setWidth(1, Unit.PX);
-			clipDiv.getStyle().setPosition(Position.RELATIVE);
-			clipDiv.getStyle().setTop(-100, Unit.PCT);
-			clipDiv.setClassName("textAreaClip");
-			hiddenTextArea.getStyle().setWidth(1, Unit.PX);
-			hiddenTextArea.getStyle().setPadding(0, Unit.PX);
-			hiddenTextArea.getStyle().setProperty("border", "0");
-			hiddenTextArea.getStyle().setProperty("minHeight", "0");
+			clipDiv.style.setProperty("height", "1px");
+			clipDiv.style.setProperty("width", "1px");
+			clipDiv.style.position = "relative";
+			clipDiv.style.top = "-100%";
+			clipDiv.className = "textAreaClip";
+			hiddenTextArea.style.setProperty("width", "1px");
+			hiddenTextArea.style.setProperty("padding", "0");
+			hiddenTextArea.style.setProperty("border", "0");
+			hiddenTextArea.style.setProperty("minHeight", "0");
 			//prevent messed up scrolling in FF/IE
-			hiddenTextArea.getStyle().setHeight(1, Unit.PX);
+			hiddenTextArea.style.setProperty("height", "1px");
 			RootPanel.getBodyElement().appendChild(hiddenTextArea);
 			if (NavigatorUtil.isMobile()) {
 				hiddenTextArea.setAttribute("readonly", "true");

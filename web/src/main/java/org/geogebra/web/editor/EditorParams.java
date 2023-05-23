@@ -1,11 +1,11 @@
 package org.geogebra.web.editor;
 
-import org.gwtproject.dom.client.Element;
-
 import com.himamis.retex.editor.web.MathFieldW;
 
+import elemental2.dom.HTMLElement;
+
 public class EditorParams {
-	private final Element element;
+	private final HTMLElement element;
 	private final MathFieldW mathField;
 
 	/**
@@ -13,7 +13,7 @@ public class EditorParams {
 	 * @param element where the params come from.
 	 * @param mathField to setup.
 	 */
-	public EditorParams(Element element, MathFieldW mathField) {
+	public EditorParams(HTMLElement element, MathFieldW mathField) {
 		this.element = element;
 		this.mathField = mathField;
 		process();

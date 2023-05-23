@@ -11,7 +11,6 @@ import org.geogebra.web.html5.euclidian.EuclidianViewWInterface;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.GgbFile;
 import org.geogebra.web.html5.util.ArchiveEntry;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 
 /**
@@ -118,8 +117,8 @@ public class PagePreviewCard extends FlowPanel
 
 	private boolean setPreviewImage(ArchiveEntry image) {
 		if (image != null && image.createUrl().length() > 0) {
-			imagePanel.getElement().getStyle().setBackgroundImage(
-					"url(" + image.createUrl() + ")");
+			imagePanel.getElement().style.backgroundImage =
+					"url(" + image.createUrl() + ")";
 			return true;
 		}
 		return false;
@@ -173,14 +172,14 @@ public class PagePreviewCard extends FlowPanel
 	 *            to set.
 	 */
 	public void setTop(int top) {
-		getElement().getStyle().setTop(top, Unit.PX);
+		getElement().style.top = top+"px";
 	}
 
 	/**
 	 * @return the top of card without margin.
 	 */
 	public int getTop() {
-		return getElement().getOffsetTop();
+		return getElement().offsetTop;
 	}
 
 	/**
@@ -274,7 +273,7 @@ public class PagePreviewCard extends FlowPanel
 	}
 
 	public void clearBackground() {
-		imagePanel.getElement().getStyle().setBackgroundImage("");
+		imagePanel.getElement().style.backgroundImage = null;
 	}
 
 	public boolean updatePreviewFromFile() {

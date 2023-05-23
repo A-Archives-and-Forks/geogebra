@@ -1232,8 +1232,8 @@ public class OptionsTab extends FlowPanel {
 			}
 			FormLabel label = getLabel();
 			label.setStyleName("imageCorner");
-			label.getElement().getStyle()
-					.setProperty("backgroundImage", "url(" + res + ")");
+			label.getElement().style
+					.backgroundImage = "url(" + res + ")";
 		}
 
 		@Override

@@ -8,13 +8,13 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.util.AppletParameters;
 import org.geogebra.web.html5.util.GeoGebraElement;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.SimplePanel;
 
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 
 public class SplashDialog extends SimplePanel {
@@ -54,10 +54,10 @@ public class SplashDialog extends SimplePanel {
 
 		if (!previewExists) {
 			FlowPanel panel = new FlowPanel();
-			Style style = panel.getElement().getStyle();
-			style.setPosition(Position.ABSOLUTE);
-			style.setZIndex(1000000);
-			style.setBackgroundColor("white");
+			CSSStyleDeclaration style = panel.getElement().style;
+			style.position = "absolute";
+			style.zIndex = CSSProperties.ZIndexUnionType.of(1000000);
+			style.backgroundColor = "white";
 			if (showLogo) {
 				NoDragImage logo = new NoDragImage(GuiResourcesSimple.INSTANCE
 				        .ggb_logo_name(), 427 , 120);
@@ -84,14 +84,14 @@ public class SplashDialog extends SimplePanel {
 		geogebraFrame.runAsyncAfterSplash();
 	}
 
-	private boolean checkIfPreviewExists(Element thisArticle) {
+	private boolean checkIfPreviewExists(HTMLElement thisArticle) {
 		if (thisArticle != null && Dom.querySelectorForElement(thisArticle,
 				".ggb_preview") != null) {
 			return true;
 		}
 		return thisArticle != null
-				&& thisArticle.getParentElement() != null
-				&& Dom.querySelectorForElement(thisArticle.getParentElement(),
+				&& thisArticle.parentElement != null
+				&& Dom.querySelectorForElement(thisArticle.parentElement,
 				".ggb_preview") != null;
 	}
 
@@ -103,11 +103,11 @@ public class SplashDialog extends SimplePanel {
 		removePreviewImg(geoGebraElement.getElement());
 	}
 
-	private void removePreviewImg(Element thisArticle) {
+	private void removePreviewImg(HTMLElement thisArticle) {
 		if (Js.isTruthy(thisArticle)) {
-			Element img = Dom.querySelectorForElement(thisArticle, ".ggb_preview");
+			HTMLElement img = Dom.querySelectorForElement(thisArticle, ".ggb_preview");
 			if (Js.isTruthy(img)) {
-				img.getParentNode().removeChild(img);
+				img.remove();
 			}
 		}
 	}

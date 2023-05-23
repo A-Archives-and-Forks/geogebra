@@ -9,6 +9,9 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.HTML;
 import org.gwtproject.user.client.ui.Image;
 
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+
 /**
  * Adds a menu item with a checkmark on its end.
  * 
@@ -94,17 +97,18 @@ public class GCollapseMenuItem {
 		menuItem.setHTML(itemPanel.toString());
 		menuItem.getElement().setAttribute("aria-expanded",
 				String.valueOf(expanded));
-		if (items.getElement().getParentElement() != null) {
-			items.getElement().getParentElement().getStyle()
+		HTMLElement parentElement = Js.uncheckedCast(items.getElement().parentElement);
+		if (parentElement != null) {
+			parentElement.style
 					.setProperty("listStyle", "none");
-			items.getElement().getParentElement().setAttribute("aria-hidden",
+			parentElement.setAttribute("aria-hidden",
 					String.valueOf(!expanded));
 		}
 		menuItem.getElement().setAttribute("aria-label",
 				title + (value ? " collapsed" : " expanded"));
 		updateItems();
 
-		items.getElement().setTabIndex(-1);
+		items.getElement().tabIndex = -1;
 	}
 
 	/**
@@ -145,7 +149,7 @@ public class GCollapseMenuItem {
 		for (AriaMenuItem mi : items.getItems()) {
 			Dom.toggleClass(mi, "expanded", "collapsed", expanded);
 			AriaHelper.setHidden(mi, !expanded);
-			mi.getElement().setTabIndex(expanded ? 0 : -1);
+			mi.getElement().tabIndex = expanded ? 0 : -1;
 		}
 	}
 

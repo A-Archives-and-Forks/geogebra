@@ -699,8 +699,8 @@ public class DockSplitPaneW extends ZoomSplitLayoutPanel
 	 */
 	public void checkDividerIsOutside() {
 		// w, h should contain the dimensions visible on screen
-		int w = this.getElement().getClientWidth();
-		int h = this.getElement().getClientHeight();
+		int w = this.getElement().clientWidth;
+		int h = this.getElement().clientHeight;
 
 		if (orientation == SwingConstants.HORIZONTAL_SPLIT) {
 			if (getDividerLocation() >= w && (w > 0)) {

@@ -7,13 +7,13 @@ import org.geogebra.web.full.gui.view.probcalculator.MathTextFieldW;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 
 import com.himamis.retex.editor.share.editor.UnhandledArrowListener;
 import com.himamis.retex.editor.share.util.JavaKeyCodes;
 
 import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
 
 public class TableEditor implements UnhandledArrowListener {
@@ -44,13 +44,13 @@ public class TableEditor implements UnhandledArrowListener {
 			mathTextField.setText(newColumnAndRow
 					? table.tableModel.getCellAt(row, column).getInput()
 					: ""); // make sure we don't load content of previously edited cell
-			Element cell = table.getCell(row, column);
+			HTMLElement cell = table.getCell(row, column);
 			table.scrollIntoView(cell);
 			table.getTableWrapper().add(mathTextField); // first add to GWT tree
-			cell.removeAllChildren();
-			cell.removeClassName("errorCell");
-			Element wrap = DOM.createDiv();
-			wrap.addClassName("tableEditorWrap");
+			DOM.removeAllChildren(cell);
+			cell.classList.remove("errorCell");
+			HTMLElement wrap = DOM.createDiv();
+			wrap.classList.add("tableEditorWrap");
 			wrap.appendChild(mathTextField.asWidget().getElement());
 			cell.appendChild(wrap); // then move in DOM
 
@@ -64,9 +64,9 @@ public class TableEditor implements UnhandledArrowListener {
 	}
 
 	private void stopEditing() {
-		Element wrapper = mathTextField.asWidget().getElement().getParentElement();
+		elemental2.dom.Element wrapper = mathTextField.asWidget().getElement().parentElement;
 		mathTextField.asWidget().removeFromParent();
-		wrapper.removeFromParent();
+		wrapper.remove();
 		GeoEvaluatable evaluatable = table.view.getEvaluatable(editColumn);
 		if (evaluatable instanceof GeoList) {
 			GeoList list = (GeoList) evaluatable;

@@ -2,10 +2,12 @@ package org.geogebra.web.full.gui.view.algebra;
 
 import org.geogebra.common.main.App;
 import org.geogebra.common.util.IndexHTMLBuilder;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 /**
  * Index builder that creates SUB elements in DOM directly
@@ -16,7 +18,7 @@ import org.gwtproject.user.client.ui.Widget;
 public final class DOMIndexHTMLBuilder extends IndexHTMLBuilder {
 	private final Widget w;
 	private final App app;
-	private Element sub = null;
+	private HTMLElement sub = null;
 
 	/**
 	 * @param w
@@ -35,17 +37,17 @@ public final class DOMIndexHTMLBuilder extends IndexHTMLBuilder {
 
 		if (sub == null) {
 			w.getElement()
-					.appendChild(Document.get().createTextNode(s));
+					.appendChild(DomGlobal.document.createTextNode(s));
 		} else {
-			sub.appendChild(Document.get().createTextNode(s));
+			sub.appendChild(DomGlobal.document.createTextNode(s));
 		}
 	}
 
 	@Override
 	public void startIndex() {
-		sub = Document.get().createElement("sub");
-		sub.getStyle().setFontSize((int) (app.getFontSize() * 0.8),
-				Unit.PX);
+		sub = DOM.createElement("sub");
+		sub.style.fontSize = CSSProperties.FontSizeUnionType.of(
+				(app.getFontSize() * 0.8) + "px");
 	}
 
 	@Override
@@ -61,12 +63,12 @@ public final class DOMIndexHTMLBuilder extends IndexHTMLBuilder {
 		if (sub != null) {
 			endIndex();
 		}
-		return w.getElement().getInnerHTML();
+		return w.getElement().innerHTML;
 	}
 
 	@Override
 	public void clear() {
-		w.getElement().removeAllChildren();
+		DOM.removeAllChildren(w.getElement());
 		sub = null;
 	}
 

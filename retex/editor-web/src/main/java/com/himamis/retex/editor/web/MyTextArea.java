@@ -1,9 +1,10 @@
 package com.himamis.retex.editor.web;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.FocusWidget;
 import org.gwtproject.user.client.ui.RootPanel;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 public class MyTextArea extends FocusWidget {
 
@@ -11,7 +12,7 @@ public class MyTextArea extends FocusWidget {
 	 * @param element
 	 *            wrapped element
 	 */
-	public MyTextArea(Element element) {
+	public MyTextArea(HTMLElement element) {
 		super(element);
 	}
 
@@ -22,9 +23,9 @@ public class MyTextArea extends FocusWidget {
 	 *            textarea element
 	 * @return textarea widget
 	 */
-	public static MyTextArea wrap(Element element) {
+	public static MyTextArea wrap(HTMLElement element) {
 		// Assert that the element is attached.
-		assert Document.get().getBody().isOrHasChild(element);
+		assert DomGlobal.document.body.contains(element);
 
 		MyTextArea textArea = new MyTextArea(element);
 

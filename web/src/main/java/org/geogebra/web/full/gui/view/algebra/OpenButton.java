@@ -69,6 +69,6 @@ public class OpenButton extends SimplePanel {
             setImage(hiddenUrl.asString());
             this.setStyleName("arrowLeft");
         }
-        this.getElement().addClassName(className);
+        this.getElement().classList.add(className);
     }
 }

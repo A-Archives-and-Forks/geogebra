@@ -1,10 +1,9 @@
 package org.geogebra.web.richtext.impl;
 
-import org.gwtproject.dom.client.Element;
-
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true)
 public class CarotaTableFactory {
-	public native CarotaTable create(Element element);
+	public native CarotaTable create(HTMLElement element);
 }

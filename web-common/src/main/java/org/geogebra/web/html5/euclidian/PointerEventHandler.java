@@ -15,6 +15,7 @@ import org.gwtproject.dom.client.Element;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 
 /**
@@ -26,7 +27,7 @@ import jsinterop.base.Js;
 public class PointerEventHandler {
 
 	private final IsEuclidianController tc;
-	private static Element pointerCapture;
+	private static HTMLElement pointerCapture;
 	private HasOffsets off;
 
 	private @CheckForNull PointerState first;
@@ -145,7 +146,7 @@ public class PointerEventHandler {
 		return pointerState != null && pointerState.id == event.getPointerId();
 	}
 
-	private void onPointerDown(NativePointerEvent e, Element element) {
+	private void onPointerDown(NativePointerEvent e, HTMLElement element) {
 		if (first != null && second != null && third != null) {
 			reset();
 			return;
@@ -181,7 +182,7 @@ public class PointerEventHandler {
 		return ex;
 	}
 
-	private void onPointerUp(NativePointerEvent event, Element element) {
+	private void onPointerUp(NativePointerEvent event, HTMLElement element) {
 		if (pointerCapture != element) {
 			return;
 		}
@@ -217,7 +218,7 @@ public class PointerEventHandler {
 	 * @param element listening element (EV)
 	 * @param globalHandlers global registrations
 	 */
-	public void attachTo(Element element, GlobalHandlerRegistry globalHandlers) {
+	public void attachTo(HTMLElement element, GlobalHandlerRegistry globalHandlers) {
 		reset();
 		// treat as global to avoid memory leak
 		globalHandlers.addEventListener(element, "pointermove",
@@ -240,7 +241,7 @@ public class PointerEventHandler {
 		setCapture(view.getAbsolutePanel().getElement());
 	}
 
-	private static void setCapture(Element element) {
+	private static void setCapture(HTMLElement element) {
 		pointerCapture = element;
 	}
 

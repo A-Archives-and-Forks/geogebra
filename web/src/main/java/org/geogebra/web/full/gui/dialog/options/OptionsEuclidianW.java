@@ -439,7 +439,8 @@ public class OptionsEuclidianW extends OptionsEuclidian implements OptionPanelW,
 			cbBoldGrid.setSelected(isBold);
 			lbGridType.resetToDefault();
 			lbGridType.setLabels();
-			btGridColor.getElement().getStyle().setColor(StringUtil.toHtmlColor(color));
+			btGridColor.getElement().style.color =
+					StringUtil.toHtmlColor(color);
 			updateGridColorButton(color);
 		}
 	

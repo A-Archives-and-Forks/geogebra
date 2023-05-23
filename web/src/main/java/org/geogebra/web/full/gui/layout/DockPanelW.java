@@ -37,6 +37,8 @@ import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.dom.BaseRenderingContext2D;
 import elemental2.dom.CanvasRenderingContext2D;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * Every object which should be dragged needs to be of type DockPanel. A
@@ -500,7 +502,7 @@ public abstract class DockPanelW extends ResizeComposite
 	 */
 	public void paintToCanvas(CanvasRenderingContext2D context2d,
 			Runnable callback, int left, int top) {
-		getElement().addClassName("ggbScreenshot");
+		getElement().classList.add("ggbScreenshot");
 		if (component == null) {
 			callback.run();
 			return;
@@ -509,7 +511,7 @@ public abstract class DockPanelW extends ResizeComposite
 			// component may not cover the whole panel, paint the rest white
 			drawWhiteBackground(context2d, left, top);
 			context2d.drawImage(image, left, top);
-			getElement().removeClassName("ggbScreenshot");
+			getElement().classList.remove("ggbScreenshot");
 			callback.run();
 		});
 	}
@@ -538,7 +540,8 @@ public abstract class DockPanelW extends ResizeComposite
 			addStyleName("ggbdockpanelhack");
 			addAttachHandler(evt -> {
 				if (evt.isAttached()) {
-					getElement().getParentElement().addClassName("dockPanelParent");
+					HTMLElement parent = Js.uncheckedCast(getElement().parentElement);
+					parent.classList.add("dockPanelParent");
 				}
 			});
 		}

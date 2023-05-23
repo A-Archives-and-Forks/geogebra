@@ -9,8 +9,6 @@ import org.geogebra.web.html5.gui.textbox.GTextBox;
 import org.geogebra.web.html5.gui.util.AriaMenuBar;
 import org.geogebra.web.html5.gui.util.AriaMenuItem;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.HasAllKeyHandlers;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyDownEvent;
@@ -44,6 +42,9 @@ import org.gwtproject.user.client.ui.TextBoxBase;
 import org.gwtproject.user.client.ui.UIObject;
 import org.gwtproject.user.client.ui.ValueBoxBase;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 
 /**
  * A {@link GSuggestBox} is a text box or text area which displays a
@@ -630,7 +631,7 @@ public class GSuggestBox extends Composite
 			// menu. If the window is resized and the suggestion cannot fit on a
 			// single row, it should be clipped (instead of wrapping around and
 			// taking up a second row).
-			getElement().getStyle().setProperty("whiteSpace", "nowrap");
+			getElement().style.whiteSpace = "nowrap";
 			setStyleName(STYLENAME_ARIA);
 			setSuggestion(suggestion);
 			setFocusable(false);
@@ -663,10 +664,10 @@ public class GSuggestBox extends Composite
 	 *            application
 	 * @return suggest box for given input
 	 */
-	public static GSuggestBox wrap(SuggestOracle oracle, Element element,
+	public static GSuggestBox wrap(SuggestOracle oracle, HTMLElement element,
 			Panel panel, App app) {
 		// Assert that the element is attached.
-		assert Document.get().getBody().isOrHasChild(element);
+		assert DomGlobal.document.body.contains(element);
 
 		GTextBox textBox = new GTextBox(element);
 		GSuggestBox suggestBox = new GSuggestBox(oracle, textBox, panel, app);

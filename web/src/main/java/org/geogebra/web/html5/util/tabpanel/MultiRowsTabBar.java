@@ -11,6 +11,8 @@ import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.UIObject;
 import org.gwtproject.user.client.ui.Widget;
 
+import jsinterop.base.Js;
+
 /**
  * Top bar of a tab panel.
  */
@@ -115,7 +117,7 @@ public class MultiRowsTabBar extends FlowPanel implements
 		}
 
 		@Override
-		public void onBrowserEvent(Event event) {
+		public void onBrowserEvent(elemental2.dom.Event event) {
 			if (DOM.eventGetType(event) == Event.ONCLICK) {
 				selectTabByTabWidget(this);
 			}
@@ -148,7 +150,7 @@ public class MultiRowsTabBar extends FlowPanel implements
 		assert (index >= 0) && (index < getTabCount()) : "Tab index out of bounds";
 		UIObject.setStyleName(getWidget(index).getElement(), "gwt-TabBarItem-disabled",
 				!enabled);
-		UIObject.setStyleName(getWidget(index).getElement().getParentElement(),
+		UIObject.setStyleName(Js.uncheckedCast(getWidget(index).getElement().parentElement),
 				"gwt-TabBarItem-wrapper-disabled", !enabled);
 	}
 

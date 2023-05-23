@@ -1,22 +1,23 @@
 package org.geogebra.web.html5.awt;
 
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Position;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 
 public class LayeredGGraphicsW extends GGraphics2DW {
 
 	private int currentLayer = 0;
-	private final Style parentStyle;
+	private final CSSStyleDeclaration parentStyle;
 
 	/**
 	 * @param canvas Primary canvas
 	 */
 	public LayeredGGraphicsW(Canvas canvas) {
 		super(canvas);
-		Style style = canvas.getCanvasElement().getStyle();
-		style.setPosition(Position.RELATIVE);
-		parentStyle = canvas.getParent().getElement().getStyle();
+		CSSStyleDeclaration style = canvas.getCanvasElement().style;
+		style.position = "relative";
+		parentStyle = canvas.getParent().getElement().style;
 	}
 
 	/**
@@ -24,7 +25,7 @@ public class LayeredGGraphicsW extends GGraphics2DW {
 	 */
 	@Override
 	public int embed() {
-		parentStyle.setZIndex(currentLayer + 1);
+		parentStyle.zIndex = CSSProperties.ZIndexUnionType.of(currentLayer + 1);
 		return currentLayer++;
 	}
 

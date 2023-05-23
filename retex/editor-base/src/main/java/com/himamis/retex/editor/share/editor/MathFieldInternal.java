@@ -132,7 +132,7 @@ public class MathFieldInternal
 	 * @param cursorX cursor coordinate within formula
 	 * @return new horizontal scroll value
 	 */
-	public static int getHorizontalScroll(int scrollLeft, int parentWidth, int cursorX) {
+	public static double getHorizontalScroll(double scrollLeft, int parentWidth, int cursorX) {
 		if (parentWidth + scrollLeft - PADDING_LEFT_SCROLL < cursorX) {
 			return cursorX - parentWidth + PADDING_LEFT_SCROLL;
 		} else if (cursorX < scrollLeft + PADDING_LEFT_SCROLL) {

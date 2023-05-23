@@ -17,10 +17,11 @@ import org.geogebra.web.html5.euclidian.EuclidianControllerW;
 import org.geogebra.web.html5.euclidian.EuclidianPanelWAbstract;
 import org.geogebra.web.html5.euclidian.EuclidianViewW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.Panel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSProperties;
 
 /**
  * 
@@ -173,8 +174,8 @@ public class TextPreviewPanelW extends TextPreviewer {
 		public MyEuclidianViewPanelForTextPreviewPanelW() {
 			super();
 			canvas = Canvas.createIfSupported();
-			canvas.getElement().getStyle().setPosition(Position.ABSOLUTE);
-			canvas.getElement().getStyle().setZIndex(0);
+			canvas.getElement().style.position = "absolute";
+			canvas.getElement().style.zIndex = CSSProperties.ZIndexUnionType.of(0);
 			add(canvas);
 		}
 

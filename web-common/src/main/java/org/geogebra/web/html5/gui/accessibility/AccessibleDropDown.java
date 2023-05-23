@@ -16,7 +16,6 @@ import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.gui.util.ListItem;
 import org.geogebra.web.html5.gui.util.UnorderedList;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.FocusEvent;
 import org.gwtproject.user.client.DOM;
@@ -48,13 +47,13 @@ public class AccessibleDropDown implements AccessibleWidget {
 		button.getElement().setAttribute("aria-haspopup", "listbox");
 		options = new UnorderedList();
 		options.getElement().setAttribute("role", "listbox");
-		options.getElement().setTabIndex(-1);
+		options.getElement().tabIndex = -1;
 		label = new Label();
 		label.setVisible(false); // hide; only used via aria-labeledby
 		String labelId = DOM.createUniqueId();
-		label.getElement().setId(labelId);
+		label.getElement().id = labelId;
 		String buttonId = DOM.createUniqueId();
-		button.getElement().setId(buttonId);
+		button.getElement().id = buttonId;
 		button.addStyleName("accessibleInput");
 		button.getElement().setAttribute("aria-labeledby", labelId + " " + buttonId);
 
@@ -107,7 +106,7 @@ public class AccessibleDropDown implements AccessibleWidget {
 		for (int i = 0; i < list.size(); i++) {
 			ListItem option = new ListItem();
 			String optionId = DOM.createUniqueId();
-			option.getElement().setId(optionId);
+			option.getElement().id = optionId;
 			if (i == list.getSelectedIndex()) {
 				options.getElement().setAttribute("aria-activedescendant", optionId);
 			}
@@ -137,8 +136,8 @@ public class AccessibleDropDown implements AccessibleWidget {
 		if (drawable instanceof CanvasDrawable) {
 			GRectangle bounds = ((CanvasDrawable) drawable).getBounds();
 			if (bounds != null) {
-				button.getElement().getStyle().setTop(bounds.getMinY(), Unit.PX);
-				button.getElement().getStyle().setLeft(bounds.getMinX(), Unit.PX);
+				button.getElement().style.top = bounds.getMinY() + "px";
+				button.getElement().style.left = bounds.getMinX() + "px";
 			}
 		}
 	}

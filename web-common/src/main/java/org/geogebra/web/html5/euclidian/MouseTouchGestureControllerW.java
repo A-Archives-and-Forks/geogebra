@@ -264,7 +264,7 @@ public class MouseTouchGestureControllerW extends MouseTouchGestureController
 	@Override
 	public double getZoomLevel() {
 		String zoom = ((AppW) app).getGeoGebraElement().getParentElement()
-				.getStyle().getProperty("zoom");
+				.style.getPropertyValue("zoom");
 		if (StringUtil.empty(zoom)) {
 			return 1;
 		}

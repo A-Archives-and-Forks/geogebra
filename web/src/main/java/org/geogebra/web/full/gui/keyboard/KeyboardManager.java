@@ -34,12 +34,14 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.keyboard.KeyboardManagerInterface;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Panel;
 import org.gwtproject.user.client.ui.RequiresResize;
 import org.gwtproject.user.client.ui.RootPanel;
+
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * Handles creating, showing and updating the keyboard
@@ -53,7 +55,7 @@ public class KeyboardManager
 	private VirtualKeyboardGUI keyboard;
 
 	private String originalBodyPadding;
-	private final Style bodyStyle;
+	private final CSSStyleDeclaration bodyStyle;
 	private KeyboardListener processing;
 
 	/**
@@ -63,7 +65,7 @@ public class KeyboardManager
 	 */
 	public KeyboardManager(AppW appWFull) {
 		this.app = appWFull;
-		this.bodyStyle = RootPanel.getBodyElement().getStyle();
+		this.bodyStyle = RootPanel.getBodyElement().style;
 	}
 
 	/**
@@ -160,19 +162,19 @@ public class KeyboardManager
 	}
 
 	private RootPanel createKeyboardRoot() {
-		Element detachedKeyboardParent = DOM.createDiv();
-		detachedKeyboardParent.setClassName("GeoGebraFrame");
-		Element container = getAppletContainer();
+		HTMLElement detachedKeyboardParent = DOM.createDiv();
+		detachedKeyboardParent.className = "GeoGebraFrame";
+		HTMLElement container = getAppletContainer();
 		container.appendChild(detachedKeyboardParent);
 		String keyboardParentId = app.getAppletId() + "keyboard";
-		detachedKeyboardParent.setId(keyboardParentId);
+		detachedKeyboardParent.id = keyboardParentId;
 		app.addWindowResizeListener(this);
 		return RootPanel.get(keyboardParentId);
 	}
 
-	private Element getAppletContainer() {
-		Element scaler = app.getGeoGebraElement().getParentElement();
-		Element container = scaler == null ? null : scaler.getParentElement();
+	private HTMLElement getAppletContainer() {
+		HTMLElement scaler = app.getGeoGebraElement().getParentElement();
+		HTMLElement container = scaler == null ? null : Js.uncheckedCast(scaler.parentElement);
 		if (container == null) {
 			return RootPanel.getBodyElement();
 		}
@@ -264,20 +266,21 @@ public class KeyboardManager
 
 	private void addExtraSpaceForKeyboard() {
 		if (extraSpaceNeededForKeyboard()) {
-			originalBodyPadding = bodyStyle.getPaddingBottom();
+			originalBodyPadding = bodyStyle.paddingBottom.asString();
 			bodyStyle.setProperty("paddingBottom", estimateKeyboardHeight() + "px");
 		}
 	}
 
 	private void removeExtraSpaceForKeyboard() {
-		if (!Objects.equals(originalBodyPadding, bodyStyle.getPaddingBottom())) {
+		if (!Objects.equals(originalBodyPadding, bodyStyle.paddingBottom.asString())) {
 			bodyStyle.setProperty("paddingBottom", originalBodyPadding);
 		}
 	}
 
 	private boolean extraSpaceNeededForKeyboard() {
 		if (shouldDetach()) {
-			double appletBottom = app.getFrameElement().getAbsoluteBottom();
+			double appletBottom = DOM.getAbsoluteTop(app.getFrameElement())
+					+ app.getFrameElement().offsetHeight;
 			return NavigatorUtil.getWindowHeight() - appletBottom < estimateKeyboardHeight();
 		}
 

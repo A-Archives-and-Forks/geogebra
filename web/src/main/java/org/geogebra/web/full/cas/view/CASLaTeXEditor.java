@@ -18,10 +18,6 @@ import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.EventUtil;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.HumanInputEvent;
@@ -34,6 +30,9 @@ import com.himamis.retex.editor.share.input.KeyboardInputAdapter;
 import com.himamis.retex.editor.share.serializer.TeXSerializer;
 import com.himamis.retex.editor.share.util.Unicode;
 import com.himamis.retex.editor.web.MathFieldW;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
 
 /**
  * ReTeX editor for CAS
@@ -72,7 +71,7 @@ public class CASLaTeXEditor extends FlowPanel implements CASEditorW,
 		dummy = new Label(
 				app.getLocalization().getMenu("InputLabel") + Unicode.ELLIPSIS);
 		dummy.addStyleName("CAS_dummyLabel");
-		this.getElement().getStyle().setOverflow(Overflow.HIDDEN);
+		this.getElement().style.overflow = "hidden";
 		updateWidth();
 	}
 
@@ -80,7 +79,7 @@ public class CASLaTeXEditor extends FlowPanel implements CASEditorW,
 		int width = app.getGuiManager().getLayout().getDockManager()
 				.getPanel(App.VIEW_CAS).getOffsetWidth() - 35;
 		if (width > 0) {
-			this.getElement().getStyle().setWidth(width, Unit.PX);
+			this.getElement().style.width = CSSProperties.WidthUnionType.of(width + "px");
 		}
 	}
 
@@ -384,8 +383,7 @@ public class CASLaTeXEditor extends FlowPanel implements CASEditorW,
 	}
 
 	private void setDummyFontSize(int size) {
-		Element element = dummy.getElement();
-		Style style = element.getStyle();
-		style.setFontSize(size, Unit.PX);
+		HTMLElement element = dummy.getElement();
+		element.style.fontSize = CSSProperties.FontSizeUnionType.of(size + "px");
 	}
 }

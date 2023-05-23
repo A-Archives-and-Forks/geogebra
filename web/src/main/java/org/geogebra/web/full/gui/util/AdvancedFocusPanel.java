@@ -1,16 +1,17 @@
 package org.geogebra.web.full.gui.util;
 
 import org.geogebra.gwtutil.NavigatorUtil;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TextAreaElement;
-import org.gwtproject.dom.style.shared.Display;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtproject.user.client.ui.Widget;
 
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTextAreaElement;
+import jsinterop.base.Js;
+
 public class AdvancedFocusPanel extends SimplePanel implements AdvancedFocusPanelI {
 
-	TextAreaElement focusTextarea;
+	HTMLTextAreaElement focusTextarea;
 	boolean disabledTextarea;
 
 	/**
@@ -35,16 +36,16 @@ public class AdvancedFocusPanel extends SimplePanel implements AdvancedFocusPane
 		// which will make it possible for us to add "paste"
 		// events to the AdvancedFocusPanel, not just "keydown",
 		// "keypress", "keyup", etc events.
-		focusTextarea = DOM.createTextArea().cast();
+		focusTextarea = Js.uncheckedCast(DOM.createTextArea());
 
 		// the only problem with focusTextarea seems to be its style:
 		// so it is still visible on the page, unless we hide it!
-		focusTextarea.addClassName("AdvancedFocusPanelsTextarea");
+		focusTextarea.classList.add("AdvancedFocusPanelsTextarea");
 		if (NavigatorUtil.isMobile()) {
-			focusTextarea.setDisabled(true);
+			focusTextarea.disabled = true;
 			this.disabledTextarea = true;
-			focusTextarea.getStyle().setDisplay(Display.NONE);
-			getContainerElement().setTabIndex(1);
+			focusTextarea.style.display = "none";
+			getContainerElement().tabIndex = 1;
 		}
 
 		// as the setWidget call happens later, we shall accept
@@ -74,7 +75,7 @@ public class AdvancedFocusPanel extends SimplePanel implements AdvancedFocusPane
 	 */
 	@Override
 	public void setFocus(boolean focus) {
-		Element el = this.disabledTextarea ? getContainerElement()
+		HTMLElement el = this.disabledTextarea ? getContainerElement()
 				: this.focusTextarea;
 		if (focus) {
 			el.focus();
@@ -86,7 +87,7 @@ public class AdvancedFocusPanel extends SimplePanel implements AdvancedFocusPane
 	/**
 	 * @return textarea for focus events
 	 */
-	public Element getTextarea() {
+	public HTMLElement getTextarea() {
 		return focusTextarea;
 	}
 
@@ -103,11 +104,11 @@ public class AdvancedFocusPanel extends SimplePanel implements AdvancedFocusPane
 	 */
 	@Override
 	public void setSelectedContent(String str) {
-		if (focusTextarea.getValue().isEmpty()
+		if (focusTextarea.value.isEmpty()
 				&& (str == null || str.isEmpty())) {
 			return;
 		}
-		focusTextarea.setValue(str);
+		focusTextarea.value = str;
 		focusTextarea.select();
 	}
 

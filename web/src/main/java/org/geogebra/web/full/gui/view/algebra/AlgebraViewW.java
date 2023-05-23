@@ -49,7 +49,6 @@ import org.geogebra.web.shared.SharedResources;
 import org.gwtproject.animation.client.AnimationScheduler;
 import org.gwtproject.animation.client.AnimationScheduler.AnimationCallback;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.event.dom.client.MouseMoveEvent;
@@ -69,6 +68,11 @@ import org.gwtproject.user.client.ui.TreeItem;
 
 import com.himamis.retex.editor.share.event.KeyEvent;
 import com.himamis.retex.editor.share.util.GWTKeycodes;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
+import jsinterop.base.Js;
 
 /**
  * HTML5 version of AV
@@ -196,10 +200,10 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 
 		setLabels();
 
-		getElement().addClassName("algebraView");
+		getElement().classList.add("algebraView");
 
 		// needed to have tabindex >= 0 with focus to catch keyboard events
-		getElement().setTabIndex(0);
+		getElement().tabIndex = 0;
 		addKeyDownHandler(this.app.getGlobalKeyDispatcher());
 		addKeyUpHandler(this.app.getGlobalKeyDispatcher());
 		addKeyPressHandler(this.app.getGlobalKeyDispatcher());
@@ -213,7 +217,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 	}
 
 	@Override
-	public void onBrowserEvent(Event event) {
+	public void onBrowserEvent(elemental2.dom.Event event) {
 		// as arrow keys are prevented in super.onBrowserEvent,
 		// we need to handle arrow key events before that
 		int eventType = DOM.eventGetType(event);
@@ -222,7 +226,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 			// do nothing
 			break;
 		case Event.ONKEYUP:
-			switch (event.getKeyCode()) {
+			switch (DOM.getKeyCode(event)) {
 			default:
 				// do nothing
 				break;
@@ -234,7 +238,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 				// onkeypress
 				if (!(editItem || Browser.isTabletBrowser())) {
 					app.getGlobalKeyDispatcher()
-							.handleSelectedGeosKeys(event);
+							.handleSelectedGeosKeys((KeyboardEvent) event);
 					event.stopPropagation();
 					event.preventDefault();
 					return;
@@ -267,7 +271,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 	 * @param event
 	 *            keyboard events
 	 */
-	private void handleTabletKeyboard(Event event) {
+	private void handleTabletKeyboard(elemental2.dom.Event event) {
 		switch (DOM.eventGetType(event)) {
 		case Event.ONKEYPRESS:
 			handleKeyPressed(event);
@@ -280,25 +284,25 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 		}
 	}
 
-	private void handleKeyPressed(Event event) {
-		int keyCode = event.getKeyCode();
+	private void handleKeyPressed(elemental2.dom.Event event) {
+		int keyCode = DOM.getKeyCode(event);
 
 		switch (keyCode) {
 		case GWTKeycodes.KEY_ENTER:
 		case GWTKeycodes.KEY_ESCAPE:
 		case GWTKeycodes.KEY_BACKSPACE:
 			getActiveTreeItem().getMathField().getKeyListener().onKeyPressed(
-					new KeyEvent(keyCode, 0, (char) event.getCharCode()));
+					new KeyEvent(keyCode, 0, (char) DOM.getCharCode(event)));
 			break;
 		default:
 			getActiveTreeItem().getMathField().getKeyListener().onKeyTyped(
-					new KeyEvent(keyCode, 0, (char) event.getCharCode()));
+					new KeyEvent(keyCode, 0, (char) DOM.getCharCode(event)));
 			break;
 		}
 	}
 
-	private void handleKeyDown(Event event) {
-		int keyCode = event.getKeyCode();
+	private void handleKeyDown(elemental2.dom.Event event) {
+		int keyCode = DOM.getKeyCode(event);
 
 		if (keyCode == 0 && Browser.isIPad()) {
 			int arrowType = Browser.getIOSArrowKeys(event);
@@ -311,7 +315,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 			if (Browser.isAndroid()) {
 				getActiveTreeItem().getMathField().getKeyListener()
 						.onKeyPressed(new KeyEvent(keyCode, 0,
-								(char) event.getCharCode()));
+								(char) DOM.getCharCode(event)));
 			}
 			break;
 		case GWTKeycodes.KEY_LEFT:
@@ -320,7 +324,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 		case GWTKeycodes.KEY_DOWN:
 			getActiveTreeItem().getMathField().getKeyListener()
 					.onKeyPressed(new KeyEvent(keyCode, 0,
-							(char) event.getCharCode()));
+							(char) DOM.getCharCode(event)));
 			event.stopPropagation();
 			break;
 		default:
@@ -1033,8 +1037,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 				ob, key,
 				SharedResources.INSTANCE.algebra_tree_open().getSafeUri(),
 				SharedResources.INSTANCE.algebra_tree_closed().getSafeUri());
-		group.getElement().getStyle().setFontSize(getFontSizeWeb(),
-				Unit.PX);
+		group.getElement().style.setProperty("fontSize", getFontSizeWeb() + "px");
 		ti.setWidget(group);
 	}
 
@@ -1520,8 +1523,8 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 		hideAlgebraInput();
 		this.inputPanelTreeItem = new TreeItem(inputPanel.getWidget());
 		inputPanelTreeItem.addStyleName("avInputItem");
-		inputPanel.getWidget().getElement().getParentElement()
-				.addClassName("newRadioButtonTreeItemParent");
+		HTMLElement parent = Js.uncheckedCast(inputPanel.getWidget().getElement().parentElement);
+		parent.classList.add("newRadioButtonTreeItemParent");
 
 		if (inputJustCreated) {
 			if (isNodeTableEmpty()) {
@@ -1574,8 +1577,8 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 			// except it also makes this null, no problem
 			// ... or? still preferring to be safe
 			if (inputPanelLatex != null) {
-				inputWidth = inputPanelLatex.getWidget().getElement()
-						.getParentElement().getClientWidth();
+				HTMLElement inputParent = Js.uncheckedCast(inputPanelLatex.getWidget().getElement().parentElement);
+				inputWidth = inputParent.clientWidth;
 			}
 			super.removeItem(inputPanelTreeItem);
 
@@ -1591,8 +1594,9 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 		inputPanelTreeItem = super.addItem(inputPanel.getWidget());
 		inputPanel.setIndexLast();
 		inputPanelTreeItem.addStyleName("avInputItem");
-		inputPanel.getWidget().getElement().getParentElement()
-				.addClassName("newRadioButtonTreeItemParent");
+		HTMLElement inputPanelParent = Js.uncheckedCast(inputPanel.getWidget().getElement().parentElement);
+		inputPanelParent
+				.classList.add("newRadioButtonTreeItemParent");
 
 		if (inputJustCreated) {
 			if (isNodeTableEmpty()) {
@@ -1964,8 +1968,8 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 			TreeItem ti = getItem(i);
 			if (!updateAndSetLabels(ti)) {
 				if (ti.getWidget() instanceof GroupHeader) {
-					ti.getWidget().getElement().getStyle()
-							.setFontSize(getFontSizeWeb(), Unit.PX);
+					ti.getWidget().getElement().style
+							.fontSize = CSSProperties.FontSizeUnionType.of(getFontSizeWeb() + "px");
 					for (int j = 0; j < ti.getChildCount(); j++) {
 						updateAndSetLabels(ti.getChild(j));
 					}

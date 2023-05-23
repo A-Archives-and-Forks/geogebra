@@ -49,8 +49,6 @@ import org.geogebra.web.resources.SVGResource;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Float;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.layout.client.Layout;
 import org.gwtproject.layout.client.Layout.AnimationCallback;
 import org.gwtproject.user.client.DOM;
@@ -172,8 +170,8 @@ public class ToolbarPanel extends FlowPanel
 	private void setUndoPosition(double top, double left) {
 		assert undoRedoPanel != null;
 		undoRedoPanel.setVisible(true);
-		undoRedoPanel.getElement().getStyle().setTop(top, Unit.PX);
-		undoRedoPanel.getElement().getStyle().setLeft(left, Unit.PX);
+		undoRedoPanel.getElement().style.top = top + "px";
+		undoRedoPanel.getElement().style.left = left + "px";
 	}
 
 	/**
@@ -334,7 +332,7 @@ public class ToolbarPanel extends FlowPanel
 				.toolbar_close_landscape_black();
 		StandardButton close = new StandardButton(icon, null, 24, 24);
 		close.addStyleName("flatButton");
-		close.getElement().getStyle().setFloat(Float.RIGHT);
+		close.getElement().style.cssFloat = "right";
 		close.addFastClickHandler(source -> {
 			navRail.setAnimating(true);
 			showOppositeView();
@@ -436,7 +434,7 @@ public class ToolbarPanel extends FlowPanel
 	}
 
 	@Override
-	public void onBrowserEvent(Event event) {
+	public void onBrowserEvent(elemental2.dom.Event event) {
 		if (DOM.eventGetType(event) == Event.ONCLICK) {
 			app.hideMenu();
 		}
@@ -935,11 +933,11 @@ public class ToolbarPanel extends FlowPanel
 	 * Update the size of tab container and all tabs
 	 */
 	public void resizeTabs() {
-		main.getElement().getStyle().setProperty("left",
+		main.getElement().style.setProperty("left",
 				getNavigationRailWidth() + "px");
-		main.getElement().getStyle().setProperty("height",
+		main.getElement().style.setProperty("height",
 				"calc(100% - " + (getNavigationRailHeight() + getHeadingHeight()) + "px)");
-		main.getElement().getStyle().setProperty("width", "calc(100% - "
+		main.getElement().style.setProperty("width", "calc(100% - "
 				+ getNavigationRailWidth() + "px)");
 
 		navRail.setVisible(!app.isPortrait() || !isKeyboardShowing());
@@ -1367,10 +1365,10 @@ public class ToolbarPanel extends FlowPanel
 		navRail.paintToCanvas(context2d, left, top);
 		// if tool tabs is active, still paint algebra
 		ToolbarTab active = tabTable != null && tabTable.isActive() ? tabTable : tabAlgebra;
-		active.getElement().addClassName("ggbScreenshot");
+		active.getElement().classList.add("ggbScreenshot");
 		Domvas.get().toImage(active.getElement(), (image) -> {
 			context2d.drawImage(image, left + 72, top);
-			active.getElement().removeClassName("ggbScreenshot");
+			active.getElement().classList.remove("ggbScreenshot");
 			callback.run();
 		});
 	}
@@ -1420,7 +1418,7 @@ public class ToolbarPanel extends FlowPanel
 		protected abstract void onActive();
 
 		public boolean isActive() {
-			return getElement().hasClassName("tab");
+			return getElement().classList.contains("tab");
 		}
 
 	}

@@ -38,7 +38,7 @@ public class ToolButton extends StandardButton {
 	private void setAccessible() {
 		setLabel();
 		getElement().setAttribute("mode", mode + "");
-		getElement().setId("mode" + mode);
+		getElement().id = "mode" + mode;
 	}
 
 	/**

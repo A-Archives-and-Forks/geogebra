@@ -600,8 +600,8 @@ public class ColorChooserW extends FlowPanel implements ICustomColor {
 		});
 
 		canvas.addMouseMoveHandler(event -> {
-			int mx = event.getRelativeX(canvas.getElement());
-			int my = event.getRelativeY(canvas.getElement());
+			int mx = event.getRelativeX(Js.uncheckedCast(canvas.getElement()));
+			int my = event.getRelativeY(Js.uncheckedCast(canvas.getElement()));
 			for (ColorTable table : tables) {
 				table.setFocus(mx, my);
 			}

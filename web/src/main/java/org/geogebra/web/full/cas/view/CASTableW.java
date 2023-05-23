@@ -12,16 +12,17 @@ import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.main.App;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TableCellElement;
-import org.gwtproject.dom.client.TableRowElement;
 import org.gwtproject.event.dom.client.HumanInputEvent;
 import org.gwtproject.event.dom.client.MouseUpEvent;
 import org.gwtproject.event.dom.client.TouchEndEvent;
-import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.Grid;
 import org.gwtproject.user.client.ui.HTMLTable;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableRowElement;
+import jsinterop.base.Js;
 
 /**
  * CAS table
@@ -308,10 +309,10 @@ public class CASTableW extends Grid implements CASTable {
 	private void setRowSelected(int rowNumber, boolean selected) {
 		if (selected) {
 			getCellFormatter().getElement(rowNumber, COL_CAS_HEADER)
-					.addClassName("selected");
+					.classList.add("selected");
 		} else {
 			getCellFormatter().getElement(rowNumber, COL_CAS_HEADER)
-					.removeClassName("selected");
+					.classList.remove("selected");
 		}
 	}
 
@@ -328,14 +329,14 @@ public class CASTableW extends Grid implements CASTable {
 	 * @return (column, row)
 	 */
 	public GPoint getPointForEvent(HumanInputEvent<?> event) {
-		Element td = getEventTargetCell(Event.as(event.getNativeEvent()));
+		HTMLElement td = getEventTargetCell(event.getNativeEvent());
 		if (td == null) {
 			return null;
 		}
 
-		int row = TableRowElement.as(td.getParentElement())
-				.getSectionRowIndex();
-		int column = TableCellElement.as(td).getCellIndex();
+		int row = Js.<HTMLTableRowElement>uncheckedCast(td.parentElement)
+				.sectionRowIndex;
+		int column = Js.<HTMLTableCellElement>uncheckedCast(td).cellIndex;
 		return new GPoint(column, row);
 	}
 
@@ -447,14 +448,14 @@ public class CASTableW extends Grid implements CASTable {
 	 * @return clicked cell
 	 */
 	public CASTableCellW getCasCellForEvent(HumanInputEvent<?> event) {
-		Element td = getEventTargetCell(Event.as(event.getNativeEvent()));
+		HTMLElement td = getEventTargetCell(event.getNativeEvent());
 		if (td == null) {
 			return null;
 		}
 
-		int row = TableRowElement.as(td.getParentElement())
-		        .getSectionRowIndex();
-		int column = TableCellElement.as(td).getCellIndex();
+		int row = Js.<HTMLTableRowElement>uncheckedCast(td.parentElement)
+		        .sectionRowIndex;
+		int column = Js.<HTMLTableCellElement>uncheckedCast(td).cellIndex;
 		Widget widget = getWidget(row, column);
 		if (!(widget instanceof CASTableCellW)) {
 			return null;
@@ -491,14 +492,14 @@ public class CASTableW extends Grid implements CASTable {
 	 * @return The appropriate cell, or null
 	 */
 	public MyCell getCellForEvent(HumanInputEvent<?> event) {
-		Element td = getEventTargetCell(Event.as(event.getNativeEvent()));
+		HTMLElement td = getEventTargetCell(event.getNativeEvent());
 		if (td == null) {
 			return null;
 		}
 
-		int row = TableRowElement.as(td.getParentElement())
-				.getSectionRowIndex();
-		int column = TableCellElement.as(td).getCellIndex();
+		int row = Js.<HTMLTableRowElement>uncheckedCast(td.parentElement)
+				.sectionRowIndex;
+		int column = Js.<HTMLTableCellElement>uncheckedCast(td).cellIndex;
 		return new MyCell(row, column);
 	}
 

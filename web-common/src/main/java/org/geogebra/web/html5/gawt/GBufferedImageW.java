@@ -122,8 +122,8 @@ public class GBufferedImageW implements GBufferedImage {
 			canv = makeCanvas();
 			canv.setCoordinateSpaceWidth(cv.getCoordinateSpaceWidth());
 			canv.setCoordinateSpaceHeight(cv.getCoordinateSpaceHeight());
-			canv.setWidth(cv.getCanvasElement().getWidth() + "px");
-			canv.setHeight(cv.getCanvasElement().getHeight() + "px");
+			canv.setWidth(cv.getCanvasElement().width + "px");
+			canv.setHeight(cv.getCanvasElement().height + "px");
 			JLMContext2d c2d = Js.uncheckedCast(canv.getContext2d());
 			JLMContext2d otherContext = Js.uncheckedCast(cv.getContext2d());
 			c2d.putImageData(

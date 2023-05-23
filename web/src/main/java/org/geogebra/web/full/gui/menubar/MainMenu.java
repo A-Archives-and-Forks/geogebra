@@ -18,7 +18,6 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.util.TestHarness;
 import org.geogebra.web.resources.SVGResource;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.gwtproject.event.dom.client.KeyDownHandler;
@@ -28,6 +27,8 @@ import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Sidebar menu for SMART
@@ -161,9 +162,9 @@ public class MainMenu extends FlowPanel
 			}
 
 			@Override
-			public void onBrowserEvent(Event event) {
+			public void onBrowserEvent(elemental2.dom.Event event) {
 				int eventType = DOM.eventGetType(event);
-				Element target = DOM.eventGetTarget(event);
+				HTMLElement target = DOM.eventGetTarget(event);
 				int index = findDividerIndex(target);
 				if (!app.isExam() && eventType == Event.ONMOUSEOUT) {
 					if (index != getSelectedIndex()) {
@@ -188,14 +189,14 @@ public class MainMenu extends FlowPanel
 
 			private void setExpandStyles(int index) {
 				Submenu mi = getMenuAt(index);
-				mi.getElement().removeClassName("collapse");
-				mi.getElement().addClassName("expand");
+				mi.getElement().classList.remove("collapse");
+				mi.getElement().classList.add("expand");
 			}
 
 			private void setCollapseStyles(int index) {
 				Submenu mi = getMenuAt(index);
-				mi.getElement().removeClassName("expand");
-				mi.getElement().addClassName("collapse");
+				mi.getElement().classList.remove("expand");
+				mi.getElement().classList.add("collapse");
 			}
 
 			private void setStackText(int index, boolean expand) {
@@ -397,7 +398,7 @@ public class MainMenu extends FlowPanel
 	 * @param icon - icon
 	 * @return image of icon
 	 */
-	public static Element getImage(ResourcePrototype icon) {
+	public static HTMLElement getImage(ResourcePrototype icon) {
 		NoDragImage img = new NoDragImage(icon, 20, 20);
 		return img.getElement();
 	}

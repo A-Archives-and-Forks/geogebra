@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import org.geogebra.common.main.App;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.resources.client.ResourcePrototype;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /** Accessible alternative to MenuBar */
 public class AriaMenuBar extends FlowPanel {
@@ -31,7 +31,7 @@ public class AriaMenuBar extends FlowPanel {
 		sinkEvents(Event.ONCLICK | Event.ONMOUSEOVER | Event.ONMOUSEOUT
 				| Event.ONFOCUS | Event.ONKEYPRESS | Event.ONKEYDOWN);
 		getElement().setAttribute("role", "menubar");
-		getElement().setTabIndex(0);
+		getElement().tabIndex = 0;
 		addStyleName("gwt-MenuBar");
 		addStyleName("gwt-MenuBar-vertical");
 	}
@@ -62,7 +62,7 @@ public class AriaMenuBar extends FlowPanel {
 	 *            collapsible submenu
 	 */
 	public void addMenu(AriaMenuBar item) {
-		Element li = Document.get().createLIElement();
+		HTMLElement li = DOM.createElement("LI");
 		li.appendChild(item.getElement());
 		getElement().appendChild(li);
 		li.setAttribute("aria-hidden", "true");
@@ -211,7 +211,7 @@ public class AriaMenuBar extends FlowPanel {
 		for (int i = getChildren().size() - 1; i >= 0; i--) {
 			getChildren().remove(i);
 		}
-		getElement().removeAllChildren();
+		DOM.removeAllChildren(getElement());
 		selectItem(null);
 	}
 
@@ -266,8 +266,8 @@ public class AriaMenuBar extends FlowPanel {
 	 * Add separator item
 	 */
 	public void addSeparator() {
-		Element li = DOM.createElement("LI");
-		li.setClassName("menuSeparator");
+		HTMLElement li = DOM.createElement("LI");
+		li.className = "menuSeparator";
 		li.setAttribute("role", "presentation");
 		getElement().appendChild(li);
 	}
@@ -288,7 +288,7 @@ public class AriaMenuBar extends FlowPanel {
 	}
 
 	@Override
-	public void onBrowserEvent(Event event) {
+	public void onBrowserEvent(elemental2.dom.Event event) {
 		AriaMenuItem item = findItem(DOM.eventGetTarget(event));
 		for (AriaMenuBar submenu : submenus) {
 			if (item != null) {
@@ -326,7 +326,7 @@ public class AriaMenuBar extends FlowPanel {
 			break;
 
 		case Event.ONKEYDOWN:
-			int keyCode = event.getKeyCode();
+			int keyCode = DOM.getKeyCode(event);
 			if (keyCode == KeyCodes.KEY_UP && handleArrows) {
 				moveSelectionUp();
 				eatEvent(event);
@@ -343,8 +343,8 @@ public class AriaMenuBar extends FlowPanel {
 		super.onBrowserEvent(event);
 	}
 
-	private void handleActionKey(Event event, AriaMenuItem item) {
-		if (!isActionKey(event.getKeyCode()) || item == null) {
+	private void handleActionKey(elemental2.dom.Event event, AriaMenuItem item) {
+		if (!isActionKey(DOM.getKeyCode(event)) || item == null) {
 			return;
 		}
 
@@ -371,14 +371,14 @@ public class AriaMenuBar extends FlowPanel {
 	 * @param event
 	 *            to eat.
 	 */
-	public static void eatEvent(Event event) {
+	public static void eatEvent(elemental2.dom.Event event) {
 		event.stopPropagation();
 		event.preventDefault();
 	}
 
-	private AriaMenuItem findItem(Element eventTarget) {
+	private AriaMenuItem findItem(HTMLElement eventTarget) {
 		for (AriaMenuItem item : allItems) {
-			if (item.getElement().isOrHasChild(eventTarget)) {
+			if (item.getElement().contains(eventTarget)) {
 				return item;
 			}
 		}
@@ -441,8 +441,8 @@ public class AriaMenuBar extends FlowPanel {
 	 * @return horizontal coordinate of menu
 	 */
 	public int getAbsoluteHorizontalPos(AriaMenuItem item, boolean subleft) {
-		return subleft ? item.getElement().getAbsoluteLeft()
-				: item.getElement().getAbsoluteRight() + 8;
+		return subleft ? DOM.getAbsoluteLeft(item.getElement())
+				: DOM.getAbsoluteLeft(item.getElement()) + 8;
 	}
 
 	public void setSelectionListener(MenuHoverListener gPopupMenuW) {

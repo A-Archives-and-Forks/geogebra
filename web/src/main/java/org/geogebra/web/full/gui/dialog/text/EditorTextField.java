@@ -2,13 +2,14 @@ package org.geogebra.web.full.gui.dialog.text;
 
 import org.geogebra.web.html5.awt.GFontW;
 import org.geogebra.web.html5.gui.textbox.GTextBox;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.KeyUpEvent;
 import org.gwtproject.event.dom.client.KeyUpHandler;
 
+import elemental2.dom.HTMLElement;
+
 public class EditorTextField extends GTextBox implements KeyUpHandler {
 
-	Element target;
+	HTMLElement target;
 
 	/**
 	 * Create new textfield.
@@ -33,11 +34,11 @@ public class EditorTextField extends GTextBox implements KeyUpHandler {
 
 	protected void updateTarget() {
 		if (target != null) {
-			target.setPropertyString("value", getText());
+			target.setAttribute("value", getText());
 		}
 	}
 
-	public void setTarget(Element target) {
+	public void setTarget(HTMLElement target) {
 		this.target = target;
 	}
 

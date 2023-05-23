@@ -5,13 +5,14 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.web.html5.util.DataTest;
 import org.geogebra.web.html5.util.HasDataTest;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 
 import com.himamis.retex.editor.share.util.Unicode;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
 
 /**
  * Panel containing a slider.
@@ -89,8 +90,8 @@ public class SliderPanelW extends FlowPanel implements HasDataTest  {
 			label.setText(parts[0]);
 		} else {
 			label.setText(parts[0] + Unicode.MULTIPLY + " 10");
-			Element exponent = DOM.createElement("sup");
-			exponent.setInnerText(parts[1]);
+			HTMLElement exponent = DOM.createElement("sup");
+			exponent.textContent = parts[1];
 			label.getElement().appendChild(exponent);
 		}
 
@@ -134,7 +135,7 @@ public class SliderPanelW extends FlowPanel implements HasDataTest  {
 	public void setWidth(double width) {
 		double w = width - minLabel.getOffsetWidth()
 				- maxLabel.getOffsetWidth();
-		slider.asWidget().getElement().getStyle().setWidth(w, Unit.PX);
+		slider.asWidget().getElement().style.width = CSSProperties.WidthUnionType.of(w + "px");
 	}
 
 	public SliderW getSlider() {

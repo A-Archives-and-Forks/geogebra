@@ -12,7 +12,6 @@ import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.html5.gui.AlgebraInput;
 import org.geogebra.web.html5.gui.GuiManagerInterfaceW;
 import org.geogebra.web.html5.util.CopyPasteW;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.gwtproject.event.dom.client.KeyDownHandler;
 import org.gwtproject.event.dom.client.KeyEvent;
@@ -31,6 +30,7 @@ import com.himamis.retex.editor.share.util.KeyCodes;
 import com.himamis.retex.editor.web.MathFieldW;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.KeyboardEvent;
 
 /**
  * Handles keyboard events.
@@ -133,33 +133,33 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	private class GlobalShortcutHandler implements EventListener {
 
 		@Override
-		public void onBrowserEvent(Event event) {
-			if (CopyPasteW.incorrectTarget(event.getEventTarget().cast())
+		public void onBrowserEvent(elemental2.dom.Event event) {
+			if (CopyPasteW.incorrectTarget(event.target)
 					&& !isGlobalEvent(event)) {
 				return;
 			}
 
 			if (DOM.eventGetType(event) == Event.ONKEYDOWN) {
 				boolean handled = false;
-
-				if (event.getKeyCode() == GWTKeycodes.KEY_X
-						&& event.getCtrlKey()
-						&& event.getAltKey()) {
+				KeyboardEvent keyboardEvent = (KeyboardEvent) event;
+				if (DOM.getKeyCode(event) == GWTKeycodes.KEY_X
+						&& keyboardEvent.ctrlKey
+						&& keyboardEvent.altKey) {
 					handleCtrlAltX();
 					handled = true;
 				}
-				if (NavigatorUtil.isiOS() && isControlKeyDown(event)) {
-					handleIosKeyboard((char) event.getCharCode());
+				if (NavigatorUtil.isiOS() && isControlKeyDown(keyboardEvent)) {
+					handleIosKeyboard((char) DOM.getCharCode(event));
 					handled = true;
 				}
-				if (event.getCtrlKey()) {
-					handled = handleCtrlKeys(KeyCodes.translateGWTcode(event.getKeyCode()),
-							event.getShiftKey(), false, true);
+				if (keyboardEvent.ctrlKey) {
+					handled = handleCtrlKeys(KeyCodes.translateGWTcode(DOM.getKeyCode(event)),
+							keyboardEvent.shiftKey, false, true);
 				}
-				KeyCodes kc = KeyCodes.translateGWTcode(event.getKeyCode());
+				KeyCodes kc = KeyCodes.translateGWTcode(DOM.getKeyCode(event));
 				if (kc == KeyCodes.TAB) {
 					if (!escPressed) {
-						handled = handleTab(event.getShiftKey());
+						handled = handleTab(keyboardEvent.shiftKey);
 					}
 				} else if (kc == KeyCodes.ESCAPE) {
 					escPressed = true;
@@ -170,7 +170,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 					}
 					handled = true;
 				} else {
-					handled = handleSelectedGeosKeys(event);
+					handled = handleSelectedGeosKeys(keyboardEvent);
 				}
 
 				if (handled) {
@@ -201,8 +201,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
 		setDownKeys(event);
-		KeyCodes kc = KeyCodes.translateGWTcode(event.getNativeEvent()
-				.getKeyCode());
+		KeyCodes kc = KeyCodes.translateGWTcode(DOM.getKeyCode(event.getNativeEvent()));
 		// Do not prevent default for the v key, otherwise paste events are not fired
 		if (kc != KeyCodes.TAB && event.getCharCode() != 'v'
 				&& event.getCharCode() != 'c' && event.getCharCode() != 'x') {
@@ -234,16 +233,16 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 		boolean handled = handleGeneralKeys(kc,
 				event.isShiftKeyDown(),
-				isControlKeyDown(event.getNativeEvent()),
+				isControlKeyDown((KeyboardEvent) event.getNativeEvent()),
 		        event.isAltKeyDown(), false, true);
 		if (handled) {
 			event.preventDefault();
 		}
 	}
 
-	private static boolean isControlKeyDown(NativeEvent event) {
-		return event.getCtrlKey()
-				|| (NavigatorUtil.isMacOS() || NavigatorUtil.isiOS()) && event.getMetaKey();
+	private static boolean isControlKeyDown(KeyboardEvent event) {
+		return event.ctrlKey
+				|| (NavigatorUtil.isMacOS() || NavigatorUtil.isiOS()) && event.metaKey;
 	}
 
 	/**
@@ -252,11 +251,11 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	 *            native event
 	 * @return if key was consumed
 	 */
-	public boolean handleSelectedGeosKeys(NativeEvent event) {
+	public boolean handleSelectedGeosKeys(KeyboardEvent event) {
 		return handleSelectedGeosKeys(
-				KeyCodes.translateGWTcode(event
-						.getKeyCode()), selection.getSelectedGeos(),
-				event.getShiftKey(), event.getCtrlKey(), event.getAltKey(),
+				KeyCodes.translateGWTcode(DOM.getKeyCode(event)
+						), selection.getSelectedGeos(),
+				event.shiftKey, event.ctrlKey, event.altKey,
 				false);
 	}
 
@@ -265,7 +264,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 		KeyCodes kc = KeyCodes.translateGWTcode(event.getNativeKeyCode());
 		setDownKeys(event);
 
-		boolean handled = handleSelectedGeosKeys(event.getNativeEvent());
+		boolean handled = handleSelectedGeosKeys(event.getNativeKeyboardEvent());
 
 		if (handled) {
 			event.stopPropagation();
@@ -346,7 +345,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	 */
 	public static boolean isBadKeyEvent(KeyEvent<? extends EventHandler> e) {
 		return e.isAltKeyDown() && !e.isControlKeyDown()
-				&& e.getNativeEvent().getCharCode() > 128;
+				&& DOM.getCharCode(e.getNativeEvent()) > 128;
 	}
 
 	private void handleIosKeyboard(char code) {
@@ -374,9 +373,9 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	 * @param event keybaord event
 	 * @return whether event is global
 	 */
-	public static boolean isGlobalEvent(NativeEvent event) {
-		int code = event.getKeyCode();
-		if (isControlKeyDown(event)) {
+	public static boolean isGlobalEvent(elemental2.dom.Event event) {
+		int code = DOM.getKeyCode(event);
+		if (isControlKeyDown((KeyboardEvent) event)) {
 			return code == JavaKeyCodes.VK_S
 					|| code == JavaKeyCodes.VK_O;
 		} else {

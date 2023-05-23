@@ -6,14 +6,15 @@ import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.Persistable;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.IsWidget;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.RequiresResize;
 
+import elemental2.dom.EventTarget;
 import jsinterop.base.Js;
 
 /**
@@ -71,7 +72,7 @@ public class ComponentDialog extends GPopupPanel implements RequiresResize, Pers
 		if (subTitleHTML != null) {
 			addStyleName("withSubtitle");
 			Label subTitle = new Label();
-			subTitle.getElement().setInnerHTML(subTitleHTML);
+			subTitle.getElement().innerHTML = subTitleHTML;
 			subTitle.setStyleName("dialogSubTitle");
 			dialogMainPanel.add(subTitle);
 		}
@@ -232,13 +233,13 @@ public class ComponentDialog extends GPopupPanel implements RequiresResize, Pers
 		if (!isVisible()) {
 			return; // onPreviewNativeEvent is global: ignore for hidden dialogs
 		}
-		Event nativeEvent = Event.as(event.getNativeEvent());
-		if (Event.ONKEYPRESS == event.getTypeInt() && isEnter(nativeEvent.getCharCode())
-				&& !isContentEditable(nativeEvent.getEventTarget())
-				&& !isTextarea(nativeEvent.getEventTarget())) {
+		elemental2.dom.Event nativeEvent = event.getNativeEvent();
+		if (Event.ONKEYPRESS == event.getTypeInt() && isEnter(DOM.getCharCode(nativeEvent))
+				&& !isContentEditable(nativeEvent.target)
+				&& !isTextarea(nativeEvent.target)) {
 			onPositiveAction();
 		} else if (event.getTypeInt() == Event.ONKEYUP
-				&& event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+				&& DOM.getKeyCode(event.getNativeEvent()) == KeyCodes.KEY_ESCAPE) {
 			onEscape();
 		}
 	}

@@ -166,7 +166,7 @@ public class DropDownComboBoxController implements SetLabels {
 	public void showAsDropDown(boolean isFullWidth) {
 		dropDown.positionAsDropDown();
 		if (isFullWidth) {
-			dropDown.setWidthInPx(parent.asWidget().getElement().getClientWidth());
+			dropDown.setWidthInPx(parent.asWidget().getElement().clientWidth);
 		}
 	}
 

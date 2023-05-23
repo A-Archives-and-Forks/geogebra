@@ -196,6 +196,10 @@ tasks.withType(org.wisepersist.gradle.plugins.gwt.AbstractGwtActionTask) {
     jvmArgs '-Xss512M'
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xmaxerrs" << "1000"
+}
+
 
 def outputs = ['web', 'web3d', 'webSimple', 'solver', 'tablet3d','tabletWin']
 
@@ -399,7 +403,7 @@ javadoc {
 
 test {
     ignoreFailures = true
-    maxHeapSize = "1024m"
+    maxHeapSize = "2048m"
 }
 
 spotbugs {

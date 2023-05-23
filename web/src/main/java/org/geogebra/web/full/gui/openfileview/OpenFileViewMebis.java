@@ -120,7 +120,7 @@ public class OpenFileViewMebis extends HeaderFileView
 		sortDropDown = new ListBox();
 		sortDropDown.setMultipleSelect(false);
 		sortDropDown.addItem(localize("SortBy"));
-		sortDropDown.getElement().getFirstChildElement()
+		sortDropDown.getElement().firstElementChild
 				.setAttribute("disabled", "disabled");
 		for (ResourceOrdering value : map) {
 			sortDropDown.addItem(localize(labelFor(value)));

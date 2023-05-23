@@ -7,14 +7,11 @@ import org.geogebra.common.gui.view.spreadsheet.MyTableInterface;
 import org.geogebra.common.kernel.geos.GeoElementSpreadsheet;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.gui.GuiManagerW;
+import org.geogebra.web.full.gui.util.Resizer;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.event.PointerEvent;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.dom.style.shared.Cursor;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.HumanInputEvent;
 import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.gwtproject.event.dom.client.MouseDownEvent;
@@ -27,6 +24,9 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.FocusPanel;
 import org.gwtproject.user.client.ui.Grid;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 
 public class SpreadsheetColumnHeaderW implements SpreadsheetHeader {
 	private AppW app;
@@ -77,11 +77,11 @@ public class SpreadsheetColumnHeaderW implements SpreadsheetHeader {
 		grid.setText(0, colIndex, name);
 
 		int columnWidth = table.preferredColumnWidth();
-		grid.getColumnFormatter().getElement(colIndex).getStyle()
-		        .setWidth(columnWidth, Unit.PX);
+		Resizer.setPixelWidth(grid.getColumnFormatter().getElement(colIndex),
+		        columnWidth);
 
-		Element elm = grid.getCellFormatter().getElement(0, colIndex);
-		elm.addClassName("SVheader");
+		HTMLElement elm = grid.getCellFormatter().getElement(0, colIndex);
+		elm.classList.add("SVheader");
 		/*elm.getStyle().setBackgroundColor(
 		        MyTableW.BACKGROUND_COLOR_HEADER.toString());*/
 	}
@@ -94,11 +94,10 @@ public class SpreadsheetColumnHeaderW implements SpreadsheetHeader {
 		grid.setCellSpacing(0);
 		grid.setHeight("0px");
 
-		grid.getElement().addClassName("geogebraweb-table-spreadsheet");
+		grid.getElement().classList.add("geogebraweb-table-spreadsheet");
 
 		int rowHeight = app.getSettings().getSpreadsheet().preferredRowHeight();
-		grid.getRowFormatter().getElement(0).getStyle()
-		        .setHeight(rowHeight, Unit.PX);
+		Resizer.setPixelHeight(grid.getRowFormatter().getElement(0), rowHeight);
 
 		for (int col = 0; col < grid.getColumnCount(); col++) {
 			initializeCell(col);
@@ -106,11 +105,11 @@ public class SpreadsheetColumnHeaderW implements SpreadsheetHeader {
 
 		focusPanel = new FocusPanel();
 		focusPanel.addKeyDownHandler(this);
-		Style s = focusPanel.getElement().getStyle();
+		CSSStyleDeclaration s = focusPanel.getElement().style;
 		// s.setDisplay(Style.Display.NONE);
-		s.setPosition(Position.ABSOLUTE);
-		s.setTop(0, Unit.PX);
-		s.setLeft(0, Unit.PX);
+		s.position = "absolute";
+		s.top = "0";
+		s.left = "0";
 
 		container = new FlowPanel();
 		container.add(grid);
@@ -142,7 +141,7 @@ public class SpreadsheetColumnHeaderW implements SpreadsheetHeader {
 	}
 
 	public void setLeft(int left) {
-		container.getElement().getStyle().setLeft(left, Unit.PX);
+		container.getElement().style.left = left + "px";
 	}
 
 	public int getOffsetHeight() {
@@ -150,15 +149,15 @@ public class SpreadsheetColumnHeaderW implements SpreadsheetHeader {
 	}
 
 	private String getCursor() {
-		return grid.getElement().getStyle().getCursor();
+		return grid.getElement().style.cursor;
 	}
 
 	private void setColumnResizeCursor() {
-		grid.getElement().getStyle().setCursor(Cursor.COL_RESIZE);
+		grid.getElement().style.cursor = "col-resize";
 	}
 
 	private void setDefaultCursor() {
-		grid.getElement().getStyle().setCursor(Cursor.DEFAULT);
+		grid.getElement().style.cursor = "default";
 	}
 
 	/**
@@ -220,8 +219,8 @@ public class SpreadsheetColumnHeaderW implements SpreadsheetHeader {
 			return;
 		}
 
-		grid.getColumnFormatter().getElement(columnIndex).getStyle()
-		        .setWidth(width, Unit.PX);
+		Resizer.setPixelWidth(grid.getColumnFormatter().getElement(columnIndex),
+				width);
 	}
 
 	/**

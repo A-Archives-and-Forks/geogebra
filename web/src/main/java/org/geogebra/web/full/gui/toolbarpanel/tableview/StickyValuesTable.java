@@ -21,7 +21,6 @@ import org.geogebra.web.html5.util.TestHarness;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.cell.client.SafeHtmlCell;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.user.cellview.client.Column;
 import org.gwtproject.user.cellview.client.Header;
@@ -30,6 +29,7 @@ import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 
+import elemental2.dom.HTMLElement;
 import elemental2.dom.NodeList;
 import jsinterop.base.Js;
 
@@ -70,7 +70,7 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 					.more_vert_black(), 24);
 			TestHarness.setAttr(btn, "btn_tvHeader3dot");
 			p.add(btn);
-			value = p.getElement().getString();
+			value = p.getElement().outerHTML;
 		}
 
 		/**
@@ -98,9 +98,9 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 		editor = new TableEditor(this, app);
 		reset();
 		addHeadClickHandler((row, column, evt) -> {
-			Element el = Js.uncheckedCast(evt.target);
-			if (el != null && (el.hasClassName("button") || el.getParentNode() != null
-					&& el.getParentElement().hasClassName("button"))) {
+			HTMLElement el = Js.uncheckedCast(evt.target);
+			if (el != null && (el.classList.contains("button") || el.parentElement != null
+					&& Js.<HTMLElement>uncheckedCast(el.parentElement).classList.contains("button"))) {
 				onHeaderClick(el, column);
 			}
 			return false;
@@ -120,17 +120,17 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 			if (el != null && el.hasClassName("errorStyle")) {
 				Label toast = new Label(app.getLocalization().getMenu("UseNumbersOnly"));
 				toast.addStyleName("errorToast");
-				toast.getElement().setId("errorToastID");
-				toast.getElement().getStyle().setLeft(el.getAbsoluteRight() + 8, Unit.PX);
-				toast.getElement().getStyle().setTop(el.getAbsoluteTop() - 66, Unit.PX);
+				toast.getElement().id = "errorToastID";
+				toast.getElement().style.left = (el.getAbsoluteRight() + 8) +"px";
+				toast.getElement().style.top = (el.getAbsoluteTop() - 66) + "px";
 				app.getAppletFrame().add(toast);
 			}
 			return false;
 		});
 		addMouseOutHandler((row, column, evt) -> {
-			Element toast = DOM.getElementById("errorToastID");
+			HTMLElement toast = DOM.getElementById("errorToastID");
 			if (toast != null) {
-				toast.removeFromParent();
+				toast.remove();
 			}
 			return false;
 		});
@@ -144,10 +144,10 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 		return view.getEvaluatable(column) instanceof GeoFunctionable;
 	}
 
-	private void onHeaderClick(Element source, int column) {
+	private void onHeaderClick(HTMLElement source, int column) {
 		contextMenu = new ContextMenuTV(app, view,
 				view.getEvaluatable(column).toGeoElement(), column);
-		contextMenu.show(source, 0, source.getClientHeight() + CONTEXT_MENU_OFFSET);
+		contextMenu.show(source, 0, source.clientHeight + CONTEXT_MENU_OFFSET);
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 
 	private void resetAfterAnimationEnds(String className, boolean column, boolean remove) {
 		app.invokeLater(() -> {
-			Element el;
+			HTMLElement el;
 			if (column) {
 				el = getHeaderElementByClassName("." + className);
 			} else {
@@ -200,8 +200,8 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 		});
 	}
 
-	private void removeAnimationStyleName(Element el, String styleName) {
-		el.removeClassName(styleName);
+	private void removeAnimationStyleName(HTMLElement el, String styleName) {
+		el.classList.remove(styleName);
 	}
 
 	protected void addColumn() {
@@ -287,16 +287,16 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 			return;
 		}
 		NodeList<elemental2.dom.Element> elems = getColumnElements(column);
-		Element header = getHeaderElement(column);
+		HTMLElement header = getHeaderElement(column);
 
 		if (elems == null || elems.getLength() == 0 || header == null) {
 			decreaseColumnNumber();
 			return;
 		}
 		transitioning = true;
-		header.getParentElement().addClassName("deleteCol");
+		Js.<HTMLElement>uncheckedCast(header.parentElement).classList.add("deleteCol");
 		Dom.addEventListener(header, "transitionend", e -> onDeleteColumn());
-		app.invokeLater(() -> header.addClassName("delete"));
+		app.invokeLater(() -> header.classList.add("delete"));
 
 		for (int i = 0; i < elems.getLength(); i++) {
 			elemental2.dom.Element e = elems.getAt(i);
@@ -346,11 +346,11 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 			return;
 		}
 
-		Element headerElement = getHeaderElement(view.getColumn(geo));
+		HTMLElement headerElement = getHeaderElement(view.getColumn(geo));
 		if (headerElement != null) {
-			Element headerCell = headerElement.getParentElement();
-			int offset = headerCell.getAbsoluteLeft() - getTable().getAbsoluteLeft();
-			int sx = headerCell.getOffsetWidth() + offset - getOffsetWidth();
+			HTMLElement headerCell = Js.uncheckedCast(headerElement.parentElement);
+			int offset = DOM.getAbsoluteLeft(headerCell) - getTable().getAbsoluteLeft();
+			int sx = headerCell.offsetWidth + offset - getOffsetWidth();
 			setHorizontalScrollPosition(Math.max(0, sx));
 		}
 	}
@@ -426,8 +426,8 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 	 * the view if it is not necessary.
 	 * @param cell cell to scroll into view
 	 */
-	public void scrollIntoView(Element cell) {
-		int top = cell.getOffsetTop();
+	public void scrollIntoView(HTMLElement cell) {
+		int top = cell.offsetTop;
 		int headerHeight = LINE_HEIGHT;
 		int verticalScrollPosition = getScroller().getVerticalScrollPosition();
 
@@ -438,8 +438,8 @@ public class StickyValuesTable extends StickyTable<TVRowData> implements TableVa
 					top - getScroller().getOffsetHeight() + headerHeight);
 		}
 
-		int left = cell.getOffsetLeft();
-		int cellWidth = cell.getOffsetWidth();
+		int left = cell.offsetLeft;
+		int cellWidth = cell.offsetWidth;
 		int horizontalScrollPosition = getScroller().getHorizontalScrollPosition();
 		int scrollerContentWidth = getScroller().getWidget().getOffsetWidth();
 

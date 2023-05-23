@@ -110,7 +110,7 @@ public class ComponentDropDown extends FlowPanel {
 		highlightSelectedElement(dropDown.getSelectedIndex(), selected);
 		dropDown.setSelectedIndex(selected);
 		selectedOptionLabel.setText(
-				dropDownElementsList.get(selected).getElement().getInnerText());
+				dropDownElementsList.get(selected).getElement().textContent);
 	}
 
 	private void highlightSelectedElement(int previousSelectedIndex,

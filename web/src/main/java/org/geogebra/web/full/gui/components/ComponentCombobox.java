@@ -89,8 +89,8 @@ public class ComponentCombobox extends FlowPanel implements SetLabels, IsWidget 
 
 		arrowIcon = new SimplePanel();
 		arrowIcon.addStyleName("arrow");
-		arrowIcon.getElement().setInnerHTML(MaterialDesignResources.INSTANCE
-				.arrow_drop_down().getSVG());
+		arrowIcon.getElement().innerHTML = MaterialDesignResources.INSTANCE
+				.arrow_drop_down().getSVG();
 
 		contentPanel.add(inputTextField);
 		contentPanel.add(arrowIcon);
@@ -117,7 +117,7 @@ public class ComponentCombobox extends FlowPanel implements SetLabels, IsWidget 
 	}
 
 	private boolean isInputFocused() {
-		return inputTextField.getElement().isOrHasChild(Dom.getActiveElement());
+		return inputTextField.getElement().contains(Dom.getActiveElement());
 	}
 
 	private void addFocusBlurHandlers() {
@@ -147,8 +147,8 @@ public class ComponentCombobox extends FlowPanel implements SetLabels, IsWidget 
 
 	private void onClose() {
 		removeStyleName("active");
-		arrowIcon.getElement().setInnerHTML(MaterialDesignResources.INSTANCE.arrow_drop_down()
-				.withFill(GColor.BLACK.toString()).getSVG());
+		arrowIcon.getElement().innerHTML = MaterialDesignResources.INSTANCE.arrow_drop_down()
+				.withFill(GColor.BLACK.toString()).getSVG();
 		resetTextField();
 	}
 
@@ -167,8 +167,8 @@ public class ComponentCombobox extends FlowPanel implements SetLabels, IsWidget 
 		Dom.toggleClass(this, "active", isOpen);
 		GColor arrowCol = isOpen
 				? GeoGebraColorConstants.GEOGEBRA_ACCENT : GColor.BLACK;
-		arrowIcon.getElement().setInnerHTML(MaterialDesignResources.INSTANCE.arrow_drop_down()
-				.withFill(arrowCol.toString()).getSVG());
+		arrowIcon.getElement().innerHTML = MaterialDesignResources.INSTANCE.arrow_drop_down()
+				.withFill(arrowCol.toString()).getSVG();
 	}
 
 	/**

@@ -70,9 +70,6 @@ import org.gwtproject.canvas.dom.client.CanvasPixelArray;
 import org.gwtproject.canvas.dom.client.Context2d;
 import org.gwtproject.canvas.dom.client.ImageData;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.DomEvent;
 import org.gwtproject.event.dom.client.DropEvent;
 import org.gwtproject.event.dom.client.MouseDownEvent;
@@ -81,10 +78,12 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Image;
 import org.gwtproject.user.client.ui.Widget;
 
+import elemental2.dom.CSSProperties;
 import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.FrameRequestCallback;
 import elemental2.dom.HTMLCollection;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.WheelEvent;
 import jsinterop.base.Js;
@@ -206,7 +205,7 @@ public class EuclidianViewW extends EuclidianView implements
 	}
 
 	private void initAriaDefaults() {
-		Element elem = g2p.getElement();
+		HTMLElement elem = g2p.getElement();
 		elem.setAttribute("role", "application");
 		elem.setAttribute("aria-label", "Graphics View " + evNo);
 	}
@@ -586,10 +585,9 @@ public class EuclidianViewW extends EuclidianView implements
 		g2p.setCoordinateSpaceSize(width, height);
 		try {
 			// just resizing the AbsolutePanelSmart, not the whole of DockPanel
-			g2p.getElement().getParentElement().getStyle()
-			        .setWidth(width, Unit.PX);
-			g2p.getElement().getParentElement().getStyle()
-			        .setHeight(height, Unit.PX);
+			HTMLElement parentElement = Js.uncheckedCast(g2p.getElement().parentElement);
+			parentElement.style.width = CSSProperties.WidthUnionType.of(width + "px");
+			parentElement.style.height = CSSProperties.HeightUnionType.of(height + "px");
 			getEuclidianController().calculateEnvironment();
 		} catch (Exception exc) {
 			Log.debug("Problem with the parent element of the canvas");
@@ -687,7 +685,7 @@ public class EuclidianViewW extends EuclidianView implements
 		attachView();
 
 		if (getViewID() == App.VIEW_EUCLIDIAN || getViewID() == App.VIEW_EUCLIDIAN2) {
-			g2p.getElement().getStyle().setPosition(Position.ABSOLUTE);
+			g2p.getElement().style.position = "absolute";
 		}
 
 		euclidiancontroller.setView(this);
@@ -730,15 +728,15 @@ public class EuclidianViewW extends EuclidianView implements
 	        EuclidianPanelWAbstract euclidianViewPanel,
 	        EuclidianControllerW euclidiancontroller) {
 		Widget absPanel = euclidianViewPanel.getAbsolutePanel();
-		Element absPanelElement = absPanel.getElement();
+		HTMLElement absPanelElement = absPanel.getElement();
 		Dom.addEventListener(absPanelElement, "wheel",
 				(event) -> euclidiancontroller.onMouseWheel((WheelEvent) event));
 
 		pointerHandler = new PointerEventHandler((IsEuclidianController) euclidianController,
 				euclidiancontroller.getOffsets());
 		// absolute panel has no parent in WebSimple
-		Element pointerTarget = absPanelElement.getParentElement() == null
-				? absPanelElement : absPanelElement.getParentElement();
+		HTMLElement pointerTarget = absPanelElement.parentElement == null
+				? absPanelElement : Js.uncheckedCast(absPanelElement.parentElement);
 		pointerHandler.attachTo(pointerTarget, ((AppW) app).getGlobalHandlers());
 		CancelEventTimer.killTouch(absPanel);
 		absPanel.addBitlessDomHandler(DomEvent::stopPropagation, MouseDownEvent.getType());
@@ -837,12 +835,12 @@ public class EuclidianViewW extends EuclidianView implements
 	private void setCursorClass(String className) {
 		// IMPORTANT: do nothing if we already have the classname,
 		// app.resetCursor is VERY expensive in IE
-		Element cursorElement = getAbsolutePanel() == null ? null : getAbsolutePanel().getElement();
+		HTMLElement cursorElement = getAbsolutePanel() == null ? null : getAbsolutePanel().getElement();
 		if (cursorElement != null
-				&& !cursorElement.hasClassName(className)) {
+				&& !cursorElement.classList.contains(className)) {
 			this.appW.resetCursor();
-			cursorElement.setClassName(ABSOLUTE_PANEL_CLASS);
-			cursorElement.addClassName(className);
+			cursorElement.className = ABSOLUTE_PANEL_CLASS;
+			cursorElement.classList.add(className);
 		}
 	}
 
@@ -1081,7 +1079,7 @@ public class EuclidianViewW extends EuclidianView implements
 	}
 
 	@Override
-	public Element getCanvasElement() {
+	public HTMLElement getCanvasElement() {
 		return g2p.getElement();
 	}
 
@@ -1254,8 +1252,8 @@ public class EuclidianViewW extends EuclidianView implements
 	 *            app it needs to be attached to
 	 */
 	public static void attachReaderWidget(ReaderWidget screenReaderWidget, App app) {
-		if (((AppW) app).getAppletFrame().getElement().getParentElement() != null) {
-			((AppW) app).getAppletFrame().getElement().getParentElement()
+		if (((AppW) app).getAppletFrame().getElement().parentElement != null) {
+			((AppW) app).getAppletFrame().getElement().parentElement
 				.appendChild(screenReaderWidget.getElement());
 			((AppW) app).setLastFocusableWidget(screenReaderWidget);
 		}
@@ -1452,11 +1450,11 @@ public class EuclidianViewW extends EuclidianView implements
 		if (overlayGraphics == null) {
 			Canvas pCanvas = Canvas.createIfSupported();
 			overlayGraphics = new GGraphics2DW(pCanvas);
-			overlayGraphics.getElement().getStyle().setPosition(Position.ABSOLUTE);
+			overlayGraphics.getElement().style.position = "absolute";
 			overlayGraphics.setDevicePixelRatio(appW.getPixelRatio());
-			g2p.getElement().getParentElement()
+			g2p.getElement().parentElement
 					.appendChild(overlayGraphics.getElement());
-			overlayGraphics.getElement().addClassName("overlayGraphics");
+			overlayGraphics.getElement().classList.add("overlayGraphics");
 		}
 		EuclidianPen pen = getEuclidianController().getPen();
 		overlayGraphics.setCoordinateSpaceSize(getWidth(), getHeight());

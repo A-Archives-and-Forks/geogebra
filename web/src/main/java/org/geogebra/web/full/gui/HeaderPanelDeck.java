@@ -4,7 +4,8 @@ import org.geogebra.keyboard.web.UpdateKeyBoardListener;
 import org.geogebra.web.html5.gui.ToolBarInterface;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.main.HasAppletProperties;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Interface for app frame
@@ -34,7 +35,7 @@ public interface HeaderPanelDeck
 	/**
 	 * @return frame element
 	 */
-	Element getElement();
+	HTMLElement getElement();
 
 	/**
 	 * Make sure keyboard visibility corresponds to both app.isKeyboardNeeded()

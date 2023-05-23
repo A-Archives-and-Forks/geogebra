@@ -11,14 +11,14 @@ import org.geogebra.web.full.gui.components.MathFieldEditor;
 import org.geogebra.web.html5.gui.util.ClickEndHandler;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.Panel;
 
 import com.himamis.retex.editor.share.event.MathFieldListener;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 
 public class InlineFormulaControllerW implements InlineFormulaController {
 
@@ -26,7 +26,7 @@ public class InlineFormulaControllerW implements InlineFormulaController {
 	private final MathFieldEditor mathFieldEditor;
 
 	private final AbsolutePanel widget;
-	private final Style style;
+	private final CSSStyleDeclaration style;
 
 	private final Timer saveTimer = new Timer() {
 		@Override
@@ -61,10 +61,10 @@ public class InlineFormulaControllerW implements InlineFormulaController {
 		widget.addStyleName("mowWidget");
 		parent.add(widget);
 
-		this.style = widget.getElement().getStyle();
-		style.setPosition(Position.ABSOLUTE);
+		this.style = widget.getElement().style;
+		style.position = "absolute";
 		style.setProperty("transformOrigin", "0px 0px");
-		style.setPaddingLeft(DrawFormula.PADDING, Unit.PX);
+		style.paddingLeft = CSSProperties.PaddingLeftUnionType.of(DrawFormula.PADDING + "px");
 
 		mathFieldEditor.attach(widget);
 		mathFieldEditor.getMathField().setFixMargin(DrawFormula.PADDING);
@@ -75,20 +75,20 @@ public class InlineFormulaControllerW implements InlineFormulaController {
 	@Override
 	public void setLocation(int x, int y) {
 		// clamp forces the  editor to be in visible area, may still be behind keyboard
-		style.setLeft(MyMath.clamp(x, 0,
-				widget.getParent().getOffsetWidth() - formula.getMinWidth()), Unit.PX);
-		style.setTop(MyMath.clamp(y, 0,
-				widget.getParent().getOffsetHeight() - formula.getMinHeight()), Unit.PX);
+		style.left = (MyMath.clamp(x, 0,
+				widget.getParent().getOffsetWidth() - formula.getMinWidth())) + "px";
+		style.top = (MyMath.clamp(y, 0,
+				widget.getParent().getOffsetHeight() - formula.getMinHeight())) + "px";
 	}
 
 	@Override
 	public void setWidth(int width) {
-		style.setWidth(width, Unit.PX);
+		style.width = CSSProperties.WidthUnionType.of(width + "px");
 	}
 
 	@Override
 	public void setHeight(int height) {
-		style.setHeight(height, Unit.PX);
+		style.height = CSSProperties.HeightUnionType.of(height + "px");
 	}
 
 	@Override

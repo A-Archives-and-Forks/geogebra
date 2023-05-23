@@ -26,6 +26,7 @@ import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.event.dom.client.DropEvent;
 import org.gwtproject.event.dom.client.DropHandler;
 
+import elemental2.dom.DragEvent;
 import elemental2.dom.WheelEvent;
 
 /**
@@ -228,8 +229,8 @@ public class EuclidianControllerW extends EuclidianController implements
 			GeoText geo0 = (GeoText) ret[0];
 			geo0.setLaTeX(true, false);
 
-			int x = event.getNativeEvent().getClientX();
-			int y = event.getNativeEvent().getClientY();
+			double x = ((DragEvent) event.getNativeEvent()).clientX;
+			double y = ((DragEvent) event.getNativeEvent()).clientY;
 
 			geo0.setRealWorldLoc(getView().toRealWorldCoordX(x),
 					getView().toRealWorldCoordY(y));

@@ -12,7 +12,6 @@ import org.geogebra.web.html5.gui.util.ListItem;
 import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.gui.util.UnorderedList;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Image;
 import org.gwtproject.user.client.ui.Label;
@@ -83,10 +82,9 @@ public class ToolbarSubmenuW extends FlowPanel implements HasHide {
 				if (itemList.getOffsetWidth()
 						+ order * 45 > app
 								.getWidth()) {
-					itemList.getElement().getStyle().setLeft(
-							app.getWidth() - 45 * order
-									- itemList.getOffsetWidth() - 10,
-							Unit.PX);
+					itemList.getElement().style.left =
+							(app.getWidth() - 45 * order
+									- itemList.getOffsetWidth() - 10) + "px";
 				}
 			});
 		}
@@ -94,7 +92,7 @@ public class ToolbarSubmenuW extends FlowPanel implements HasHide {
 
 	@Override
 	public boolean isVisible() {
-		return getElement().hasClassName("visible");
+		return getElement().classList.contains("visible");
 	}
 
 	/**
@@ -153,7 +151,7 @@ public class ToolbarSubmenuW extends FlowPanel implements HasHide {
 	}
 
 	public void setMaxHeight(int d) {
-		itemList.getElement().getStyle().setProperty("maxHeight", d + "px");
+		itemList.getElement().style.setProperty("maxHeight", d + "px");
 	}
 
 	@Override

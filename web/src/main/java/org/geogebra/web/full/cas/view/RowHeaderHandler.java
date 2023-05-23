@@ -3,9 +3,11 @@ package org.geogebra.web.full.cas.view;
 import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.full.gui.GuiManagerW;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.event.dom.client.BrowserEvents;
 import org.gwtproject.event.dom.client.MouseUpEvent;
 import org.gwtproject.event.dom.client.MouseUpHandler;
+
+import elemental2.dom.MouseEvent;
 
 /**
  * Handles mouse events in row headers
@@ -37,7 +39,7 @@ public class RowHeaderHandler implements MouseUpHandler {
 		int releasedRow = rowHeader.getIndex();
 		table.getCASView().getCASStyleBar()
 		        .setSelectedRow(table.getGeoCasCell(releasedRow));
-		if (event.getNativeEvent().getButton() == NativeEvent.BUTTON_RIGHT) {
+		if (((MouseEvent) event.getNativeEvent()).button == BrowserEvents.BUTTON_RIGHT) {
 			if (!table.isSelectedIndex(releasedRow)) {
 				table.setSelectedRows(releasedRow, releasedRow);
 			}

@@ -10,11 +10,12 @@ import org.geogebra.web.html5.gui.laf.LoadSpinner;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.util.h5pviewer.H5P;
 import org.geogebra.web.html5.util.h5pviewer.H5PPaths;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.timer.client.Timer;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLIFrameElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -54,14 +55,14 @@ public class H5PEmbedElement extends EmbedElement {
 	}
 
 	private void render() {
-		Element element = widget.getElement();
+		HTMLElement element = widget.getElement();
 		if (element == null) {
 			renderNext();
 			return;
 		}
 		if (url == null) {
-			element.addClassName(H5P_PREVIEW);
-			element.removeAllChildren();
+			element.classList.add(H5P_PREVIEW);
+			DOM.removeAllChildren(element);
 			LoadSpinner spinner = new LoadSpinner();
 			element.appendChild(spinner.getElement());
 			update();
@@ -92,8 +93,8 @@ public class H5PEmbedElement extends EmbedElement {
 	}
 
 	private void updatePreview() {
-		if (widget.getElement().hasClassName(H5P_PREVIEW)) {
-			widget.getElement().removeClassName(H5P_PREVIEW);
+		if (widget.getElement().classList.contains(H5P_PREVIEW)) {
+			widget.getElement().classList.remove(H5P_PREVIEW);
 			this.update();
 			app.storeUndoInfo();
 		}
@@ -164,7 +165,7 @@ public class H5PEmbedElement extends EmbedElement {
 	}
 
 	private HTMLIFrameElement getFrame() {
-		Element iframe = Dom.querySelectorForElement(widget.getElement(), "iframe");
+		HTMLElement iframe = Dom.querySelectorForElement(widget.getElement(), "iframe");
 		if (iframe != null) {
 			return Js.uncheckedCast(iframe);
 		}

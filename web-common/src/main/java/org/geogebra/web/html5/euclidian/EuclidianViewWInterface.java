@@ -10,8 +10,9 @@ import org.geogebra.common.euclidian.Previewable;
 import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.App.ExportType;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * interface for EuclidianViewW / EuclidianView3DW
@@ -25,7 +26,7 @@ public interface EuclidianViewWInterface extends EuclidianViewInterfaceSlim {
 	 * 
 	 * @return canvas
 	 */
-	Element getCanvasElement();
+	HTMLElement getCanvasElement();
 
 	Hits getHits();
 

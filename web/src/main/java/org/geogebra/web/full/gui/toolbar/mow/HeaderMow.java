@@ -13,10 +13,11 @@ import org.geogebra.web.html5.gui.zoompanel.FocusableWidget;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.TestHarness;
 import org.geogebra.web.resources.SVGResource;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Similar toolbar header as for graphing
@@ -61,9 +62,9 @@ public class HeaderMow extends FlowPanel
 		center = new FlowPanel();
 		center.addStyleName("center");
 		center.addStyleName("indicatorLeft");
-		Element indicator = DOM.createDiv();
-		indicator.addClassName("indicator");
-		center.getElement().insertFirst(indicator);
+		HTMLElement indicator = DOM.createDiv();
+		indicator.classList.add("indicator");
+		center.getElement().appendChild(indicator);
 		penPanelBtn = createButton(
 				MaterialDesignResources.INSTANCE.mow_pen_panel(), "Pen");
 		penPanelBtn.addStyleName("flatButton");

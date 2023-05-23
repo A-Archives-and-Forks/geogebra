@@ -4,10 +4,12 @@ import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.util.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 
 /**
  * Popup menu following the Material Design.
@@ -60,7 +62,7 @@ public class ComponentDropDownPopup {
 	 * @param element
 	 *            element where clicks should not collapse the selection
 	 */
-	public void addAutoHidePartner(Element element) {
+	public void addAutoHidePartner(HTMLElement element) {
 		menu.getPopupPanel().addAutoHidePartner(element);
 	}
 
@@ -124,9 +126,9 @@ public class ComponentDropDownPopup {
 	 * on top of the anchor otherwise.
 	 */
 	public void positionAsComboBox() {
-		int anchorBottom = (int) (anchor.getElement().getAbsoluteBottom() - app.getAbsTop());
+		int anchorBottom = (int) (DOM.getAbsoluteTop(anchor.getElement()) + anchor.getOffsetHeight() - app.getAbsTop());
 		int spaceBottom = (int) (app.getHeight() - anchorBottom);
-		int spaceTop = (int) (anchor.getElement().getAbsoluteTop() - app.getAbsTop()
+		int spaceTop = (int) (DOM.getAbsoluteTop(anchor.getElement()) - app.getAbsTop()
 				- MARGIN_FROM_SCREEN);
 		int minSpaceBottom = 3 * getItemHeight() + MARGIN_FROM_SCREEN + POPUP_PADDING;
 		int popupHeight = getPopupHeight();
@@ -175,18 +177,18 @@ public class ComponentDropDownPopup {
 	}
 
 	private void setHeightInPx(int height) {
-		getStyle().setHeight(height, Unit.PX);
+		getStyle().height = CSSProperties.HeightUnionType.of(height + "px");
 	}
 
 	/**
 	 * @param width - of popup
 	 */
 	public void setWidthInPx(int width) {
-		getStyle().setWidth(width, Unit.PX);
+		getStyle().width = CSSProperties.WidthUnionType.of(width + "px");
 	}
 
-	private Style getStyle() {
-		return menu.getPopupPanel().getElement().getStyle();
+	private CSSStyleDeclaration getStyle() {
+		return menu.getPopupPanel().getElement().style;
 	}
 
 	private int getPopupHeight() {
@@ -230,6 +232,6 @@ public class ComponentDropDownPopup {
 	}
 
 	private void setScrollTop(int scrollTop) {
-		menu.getPopupPanel().getElement().setScrollTop(scrollTop);
+		menu.getPopupPanel().getElement().scrollTop = scrollTop;
 	}
 }

@@ -12,8 +12,9 @@ import org.geogebra.web.html5.gui.GeoGebraFrameW;
 import org.geogebra.web.html5.gui.zoompanel.ZoomPanel;
 import org.geogebra.web.html5.util.AppletParameters;
 import org.geogebra.web.html5.util.GeoGebraElement;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Simple app, may only have one EV
@@ -122,7 +123,7 @@ public class AppWsimple extends AppW {
 	}
 
 	@Override
-	public Element getFrameElement() {
+	public HTMLElement getFrameElement() {
 		return frame.getElement();
 	}
 

@@ -19,7 +19,6 @@ import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.FocusEvent;
@@ -379,18 +378,16 @@ public class AlgebraInputW extends FlowPanel
 
 			helpPopup.setPopupPositionAndShow(
 					(offsetWidth, offsetHeight) -> {
-						helpPopup.getElement().getStyle()
+						helpPopup.getElement().style
 								.setProperty("left", "auto");
-						helpPopup.getElement().getStyle().setProperty("top",
+						helpPopup.getElement().style.setProperty("top",
 								"auto");
-						helpPopup.getElement().getStyle().setRight(0,
-								Unit.PX);
-						helpPopup.getElement().getStyle()
-								.setBottom(
+						helpPopup.getElement().style.right = "0";;
+						helpPopup.getElement().style
+								.bottom = (
 										getOffsetHeight()
 												* app.getGeoGebraElement()
-														.getScaleX(),
-										Unit.PX);
+														.getScaleX()) + "px";
 						helpPopup.show();
 					});
 			((InputBarHelpPanelW) app.getGuiManager().getInputHelpPanel())
@@ -428,8 +425,8 @@ public class AlgebraInputW extends FlowPanel
 	@Override
 	public void setError(String msg) {
 		initButton();
-		getHelpToggle().asWidget().getElement().setTitle(msg == null
-				? app.getLocalization().getMenu("InputHelp") : msg);
+		getHelpToggle().asWidget().getElement().title = msg == null
+				? app.getLocalization().getMenu("InputHelp") : msg;
 	}
 
 	@Override

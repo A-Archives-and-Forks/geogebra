@@ -5,15 +5,18 @@ import java.util.LinkedList;
 import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.event.AbstractEvent;
 import org.geogebra.common.euclidian.event.PointerEventType;
-import org.gwtproject.core.client.JsArray;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.client.Touch;
 import org.gwtproject.event.dom.client.HumanInputEvent;
 import org.gwtproject.event.dom.client.MouseEvent;
 import org.gwtproject.event.dom.client.TouchEvent;
 import org.gwtproject.event.dom.client.TouchMoveEvent;
 import org.gwtproject.event.dom.client.TouchStartEvent;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.Touch;
+import elemental2.dom.TouchList;
+import jsinterop.base.Js;
 
 /**
  * Base implementation of AbstractEvent.
@@ -23,7 +26,7 @@ import org.gwtproject.event.dom.client.TouchStartEvent;
  */
 public class PointerEvent extends AbstractEvent {
 
-	private Element relativeElement;
+	private HTMLElement relativeElement;
 
 	private GPoint point;
 	private PointerEventType type;
@@ -152,12 +155,12 @@ public class PointerEvent extends AbstractEvent {
 		destination.alt = source.isAltKeyDown();
 		destination.control = source.isControlKeyDown();
 		destination.clickCount = "dblclick".equals(source.getNativeEvent()
-		        .getType()) ? 2 : 1;
+		        .type) ? 2 : 1;
 		destination.meta = source.isMetaKeyDown();
 		destination.middle = source.getNativeButton() == NativeEvent.BUTTON_MIDDLE;
 		destination.right = source.getNativeButton() == NativeEvent.BUTTON_RIGHT;
 		destination.shift = source.isShiftKeyDown();
-		destination.relativeElement = source.getRelativeElement();
+		destination.relativeElement = Js.uncheckedCast(source.getRelativeElement());
 	}
 
 	/**
@@ -208,7 +211,7 @@ public class PointerEvent extends AbstractEvent {
 	 * @return wrapped event
 	 */
 	public static PointerEvent wrapEvent(Touch touch, HasOffsets off,
-	        Element relativeElement) {
+	        HTMLElement relativeElement) {
 		PointerEvent event = wrapEvent(touch, off);
 		event.relativeElement = relativeElement;
 		return event;
@@ -224,7 +227,7 @@ public class PointerEvent extends AbstractEvent {
 	 * @return wrapped event
 	 */
 	public static PointerEvent wrapEvent(Touch touch, HasOffsets off) {
-		return wrapEvent(touch.getClientX(), touch.getClientY(),
+		return wrapEvent((int) touch.clientX, (int) touch.clientY,
 		        PointerEventType.TOUCH, off, off.getTouchEventPool());
 	}
 
@@ -238,17 +241,17 @@ public class PointerEvent extends AbstractEvent {
 	 * @return wrapped event
 	 */
 	public static PointerEvent wrapEvent(TouchEvent<?> event, HasOffsets off) {
-		JsArray<Touch> touches = null;
+		TouchList touches = null;
 		int index = 0;
 		if (event instanceof TouchStartEvent) {
 			touches = event.getTargetTouches();
 		} else if (event instanceof TouchMoveEvent) {
 			touches = event.getTargetTouches();
-			index = touches.length() - 1;
+			index = touches.length - 1;
 		} else { // assume if (event instanceof TouchEndEvent) {
 			touches = event.getChangedTouches();
 		}
-		PointerEvent e = wrapEvent(touches.get(index), off);
+		PointerEvent e = wrapEvent(touches.getAt(index), off);
 		e.nativeEvent = event;
 		return e;
 	}
@@ -266,7 +269,7 @@ public class PointerEvent extends AbstractEvent {
 	 * 
 	 * @return the event relative to the element
 	 */
-	public Element getRelativeElement() {
+	public HTMLElement getRelativeElement() {
 		return relativeElement;
 	}
 

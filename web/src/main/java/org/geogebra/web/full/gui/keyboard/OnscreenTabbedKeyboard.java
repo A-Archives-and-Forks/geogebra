@@ -136,16 +136,16 @@ public class OnscreenTabbedKeyboard extends TabbedKeyboard
 		double left = x - appw.getAbsLeft()
 				- helpPanel.getPreferredWidth(scale);
 
-		helpPopup.getElement().getStyle().setProperty("left",
+		helpPopup.getElement().style.setProperty("left",
 				left * renderScale + "px");
 		int maxOffsetHeight;
 		int totalHeight = (int) appw.getHeight();
 		int toggleButtonTop = (int) ((y - (int) appw.getAbsTop()) / scale);
 		if (toggleButtonTop < totalHeight / 2) {
 			maxOffsetHeight = totalHeight - toggleButtonTop;
-			helpPopup.getElement().getStyle().setProperty("top",
+			helpPopup.getElement().style.setProperty("top",
 					toggleButtonTop * renderScale + "px");
-			helpPopup.getElement().getStyle().setProperty("bottom", "auto");
+			helpPopup.getElement().style.setProperty("bottom", "auto");
 			helpPopup.removeStyleName("helpPopupAVBottom");
 			helpPopup.addStyleName("helpPopupAV");
 		} else {
@@ -153,9 +153,9 @@ public class OnscreenTabbedKeyboard extends TabbedKeyboard
 			int bottom = totalHeight - toggleButtonTop;
 			maxOffsetHeight = bottom > 0 ? totalHeight - bottom
 					: totalHeight - minBottom;
-			helpPopup.getElement().getStyle().setProperty("bottom",
+			helpPopup.getElement().style.setProperty("bottom",
 					(bottom > 0 ? bottom : minBottom) * renderScale + "px");
-			helpPopup.getElement().getStyle().setProperty("top", "auto");
+			helpPopup.getElement().style.setProperty("top", "auto");
 			helpPopup.removeStyleName("helpPopupAV");
 			helpPopup.addStyleName("helpPopupAVBottom");
 		}

@@ -185,7 +185,7 @@ public class SpreadsheetMouseListenerW implements MouseDownHandler,
 
 	@Override
 	public void onTouchStart(TouchStartEvent touchStartEvent) {
-		numberOfTouches = touchStartEvent.getTouches().length();
+		numberOfTouches = touchStartEvent.getTouches().length;
 		if (numberOfTouches == 1) {
 			int mouseX = getAbsoluteX(touchStartEvent);
 			int mouseY = getAbsoluteY(touchStartEvent);
@@ -328,7 +328,7 @@ public class SpreadsheetMouseListenerW implements MouseDownHandler,
 	@Override
 	public void onTouchEnd(TouchEndEvent event) {
 		longTouchManager.cancelTimer();
-		numberOfTouches = event.getChangedTouches().length();
+		numberOfTouches = event.getChangedTouches().length;
 		if (numberOfTouches == 1) {
 			handlePointerUp(event);
 		}
@@ -358,7 +358,7 @@ public class SpreadsheetMouseListenerW implements MouseDownHandler,
 		}
 
 		// Alt click: copy definition to input field
-		if (!table.isEditing() && event.getNativeEvent().getAltKey()
+		if (!table.isEditing() && ((MouseEvent) event.getNativeEvent()).altKey
 		        && app.showAlgebraInput()) {
 			GeoElement geo = RelativeCopy.getValue(app, point);
 			if (geo != null) {
@@ -459,7 +459,7 @@ public class SpreadsheetMouseListenerW implements MouseDownHandler,
 		if (EventUtil.isTouchEvent(event)) {
 			return false; // right click is handled by rightClickTimer
 		}
-		return event.getNativeEvent().getButton() == NativeEvent.BUTTON_RIGHT;
+		return ((MouseEvent) event.getNativeEvent()).button == NativeEvent.BUTTON_RIGHT;
 	}
 
 	private void resetState() {
@@ -471,7 +471,7 @@ public class SpreadsheetMouseListenerW implements MouseDownHandler,
 
 	@Override
 	public void onTouchMove(TouchMoveEvent event) {
-		numberOfTouches = event.getTouches().length();
+		numberOfTouches = event.getTouches().length;
 		if (numberOfTouches == 1) {
 			event.stopPropagation();
 			handlePointerMove(event);

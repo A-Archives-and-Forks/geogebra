@@ -19,6 +19,7 @@ import org.geogebra.web.html5.main.DrawEquationW;
 import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.gwtproject.canvas.client.Canvas;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.ListBox;
@@ -269,7 +270,7 @@ public class CreateObjectDialogW extends ComponentDialog implements ICreateObjec
 					app.getFontSize());
 		} else {
 			previewPanel.setWidget(lblPreview);
-			lblPreview.getElement().removeAllChildren();
+			DOM.removeAllChildren(lblPreview.getElement());
 			coModel.getNonLatexText(new DOMIndexHTMLBuilder(lblPreview, app));
 		}
 	}

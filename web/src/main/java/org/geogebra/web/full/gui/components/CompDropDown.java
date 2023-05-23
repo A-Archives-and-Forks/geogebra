@@ -100,8 +100,8 @@ public class CompDropDown extends FlowPanel implements SetLabels, IsWidget {
 
 		SimplePanel arrowIcon = new SimplePanel();
 		arrowIcon.addStyleName("arrow");
-		arrowIcon.getElement().setInnerHTML(MaterialDesignResources.INSTANCE
-				.arrow_drop_down().getSVG());
+		arrowIcon.getElement().innerHTML = MaterialDesignResources.INSTANCE
+				.arrow_drop_down().getSVG();
 		add(arrowIcon);
 	}
 

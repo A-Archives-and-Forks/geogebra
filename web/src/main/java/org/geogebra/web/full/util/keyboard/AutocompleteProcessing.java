@@ -2,9 +2,7 @@ package org.geogebra.web.full.util.keyboard;
 
 import org.geogebra.keyboard.web.KeyboardListener;
 import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.user.client.Event;
+import org.geogebra.web.html5.util.EventUtil;
 
 /**
  * Connector for keyboard and input boxes
@@ -39,17 +37,17 @@ public class AutocompleteProcessing implements KeyboardListener {
 
 	@Override
 	public void onEnter() {
-		NativeEvent event = Document.get().createKeyDownEvent(false, false,
+		elemental2.dom.Event event = EventUtil.createKeyEvent("keydown", false, false,
 				false, false, ENTER);
-		field.getTextField().onBrowserEvent(Event.as(event));
+		field.getTextField().onBrowserEvent(event);
 
-		event = Document.get().createKeyPressEvent(false, false, false, false,
+		event = EventUtil.createKeyEvent("keypress", false, false, false, false,
 				ENTER);
-		field.getTextField().onBrowserEvent(Event.as(event));
+		field.getTextField().onBrowserEvent(event);
 
-		event = Document.get().createKeyUpEvent(false, false, false, false,
+		event = EventUtil.createKeyEvent("keyup", false, false, false, false,
 				ENTER);
-		field.getTextField().onBrowserEvent(Event.as(event));
+		field.getTextField().onBrowserEvent(event);
 	}
 
 	@Override

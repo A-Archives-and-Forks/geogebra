@@ -52,9 +52,9 @@ public class LogoAndName implements IsWidget, SetLabels {
 		panel.setVisible(showLogo);
 		if (showLogo) {
 			int minHeight = parentHeight - panel.getOffsetHeight() - LOGO_MARGIN;
-			aView.getElement().getStyle().setProperty("minHeight", minHeight + "px");
+			aView.getElement().style.setProperty("minHeight", minHeight + "px");
 		} else {
-			aView.getElement().getStyle().clearProperty("minHeight");
+			aView.getElement().style.minHeight = null;
 		}
 	}
 }

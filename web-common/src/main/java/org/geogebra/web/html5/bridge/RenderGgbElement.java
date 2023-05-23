@@ -1,9 +1,9 @@
 package org.geogebra.web.html5.bridge;
 
 import org.geogebra.gwtutil.JsConsumer;
-import org.gwtproject.dom.client.Element;
 
 import elemental2.core.Function;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -21,7 +21,7 @@ public class RenderGgbElement {
 
 	@JsFunction
 	public interface RenderGgbElementFunction {
-		void render(Element el, JsConsumer<Object> callback);
+		void render(HTMLElement el, JsConsumer<Object> callback);
 	}
 
 	/**

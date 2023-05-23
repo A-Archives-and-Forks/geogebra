@@ -503,7 +503,9 @@ public class DrawAxis {
 								beforeZeroY = y - fontsize;
 							}
 						}
-
+						if (sb.length() == 0) {
+							return;
+						}
 						// measure width, so grid line can avoid it
 						// use same (max) for all labels
 						if (sb.charAt(0) == minusSign
@@ -560,7 +562,7 @@ public class DrawAxis {
 
 		// don't check rw < 0 as it fails for eg
 		// -0.0000000001
-		if (sb.charAt(0) == '-' && !currency) {
+		if (sb.length() > 0 && sb.charAt(0) == '-' && !currency) {
 			// change minus sign (too short) to n-dash
 			sb.setCharAt(0, minusSign);
 		}

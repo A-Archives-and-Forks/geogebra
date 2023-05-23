@@ -166,13 +166,13 @@ public class ImageInputDialogT extends UploadImageDialog implements ClickHandler
 		if (cameraIsActive) {
 			this.pictureFromCameraString = StringUtil.jpgMarker + pictureBase64;
 			this.cameraPanel.clear();
-			this.cameraPanel.getElement().getStyle().setBackgroundImage(
-					"url('" + this.pictureFromCameraString + "')");
+			this.cameraPanel.getElement().style.backgroundImage =
+					"url('" + this.pictureFromCameraString + "')";
 		} else {
 			this.pictureFromFileString = StringUtil.jpgMarker + pictureBase64;
 			this.picturePanel.clear();
-			this.picturePanel.getElement().getStyle().setBackgroundImage(
-					"url('" + this.pictureFromFileString + "')");
+			this.picturePanel.getElement().style.backgroundImage =
+					"url('" + this.pictureFromFileString + "')";
 		}
 
 		imageAvailable();
@@ -181,8 +181,8 @@ public class ImageInputDialogT extends UploadImageDialog implements ClickHandler
 	@Override
 	public void hide() {
 		super.hide();
-		this.cameraPanel.getElement().getStyle().setBackgroundImage("none");
-		this.picturePanel.getElement().getStyle().setBackgroundImage("none");
+		this.cameraPanel.getElement().style.backgroundImage = "none";
+		this.picturePanel.getElement().style.backgroundImage = "none";
 		this.pictureFromCameraString = "";
 		this.pictureFromFileString = "";
 	}

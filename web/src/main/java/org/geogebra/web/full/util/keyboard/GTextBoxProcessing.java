@@ -2,9 +2,7 @@ package org.geogebra.web.full.util.keyboard;
 
 import org.geogebra.keyboard.web.KeyboardListener;
 import org.geogebra.web.html5.gui.textbox.GTextBox;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.user.client.Event;
+import org.geogebra.web.html5.util.EventUtil;
 
 /**
  * Connector for keyboard and simple textbox
@@ -31,9 +29,9 @@ public class GTextBoxProcessing implements KeyboardListener {
 
 	@Override
 	public void onEnter() {
-		NativeEvent event2 = Document.get().createKeyDownEvent(false, false,
+		elemental2.dom.Event event2 = EventUtil.createKeyEvent("keydown", false, false,
 				false, false, ENTER);
-		field.onBrowserEvent(Event.as(event2));
+		field.onBrowserEvent(event2);
 	}
 
 	@Override

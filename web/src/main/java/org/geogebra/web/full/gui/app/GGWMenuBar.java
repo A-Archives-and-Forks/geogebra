@@ -3,9 +3,12 @@ package org.geogebra.web.full.gui.app;
 import org.geogebra.web.full.gui.menubar.MainMenu;
 import org.geogebra.web.full.main.AppWFull;
 import org.gwtproject.core.client.Scheduler;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.Composite;
 import org.gwtproject.user.client.ui.FlowPanel;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * Wrap MainMenu in composite
@@ -52,9 +55,9 @@ public class GGWMenuBar extends Composite {
 	@Override
 	public void setPixelSize(int w, int h) {
 		super.setPixelSize(w, h);
-		if (menubar != null && menubar.getElement().getParentElement() != null) {
-			menubar.getElement().getParentElement().getStyle()
-				.setHeight(h, Unit.PX);
+		if (menubar != null && menubar.getElement().parentElement != null) {
+			HTMLElement parentElement = Js.uncheckedCast(menubar.getElement().parentElement);
+			parentElement.style.height = CSSProperties.HeightUnionType.of(h + "px");
 		}
 	}
 

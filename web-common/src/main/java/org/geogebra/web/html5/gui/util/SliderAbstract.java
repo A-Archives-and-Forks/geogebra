@@ -2,17 +2,18 @@ package org.geogebra.web.html5.gui.util;
 
 import java.util.ArrayList;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.InputElement;
 import org.gwtproject.event.dom.client.ChangeEvent;
 import org.gwtproject.event.dom.client.DomEvent;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
 import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FocusWidget;
+
+import elemental2.dom.HTMLInputElement;
 
 public abstract class SliderAbstract<T> extends FocusWidget {
 
-	private final InputElement range;
+	private final HTMLInputElement range;
 	private boolean valueChangeHandlerInitialized;
 	private final ArrayList<ValueChangeHandler<T>> valueChangeHandlers = new ArrayList<>();
 
@@ -22,11 +23,10 @@ public abstract class SliderAbstract<T> extends FocusWidget {
 	 * @param max slider max
 	 */
 	public SliderAbstract(double min, double max) {
-		range = Document.get().createTextInputElement();
-		range.setAttribute("type", "range");
+		range = DOM.createInput("range");
 		range.setAttribute("min", String.valueOf(min));
 		range.setAttribute("max", String.valueOf(max));
-		range.setValue(String.valueOf(min));
+		range.value = String.valueOf(min);
 		setElement(range);
 		addMouseMoveHandler(DomEvent::stopPropagation);
 	}
@@ -36,7 +36,7 @@ public abstract class SliderAbstract<T> extends FocusWidget {
 	}
 
 	public T getValue() {
-		return convert(range.getValue());
+		return convert(range.value);
 	}
 
 	protected abstract T convert(String val);
@@ -69,7 +69,7 @@ public abstract class SliderAbstract<T> extends FocusWidget {
 	}
 
 	public void setValue(T value) {
-		range.setValue(String.valueOf(value));
+		range.value = String.valueOf(value);
 	}
 
 	/**

@@ -9,20 +9,19 @@ import org.geogebra.regexp.shared.MatchResult;
 import org.geogebra.regexp.shared.RegExp;
 import org.geogebra.web.html5.Browser;
 import org.geogebra.web.html5.gui.util.Dom;
-import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.user.client.DOM;
 
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLCollection;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.ViewCSS;
 import jsinterop.base.Js;
 
 public final class GeoGebraElement implements AttributeProvider {
 
-	private Element el;
+	private HTMLElement el;
 
 	/**
 	 * @param element
@@ -30,12 +29,12 @@ public final class GeoGebraElement implements AttributeProvider {
 	 *            class and automatically typecast it.
 	 * @return cast element
 	 */
-	public static GeoGebraElement as(Element element) {
+	public static GeoGebraElement as(HTMLElement element) {
 		GeoGebraElement ge = new GeoGebraElement();
 		ge.el = element;
 		// tabindex -1 prevents slider reading on Android
 		if (element != null && !Browser.isAndroid()) {
-			element.setTabIndex(-1);
+			element.tabIndex = -1;
 		}
 		return ge;
 	}
@@ -67,7 +66,7 @@ public final class GeoGebraElement implements AttributeProvider {
 	public void initID(int i) {
 		AppletParameters params = new AppletParameters(this);
 		String paramID = params.getDataParamId();
-		if (paramID.equals(el.getId())) {
+		if (paramID.equals(el.id)) {
 			return;
 		}
 		if (paramID.length() > 0) {
@@ -76,11 +75,11 @@ public final class GeoGebraElement implements AttributeProvider {
 				paramID = params.getDataParamId() + suffix;
 				suffix++;
 			}
-			el.setId(paramID);
+			el.id = paramID;
 			return;
 		}
 		Date creationDate = new Date();
-		el.setId(GeoGebraConstants.GGM_CLASS_NAME + i + creationDate.getTime());
+		el.id = GeoGebraConstants.GGM_CLASS_NAME + i + creationDate.getTime();
 	}
 
 	/**
@@ -91,12 +90,12 @@ public final class GeoGebraElement implements AttributeProvider {
 	}
 
 	public void clear() {
-		el.setInnerHTML("");
+		el.innerHTML = "";
 	}
 
-	private CSSStyleDeclaration getComputedStyle(Element element) {
+	public static CSSStyleDeclaration getComputedStyle(HTMLElement element) {
 		ViewCSS view = Js.cast(DomGlobal.window);
-		return view.getComputedStyle(Js.uncheckedCast(element));
+		return view.getComputedStyle(element);
 	}
 
 	/**
@@ -105,7 +104,7 @@ public final class GeoGebraElement implements AttributeProvider {
 	 * @return primary color
 	 */
 
-	public String getPrimaryColor(Element element) {
+	public String getPrimaryColor(HTMLElement element) {
 		return getComputedStyle(element).getPropertyValue("--ggb-primary-color");
 	}
 
@@ -118,12 +117,12 @@ public final class GeoGebraElement implements AttributeProvider {
 		return "rtl".equals(getComputedStyle(el).direction);
     }
 
-	private double envScale(Element element, String type,
+	private double envScale(HTMLElement element, String type,
 			boolean deep) {
         double sx = 1;
         double sy = 1;
 
-        Element current = element;
+        HTMLElement current = element;
         do {
             RegExp matrixRegex = RegExp.compile("matrix\\((-?\\d*\\.?\\d+),\\s*(-?\\d*\\.?\\d+),"
 					+ "\\s*(-?\\d*\\.?\\d+),\\s*(-?\\d*\\.?\\d+),"
@@ -145,13 +144,13 @@ public final class GeoGebraElement implements AttributeProvider {
 			}
 
 			if (!StringUtil.empty((String) Js.asPropertyMap(style).get("zoom"))
-					&& current != Document.get().getBody().getParentElement()) {
+					&& current != DomGlobal.document.body.parentElement) {
 				double zoom = Double.parseDouble((String) Js.asPropertyMap(style).get("zoom"));
 				sx *= zoom;
 				sy *= zoom;
 			}
 
-            current = current.getParentElement();
+            current = Js.uncheckedCast(current.parentElement);
         } while (deep && current != null);
 
         return "x".equals(type) ? sx : sy;
@@ -172,7 +171,7 @@ public final class GeoGebraElement implements AttributeProvider {
 	 */
 
 	public double getParentScaleX() {
-		return envScale(el.getParentElement(), "x", false);
+		return envScale(Js.uncheckedCast(el.parentElement), "x", false);
 	}
 
 	/**
@@ -185,7 +184,7 @@ public final class GeoGebraElement implements AttributeProvider {
 		// no instance fields in subclasses of Element, so no way to assign it
 		// to
 		// a simple field
-		if ("".equals(el.getAttribute("data-scalex"))) {
+		if (StringUtil.empty(el.getAttribute("data-scalex"))) {
 			setAttribute("data-scalex", String.valueOf(envScale("x")));
 		}
 		return Double.parseDouble(el.getAttribute("data-scalex"));
@@ -198,7 +197,7 @@ public final class GeoGebraElement implements AttributeProvider {
 	 */
 
 	public double readScaleX() {
-		if ("".equals(el.getAttribute("data-scalex"))) {
+		if (StringUtil.empty(el.getAttribute("data-scalex"))) {
 			return envScale("x");
 		}
 		return Double.parseDouble(el.getAttribute("data-scalex"));
@@ -212,7 +211,7 @@ public final class GeoGebraElement implements AttributeProvider {
 	public double getScaleY() {
 		// no instance fields in subclasses of Element, so no way to asign it to
 		// a simple field
-		if ("".equals(el.getAttribute("data-scaley"))) {
+		if (StringUtil.empty(el.getAttribute("data-scaley"))) {
 			setAttribute("data-scaley", String.valueOf(envScale("y")));
 		}
 		return Double.parseDouble(el.getAttribute("data-scaley"));
@@ -248,18 +247,18 @@ public final class GeoGebraElement implements AttributeProvider {
 	}
 
 	public String getId() {
-		return el.getId();
+		return el.id;
 	}
 
-	public Element getElement() {
+	public HTMLElement getElement() {
 		return el;
 	}
 
-	public Element getParentElement() {
-		return el.getParentElement();
+	public HTMLElement getParentElement() {
+		return Js.uncheckedCast(el.parentElement);
 	}
 
-	public Style getStyle() {
-		return el.getStyle();
+	public CSSStyleDeclaration getStyle() {
+		return el.style;
 	}
 }

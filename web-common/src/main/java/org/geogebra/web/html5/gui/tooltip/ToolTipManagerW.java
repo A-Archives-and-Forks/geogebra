@@ -2,9 +2,9 @@ package org.geogebra.web.html5.gui.tooltip;
 
 import org.geogebra.web.html5.gui.util.CancelEventTimer;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.Event;
+
+import elemental2.dom.CSSStyleDeclaration;
 
 public final class ToolTipManagerW {
 	private ComponentSnackbar snackbar;
@@ -66,13 +66,14 @@ public final class ToolTipManagerW {
 
 		createSnackbar(appW, title, helpText, buttonText, showDuration, url);
 
-		Style style = snackbar.getElement().getStyle();
+		CSSStyleDeclaration style = snackbar.getElement().style;
 		if (appW.isWhiteboardActive()) {
-			style.setLeft((appW.getWidth() - snackbar.getOffsetWidth()) / 2, Unit.PX);
+			style.left =
+					(appW.getWidth() - snackbar.getOffsetWidth()) / 2 + "px";
 		}
 		else {
 			if (appW.getAppletFrame().isKeyboardShowing()) {
-				style.setBottom(236, Unit.PX); // 8px higher then keyboard
+				style.bottom = "236px"; // 8px higher then keyboard
 			} else if (appW.isUnbundled() || appW.isSuite()) {
 				boolean portrait = appW.getWidth() < appW.getHeight();
 				snackbar.addStyleName(portrait ? "portrait" : "landscape");
@@ -80,7 +81,7 @@ public final class ToolTipManagerW {
 				int snackbarRight = (portrait ? 8 : 80) + snackbar.getOffsetWidth();
 				int moveTop = appW.getGuiManager().getMoveTopBelowSnackbar(snackbarRight);
 				if (moveTop > 0) {
-					style.setBottom(moveTop + 8, Unit.PX);
+					style.bottom = (moveTop + 8) + "px";
 				}
 			}
 		}

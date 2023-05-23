@@ -19,7 +19,6 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.util.EventUtil;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.user.client.ui.HasWidgets;
@@ -30,6 +29,8 @@ import com.himamis.retex.editor.share.editor.UnhandledArrowListener;
 import com.himamis.retex.editor.share.event.MathFieldListener;
 import com.himamis.retex.editor.share.meta.MetaModel;
 import com.himamis.retex.editor.web.MathFieldW;
+
+import elemental2.dom.CSSStyleDeclaration;
 
 /**
  * MathField capable editor widget for the web.
@@ -280,8 +281,8 @@ public class MathFieldEditor implements IsWidget, HasKeyboardPopup, BlurHandler 
 	 *
 	 * @return the Style object of the editor.
 	 */
-	public Style getStyle() {
-		return main.getElement().getStyle();
+	public CSSStyleDeclaration getStyle() {
+		return main.getElement().style;
 	}
 
 	/**

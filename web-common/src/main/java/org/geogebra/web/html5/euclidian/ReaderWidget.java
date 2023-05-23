@@ -3,7 +3,6 @@ package org.geogebra.web.html5.euclidian;
 import org.geogebra.common.euclidian.ScreenReaderAdapter;
 import org.geogebra.common.main.ScreenReader;
 import org.geogebra.web.html5.Browser;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.ui.SimplePanel;
 
@@ -20,7 +19,7 @@ import jsinterop.base.Js;
  */
 public class ReaderWidget extends SimplePanel implements ScreenReaderAdapter {
 	private Timer timer;
-	private Element anchor;
+	private HTMLElement anchor;
 	private HTMLElement scrollElement;
 
 	/**
@@ -31,12 +30,12 @@ public class ReaderWidget extends SimplePanel implements ScreenReaderAdapter {
 	 * @param anchor
 	 *            object to focus afterwards
 	 */
-	public ReaderWidget(int evNo, Element anchor) {
+	public ReaderWidget(int evNo, HTMLElement anchor) {
 		this.anchor = anchor;
-		getElement().setId("screenReader" + evNo);
-		getElement().addClassName("screenReaderStyle");
+		getElement().id = "screenReader" + evNo;
+		getElement().classList.add("screenReaderStyle");
 		// can't be tabbed, but can get the focus programmatically
-		getElement().setTabIndex(-1);
+		getElement().tabIndex = -1;
 		getElement().setAttribute("role", "status");
 		getElement().setAttribute("aria-live", "polite");
 		getElement().setAttribute("aria-atomic", "true");
@@ -50,7 +49,7 @@ public class ReaderWidget extends SimplePanel implements ScreenReaderAdapter {
 	 *            to set.
 	 */
 	private void setText(String text) {
-		getElement().setInnerText(text);
+		getElement().textContent = text;
 	}
 
 	/**

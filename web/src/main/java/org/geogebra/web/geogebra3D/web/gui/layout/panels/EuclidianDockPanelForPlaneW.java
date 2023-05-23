@@ -12,9 +12,10 @@ import org.geogebra.web.geogebra3D.web.euclidianForPlane.EuclidianViewForPlaneW;
 import org.geogebra.web.html5.euclidian.EuclidianPanelWAbstract;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.resources.client.ResourcePrototype;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.CSSProperties;
 
 /**
  * Dock panel for view for plane
@@ -77,8 +78,8 @@ public class EuclidianDockPanelForPlaneW extends EuclidianDockPanelWAbstract
 		if (euclidianpanel == null) {
 			euclidianpanel = new EuclidianPanel(this);
 			eview1 = Canvas.createIfSupported();
-			eview1.getElement().getStyle().setPosition(Position.RELATIVE);
-			eview1.getElement().getStyle().setZIndex(0);
+			eview1.getElement().style.position = "relative";
+			eview1.getElement().style.zIndex = CSSProperties.ZIndexUnionType.of(0);
 			euclidianpanel.getAbsolutePanel().add(eview1);
 		}
 

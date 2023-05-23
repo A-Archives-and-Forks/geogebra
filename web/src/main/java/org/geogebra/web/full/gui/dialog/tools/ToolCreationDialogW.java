@@ -17,18 +17,18 @@ import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.tabpanel.MultiRowsTabPanel;
 import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
-import org.gwtproject.dom.client.NodeList;
-import org.gwtproject.dom.client.OptionElement;
-import org.gwtproject.dom.client.SelectElement;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.logical.shared.SelectionHandler;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.ListBox;
 
 import elemental2.core.Global;
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLOptionsCollection;
+import elemental2.dom.HTMLSelectElement;
 import elemental2.dom.URL;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -238,7 +238,7 @@ public class ToolCreationDialogW extends ComponentDialog implements
 			tabPanel.selectTab(getSelectedTab() - 1)
 		);
 		btBack.setEnabled(false);
-		btBack.getElement().getStyle().setMargin(3, Unit.PX);
+		btBack.getElement().style.margin = CSSProperties.MarginUnionType.of("3px");
 
 		btNext = new StandardButton(loc.getMenu("Next") + " >");
 		btNext.addStyleName("materialOutlinedButton ");
@@ -390,10 +390,10 @@ public class ToolCreationDialogW extends ComponentDialog implements
 		}
 		for (GeoElementND geo : geos) {
 			lb.addItem(geo.getLongDescription());
-			SelectElement selectElement = SelectElement.as(lb.getElement());
-			NodeList<OptionElement> options = selectElement.getOptions();
-			options.getItem(options.getLength() - 1).getStyle()
-					.setColor(GColor.getColorString(geo.getAlgebraColor()));
+			HTMLSelectElement selectElement = Js.uncheckedCast(lb.getElement());
+			HTMLOptionsCollection options = selectElement.options;
+			options.getAt(options.getLength() - 1).style
+					.color = GColor.getColorString(geo.getAlgebraColor());
 		}
 	}
 }

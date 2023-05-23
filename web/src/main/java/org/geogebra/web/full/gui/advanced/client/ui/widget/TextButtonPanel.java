@@ -22,10 +22,11 @@ import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
 import org.geogebra.web.html5.gui.util.FormLabel.HasInputElement;
 import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.HasValue;
 import org.gwtproject.user.client.ui.SimplePanel;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * This is a basic class for all text boxs with a button.
@@ -309,7 +310,7 @@ public abstract class TextButtonPanel<T> extends SimplePanel
 	}
 
 	@Override
-	public Element getInputElement() {
+	public HTMLElement getInputElement() {
 		return getSelectedValue().getTextField().getElement();
 	}
 }

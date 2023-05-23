@@ -1,10 +1,11 @@
 package org.geogebra.web.full.gui.app;
 
 import org.geogebra.common.main.exam.ExamLogBuilder;
-import org.gwtproject.dom.client.DivElement;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.HTML;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLDivElement;
 
 /**
  * HTML builder for exam logs
@@ -27,18 +28,18 @@ public class HTMLLogBuilder extends ExamLogBuilder {
 		addLineEl(sb.toString());
 	}
 
-	private DivElement addLineEl(String string) {
-		DivElement div = DOM.createDiv().cast();
-		div.setInnerText(string);
+	private HTMLDivElement addLineEl(String string) {
+		HTMLDivElement div = DOM.createDiv();
+		div.textContent = string;
 		html.getElement().appendChild(div);
 		return div;
 	}
 
 	@Override
 	public void addField(String name, String value) {
-		DivElement nameEl = addLineEl(name);
-		nameEl.getStyle().setColor("rgba(0,0,0,0.54)");
-		nameEl.getStyle().setFontSize(75, Unit.PCT);
+		HTMLDivElement nameEl = addLineEl(name);
+		nameEl.style.color ="rgba(0,0,0,0.54)";
+		nameEl.style.fontSize = CSSProperties.FontSizeUnionType.of("75%");
 		addLineEl(value);
 	}
 

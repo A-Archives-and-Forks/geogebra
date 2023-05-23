@@ -8,9 +8,10 @@ import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.full.gui.components.MathFieldEditor;
 import org.geogebra.web.html5.util.JsRunnable;
-import org.gwtproject.dom.style.shared.Unit;
 
 import com.himamis.retex.editor.share.event.MathFieldListener;
+
+import elemental2.dom.CSSProperties;
 
 public class MathTextFieldW extends MathFieldEditor implements MathFieldListener, ErrorHandler {
 	private final ArrayList<JsRunnable> inputHandlers = new ArrayList<>();
@@ -73,8 +74,8 @@ public class MathTextFieldW extends MathFieldEditor implements MathFieldListener
 	 * @param width in pixels
 	 */
 	public void setPxWidth(int width) {
-		asWidget().getElement().getStyle().setProperty("minWidth", width + "px");
-		asWidget().getElement().getStyle().setWidth(width, Unit.PX);
+		asWidget().getElement().style.setProperty("minWidth", width + "px");
+		asWidget().getElement().style.width = CSSProperties.WidthUnionType.of(width + "px");
 	}
 
 	public String getText() {

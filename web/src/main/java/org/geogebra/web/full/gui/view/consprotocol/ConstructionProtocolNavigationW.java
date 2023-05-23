@@ -11,8 +11,6 @@ import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.javax.swing.GSpinnerW;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NodeList;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
@@ -182,9 +180,9 @@ public class ConstructionProtocolNavigationW
 	 * @param flag whether components should be enabled
 	 */
 	void setComponentsEnabled(boolean flag) {
-		NodeList<Element> buttons = implPanel.getElement().getElementsByTagName("button");
+		elemental2.dom.NodeList<elemental2.dom.Element> buttons = implPanel.getElement().getElementsByTagName("button");
 		for (int i = 0; i < buttons.getLength(); i++) {
-			buttons.getItem(i).setPropertyBoolean("disabled", !flag);
+			buttons.getAt(i).setAttribute("disabled", !flag);
 		}
 		btPlay.setEnabled(true);
 	}

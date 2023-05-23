@@ -14,16 +14,14 @@ import org.geogebra.web.shared.view.button.ActionButton;
 import org.geogebra.web.shared.view.button.DisappearingActionButton;
 import org.gwtproject.animation.client.AnimationScheduler;
 import org.gwtproject.animation.client.AnimationScheduler.AnimationCallback;
-import org.gwtproject.dom.client.DivElement;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Display;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.RootPanel;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.core.Function;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 
 /**
  * Singleton representing external header bar of unbundled apps.
@@ -72,9 +70,9 @@ public class GlobalHeader implements EventRenderable {
 			signIn.setVisible(false);
 			profilePanel.setVisible(true);
 			profilePanel.update(((LoginEvent) event).getUser());
-			DivElement profile = DOM.createDiv().cast();
-			profile.setId("profileId");
-			signIn.getElement().getParentElement().appendChild(profile);
+			HTMLDivElement profile = DOM.createDiv();
+			profile.id = "profileId";
+			signIn.getElement().parentElement.appendChild(profile);
 
 			RootPanel.get("profileId").add(profilePanel);
 		}
@@ -109,8 +107,8 @@ public class GlobalHeader implements EventRenderable {
 	 *
 	 * @return element containing the buttons in header
 	 */
-	public static Element getButtonElement() {
-		return Document.get().getElementById("buttonsID");
+	public static HTMLElement getButtonElement() {
+		return DOM.getElementById("buttonsID");
 	}
 
 	/**
@@ -216,8 +214,8 @@ public class GlobalHeader implements EventRenderable {
 		if (getButtonElement() == null) {
 			return;
 		}
-		getExamPanel().getElement().removeFromParent();
-		getButtonElement().getStyle().clearDisplay();
+		getExamPanel().getElement().remove();
+		getButtonElement().style.display = null;
 		onResize();
 	}
 
@@ -229,8 +227,7 @@ public class GlobalHeader implements EventRenderable {
 			return;
 		}
 		// remove other buttons
-		getButtonElement().getStyle()
-				.setDisplay(Display.NONE);
+		getButtonElement().style.display = "none";
 		// exam panel with timer and info btn
 		timer = new Label("0:00");
 		timer.setStyleName("examTimer");
@@ -239,9 +236,9 @@ public class GlobalHeader implements EventRenderable {
 		examInfoBtn.addStyleName("flatButtonHeader");
 		examInfoBtn.addStyleName("examInfoBtn");
 		// add exam panel to
-		Element exam = DOM.createDiv();
-		exam.setId("examId");
-		getButtonElement().getParentElement().appendChild(exam);
+		HTMLElement exam = DOM.createDiv();
+		exam.id = "examId";
+		getButtonElement().parentElement.appendChild(exam);
 		// The link should be disabled in all exam-capable apps since APPS-3289, but make sure
 		Dom.querySelector("#headerID a").setAttribute("href", "#");
 		RootPanel.get("examId").addStyleName("examPanel");

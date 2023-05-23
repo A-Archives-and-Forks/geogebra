@@ -18,6 +18,7 @@ import org.geogebra.web.html5.gui.util.LongTouchTimer.LongTouchHandler;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.EventUtil;
 import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.event.dom.client.BrowserEvents;
 import org.gwtproject.event.dom.client.HumanInputEvent;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.event.dom.client.MouseDownHandler;
@@ -33,6 +34,8 @@ import org.gwtproject.event.dom.client.TouchStartEvent;
 import org.gwtproject.event.dom.client.TouchStartHandler;
 import org.gwtproject.user.client.ui.HTMLTable.Cell;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.MouseEvent;
 
 /**
  * HTML5 version of CAS controller
@@ -143,7 +146,7 @@ public class CASTableControllerW extends CASTableCellController implements
 					((RowHeaderWidget) wid).getHandler().onMouseUp(event);
 				}
 			}
-		} else if (event.getNativeEvent().getButton() == NativeEvent.BUTTON_RIGHT) {
+		} else if (((MouseEvent) event.getNativeEvent()).button == BrowserEvents.BUTTON_RIGHT) {
 			// in theory, checkHeaderClick(event) is already false here...
 			// only do this action when supported
 			// only makes sense for mouse events yet

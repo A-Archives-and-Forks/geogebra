@@ -29,8 +29,9 @@ import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.geogebra.web.shared.components.infoError.ComponentInfoErrorPanel;
 import org.geogebra.web.shared.components.infoError.InfoErrorData;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.Command;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Context menu which is opened with the table of values header 3dot button
@@ -262,7 +263,7 @@ public class ContextMenuTV {
 	 * @param y
 	 *            y coordinate.
 	 */
-	public void show(Element source, int x, int y) {
+	public void show(HTMLElement source, int x, int y) {
 		wrappedPopup.show(source, x, y);
 		wrappedPopup.getPopupMenu().focusDeferred();
 	}

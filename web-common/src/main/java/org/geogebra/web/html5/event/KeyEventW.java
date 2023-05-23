@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import org.geogebra.common.util.debug.Log;
 import org.gwtproject.event.dom.client.KeyPressEvent;
+import org.gwtproject.user.client.DOM;
 
 public final class KeyEventW
 		extends org.geogebra.common.euclidian.event.KeyEvent {
@@ -40,10 +41,11 @@ public final class KeyEventW
 
 	@Override
 	public boolean isEnterKey() {
-		return event.getNativeEvent().getKeyCode() == 13
-				|| event.getNativeEvent().getKeyCode() == 10
-				|| (event.getNativeEvent().getKeyCode() == 0 && event
-						.getNativeEvent().getCharCode() == 13);
+		int keyCode = DOM.getKeyCode(event.getNativeEvent());
+		return keyCode == 13
+				|| keyCode == 10
+				|| (keyCode == 0 && DOM.getCharCode(event
+						.getNativeEvent()) == 13);
 	}
 
 	@Override

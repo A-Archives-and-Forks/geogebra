@@ -94,7 +94,7 @@ public class ShareDialogMow extends ComponentDialog
 
 	private boolean isMultiuserSwitchOn() {
 		return multiuserSwitch != null && multiuserSwitch.isSwitchOn()
-				&& !multiuserSharePanel.getElement().hasClassName("disabled");
+				&& !multiuserSharePanel.getElement().classList.contains("disabled");
 	}
 
 	private void updateMaterial(String visibility) {

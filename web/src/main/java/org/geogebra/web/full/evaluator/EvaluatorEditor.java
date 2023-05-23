@@ -48,7 +48,7 @@ public class EvaluatorEditor implements IsWidget, MathFieldListener, BlurHandler
 		mathFieldEditor.getMathField().setBackgroundColor(bgColor);
 		mathFieldEditor.getMathField().setForegroundColor(fgColor);
 
-		app.getFrameElement().getStyle().setBackgroundColor(bgColor);
+		app.getFrameElement().style.backgroundColor = bgColor;
 
 		MathFieldInternal mathFieldInternal = mathFieldEditor.getMathField().getInternal();
 		evaluatorAPI = new EvaluatorAPI(app.getKernel(), mathFieldInternal);

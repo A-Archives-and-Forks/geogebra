@@ -75,7 +75,7 @@ public class UndoRedoPanel extends PersistablePanel {
 		if (app.getKernel().redoPossible()) {
 			btnRedo.removeStyleName("hideButton");
 		} else {
-			if (!btnRedo.getElement().hasClassName("hideButton")) {
+			if (!btnRedo.getElement().classList.contains("hideButton")) {
 				app.getAccessibilityManager().focusAnchor();
 			}
 			btnRedo.addStyleName("hideButton");

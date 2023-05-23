@@ -17,12 +17,13 @@ import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.LocalizationW;
 import org.geogebra.web.html5.util.AppletParameters;
 import org.geogebra.web.html5.util.GeoGebraElement;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Display;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * Place of the zoom buttons.
@@ -104,7 +105,7 @@ public class ZoomPanel extends FlowPanel implements CoordSystemListener {
 		GeoGebraElement element = app.getGeoGebraElement();
 		if (!ae.getDataParamApp() && isFullScreen()) {
 			getZoomController().scaleApplet(element.getParentElement(),
-					element.getParentElement().getParentElement(),
+					Js.uncheckedCast(element.getParentElement().parentElement),
 					getPanelElement());
 		}
 		if (ae.getDataParamApp() && fullscreenBtn != null) {
@@ -141,7 +142,7 @@ public class ZoomPanel extends FlowPanel implements CoordSystemListener {
 	/**
 	 * @return we need getElement() for zoom controller
 	 */
-	public Element getPanelElement() {
+	public HTMLElement getPanelElement() {
 		return getElement();
 	}
 
@@ -424,8 +425,8 @@ public class ZoomPanel extends FlowPanel implements CoordSystemListener {
 		}
 		if (homeBtn != null) {
 			// change style directly, aria-hidden + visibility should depend on zoom
-			Display display = zoomButtonsVisible ? Display.BLOCK : Display.NONE;
-			homeBtn.getElement().getStyle().setDisplay(display);
+			String display = zoomButtonsVisible ? "block" : "none";
+			homeBtn.getElement().style.display = display;
 		}
 	}
 

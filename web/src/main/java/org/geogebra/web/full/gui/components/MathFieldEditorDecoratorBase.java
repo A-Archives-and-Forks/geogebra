@@ -2,15 +2,16 @@ package org.geogebra.web.full.gui.components;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.util.StringUtil;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Unit;
 
 import com.himamis.retex.editor.web.MathFieldW;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
 
 public abstract class MathFieldEditorDecoratorBase {
 	protected static final int PADDING_LEFT = 2;
 	private final MathFieldW mathField;
-	private final Style style;
+	private final CSSStyleDeclaration style;
 
 	/**
 	 *
@@ -31,7 +32,7 @@ public abstract class MathFieldEditorDecoratorBase {
 				? backgroundColor
 				: GColor.WHITE;
 		String cssColor = StringUtil.toHtmlColor(color);
-		style.setBackgroundColor(cssColor);
+		style.backgroundColor = cssColor;
 	}
 
 	/**
@@ -59,7 +60,7 @@ public abstract class MathFieldEditorDecoratorBase {
 	 * @param value to set.
 	 */
 	protected void setLeft(double value) {
-		style.setLeft(value, Unit.PX);
+		style.left = value + "px";
 	}
 
 	/**
@@ -68,7 +69,7 @@ public abstract class MathFieldEditorDecoratorBase {
 	 * @param value to set.
 	 */
 	public void setTop(double value) {
-		style.setTop(value, Unit.PX);
+		style.top = value + "px";
 	}
 
 	/**
@@ -77,7 +78,7 @@ public abstract class MathFieldEditorDecoratorBase {
 	 * @param value to set.
 	 */
 	protected void setWidth(double value) {
-		style.setWidth(value, Unit.PX);
+		style.width = CSSProperties.WidthUnionType.of(value + "px");
 	}
 
 	/**
@@ -86,7 +87,7 @@ public abstract class MathFieldEditorDecoratorBase {
 	 * @param value to set.
 	 */
 	protected void setHeight(double value) {
-		style.setHeight(value, Unit.PX);
+		style.height = CSSProperties.HeightUnionType.of(value + "px");
 	}
 
 }

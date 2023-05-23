@@ -56,7 +56,7 @@ public class SliderTreeItemRetex extends RadioTreeItem {
 		addMarble();
 
 		getDefinitionValuePanel().addStyleName("avPlainText");
-		getElement().getStyle().setColor("black");
+		getElement().style.color = "black";
 
 		content.add(getDefinitionValuePanel());
 

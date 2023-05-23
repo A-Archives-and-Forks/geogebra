@@ -7,9 +7,9 @@ import org.geogebra.web.html5.Browser;
 import org.geogebra.web.html5.GeoGebraGlobal;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.client.Element;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 
 /**
@@ -113,12 +113,12 @@ public class ExamUtil {
 	 * @param red
 	 *            whether it should be red
 	 */
-	public static void makeRed(Element element, boolean red) {
+	public static void makeRed(HTMLElement element, boolean red) {
 		if (red) {
-			Dom.setImportant(element.getStyle(), "background-color",
+			Dom.setImportant(element.style, "backgroundColor",
 					StringUtil.toHtmlColor(GColor.DARK_RED));
 		} else {
-			element.getStyle().setBackgroundColor("");
+			element.style.backgroundColor = null;
 		}
 	}
 

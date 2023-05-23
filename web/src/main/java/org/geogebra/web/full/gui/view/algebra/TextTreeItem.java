@@ -37,7 +37,7 @@ public class TextTreeItem extends RadioTreeItem {
 		text.getDescriptionForAV(
 				new DOMIndexHTMLBuilder(getDefinitionValuePanel(), app));
 		content.add(getDefinitionValuePanel());
-		getDefinitionValuePanel().getElement().addClassName("textWrap");
+		getDefinitionValuePanel().getElement().classList.add("textWrap");
 	}
 	
 	/**

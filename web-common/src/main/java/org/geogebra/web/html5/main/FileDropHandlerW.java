@@ -4,13 +4,12 @@ import org.geogebra.common.util.StringUtil;
 import org.geogebra.web.html5.util.CopyPasteW;
 import org.geogebra.web.html5.util.GlobalHandlerRegistry;
 import org.geogebra.web.html5.util.StringConsumer;
-import org.gwtproject.dom.client.Element;
 
 import elemental2.dom.DataTransfer;
 import elemental2.dom.DataTransferItem;
 import elemental2.dom.DragEvent;
 import elemental2.dom.File;
-import jsinterop.base.Js;
+import elemental2.dom.HTMLElement;
 
 /**
  * Handles files dropped into GeoGebra.
@@ -19,18 +18,16 @@ public class FileDropHandlerW {
 	/**
 	 * Register file drop handlers for the canvas of this application
 	 * 
-	 * @param ce
+	 * @param frameElement
 	 *            Element that listens to the drop events
 	 * @param appl
 	 *            application
 	 */
-	protected static void registerDropHandler(Element ce, AppW appl,
+	protected static void registerDropHandler(HTMLElement frameElement, AppW appl,
 			GlobalHandlerRegistry list) {
-		if (ce == null) {
+		if (frameElement == null) {
 			return;
 		}
-
-		elemental2.dom.HTMLElement frameElement = Js.uncheckedCast(ce);
 
 		list.addEventListener(frameElement, "dragover", (e) -> {
 			e.preventDefault();

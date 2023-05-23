@@ -49,13 +49,13 @@ public class CursorOverlay extends FlowPanel {
 		w.setStyleName("virtualCursor");
 		dummyCursor.add(w);
 		dummyCursor.add(new InlineLabel(text.substring(cursorPos)));
-		int offset = prefix.getOffsetWidth() - dummyCursor.getElement().getScrollLeft();
+		double offset = prefix.getOffsetWidth() - dummyCursor.getElement().scrollLeft;
 		int scrollPadding = 10;
 		if (offset < 0) {
-			dummyCursor.getElement().setScrollLeft(prefix.getOffsetWidth() - scrollPadding);
+			dummyCursor.getElement().scrollLeft = prefix.getOffsetWidth() - scrollPadding;
 		} else if (offset > dummyCursor.getOffsetWidth() - scrollPadding) {
-			dummyCursor.getElement().setScrollLeft(prefix.getOffsetWidth()
-					- dummyCursor.getOffsetWidth() + scrollPadding);
+			dummyCursor.getElement().scrollLeft = prefix.getOffsetWidth()
+					- dummyCursor.getOffsetWidth() + scrollPadding;
 		}
 	}
 }

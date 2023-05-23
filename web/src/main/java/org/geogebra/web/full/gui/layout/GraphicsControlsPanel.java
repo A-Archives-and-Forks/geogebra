@@ -50,7 +50,7 @@ public class GraphicsControlsPanel extends FlowPanel implements DockControlPanel
 		graphicsContextMenuBtn.addStyleName("flatButton");
 		graphicsContextMenuBtn.addStyleName(app.isWhiteboardActive()
 				? "graphicsContextMenuBtn mow" : "graphicsContextMenuBtn");
-		graphicsContextMenuBtn.getElement().setTabIndex(0);
+		graphicsContextMenuBtn.getElement().tabIndex = 0;
 		TestHarness.setAttr(graphicsContextMenuBtn, "graphicsViewContextMenu");
 		add(graphicsContextMenuBtn);
 	}

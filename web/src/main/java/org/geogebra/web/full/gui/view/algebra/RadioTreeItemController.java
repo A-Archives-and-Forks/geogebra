@@ -30,10 +30,8 @@ import org.geogebra.web.html5.gui.util.CancelEventTimer;
 import org.geogebra.web.html5.gui.util.LongTouchManager;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.EventUtil;
-import org.gwtproject.core.client.JsArray;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.client.Touch;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.DoubleClickEvent;
@@ -56,6 +54,9 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Widget;
 
 import com.himamis.retex.editor.share.editor.MathField;
+
+import elemental2.dom.Touch;
+import elemental2.dom.TouchList;
 
 /**
  * Controller class of a AV item.
@@ -249,12 +250,12 @@ public class RadioTreeItemController implements ClickHandler,
 			event.preventDefault();
 		}
 
-		JsArray<Touch> touches = event.getTargetTouches().length() == 0
+		TouchList touches = event.getTargetTouches().length == 0
 				? event.getChangedTouches() : event.getTargetTouches();
 
 		boolean active = isEditing();
 
-		PointerEvent wrappedEvent = PointerEvent.wrapEvent(touches.get(0),
+		PointerEvent wrappedEvent = PointerEvent.wrapEvent(touches.getAt(0),
 				ZeroOffset.INSTANCE);
 		if (isMarbleHit(wrappedEvent.getX(), wrappedEvent.getY())) {
 			return;
@@ -311,8 +312,8 @@ public class RadioTreeItemController implements ClickHandler,
 		if (item.isInputTreeItem()) {
 			event.preventDefault();
 		}
-		JsArray<Touch> targets = event.getTargetTouches();
-		AbstractEvent wrappedEvent = PointerEvent.wrapEvent(targets.get(0),
+		TouchList targets = event.getTargetTouches();
+		AbstractEvent wrappedEvent = PointerEvent.wrapEvent(targets.getAt(0),
 				ZeroOffset.INSTANCE);
 		onPointerMove(wrappedEvent);
 		CancelEventTimer.touchEventOccured();
@@ -591,12 +592,12 @@ public class RadioTreeItemController implements ClickHandler,
 	}
 
 	protected void handleAVItem(TouchStartEvent evt) {
-		if (evt.getTouches().length() == 0) {
+		if (evt.getTouches().length == 0) {
 			return;
 		}
 
-		Touch t = evt.getTouches().get(0);
-		if (handleAVItem(t.getClientX(), t.getClientY(), false)) {
+		Touch t = evt.getTouches().getAt(0);
+		if (handleAVItem((int) t.clientX, (int) t.clientY, false)) {
 			evt.preventDefault();
 		}
 	}

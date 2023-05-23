@@ -3,6 +3,7 @@ package org.geogebra.web.test;
 import java.util.Collection;
 
 import org.geogebra.regexp.client.NativeRegExp;
+import org.geogebra.web.full.gui.dialog.DialogManagerW;
 import org.geogebra.web.geogebra3D.web.euclidian3D.openGL.RendererImplShadersW;
 import org.geogebra.web.geogebra3D.web.euclidian3D.openGL.RendererWithImplW;
 import org.geogebra.web.html5.Browser;
@@ -13,41 +14,27 @@ import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.FileDropHandlerW;
 import org.geogebra.web.html5.util.CSSEvents;
 import org.geogebra.web.html5.util.CopyPasteW;
+import org.geogebra.web.html5.util.GeoGebraElement;
 import org.geogebra.web.html5.util.GlobalHandlerRegistry;
 import org.geogebra.web.resources.SVGResourcePrototype;
 import org.geogebra.web.resources.StyleInjector;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.core.client.impl.SchedulerImpl;
 import org.gwtproject.dom.client.SelectElement;
-import org.gwtproject.dom.client.TextAreaElement;
 import org.gwtproject.event.dom.client.DomEvent;
+import org.gwtproject.layout.client.Layout;
 import org.gwtproject.safehtml.shared.SafeUri;
 import org.gwtproject.user.cellview.client.CellBasedWidgetImplStandard;
 import org.gwtproject.user.cellview.client.CellTable;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.impl.DOMImplStandard;
 import org.gwtproject.user.client.impl.DOMImplStandardBase;
-import org.gwtproject.user.client.ui.AbsolutePanel;
-import org.gwtproject.user.client.ui.CellPanel;
-import org.gwtproject.user.client.ui.Composite;
-import org.gwtproject.user.client.ui.DeckLayoutPanel;
-import org.gwtproject.user.client.ui.DeckPanel;
-import org.gwtproject.user.client.ui.DockLayoutPanel;
-import org.gwtproject.user.client.ui.DockPanel;
-import org.gwtproject.user.client.ui.FocusPanel;
 import org.gwtproject.user.client.ui.HTMLTable;
-import org.gwtproject.user.client.ui.HorizontalPanel;
 import org.gwtproject.user.client.ui.Image;
-import org.gwtproject.user.client.ui.LayoutPanel;
 import org.gwtproject.user.client.ui.ResizeComposite;
-import org.gwtproject.user.client.ui.ResizeLayoutPanel;
-import org.gwtproject.user.client.ui.SimpleLayoutPanel;
-import org.gwtproject.user.client.ui.SimplePanel;
-import org.gwtproject.user.client.ui.SplitLayoutPanel;
-import org.gwtproject.user.client.ui.StackPanel;
 import org.gwtproject.user.client.ui.UIObject;
-import org.gwtproject.user.client.ui.VerticalPanel;
-import org.gwtproject.user.client.ui.impl.FocusImpl;
+import org.gwtproject.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.impl.PopupImpl;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
@@ -89,8 +76,6 @@ public class GgbMockitoTestRunner extends GwtMockitoTestRunner {
                 Double.class);
         StubGenerator.replaceMethodWithMock(FileDropHandlerW.class, "registerDropHandler",
                 Void.class);
-        StubGenerator.replaceMethodWithMock(Canvas.class, "createIfSupported",
-                Canvas.class);
         StubGenerator.replaceMethodWithMock(JLMContextHelper.class, "as",
                 JLMContext2d.class);
         StubGenerator.replaceMethodWithMock(Graphics2DW.class, "initFontParser",
@@ -99,6 +84,8 @@ public class GgbMockitoTestRunner extends GwtMockitoTestRunner {
                 ImageW.class);
         StubGenerator.replaceMethodWithMock(RendererWithImplW.class, "getWebGLContext",
                 WebGLRenderingContext.class);
+        StubGenerator.replaceMethodWithMock(Canvas.class, "getContext2d",
+                Void.class);
         StubGenerator.replaceMethodWithMock(RendererImplShadersW.class, "getShader",
                 WebGLShader.class);
         StubGenerator.replaceMethodWithMock(RendererImplShadersW.class, "glLinkProgram",
@@ -111,7 +98,15 @@ public class GgbMockitoTestRunner extends GwtMockitoTestRunner {
                 Void.class);
         StubGenerator.replaceMethodWithMock(GlobalHandlerRegistry.class, "addEventListener",
                 Void.class);
+        StubGenerator.replaceMethodWithMock(GeoGebraElement.class, "getComputedStyle",
+                Void.class);
         StubGenerator.replaceMethodWithMock(CopyPasteW.class, "installCutCopyPaste",
+                Void.class);
+        StubGenerator.replaceMethodWithMock(PopupImpl.class, "getStyleElement",
+                Void.class);
+        StubGenerator.replaceMethodWithMock(DialogManagerW.class, "createLoadingAnimation",
+                Void.class);
+        StubGenerator.replaceMethodWithMock(DOM.class, "getParent",
                 Void.class);
         StubGenerator.replaceMethodWithMock(FormatFactoryW.class, "toPrecision",
                 String.class);
@@ -139,39 +134,31 @@ public class GgbMockitoTestRunner extends GwtMockitoTestRunner {
         StubGenerator.replaceMethodWithMock(CancelEventTimer.class, "killTouch", Void.class);
         StubGenerator.replaceMethodWithMock(GPopupPanel.class, "getContainerElement", Void.class);
         StubGenerator.replaceMethodWithMock(MathFieldW.class, "addFocusListener", Void.class);
+        StubGenerator.replaceMethodWithMock(Widget.class, "sinkEvents", Void.class);
 
+        StubGenerator.replaceMethodWithMock(UIObject.class, "sinkEvents", Void.class);
+        StubGenerator.replaceMethodWithMock(UIObject.class, "setWidth", Void.class);
+        StubGenerator.replaceMethodWithMock(UIObject.class, "setHeight", Void.class);
+
+        StubGenerator.replaceMethodWithMock(Image.class, "onLoad", Void.class);
+        StubGenerator.replaceMethodWithMock(DOM.class, "getEventsSunk", Void.class);
+        StubGenerator.replaceMethodWithMock(CellTable.class, "addColumnStyleName", Void.class);
+        StubGenerator.replaceMethodWithMock(HTMLTable.class, "setWidget", Void.class);
+        StubGenerator.replaceMethodWithMock(HTMLTable.class, "getWidget", Void.class);
+
+        //StubGenerator.replaceMethodWithMock(DOM.class, "clone", Void.class);
+        //StubGenerator.replaceMethodWithMock(DOM.class, "getFirstChild", Void.class);
     }
 
     @Override
     protected Collection<Class<?>> getClassesToStub() {
         Collection<Class<?>> classes = super.getClassesToStub();
-        classes.add(Composite.class);
-        classes.add(DOM.class);
-        classes.add(UIObject.class);
-        classes.add(HTMLTable.class);
-        classes.add(Image.class);
-        classes.add(AbsolutePanel.class);
-        classes.add(CellPanel.class);
-        classes.add(CellTable.class);
-        classes.add(DeckLayoutPanel.class);
-        classes.add(DeckPanel.class);
-        classes.add(DockLayoutPanel.class);
-        classes.add(DockPanel.class);
-        classes.add(FocusPanel.class);
-        classes.add(HorizontalPanel.class);
-        classes.add(LayoutPanel.class);
-        classes.add(ResizeLayoutPanel.class);
-        classes.add(SimpleLayoutPanel.class);
-        classes.add(SimplePanel.class);
-        classes.add(SplitLayoutPanel.class);
-        classes.add(StackPanel.class);
-        classes.add(VerticalPanel.class);
-        classes.add(TextAreaElement.class);
         classes.add(DOMImplStandardBase.class);
         classes.add(DOMImplStandard.class);
         classes.add(DomEvent.Type.class);
+        classes.add(Layout.class);
         classes.add(SchedulerImpl.class);
-        classes.add(FocusImpl.class);
+        //classes.add(FocusImpl.class);
         classes.add(JsDate.class);
         classes.add(CellBasedWidgetImplStandard.class);
         return classes;

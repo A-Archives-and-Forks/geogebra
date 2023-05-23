@@ -4,7 +4,6 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.main.App;
 import org.geogebra.web.full.gui.layout.DockSplitPaneW;
 import org.geogebra.web.html5.main.AppW;
-import org.gwtproject.dom.style.shared.Overflow;
 
 /**
  * Callback for tool panel opening/closing in portrait mode
@@ -29,7 +28,7 @@ public class PortraitAnimationCallback extends NavRailAnimationCallback {
 
 	@Override
 	protected void onStart() {
-		app.getFrameElement().getStyle().setOverflow(Overflow.HIDDEN);
+		app.getFrameElement().style.overflow = "hidden";
 		if (navRail.isOpen()) {
 			navRail.toolbarPanel.resizeTabs();
 		}
@@ -37,7 +36,7 @@ public class PortraitAnimationCallback extends NavRailAnimationCallback {
 
 	@Override
 	protected void onEnd() {
-		app.getFrameElement().getStyle().setOverflow(Overflow.VISIBLE);
+		app.getFrameElement().style.overflow = "visible";
 		EuclidianView ev = navRail.app.getActiveEuclidianView();
 		if (ev.getViewID() == App.VIEW_EUCLIDIAN3D) {
 			return;

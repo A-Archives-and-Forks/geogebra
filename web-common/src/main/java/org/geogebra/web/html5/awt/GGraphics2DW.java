@@ -26,7 +26,6 @@ import org.geogebra.web.html5.gawt.GBufferedImageW;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.MyImageW;
 import org.gwtproject.canvas.client.Canvas;
-import org.gwtproject.dom.client.Element;
 
 import com.himamis.retex.renderer.web.graphics.JLMContext2d;
 import com.himamis.retex.renderer.web.graphics.JLMContextHelper;
@@ -35,6 +34,7 @@ import elemental2.core.Function;
 import elemental2.core.JsArray;
 import elemental2.dom.CanvasPattern;
 import elemental2.dom.CanvasRenderingContext2D;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.ImageData;
 import jsinterop.base.Js;
@@ -114,7 +114,7 @@ public class GGraphics2DW implements GGraphics2DWI {
 	 * will probably fail * labels are malformed, eg )A=(1,2
 	 */
 	private void setDirection() {
-		getElement().setDir("ltr");
+		getElement().dir = "ltr";
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class GGraphics2DW implements GGraphics2DWI {
 		}
 	}
 
-	private void preventContextMenu(Element element) {
+	private void preventContextMenu(HTMLElement element) {
 		Dom.addEventListener(element, "contextmenu", (e) -> {
 			e.preventDefault();
 			e.stopPropagation();
@@ -710,7 +710,7 @@ public class GGraphics2DW implements GGraphics2DWI {
 	}
 
 	@Override
-	public Element getElement() {
+	public HTMLElement getElement() {
 		return this.canvas.getElement();
 	}
 
