@@ -508,6 +508,12 @@ public class ArithmeticTest extends BaseUnitTest {
 		t("(2" + Unicode.INVISIBLE_PLUS + "1 / 2) / 2", "1.25");
 	}
 
+	@Test
+	public void expandBracketsForImplicitCurve() {
+		add("s(x,y)=x+y");
+		t("s^3.2+3=0", "(x + y)^(3.2) + 3 = 0");
+	}
+
 	private void assertAreEqual(String first, String second, Object areEqual) {
 		getKernel().clearConstruction(false);
 		add("f:" + first);
