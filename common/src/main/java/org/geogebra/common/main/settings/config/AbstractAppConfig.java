@@ -46,7 +46,7 @@ abstract class AbstractAppConfig implements AppConfig {
         return App.VIEW_EUCLIDIAN;
     }
 
-    @Override
+	@Override
 	public boolean hasOneVarStatistics() {
 		return true;
 	}
