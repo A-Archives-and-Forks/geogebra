@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
 
 /**
@@ -14,6 +16,8 @@ public class ExamRestrictionModel {
 	private String defaultAppCode;
 	private CommandFilter commandFilter;
 	private List<FeatureRestriction> featureRestrictions = Collections.emptyList();
+
+	private ExpressionFilter expressionFilter;
 
 	void setSubAppCodes(String... list) {
 		subAppCodes = Arrays.asList(list);
@@ -76,5 +80,27 @@ public class ExamRestrictionModel {
 	 */
 	public boolean isFeatureRestricted(FeatureRestriction featureRestriction) {
 		return featureRestrictions.contains(featureRestriction);
+	}
+
+	/**
+	 *
+	 * @param expressionFilter to restrict expressions.
+	 */
+	public void setExpressionFilter(
+			ExpressionFilter expressionFilter) {
+		this.expressionFilter = expressionFilter;
+	}
+
+	/**
+	 *
+	 * @param node to check
+	 * @return if it is allowed.
+	 */
+	public boolean isExpressionAllowed(ExpressionNode node) {
+		return expressionFilter == null || expressionFilter.isAllowed(node);
+	}
+
+	public boolean hasExpressionFilter() {
+		return expressionFilter != null;
 	}
 }

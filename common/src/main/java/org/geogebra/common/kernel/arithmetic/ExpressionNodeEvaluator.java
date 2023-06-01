@@ -2,6 +2,7 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.arithmetic3D.Vector3DValue;
 import org.geogebra.common.kernel.geos.GeoCasCell;
@@ -19,6 +20,8 @@ import org.geogebra.common.kernel.kernelND.GeoVecInterface;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.MyError.Errors;
+import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
+import org.geogebra.common.main.exam.restriction.Restrictable;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.StringUtil;
@@ -31,16 +34,18 @@ import com.google.j2objc.annotations.Weak;
  * 
  *         Evaluator for ExpressionNode (used in Operation.evaluate())
  */
-public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
+public class ExpressionNodeEvaluator implements ExpressionNodeConstants, Restrictable {
 
 	private Localization loc;
 	private OperationArgumentFilter filter;
+	private ExpressionFilter expressionFilter;
 
 	/**
 	 * Kernel used to create the results
 	 */
 	@Weak
 	protected Kernel kernel;
+	private ExamRestrictionModel restrictionModel;
 
 	/**
 	 * Creates a new expression node evaluator
@@ -68,7 +73,7 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 
 	/**
 	 * Evaluates the ExpressionNode described by the parameters
-	 * 
+	 *
 	 * @param expressionNode
 	 *            ExpressionNode to evaluate
 	 * @param tpl
@@ -77,6 +82,10 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 	 */
 	public ExpressionValue evaluate(ExpressionNode expressionNode,
 			StringTemplate tpl) {
+		if (isExpressionDenied(expressionNode)) {
+			throw invalidFunction(expressionNode);
+		}
+
 		boolean leaf = expressionNode.leaf;
 		ExpressionValue left = expressionNode.getLeft();
 
@@ -114,6 +123,26 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 		}
 		// NON-List operations (apart from EQUAL_BOOLEAN and list + text)
 		return handleOp(operation, lt, rt, left, right, tpl, holdsLaTeXtext);
+	}
+
+	private boolean isExpressionDenied(ExpressionNode node) {
+		if (restrictionModel == null) {
+			return false;
+		}
+		return !restrictionModel.isExpressionAllowed(node);
+	}
+
+	/**
+	 * Throw simple illegal function exception
+	 *
+	 * @param arg
+	 *            argument
+	 * @return nothing (error is thrown)
+	 * @throws MyError
+	 *             (always)
+	 */
+	public MyError invalidFunction(ExpressionValue arg) {
+		return new MyError(loc, Errors.InvalidFunction, MyError.toErrorString(arg));
 	}
 
 	/**
@@ -1448,4 +1477,18 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 		return new MyError(getKernel().getLocalization(), Errors.InvalidInput);
 	}
 
+	@Override
+	public boolean isExamRestrictionModelAccepted(ExamRestrictionModel model) {
+		return model.hasExpressionFilter();
+	}
+
+	@Override
+	public void setExamRestrictionModel(ExamRestrictionModel model) {
+		this.restrictionModel = model;
+	}
+
+	@Override
+	public void applyExamRestrictions() {
+		// nothing to do
+	}
 }
