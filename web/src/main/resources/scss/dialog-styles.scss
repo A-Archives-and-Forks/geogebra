@@ -1665,7 +1665,7 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 				height: 48px;
 				font-size: 175%;
 				line-height: 48px;
-				max-width: 760px;
+				max-width: 912px;
 				margin-bottom: 32px;
 				text-align: center;
 			}
@@ -1711,15 +1711,23 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 			}
 		}
 
-	.calcChooser.smallScreen {
-		max-width: 480px;
-		padding: 24px 12px;
+	@media screen and (max-width: 984px) {
+		.calcChooser {
+			width: 480px;
+			padding: 24px 12px;
 
-		.title {
-			height: 36px;
-			font-size: 140%;
-			line-height: 36px;
-			margin-bottom: 24px;
+            .title {
+            	height: 36px;
+            	font-size: 140%;
+            	line-height: 36px;
+            	margin-bottom: 24px;
+            }
+		}
+	}
+
+	@media screen and (max-width: 480px) {
+		.calcChooser {
+			width: 328px;
 		}
 	}
 
