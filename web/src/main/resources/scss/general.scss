@@ -6,6 +6,7 @@
 **/
 
 @use 'colors';
+@use 'colorMap' as *;
 
 .GeoGebraFrame {
 	background-color: colors.$white;
@@ -88,5 +89,17 @@
 
 	.DialogRbPanel td {
 		padding-right: 20px;
+	}
+
+	@each $colorname, $color in $neutrals {
+		.neutral-#{$colorname} {
+		   background-color: $color;
+		}
+	}
+
+	@each $colorname, $color in $purples {
+		.purple-#{$colorname} {
+			background-color: $color;
+		}
 	}
 }
