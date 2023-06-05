@@ -10,8 +10,8 @@ public interface ExpressionFilter {
 
 	/**
 	 *
-	 * @param operation to check
-	 * @return if operation is allowed
+	 * @param node to check
+	 * @return if node is allowed
 	 */
-	boolean isAllowed(ExpressionNode operation);
+	boolean isAllowed(ExpressionNode node);
 }

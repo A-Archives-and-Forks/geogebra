@@ -4027,6 +4027,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			ExamEnvironment exam = getExam();
 			ExamRegion region = exam != null && exam.isStarted() ? exam.getExamRegion() : null;
 			restrictions = ExamRestrictionFactory.create(region);
+
 		}
 		restrictions.register(restrictable);
 	}

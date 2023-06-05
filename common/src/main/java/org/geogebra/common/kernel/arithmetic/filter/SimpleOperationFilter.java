@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionValue;
 import org.geogebra.common.plugin.Operation;
 
 public class SimpleOperationFilter implements ExpressionFilter {
@@ -15,14 +16,15 @@ public class SimpleOperationFilter implements ExpressionFilter {
 
 	@Override
 	public boolean isAllowed(ExpressionNode node) {
-		return node.inspect(v -> {
-					for (Operation operation : filteredOperations) {
-						if (v.isOperation(operation)) {
-							return true;
-						}
-					}
-					return false;
-				}
-			);
+		return !node.inspect(v -> hasFilteredOperations(v));
+	}
+
+	private boolean hasFilteredOperations(ExpressionValue v) {
+		for (Operation operation : filteredOperations) {
+			if (v.isOperation(operation)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -34,6 +34,7 @@ import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.main.error.ErrorHelper;
+import org.geogebra.common.main.exam.restriction.ExamRegion;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.scientific.LabelController;
 import org.geogebra.common.util.DoubleUtil;
@@ -2004,5 +2005,13 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		GeoSymbolic geo = createGeoWithHiddenLabel("FitPoly({(1,2),(3,4)},1)");
 		showLabel(geo);
 		assertThat(geo.getAlgebraDescriptionDefault(), startsWith("f(x)"));
+	}
+
+
+	@Test
+	public void fractionalPartShouldNotBeAllowed() {
+		app.setNewExam(ExamRegion.MMS);
+		GeoSymbolic symbolic = add("fractionalPart(9/4) + 2x/7");
+		assertThat(symbolic, nullValue());
 	}
 }

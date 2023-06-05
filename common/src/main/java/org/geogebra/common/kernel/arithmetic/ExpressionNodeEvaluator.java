@@ -2,7 +2,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
-import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.arithmetic3D.Vector3DValue;
 import org.geogebra.common.kernel.geos.GeoCasCell;
@@ -38,14 +37,12 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants, Restric
 
 	private Localization loc;
 	private OperationArgumentFilter filter;
-	private ExpressionFilter expressionFilter;
 
 	/**
 	 * Kernel used to create the results
 	 */
 	@Weak
 	protected Kernel kernel;
-	private ExamRestrictionModel restrictionModel;
 
 	/**
 	 * Creates a new expression node evaluator
@@ -82,9 +79,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants, Restric
 	 */
 	public ExpressionValue evaluate(ExpressionNode expressionNode,
 			StringTemplate tpl) {
-		if (isExpressionDenied(expressionNode)) {
-			throw invalidFunction(expressionNode);
-		}
 
 		boolean leaf = expressionNode.leaf;
 		ExpressionValue left = expressionNode.getLeft();
@@ -123,26 +117,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants, Restric
 		}
 		// NON-List operations (apart from EQUAL_BOOLEAN and list + text)
 		return handleOp(operation, lt, rt, left, right, tpl, holdsLaTeXtext);
-	}
-
-	private boolean isExpressionDenied(ExpressionNode node) {
-		if (restrictionModel == null) {
-			return false;
-		}
-		return !restrictionModel.isExpressionAllowed(node);
-	}
-
-	/**
-	 * Throw simple illegal function exception
-	 *
-	 * @param arg
-	 *            argument
-	 * @return nothing (error is thrown)
-	 * @throws MyError
-	 *             (always)
-	 */
-	public MyError invalidFunction(ExpressionValue arg) {
-		return new MyError(loc, Errors.InvalidFunction, MyError.toErrorString(arg));
 	}
 
 	/**
@@ -1484,7 +1458,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants, Restric
 
 	@Override
 	public void setExamRestrictionModel(ExamRestrictionModel model) {
-		this.restrictionModel = model;
 	}
 
 	@Override
