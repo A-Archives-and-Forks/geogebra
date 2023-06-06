@@ -756,15 +756,17 @@ public abstract class EuclidianView3D extends EuclidianView
 				break;
 
 			case CLIPPINGCUBE3D:
-				d = new DrawClippingCube3D(this, (GeoClippingCube3D) geo);
+				d = createDrawClippingCube3D((GeoClippingCube3D) geo);
 				break;
 			case IMPLICIT_SURFACE_3D:
 				d = new DrawSurfaceComposite(this, (GeoImplicitSurface) geo);
 			}
 		}
-
 		return d;
+	}
 
+	protected DrawClippingCube3D createDrawClippingCube3D(GeoClippingCube3D geo) {
+		return new DrawClippingCube3D(this, geo);
 	}
 
 	final private DrawSurface3D newDrawSurface3D(SurfaceEvaluable surface) {

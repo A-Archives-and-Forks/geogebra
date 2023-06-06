@@ -1685,7 +1685,8 @@ public abstract class Renderer {
 	 * @return true (default) if reduce "window" for clipping box
 	 */
 	public boolean reduceForClipping() {
-		return !view3D.isXREnabled();
+		boolean isXrOrUnity = view3D.isXREnabled() || view3D.isUnity();
+		return !isXrOrUnity;
 	}
 
 	/**

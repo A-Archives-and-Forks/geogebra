@@ -156,9 +156,9 @@ public class DrawClippingCube3D extends Drawable3DCurves {
 		double y0 = -view.getYZero();
 		double z0 = -view.getZZero();
 
-		double halfWidth = renderer.getWidth() / 2.0;
-		double bottom = renderer.getBottom();
-		double top = renderer.getTop();
+		double halfWidth = getWidth();
+		double bottom = getBottom();
+		double top = getTop();
 
 		if (view.isXREnabled()) {
 			XRManagerInterface<?> arManager = renderer.getXRManager();
@@ -235,7 +235,9 @@ public class DrawClippingCube3D extends Drawable3DCurves {
 
         // minMaxLarge to cut lines
 
-        rv = REDUCTION_ENLARGE * rv + (1 - REDUCTION_ENLARGE) / 2;
+		if (!view.isUnity()) {
+			rv = REDUCTION_ENLARGE * rv + (1 - REDUCTION_ENLARGE) / 2;
+		}
 
         minMaxLarge[X][MIN] = currentBounds[X][MIN] + xr * rv;
         minMaxLarge[X][MAX] = currentBounds[X][MAX] - xr * rv;
@@ -249,6 +251,18 @@ public class DrawClippingCube3D extends Drawable3DCurves {
         // update ev 3D depending algos
         getView3D().updateBounds();
     }
+
+	protected double getWidth() {
+		return getView3D().getRenderer().getWidth() / 2.0;
+	}
+
+	protected double getBottom() {
+		return getView3D().getRenderer().getBottom();
+	}
+
+	protected double getTop() {
+		return getView3D().getRenderer().getTop();
+	}
 
     private void standsOnFloorIfAR(double[][] mm) {
         EuclidianView3D view = getView3D();
