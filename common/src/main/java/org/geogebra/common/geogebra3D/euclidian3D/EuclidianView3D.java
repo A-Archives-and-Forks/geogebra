@@ -11,6 +11,7 @@ import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GFont;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.awt.GPoint;
+import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.awt.GPointWithZ;
 import org.geogebra.common.awt.GRectangle;
 import org.geogebra.common.euclidian.DrawableND;
@@ -590,11 +591,6 @@ public abstract class EuclidianView3D extends EuclidianView
 	 *            drawable to add
 	 */
 	public void addToDrawable3DLists(Drawable3D d) {
-		/*
-		 * if (d.getGeoElement().getLabel().equals("a")){
-		 * Application.debug("d="+d); }
-		 */
-
 		drawable3DListToBeAdded.add(d);
 	}
 
@@ -2576,7 +2572,6 @@ public abstract class EuclidianView3D extends EuclidianView
 				break;
 			}
 		}
-		// Application.debug("getCursor3DType()="+getCursor3DType());
 
 	}
 
@@ -2623,7 +2618,6 @@ public abstract class EuclidianView3D extends EuclidianView
 	}
 
 	private void initPointDecorations() {
-		// Application.debug("hop");
 		pointDecorations = new DrawPointDecorations(this);
 	}
 
@@ -4460,6 +4454,11 @@ public abstract class EuclidianView3D extends EuclidianView
 		if (updateObjectsBounds()) {
 			zoomRW(boundsMin, boundsMax, steps);
 		}
+	}
+
+	@Override
+	public GPoint2D getVisibleRectCenter() {
+		return new GPoint2D(0, 0);
 	}
 
 	/**

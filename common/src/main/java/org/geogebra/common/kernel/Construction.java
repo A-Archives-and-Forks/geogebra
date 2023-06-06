@@ -180,7 +180,6 @@ public class Construction {
 	private GeoPoint origin;
 
 	private Stack<GeoElement> selfGeoStack = new Stack<>();
-	private boolean undoEnabled = true;
 
 	private boolean isGettingXMLForReplace;
 	private boolean spreadsheetTraces;
@@ -1077,7 +1076,6 @@ public class Construction {
 		for (int i = 0; i < algoList.size(); ++i) {
 			AlgoElement algo = algoList.get(i);
 			algo.update();
-			// AbstractApplication.debug("#"+i+" : "+algo);
 		}
 	}
 
@@ -1421,21 +1419,6 @@ public class Construction {
 		statement.getAlgorithmList().get(0).getXML_OGP(sb);
 	}
 
-	/**
-	 * @return true if undo is enabled
-	 */
-	public boolean isUndoEnabled() {
-		return undoEnabled;
-	}
-
-	/**
-	 * @param b
-	 *            true to enable undo
-	 */
-	public void setUndoEnabled(boolean b) {
-		undoEnabled = b;
-	}
-
 	/*
 	 * Construction List Management
 	 */
@@ -1718,31 +1701,8 @@ public class Construction {
 	private boolean softRedefine(GeoElement oldGeo, GeoElement newGeo) {
 		AlgoElement oldParent = oldGeo.getParentAlgorithm();
 		AlgoElement newParent = newGeo.getParentAlgorithm();
-		if (oldParent != null && newParent != null && oldParent.isCompatible(newParent)) {
-			ArrayList<Integer> updateInputIdx = new ArrayList<>();
-			for (int i = 0; i < oldParent.getInput().length; i++) {
-				if (oldParent.getInput(i) != newParent.getInput(i)) {
-					if (!Inspecting.dynamicGeosFinder.check(oldParent.getInput(i))
-							&& !Inspecting.dynamicGeosFinder.check(newParent.getInput(i))
-							&& oldParent.getInput(i).getGeoClassType()
-									== newParent.getInput(i).getGeoClassType()) {
-						updateInputIdx.add(i);
-					} else {
-						return false;
-					}
-				}
-			}
-			if (updateInputIdx.isEmpty()) {
-				// since we only get there if definition did change and command name is the same
-				// at least one input must have changed, but better to avoid OutOfBounds.
-				return false;
-			}
-			for (Integer i: updateInputIdx) {
-				oldParent.getInput(i).set(newParent.getInput(i));
-			}
-			// start cascade from the ancestor to make sure siblings are updated too
-			oldParent.getInput(updateInputIdx.get(0)).updateRepaint();
-			return true;
+		if (oldParent != null && newParent != null) {
+			return oldParent.setFrom(newParent);
 		}
 		return false;
 	}
@@ -1907,32 +1867,18 @@ public class Construction {
 				newGeoInputs = newGeoAlgo.getInputForUpdateSetPropagation();
 			}
 			isGettingXMLForReplace = false;
-
-			// Application.debug("oldGeo: " + oldGeo + ", visible: " +
-			// oldGeo.isEuclidianVisible() + ", algo: " + oldGeoAlgo);
-			// Application.debug("newGeo: " + newGeo + ", visible: " +
-			// newGeo.isEuclidianVisible() + ", algo: " + newGeoAlgo);
 		}
 
 		// restore old kernel settings
 
 		// replace Strings: oldXML by newXML in consXML
-		// Application.debug("cons=\n"+consXML+"\nold=\n"+oldXML+"\nnew=\n"+newXML);
 		int pos = consXML.indexOf(oldXML);
 		if (pos < 0) {
 			restoreCurrentUndoInfo();
 			Log.debug("replace failed: oldXML string not found:\n" + oldXML);
-			// Application.debug("consXML=\n" + consXML);
 			throw new MyError(getApplication().getLocalization(),
 					Errors.ReplaceFailed);
 		}
-
-		// System.out.println("REDEFINE: oldGeo: " + oldGeo + ", newGeo: " +
-		// newGeo);
-		// System.out.println(" old XML:\n" + consXML.substring(pos, pos +
-		// oldXML.length()));
-		// System.out.println(" new XML:\n" + newXML);
-		// System.out.println("END redefine.");
 
 		// get inputs position in consXML: we want to put new geo after that
 		int inputEndPos = -1;
@@ -2005,7 +1951,6 @@ public class Construction {
 			}
 		} else {
 			for (int i = step + 1; i <= s; ++i) {
-				// Application.debug(i+"");
 				ceList.get(i).notifyAdd();
 			}
 		}
@@ -2980,9 +2925,6 @@ public class Construction {
 	 * @see UndoManager#storeUndoInfo()
 	 */
 	public void storeUndoInfo() {
-		if (!isUndoEnabled()) {
-			return;
-		}
 		undoManager.storeUndoInfo();
 	}
 
@@ -3255,7 +3197,10 @@ public class Construction {
 		} else {
 			registeredFV.add(fv);
 		}
+	}
 
+	public boolean hasRegisteredFunctionVariable() {
+		return !registeredFV.isEmpty();
 	}
 
 	/**
@@ -3266,20 +3211,6 @@ public class Construction {
 	 */
 	public boolean isRegisteredFunctionVariable(String s) {
 		return registeredFV.contains(s);
-	}
-
-	/**
-	 * Returns function variable that should be recognized in If and Function
-	 * commands
-	 * 
-	 * @return local function variable or null if there is none
-	 */
-	public String getRegisteredFunctionVariable() {
-		Iterator<String> it = registeredFV.iterator();
-		if (it.hasNext()) {
-			return it.next();
-		}
-		return null;
 	}
 
 	/**

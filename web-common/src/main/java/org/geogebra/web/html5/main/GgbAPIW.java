@@ -56,9 +56,8 @@ import org.geogebra.web.html5.util.ImageManagerW;
 import org.geogebra.web.html5.util.JsRunnable;
 import org.geogebra.web.html5.util.StringConsumer;
 import org.geogebra.web.html5.util.ViewW;
-
-import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.dom.client.Element;
+import org.gwtproject.canvas.client.Canvas;
+import org.gwtproject.dom.client.Element;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
@@ -841,7 +840,7 @@ public class GgbAPIW extends GgbAPI {
 	 * it removes the style elements injected by the applet too.
 	 */
 	public void removeApplet() {
-		((AppW) app).getGeoGebraElement().removeFromParent();
+		((AppW) app).getGeoGebraElement().getElement().removeFromParent();
 		((AppW) app).getAppletFrame().remove();
 		if (GeoGebraFrameW.getInstanceCount() == 0) {
 			ResourcesInjector.removeResources();
@@ -859,12 +858,12 @@ public class GgbAPIW extends GgbAPI {
 	 * @param userName tooltip content
 	 * @param label label of an object to use as anchor
 	 * @param color color CSS string
-	 * @param newGeo if the geo was added
+	 * @param implicit whether the geo was interacted with (add, update) without explicit selection
 	 */
 	public void addMultiuserSelection(String clientId, String userName, String color,
-			String label, boolean newGeo) {
+			String label, boolean implicit) {
 		MultiuserManager.INSTANCE.addSelection(app, clientId, userName, GColor.parseHexColor(color),
-				label, newGeo);
+				label, implicit);
 	}
 
 	/**
@@ -964,7 +963,7 @@ public class GgbAPIW extends GgbAPI {
 		if (ev instanceof EuclidianViewW) {
 			EuclidianViewW evw = (EuclidianViewW) ev;
 
-			evw.getExportSVG(1, true, (svg) -> {
+			evw.getExportSVG(true, (svg) -> {
 				if (filename != null) {
 					// can't use data:image/svg+xml;utf8 in IE11 / Edge
 					Browser.exportImage(Browser.encodeSVG(svg), filename);
@@ -1176,7 +1175,10 @@ public class GgbAPIW extends GgbAPI {
 
 	@Override
 	public void handlePageAction(String eventType, String pageIdx, Object appState) {
-		((AppW) app).getPageController().handlePageAction(eventType, pageIdx, appState);
+		PageListControllerInterface pageController = ((AppW) app).getPageController();
+		if (pageController != null) {
+			pageController.handlePageAction(eventType, pageIdx, appState);
+		}
 	}
 
 	@Override
@@ -1319,5 +1321,13 @@ public class GgbAPIW extends GgbAPI {
 		} else {
 			setXML(content.xml);
 		}
+	}
+
+	/**
+	 * Show all objects in EuclidianView
+	 */
+	public void showAllObjects() {
+		app.setViewShowAllObjects();
+
 	}
 }

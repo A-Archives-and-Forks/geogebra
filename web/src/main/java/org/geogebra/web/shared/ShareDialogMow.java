@@ -10,7 +10,7 @@ import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.SaveController.SaveListener;
 import org.geogebra.common.move.ggtapi.GroupIdentifier;
 import org.geogebra.common.move.ggtapi.models.Material;
-import org.geogebra.common.move.ggtapi.operations.BackendAPI;
+import org.geogebra.common.move.ggtapi.models.MaterialRestAPI;
 import org.geogebra.common.move.ggtapi.requests.MaterialCallbackI;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.StringUtil;
@@ -26,13 +26,12 @@ import org.geogebra.web.shared.components.ComponentLinkBox;
 import org.geogebra.web.shared.components.ComponentSwitch;
 import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.ScrollPanel;
+import org.gwtproject.user.client.ui.SimplePanel;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  *  Joint share dialog for mow (group + link sharing)
@@ -101,16 +100,16 @@ public class ShareDialogMow extends ComponentDialog
 	private void updateMaterial(String visibility) {
 		boolean isMultiuser = isMultiuserSwitchOn();
 		app.getLoginOperation().getGeoGebraTubeAPI().uploadMaterial(
-				material.getSharingKeyOrId(), visibility,
+				material.getSharingKeySafe(), visibility,
 				material.getTitle(), null, callback,
 				material.getType(), isMultiuser);
 		Material activeMaterial = app.getActiveMaterial();
 		boolean currentlyEditing = activeMaterial != null
-				&& material.getSharingKeyOrId().equals(activeMaterial.getSharingKeyOrId());
+				&& material.getSharingKeySafe().equals(activeMaterial.getSharingKeySafe());
 		if (material.isMultiuser() && !isMultiuser) {
 			app.getShareController().saveAndTerminateMultiuser(material, callback);
 		} else if (!material.isMultiuser() && isMultiuser && currentlyEditing) {
-			app.getShareController().startMultiuser(material.getSharingKeyOrId());
+			app.getShareController().startMultiuser(material.getSharingKeySafe());
 		}
 		material.setVisibility(visibility);
 		material.setMultiuser(isMultiuser);
@@ -379,7 +378,7 @@ public class ShareDialogMow extends ComponentDialog
 	 */
 	protected void shareWithGroups(AsyncOperation<Boolean> groupCallback) {
 		for (Map.Entry<GroupIdentifier, Boolean> group : changedGroups.entrySet()) {
-			app.getLoginOperation().getGeoGebraTubeAPI().setShared(material,
+			app.getLoginOperation().getResourcesAPI().setShared(material,
 					group.getKey(), group.getValue(), groupCallback);
 		}
 	}
@@ -403,9 +402,9 @@ public class ShareDialogMow extends ComponentDialog
 						}
 					}
 				};
-		BackendAPI api = app.getLoginOperation().getGeoGebraTubeAPI();
-		api.getGroups(material.getSharingKeyOrId(), GroupIdentifier.GroupCategory.CLASS, partial);
-		api.getGroups(material.getSharingKeyOrId(), GroupIdentifier.GroupCategory.COURSE, partial);
+		MaterialRestAPI api = app.getLoginOperation().getResourcesAPI();
+		api.getGroups(material.getSharingKeySafe(), GroupIdentifier.GroupCategory.CLASS, partial);
+		api.getGroups(material.getSharingKeySafe(), GroupIdentifier.GroupCategory.COURSE, partial);
 	}
 
 	/**

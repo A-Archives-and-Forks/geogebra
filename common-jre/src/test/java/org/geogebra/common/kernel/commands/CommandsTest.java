@@ -4,7 +4,10 @@ import static com.himamis.retex.editor.share.util.Unicode.DEGREE_STRING;
 import static com.himamis.retex.editor.share.util.Unicode.IMAGINARY;
 import static com.himamis.retex.editor.share.util.Unicode.PI_STRING;
 import static com.himamis.retex.editor.share.util.Unicode.theta_STRING;
+import static org.geogebra.common.BaseUnitTest.isDefined;
 import static org.geogebra.test.TestStringUtil.unicode;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1022,7 +1025,7 @@ public class CommandsTest {
 		};
 		AlgoConicFivePoints algo = new AlgoConicFivePoints(app.kernel.getConstruction(), points);
 		GeoConicND conic = algo.getConic();
-		assertTrue(conic.isDefined());
+		assertThat(conic, isDefined());
 	}
 
 	private GeoPoint newPoint(double x, double y) {
@@ -1385,14 +1388,16 @@ public class CommandsTest {
 
 	@Test
 	public void cmdDifference() {
-		tRound("Difference[Polygon[(0,0),(2,0),4],Polygon[(1,1),(3,1),(3,3),(1,3)]]",
+		tRound("diff_{1}=Difference[Polygon[(0,0),(2,0),4],Polygon[(1,1),(3,1),(3,3),(1,3)]]",
 				"3", "(2, 1)", "(1, 1)", "(1, 2)", "(0, 2)",
 				"(0, 0)", "(2, 0)", "1", "1", "1", "2", "2", "1");
-		tRound("Difference[Polygon[(0,0),(2,0),4],Polygon[(1,1),(3,1),(3,3),(1,3)], true]",
+		assertNotNull(app.getKernel().lookupLabel("diff_{1}"));
+		tRound("symDiff=Difference[Polygon[(0,0),(2,0),4],Polygon[(1,1),(3,1),(3,3),(1,3)], true]",
 				"3", "3", "(3, 3)", "(1, 3)", "(1, 2)", "(2, 2)",
 				"(2, 1)", "(3, 1)", "(2, 1)", "(1, 1)", "(1, 2)",
 				"(0, 2)", "(0, 0)", "(2, 0)", "2", "1", "1", "1", "1",
 				"2", "1", "1", "1", "2", "2", "1");
+		assertNotNull(app.getKernel().lookupLabel("symDiff_{1}"));
 	}
 
 	@Test
@@ -1655,8 +1660,9 @@ public class CommandsTest {
 
 	@Test
 	public void cmdFitLog() {
-		t("FitLog[ {(1,1),(2,2),(3,3),(4,1/4),(5,1/5)} ]",
-				"1.7791376753366814 + (-0.5108496281733952 * ln(x))");
+		// slightly different result on M2 Mac with xmlTemplate, use maxPrecision instead
+		t("FitLog[ {(1,1),(2,2),(3,3),(4,1/4),(5,1/5)} ]", StringTemplate.maxPrecision,
+				"1.77913767533668 - 0.510849628173396ln(x)");
 	}
 
 	@Test
@@ -1667,8 +1673,9 @@ public class CommandsTest {
 
 	@Test
 	public void cmdFitPow() {
-		t("FitPow[ {(1,1),(2,2),(3,3),(4,1/4),(5,1/5)} ]",
-				"(2.117291418376159 * x^(-1.0349179205718597))");
+		// slightly different result on M2 Mac with xmlTemplate, use maxPrecision instead
+		t("FitPow[ {(1,1),(2,2),(3,3),(4,1/4),(5,1/5)} ]", StringTemplate.maxPrecision,
+				"2.11729141837616x^-1.03491792057186");
 	}
 
 	@Test
@@ -2074,6 +2081,23 @@ public class CommandsTest {
 	}
 
 	@Test
+	public void cmdInverseBinomialMinimumTrials() {
+		t("InverseBinomialMinimumTrials[5, 0.5, 5]", "NaN");
+		t("InverseBinomialMinimumTrials[5, 0.5, 5]", "NaN");
+		t("InverseBinomialMinimumTrials[-0.01, 0.5, 5]", "NaN");
+		t("InverseBinomialMinimumTrials[0.5, 1.1, 5]", "NaN");
+		t("InverseBinomialMinimumTrials[0.5, -1.1, 5]", "NaN");
+		t("InverseBinomialMinimumTrials[0.5, 0.5, -12]", "NaN");
+		t("InverseBinomialMinimumTrials[0.5, 0.5, 1.2]", "NaN");
+		t("InverseBinomialMinimumTrials[0.5, 0.0, 49]", "NaN");
+		t("InverseBinomialMinimumTrials[0.01, 0.7, 49]", "86");
+		t("InverseBinomialMinimumTrials[0.01, 0.1, 50]", "681");
+		t("InverseBinomialMinimumTrials[0.1, 0.5, 50]", "115");
+		t("InverseBinomialMinimumTrials[0.7, 1.0, 100]", "101");
+		t("InverseBinomialMinimumTrials[0.5, 0.5, 5]", "11");
+	}
+
+	@Test
 	public void cmdInverseCauchy() {
 		t("InverseCauchy[ 3, 5, 0.5 ]", "3");
 	}
@@ -2150,6 +2174,9 @@ public class CommandsTest {
 		t("Invert[If[x>1,x^3+1] ]", "If[cbrt(x - 1) > 1, cbrt(x - 1)]");
 		t("Invert[ If(x>2,x)+1 ]", "If[x - 1 > 2, x - 1]");
 		t("Invert[ If(x>2,sin(x)-x) ]", "?");
+		t("Invert[3+0/x]", "?");
+		t("Invert[3+x/0]", "?");
+		t("Invert[3+2/x]", "2 / (x - 3)");
 		AlgebraTestHelper.enableCAS(app, false);
 		app.getKernel().getAlgebraProcessor().reinitCommands();
 		t("Invert[ sin(x) ]", "NInvert[sin(x)]");
@@ -2380,7 +2407,7 @@ public class CommandsTest {
 		t("P=Point(xAxis)", "(0, 0)");
 		t("Q=P+(1,0)", "(1, 0)");
 		t("loc = Locus(Q,P)", "Locus[Q, P]");
-		assertTrue(get("loc").isDefined());
+		assertThat(get("loc"), isDefined());
 	}
 
 	@Test
@@ -3953,6 +3980,18 @@ public class CommandsTest {
 		t("tablesplit=TableText[1..5,\"h\",3]",
 				StringContains.containsString("array"));
 		checkSize("tablesplit", 3, 2);
+		t("tables=TableText[{1,2,3}, {4,5}, \"c\", 100]",
+				StringContains.containsString("array"));
+		checkSize("tables", 3, 2);
+		t("tables=TableText[{1,2}, {3, 4,5}, \"c\", 100, 120]",
+				StringContains.containsString("array"));
+		checkSize("tables", 3, 2);
+		t("tables=TableText[{{1,2,3}, {4,5}}, \"c\", 100]",
+				StringContains.containsString("array"));
+		checkSize("tables", 3, 2);
+		t("tables=TableText[{{1,2}, {3,4,5}}, \"c\", 100, 120]",
+				StringContains.containsString("array"));
+		checkSize("tables", 3, 2);
 	}
 
 	@Test
@@ -3982,8 +4021,11 @@ public class CommandsTest {
 		t("Tangent[ (1,1), x^2+y^2=1 ]", "y = 1", "x = 1");
 		t("Tangent[ (1,1), sin(x) ]",
 				"y = 0.5403023058681398x + 0.30116867893975674");
-		t("Tangent[ (1,1), Spline[{(2,3),(1,4),(2,5),(3,1)}]]",
-				"y = 22.40252712698299x - 66.207581380949");
+		// slightly different result on M2 Mac with xmlTemplate, use maxPrecision13 instead
+		t("Tangent[ (1,1), Spline[{(2,3),(1,4),(2,5),(3,1)}]]", StringTemplate.maxPrecision13,
+				"y = 22.40252712698x - 66.20758138095");
+		t("Tangent[ (0, 1), Curve(cos(z), sin(z), z, 0, π)]",
+				"y = 1");
 	}
 
 	@Test
@@ -4159,9 +4201,9 @@ public class CommandsTest {
 	public void cmdPieChart() {
 		t("p1=PieChart({1,2,3})", "PieChart[{1, 2, 3}, (0, 0)]");
 		t("p2=PieChart({1,2,3}, (1,1), 2)", "PieChart[{1, 2, 3}, (1, 1), 2]");
-		assertTrue(get("p2").isDefined());
+		assertThat(get("p2"), isDefined());
 		t("p3=PieChart({1,2,-3})", "PieChart[{1, 2, -3}, (0, 0)]");
-		assertFalse(get("p3").isDefined());
+		assertThat(get("p3"), not(isDefined()));
 	}
 
 	private static void checkSize(String string, int cols, int rows) {
@@ -4336,6 +4378,13 @@ public class CommandsTest {
 		t("Zip[ i, i, {1, 2} ]", "{1, 2}");
 		t("Zip[ i + j, i, {1, 2}, j, {3, 4} ]", "{4, 6}");
 		t("Zip[ i + j, j, {1, 2}, i, {3, 4} ]", "{4, 6}");
+		t("Zip(2*A,A,{(1,1),(2,3),(4,5,6)})", "{(2, 2, 0), (4, 6, 0), (8, 10, 12)}");
+	}
+
+	@Test
+	public void testZipWithObject() {
+		t("a:x=y", "y = x");
+		t("RemoveUndefined(Zip(Object(xx), xx, {\"y\",\"a\",\"x\"}))", "{y = x}");
 	}
 
 	@Test

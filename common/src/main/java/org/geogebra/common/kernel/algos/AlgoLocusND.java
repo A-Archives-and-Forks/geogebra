@@ -414,17 +414,6 @@ public abstract class AlgoLocusND<T extends MyPoint> extends AlgoElement {
 			locus.setUndefined();
 			macroCons = null;
 		}
-
-		// //Application.debug("P: " + P + ", kernel class: " +
-		// P.kernel.getClass());
-		// Application.debug("Pcopy: " + Pcopy + ", kernel class: " +
-		// Pcopy.kernel.getClass());
-		// //Application.debug("P == Pcopy: " + (P == Pcopy));
-		// //Application.debug("Q: " + Q + ", kernel class: " +
-		// Q.kernel.getClass());
-		// Application.debug("Qcopy: " + Qcopy + ", kernel class: " +
-		// Qcopy.kernel.getClass());
-		// //Application.debug("Q == Qcopy: " + (Q == Qcopy));
 	}
 
 	/**
@@ -627,11 +616,6 @@ public abstract class AlgoLocusND<T extends MyPoint> extends AlgoElement {
 				insertPoint(copyQ, distanceSmall(copyQ, true));
 			}
 
-			// Application.debug("run: " + runs);
-			// Application.debug("pointCount: " + pointCount);
-			// Application.debug(" startPos: " + QstartPos);
-			// Application.debug(" Qcopy: " + Qcopy);
-
 			// we are finished with all runs
 			// if we got back to the start position of Qcopy
 			// AND if the direction of moving along the path
@@ -649,18 +633,6 @@ public abstract class AlgoLocusND<T extends MyPoint> extends AlgoElement {
 
 		// set defined/undefined
 		locus.setDefined(foundDefined);
-
-		// System.out.println(" first point: " +
-		// locus.getMyPointList().get(0));
-		// ArrayList list = locus.getMyPointList();
-		// for (int i=list.size()-10; i < list.size()-1; i++) {
-		// System.out.println(" point: " + list.get(i));
-		// }
-		// System.out.println(" last point: " +
-		// locus.getMyPointList().get(pointCount-1));
-
-		// Application.debug("LOCUS COMPUTE updateCascades: " + countUpdates +
-		// ", cache used: " + useCache);
 	}
 
 	/**
@@ -939,9 +911,11 @@ public abstract class AlgoLocusND<T extends MyPoint> extends AlgoElement {
 
 	@Override
 	public boolean euclidianViewUpdate() {
-		boolean changed = updateScreenBorders();
-		if (changed || !locus.getAlgoUpdateSet().isEmpty()) {
-			update();
+		// if borders changed, update cascade in Construction; if not, do nothing
+		// same if locus itself is hidden but has dependent geos
+		if (updateScreenBorders() || !locus.getAlgoUpdateSet().isEmpty()) {
+			compute();
+			return true;
 		}
 		return false;
 	}
@@ -964,7 +938,7 @@ public abstract class AlgoLocusND<T extends MyPoint> extends AlgoElement {
 		HashSet<GeoElement> lPParents = new HashSet<>();
 		lPParents.addAll(((GeoElement) locusPoint).getAllPredecessors());
 		mPChildren.retainAll(lPParents);
-		Log.debug("Elements between mover and tracer: " + mPChildren);
+
 		for (GeoElement ge : mPChildren) {
 			AlgoElement ae = ge.getParentAlgorithm();
 			if (ae != null && (ae instanceof AlgoPointOnPath

@@ -28,12 +28,11 @@ import org.geogebra.web.richtext.Editor;
 import org.geogebra.web.richtext.EditorChangeListener;
 import org.geogebra.web.richtext.impl.CarotaEditor;
 import org.geogebra.web.richtext.impl.CarotaUtil;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.style.shared.Position;
+import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  * Web implementation of the inline text controller.
@@ -231,6 +230,7 @@ public class InlineTextControllerW implements InlineTextController {
 		editor.deselect();
 		if (!editor.getWidget().getElement().hasClassName(INVISIBLE)) {
 			editor.getWidget().addStyleName(INVISIBLE);
+			textareaWrapper.removeFromParent(); // make sure no editable element on Android
 			geo.updateRepaint();
 			geo.unlockForMultiuser();
 		}
@@ -239,6 +239,7 @@ public class InlineTextControllerW implements InlineTextController {
 	@Override
 	public void toForeground(int x, int y) {
 		editor.getWidget().removeStyleName(INVISIBLE);
+		parent.appendChild(textareaWrapper);
 		editor.focus(x, y);
 	}
 

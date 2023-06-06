@@ -26,7 +26,7 @@ public final class CommandFilterFactory {
 	}
 
 	/**
-	 * Creates a CommandFilter for the Graphing app.
+	 * Creates a CommandFilter for the Graphing app (no cas: e.g. Solve).
 	 *
 	 * @return command filter
 	 */
@@ -84,7 +84,8 @@ public final class CommandFilterFactory {
 				Commands.Envelope, Commands.Ends,
 				Commands.FirstAxisLength, Commands.SecondAxisLength,
 				Commands.FirstAxis, Commands.Height, Commands.InteriorAngles,
-				Commands.InverseBinomial, Commands.InverseCauchy, Commands.InverseChiSquared,
+				Commands.InverseBinomial, Commands.InverseBinomialMinimumTrials,
+				Commands.InverseCauchy, Commands.InverseChiSquared,
 				Commands.InverseExponential, Commands.InverseFDistribution,
 				Commands.InverseGamma, Commands.InverseHyperGeometric,
 				Commands.InverseLaplace, Commands.InverseLogistic, Commands.InverseLogNormal,
@@ -122,6 +123,15 @@ public final class CommandFilterFactory {
 	}
 
 	/**
+	 * @return filer for Bayern CAS exam
+	 */
+	public static CommandFilter createBayernCasFilter() {
+		CommandNameFilterSet nameFilter = new CommandNameFilterSet(true);
+		nameFilter.addCommands(Commands.Plane);
+		return new EnglishCommandFilter(nameFilter);
+	}
+
+	/**
 	 * @return name filter for apps with no CAS
 	 */
 	public static CommandFilter createNoCasCommandFilter() {
@@ -138,7 +148,9 @@ public final class CommandFilterFactory {
 				Commands.NextPrime, Commands.PreviousPrime, Commands.Solve,
 				Commands.Solutions, Commands.NSolutions, Commands.NSolve,
 				Commands.IntegralSymbolic, Commands.RemovableDiscontinuity,
-				Commands.PlotSolve);
+				Commands.PlotSolve, Commands.ExtendedGCD, Commands.ModularExponent,
+				Commands.CharacteristicPolynomial, Commands.MinimalPolynomial,
+				Commands.LUDecomposition, Commands.QRDecomposition);
 		return commandNameFilter;
 	}
 
@@ -151,11 +163,11 @@ public final class CommandFilterFactory {
 				// CAS specific command
 				Commands.Delete, Commands.Poisson,
 				// Function Commands
-				Commands.Asymptote, Commands.CurvatureVector, Commands.DataFunction,
-				Commands.Function, Commands.ImplicitCurve, Commands.IterationList,
-				Commands.NSolveODE, Commands.OsculatingCircle, Commands.ParametricDerivative,
-				Commands.PathParameter, Commands.RootList, Commands.Roots,
-				Commands.Spline,
+				Commands.Asymptote, Commands.CurveCartesian, Commands.Curve,
+				Commands.CurvatureVector, Commands.DataFunction, Commands.Function,
+				Commands.ImplicitCurve, Commands.IterationList, Commands.NSolveODE,
+				Commands.OsculatingCircle, Commands.ParametricDerivative, Commands.PathParameter,
+				Commands.RootList, Commands.Roots, Commands.Spline,
 				// Vector And Matrix Commands
 				Commands.ApplyMatrix,
 				//Geometry Commands

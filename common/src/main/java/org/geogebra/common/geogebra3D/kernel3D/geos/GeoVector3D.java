@@ -18,7 +18,9 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.geos.GeoPoint;
 import org.geogebra.common.kernel.geos.GeoVector;
+import org.geogebra.common.kernel.geos.HasHeadStyle;
 import org.geogebra.common.kernel.geos.Transformable;
+import org.geogebra.common.kernel.geos.VectorHeadStyle;
 import org.geogebra.common.kernel.geos.VectorToMatrix;
 import org.geogebra.common.kernel.kernelND.GeoCoordSys2D;
 import org.geogebra.common.kernel.kernelND.GeoDirectionND;
@@ -43,7 +45,7 @@ import org.geogebra.common.util.debug.Log;
  */
 public class GeoVector3D extends GeoVec4D
 		implements GeoVectorND, RotateableND, 
-		MirrorableAtPlane, Transformable, Dilateable, MatrixTransformable {
+		MirrorableAtPlane, Transformable, Dilateable, MatrixTransformable, HasHeadStyle {
 
 	private GeoPointND startPoint;
 
@@ -51,8 +53,8 @@ public class GeoVector3D extends GeoVec4D
 
 	private Coords labelPosition = new Coords(0, 0, 0, 0);
 
-	private StringBuilder sbBuildValueString = new StringBuilder(50);
-	private StringBuilder sbToString = new StringBuilder(50);
+	private final StringBuilder sbBuildValueString = new StringBuilder(50);
+	private final StringBuilder sbToString = new StringBuilder(50);
 
 	private StringBuilder sb;
 
@@ -263,6 +265,9 @@ public class GeoVector3D extends GeoVec4D
 
 	@Override
 	final public String toValueString(StringTemplate tpl) {
+		if (tpl.isDisplayStyle()) {
+			return toLaTeXString(false, tpl);
+		}
 		return buildValueString(tpl).toString();
 	}
 
@@ -421,11 +426,6 @@ public class GeoVector3D extends GeoVec4D
 
 	@Override
 	public void setStartPoint(GeoPointND p) throws CircularDefinitionException {
-
-		// Application.debug("point : "+((GeoElement) pI).getLabel());
-
-		// GeoPoint3D p = (GeoPoint3D) pI;
-
 		if (startPoint == p) {
 			return;
 		}
@@ -832,5 +832,15 @@ public class GeoVector3D extends GeoVec4D
 			converter = new VectorToMatrix(kernel);
 		}
 		return converter;
+	}
+
+	@Override
+	public VectorHeadStyle getHeadStyle() {
+		return VectorHeadStyle.DEFAULT;
+	}
+
+	@Override
+	public void setHeadStyle(VectorHeadStyle headStyle) {
+		// not used
 	}
 }

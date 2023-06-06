@@ -12,12 +12,12 @@ import org.geogebra.web.html5.event.KeyEventsHandler;
 import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.GlobalKeyDispatcherW;
+import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.event.dom.client.KeyDownEvent;
+import org.gwtproject.event.dom.client.KeyPressEvent;
+import org.gwtproject.event.dom.client.KeyUpEvent;
+import org.gwtproject.user.client.ui.SimplePanel;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.himamis.retex.editor.share.util.AltKeys;
 import com.himamis.retex.editor.web.MathFieldW;
 
@@ -449,7 +449,6 @@ public class MyCellEditorW implements BaseCellEditor {
 			String text = autoCompleteTextField.getText();
 
 			int keyCode = e.getNativeKeyCode();
-			// Application.debug(e+"");
 			switch (keyCode) {
 
 			case KeyCodes.KEY_UP:
@@ -460,8 +459,6 @@ public class MyCellEditorW implements BaseCellEditor {
 				if (isFormulaBarListener) {
 					return;
 				}
-
-				// Application.debug("UP");
 				stopCellEditing(0, -1, false);
 				// ?//e.consume();
 				setTabReturnCol(-1);
@@ -472,7 +469,6 @@ public class MyCellEditorW implements BaseCellEditor {
 					return;
 				}
 				Log.debug(" tab");
-				// Application.debug("RIGHT");
 				// shift-tab moves left
 				// tab moves right
 				if (getTabReturnCol() == -1) {
@@ -528,7 +524,6 @@ public class MyCellEditorW implements BaseCellEditor {
 					// ?//e.consume();
 					return;
 				}
-				// Application.debug("DOWN");
 				stopCellEditing(0, 1, false);
 				setTabReturnCol(-1);
 				break;
@@ -537,7 +532,6 @@ public class MyCellEditorW implements BaseCellEditor {
 				if (isFormulaBarListener) {
 					return;
 				}
-				// Application.debug("LEFT");
 				// Allow left/right keys to exit cell for easier data entry
 				if (getCaretPosition() == 0) {
 					stopCellEditing(-1, 0, false);
@@ -549,7 +543,6 @@ public class MyCellEditorW implements BaseCellEditor {
 				if (isFormulaBarListener) {
 					return;
 				}
-				// Application.debug("RIGHT");
 				// Allow left/right keys to exit cell for easier data entry
 				if (getCaretPosition() == text.length()) {
 					stopCellEditing(1, 0, false);

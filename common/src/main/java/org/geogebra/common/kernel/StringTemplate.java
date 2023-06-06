@@ -88,6 +88,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 	private boolean allowPiHack = true;
 
 	private boolean supportsFractions = true;
+	private char pointCoordBar = '|';
 
 	/**
 	 * Template which prints numbers with maximal precision and adds prefix to
@@ -334,6 +335,9 @@ public class StringTemplate implements ExpressionNodeConstants {
 	public static final StringTemplate editorTemplate = new StringTemplate(
 			"editorTemplate");
 
+	public static final StringTemplate inputBoxTemplate = new StringTemplate(
+			"inputBoxTemplate");
+
 	/**
 	 * For simplicity make this static now and see in the future whether we will
 	 * need more engines in one app
@@ -343,6 +347,10 @@ public class StringTemplate implements ExpressionNodeConstants {
 		editTemplate.changeArcTrig = false;
 		initForEditing(editorTemplate);
 		editorTemplate.forEditorParser = true;
+		editorTemplate.pointCoordBar = ',';
+		initForEditing(inputBoxTemplate);
+		inputBoxTemplate.forEditorParser = true;
+		inputBoxTemplate.pointCoordBar = Unicode.verticalLine;
 	}
 
 	/**
@@ -542,6 +550,8 @@ public class StringTemplate implements ExpressionNodeConstants {
 		testNumeric.sf = FormatFactory.getPrototype().getScientificFormat(15,
 				20, false);
 	}
+
+	private boolean displayStyle;
 
 	/**
 	 * Creates default string template
@@ -923,6 +933,9 @@ public class StringTemplate implements ExpressionNodeConstants {
 		result.supportsFractions = supportsFractions;
 		result.questionMarkForNaN = questionMarkForNaN;
 		result.useSimplifications = useSimplifications;
+		result.pointCoordBar = pointCoordBar;
+		result.allowPiHack = allowPiHack;
+		result.displayStyle = displayStyle;
 		return result;
 	}
 
@@ -1356,6 +1369,15 @@ public class StringTemplate implements ExpressionNodeConstants {
 		}
 		return sb.toString();
 
+	}
+
+	/**
+	 * @param leftStr Left subtree as string
+	 * @param rightStr Right subtree as string
+	 * @return leftStr + rightStr
+	 */
+	public String invisiblePlusString(String leftStr, String rightStr) {
+		return leftStr + Unicode.INVISIBLE_PLUS + rightStr;
 	}
 
 	/**
@@ -1910,7 +1932,9 @@ public class StringTemplate implements ExpressionNodeConstants {
 											&& (StringUtil.isDigit(firstRight)
 											// 3*E23AB can't be written 3E23AB
 											|| (firstRight == 'E'))
-											|| StringUtil.isDigit(firstRight);
+											|| StringUtil.isDigit(firstRight)
+											|| (isForEditorParser()
+											&& right.isOperation(Operation.DIVIDE));
 							// check if we need a multiplication space:
 							multiplicationSpaceNeeded = showMultiplicationSign;
 							if (!multiplicationSpaceNeeded) {
@@ -3642,5 +3666,26 @@ public class StringTemplate implements ExpressionNodeConstants {
 	public boolean isScreenReader() {
 		return stringType == StringType.SCREEN_READER_ASCII
 				|| stringType == StringType.SCREEN_READER_UNICODE;
+	}
+
+	public char getPointCoordBar() {
+		return pointCoordBar;
+	}
+
+	/**
+	 * @return copy of this with display style = true
+	 */
+	public StringTemplate deriveWithDisplayStyle() {
+		assert stringType == StringType.LATEX;
+		StringTemplate copy = copy();
+		copy.displayStyle = true;
+		return copy;
+	}
+
+	/**
+	 * @return whether to print matrices and vectors in display style (=multiple lines)
+	 */
+	public boolean isDisplayStyle() {
+		return displayStyle;
 	}
 }

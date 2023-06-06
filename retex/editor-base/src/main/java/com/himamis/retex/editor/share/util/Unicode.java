@@ -45,6 +45,7 @@ public class Unicode {
 
 	final public static char e_GRAVE = '\u00E8';
 	final public static char e_ACUTE = '\u00E9';
+	final public static char verticalLine = '\u23B8';
 
 	/** Unicode symbol for e */
 	final public static char EULER_CHAR = '\u212f';
@@ -119,6 +120,7 @@ public class Unicode {
 	public static final char INTEGRAL = '\u222b';
 	public static final char SQUARE_ROOT = '\u221a';
 	public static final char PLUSMINUS = '\u00b1';
+	public static final char INVISIBLE_PLUS = '\u2064';
 	public static final char NOTEQUAL = '\u2260';
 	public static final char NOT = '\u00ac';
 	public static final char AND = '\u2227';
@@ -151,6 +153,7 @@ public class Unicode {
 
 	// GREEK SMALL LETTER IOTA WITH TONOS
 	final public static char IMAGINARY = '\u03af';
+	final public static String IMAGINARY_STRING = "\u03af";
 
 	// non-breaking (hard) space
 	public static final char NBSP = '\u00a0';
@@ -231,6 +234,8 @@ public class Unicode {
 			+ CURRENCY_INDIAN_RUPEE + "" + CURRENCY_POUND + "" + CURRENCY_RUPEE
 			+ "" + CURRENCY_SHEKEL + "" + CURRENCY_TUGHRIK + "" + CURRENCY_WON
 			+ "" + CURRENCY_YEN + "";
+
+	public static final String PI_HALF_STRING = Unicode.PI_STRING + "/2";
 
 	/**
 	 * @param c

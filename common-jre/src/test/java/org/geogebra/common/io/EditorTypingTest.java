@@ -84,6 +84,11 @@ public class EditorTypingTest {
 	}
 
 	@Test
+	public void emptyAbsShouldBecomeOr() {
+		checker.type("true||false").checkAsciiMath("true" + Unicode.OR + "false");
+	}
+
+	@Test
 	public void testLnAbs() {
 		checker.type("ln|x+6").checkGGBMath("ln(abs(x + 6))");
 	}
@@ -653,6 +658,25 @@ public class EditorTypingTest {
 	}
 
 	@Test
+	public void testPipeInPointEditor() {
+		checker.setAllowAbs(false);
+		checker.insert("(2,1)").protect().left(42) // go to the left of protected editor
+				.type("3").right(1) // cursor in front of comma
+				.type("|4")
+				.checkAsciiMath("(32,41)");
+	}
+
+	@Test
+	public void testPipeInPointEditorAustrian() {
+		checker.setAllowAbs(false);
+		checker.insert("(2" + Unicode.verticalLine + "1)").protect()
+				.left(42) // go to the left of protected editor
+				.type("3").right(1) // cursor in front of comma
+				.type("|4")
+				.checkAsciiMath("(32" + Unicode.verticalLine + "41)");
+	}
+
+	@Test
 	public void testCommaInMatrixEditor() {
 		checker.insert("{{1,2},{3,4}}").protect().left(42) // go to the left of protected editor
 				.type(",").type(",")
@@ -845,5 +869,30 @@ public class EditorTypingTest {
 				.typeKey(JavaKeyCodes.VK_BACK_SPACE)
 				.type("-")
 				.checkAsciiMath("x-((π)/(2))");
+	}
+
+	@Test
+	public void cursorInNoScript() {
+		checker.type("x + 1/2").checkCursorNotInScript();
+	}
+
+	@Test
+	public void cursorInNoScriptXSquared() {
+		checker.type("x^2").left(2).checkCursorNotInScript();
+	}
+
+	@Test
+	public void cursorInSuperscript() {
+		checker.type("x^2^345").checkCursorInScript();
+	}
+
+	@Test
+	public void cursorInSubscript() {
+		checker.type("x_2").checkCursorInScript();
+	}
+
+	@Test
+	public void cursorInNoSubscript() {
+		checker.type("x_2").left(2).checkCursorNotInScript();
 	}
 }

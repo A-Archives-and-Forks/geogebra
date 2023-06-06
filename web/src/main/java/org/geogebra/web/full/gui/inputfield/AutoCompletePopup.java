@@ -9,10 +9,9 @@ import org.geogebra.web.html5.gui.util.AriaMenuItem;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.SharedResources;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.Widget;
 
 public class AutoCompletePopup extends GPopupMenuW {
 
@@ -63,13 +62,18 @@ public class AutoCompletePopup extends GPopupMenuW {
 		FlowPanel heading = new FlowPanel();
 		heading.addStyleName("autocompleteSyntaxHeading");
 		heading.add(new Label(command.command));
-		StandardButton w = new StandardButton(SharedResources.INSTANCE.icon_help_black(),
-				null, 24);
-		w.addFastClickHandler(ignore ->
-			getApp().getGuiManager().openHelp(command.helpPage, command.helpType)
-		);
-		heading.add(w);
+		if (!getApp().isExamStarted()) {
+			heading.add(createHelpButton(command));
+		}
 		return heading;
+	}
+
+	private Widget createHelpButton(AutocompleteProvider.Completion command) {
+		StandardButton button = new StandardButton(SharedResources.INSTANCE.icon_help_black(),
+				null, 24);
+		button.addFastClickHandler(ignore ->
+				getApp().getGuiManager().openHelp(command.helpPage, command.helpType));
+		return button;
 	}
 
 	private String highlightSuffix(String command) {

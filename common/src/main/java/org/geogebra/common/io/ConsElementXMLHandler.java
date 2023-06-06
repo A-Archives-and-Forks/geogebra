@@ -1,5 +1,7 @@
 package org.geogebra.common.io;
 
+import static org.geogebra.common.kernel.geos.GeoButton.DEFAULT_BUTTON_HEIGHT;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -54,6 +56,7 @@ import org.geogebra.common.kernel.geos.GeoSegment;
 import org.geogebra.common.kernel.geos.GeoSymbolic;
 import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.geos.GeoVec3D;
+import org.geogebra.common.kernel.geos.GeoVector;
 import org.geogebra.common.kernel.geos.GeoVideo;
 import org.geogebra.common.kernel.geos.HasAlignment;
 import org.geogebra.common.kernel.geos.HasSymbolicMode;
@@ -64,6 +67,7 @@ import org.geogebra.common.kernel.geos.RectangleTransformable;
 import org.geogebra.common.kernel.geos.SegmentStyle;
 import org.geogebra.common.kernel.geos.TextProperties;
 import org.geogebra.common.kernel.geos.Traceable;
+import org.geogebra.common.kernel.geos.VectorHeadStyle;
 import org.geogebra.common.kernel.geos.properties.Auxiliary;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.geos.properties.HorizontalAlignment;
@@ -83,6 +87,7 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.main.error.ErrorHelper;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
+import org.geogebra.common.plugin.EventType;
 import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.common.plugin.ScriptManager;
 import org.geogebra.common.plugin.ScriptType;
@@ -107,23 +112,23 @@ public class ConsElementXMLHandler {
 	// List of LocateableExpPair objects
 	// for setting the start points at the end of the construction
 	// (needed for GeoText and GeoVector)
-	private LinkedList<LocateableExpPair> startPointList = new LinkedList<>();
+	private final LinkedList<LocateableExpPair> startPointList = new LinkedList<>();
 
 	// List of GeoExpPair objects
 	// for setting the linked geos needed for GeoTextFields
-	private DynamicPropertyList linkedGeoList = new DynamicPropertyList();
+	private final DynamicPropertyList linkedGeoList = new DynamicPropertyList();
 
 	// List of GeoExpPair condition objects
 	// for setting the conditions at the end of the construction
 	// (needed for GeoText and GeoVector)
-	private DynamicPropertyList showObjectConditionList = new DynamicPropertyList();
-	private DynamicPropertyList dynamicColorList = new DynamicPropertyList();
-	private DynamicPropertyList animationSpeedList = new DynamicPropertyList();
-	private DynamicPropertyList animationStepList = new DynamicPropertyList();
-	private DynamicPropertyList verticalIncrementList = new DynamicPropertyList();
-	private DynamicPropertyList dynamicCaptionList = new DynamicPropertyList();
-	private LinkedList<GeoElement> animatingList = new LinkedList<>();
-	private LinkedList<GeoNumericMinMax> minMaxList = new LinkedList<>();
+	private final DynamicPropertyList showObjectConditionList = new DynamicPropertyList();
+	private final DynamicPropertyList dynamicColorList = new DynamicPropertyList();
+	private final DynamicPropertyList animationSpeedList = new DynamicPropertyList();
+	private final DynamicPropertyList animationStepList = new DynamicPropertyList();
+	private final DynamicPropertyList verticalIncrementList = new DynamicPropertyList();
+	private final DynamicPropertyList dynamicCaptionList = new DynamicPropertyList();
+	private final LinkedList<GeoElement> animatingList = new LinkedList<>();
+	private final LinkedList<GeoNumericMinMax> minMaxList = new LinkedList<>();
 	private boolean lineStyleTagProcessed;
 	private boolean symbolicTagProcessed;
 	private boolean sliderTagProcessed;
@@ -136,9 +141,9 @@ public class ConsElementXMLHandler {
 	 */
 	private int docPointStyle;
 	@Weak
-	private App app;
+	private final App app;
 	@Weak
-	private MyXMLHandler xmlHandler;
+	private final MyXMLHandler xmlHandler;
 	private boolean needsConstructionDefaults;
 	private String pendingLabel;
 
@@ -284,19 +289,22 @@ public class ConsElementXMLHandler {
 	private boolean handleScript(LinkedHashMap<String, String> attrs,
 			ScriptType type) {
 		try {
-			String text = attrs.get("val");
-			if (text != null && text.length() > 0) {
-				Script script = app.createScript(type, text, false);
-				geo.setClickScript(script);
-			}
-			text = attrs.get("onUpdate");
-			if (text != null && text.length() > 0) {
-				Script script = app.createScript(type, text, false);
-				geo.setUpdateScript(script);
-			}
+			handleScript(attrs, type, "val", EventType.CLICK);
+			handleScript(attrs, type, "onUpdate", EventType.UPDATE);
+			handleScript(attrs, type, "onDragEnd", EventType.DRAG_END);
+			handleScript(attrs, type, "onChange", EventType.EDITOR_KEY_TYPED);
 			return true;
 		} catch (RuntimeException e) {
 			return false;
+		}
+	}
+
+	private void handleScript(LinkedHashMap<String, String> attrs, ScriptType type,
+			String attrName, EventType evtType) {
+		String text = attrs.get(attrName);
+		if (text != null && text.length() > 0) {
+			Script script = app.createScript(type, text, false);
+			geo.setScript(script, evtType);
 		}
 	}
 
@@ -432,7 +440,7 @@ public class ConsElementXMLHandler {
 							? Kernel.COORD_CARTESIAN_3D
 							: Kernel.COORD_CARTESIAN);
 		} else if (geo instanceof GeoPolyLine) {
-			((GeoPolyLine) geo).setVisibleInView3D(false);
+			geo.setVisibleInView3D(false);
 		} else if (geo instanceof GeoFunction) {
 			geo.setFixed(false);
 		} else if (geo instanceof GeoAngle) {
@@ -442,6 +450,9 @@ public class ConsElementXMLHandler {
 		} else if (geo instanceof GeoButton) {
 			geo.setBackgroundColor(GColor.WHITE);
 			geo.setObjColor(GColor.BLACK);
+			((GeoButton) geo).setHeight(DEFAULT_BUTTON_HEIGHT);
+		} else if (geo instanceof GeoInputBox) {
+			geo.setObjColor(GColor.DEFAULT_INPUTBOX_TEXT);
 		}
 	}
 
@@ -781,6 +792,20 @@ public class ConsElementXMLHandler {
 		}
 	}
 
+	private boolean handleHeadStyle(LinkedHashMap<String, String> attrs) {
+		if (!(geo instanceof GeoVector)) {
+			Log.error("wrong element type for <headStyle>: " + geo.getClass());
+			return false;
+		}
+		try {
+			int styleIndex = Integer.parseInt(attrs.get("val"));
+			((GeoVector) geo).setHeadStyle(VectorHeadStyle.values()[styleIndex]);
+			return true;
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
 	private boolean handleIsLaTeX(LinkedHashMap<String, String> attrs) {
 		try {
 			((GeoText) geo).setLaTeX(
@@ -812,6 +837,9 @@ public class ConsElementXMLHandler {
 
 	private boolean handleAbsoluteScreenLocation(
 			LinkedHashMap<String, String> attrs, boolean absolute) {
+		if (geo.isDefaultGeo()) {
+			return false;
+		}
 		if (!(geo instanceof AbsoluteScreenLocateable)) {
 			Log.error("wrong element type for <absoluteScreenLocation>: "
 					+ geo.getClass());
@@ -1727,7 +1755,6 @@ public class ConsElementXMLHandler {
 	}
 
 	private boolean handleCoefficients(LinkedHashMap<String, String> attrs) {
-		// Application.debug(attrs.toString());
 		if (!(geo.isGeoImplicitCurve())) {
 			Log.warn(
 					"wrong element type for <coefficients>: " + geo.getClass());
@@ -1797,7 +1824,6 @@ public class ConsElementXMLHandler {
 	}
 
 	private boolean handleUserInput(LinkedHashMap<String, String> attrs) {
-		// Application.debug(attrs.toString());
 		if (!(geo instanceof GeoImplicit)) {
 			Log.warn("wrong element type for <userinput>: " + geo.getClass());
 			return false;
@@ -2253,6 +2279,9 @@ public class ConsElementXMLHandler {
 			case "fading":
 				handleFading(attrs);
 				break;
+			case "headStyle":
+				handleHeadStyle(attrs);
+				return;
 			case "isLaTeX":
 				handleIsLaTeX(attrs);
 				break;
@@ -2487,7 +2516,7 @@ public class ConsElementXMLHandler {
 		} catch (Exception e) {
 			startPointList.clear();
 			Log.debug(e);
-			addError("Invalid start point: " + e.toString());
+			addError("Invalid start point: " + e);
 		}
 		startPointList.clear();
 	}
@@ -2560,7 +2589,7 @@ public class ConsElementXMLHandler {
 				animGeo.setAnimating(true);
 			}
 		} catch (RuntimeException e) {
-			addError("Invalid animating: " + e.toString());
+			addError("Invalid animating: " + e);
 		}
 		animatingList.clear();
 	}
@@ -2601,7 +2630,7 @@ public class ConsElementXMLHandler {
 		} catch (RuntimeException e) {
 			minMaxList.clear();
 			Log.debug(e);
-			addError("Invalid min/max: " + e.toString());
+			addError("Invalid min/max: " + e);
 		}
 		minMaxList.clear();
 	}
@@ -2693,8 +2722,6 @@ public class ConsElementXMLHandler {
 				|| !xmlHandler.kernel.getElementDefaultAllowed()) {
 			// does a geo element with this label exist?
 			geo1 = xmlHandler.kernel.lookupLabel(label);
-
-			// Application.debug(label+", geo="+geo);
 			// needed for TRAC-2719
 			// if geo wasn't found in construction list
 			// look in cas
@@ -2710,8 +2737,6 @@ public class ConsElementXMLHandler {
 				geo1 = xmlHandler.kernel.createGeoElement(xmlHandler.cons,
 						type);
 				pendingLabel = label;
-
-				// Application.debug(label+", "+geo.isLabelSet());
 
 				// independent GeoElements should be hidden by default
 				// (as older versions of this file format did not

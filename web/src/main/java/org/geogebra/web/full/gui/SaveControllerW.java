@@ -1,6 +1,5 @@
 package org.geogebra.web.full.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.main.Feature;
@@ -9,11 +8,11 @@ import org.geogebra.common.main.MaterialVisibility;
 import org.geogebra.common.main.MaterialsManager;
 import org.geogebra.common.main.MyError.Errors;
 import org.geogebra.common.main.SaveController;
-import org.geogebra.common.move.ggtapi.models.Chapter;
 import org.geogebra.common.move.ggtapi.models.Material;
 import org.geogebra.common.move.ggtapi.models.Material.MaterialType;
 import org.geogebra.common.move.ggtapi.models.Material.Provider;
 import org.geogebra.common.move.ggtapi.models.MaterialRestAPI;
+import org.geogebra.common.move.ggtapi.models.Pagination;
 import org.geogebra.common.move.ggtapi.requests.MaterialCallbackI;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.StringUtil;
@@ -30,8 +29,7 @@ import org.geogebra.web.html5.gui.tooltip.ToolTipManagerW;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.StringConsumer;
 import org.geogebra.web.shared.ggtapi.models.MaterialCallback;
-
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  * Class to handle material saving.
@@ -167,11 +165,10 @@ public class SaveControllerW implements SaveController {
 		} else {
 			Material activeMaterial = app.getActiveMaterial();
 			if (activeMaterial == null) {
-				activeMaterial = new Material(0, saveType);
+				activeMaterial = new Material(saveType);
 				app.setActiveMaterial(activeMaterial);
 			} else if (!app.getLoginOperation()
 					.owns(activeMaterial)) {
-				activeMaterial.setId(0);
 				activeMaterial.setSharingKey(null);
 			}
 
@@ -185,7 +182,7 @@ public class SaveControllerW implements SaveController {
 	}
 
 	private void syncIdAndType(Material mat) {
-		getAppW().setTubeId(mat.getSharingKeyOrId());
+		getAppW().setTubeId(mat.getSharingKeySafe());
 		setSaveType(mat.getType());
 	}
 
@@ -204,7 +201,7 @@ public class SaveControllerW implements SaveController {
 		final StringConsumer handler = base64 -> {
 			if (titleChanged && (isWorksheet() || savedAsTemplate())) {
 				Log.debug("SAVE filename changed");
-				getAppW().updateMaterialURL(0, null, null);
+				getAppW().updateMaterialURL(null, null);
 				doUploadToGgt(getAppW().getTubeId(), visibility, base64,
 						newMaterialCB(base64, false),
 						isMultiuser);
@@ -257,24 +254,24 @@ public class SaveControllerW implements SaveController {
 	 *            "P" - private / "O" - public / "S" - shared
 	 */
 	void handleSync(final String base64, final String visibility, boolean isMultiuser) {
-		app.getLoginOperation().getGeoGebraTubeAPI().getItem(app.getTubeId() + "",
+		app.getLoginOperation().getResourcesAPI().getItem(app.getTubeId() + "",
 				new MaterialCallback() {
 
 					@Override
 					public void onLoaded(final List<Material> parseResponse,
-							ArrayList<Chapter> meta) {
+							Pagination meta) {
 						MaterialCallbackI materialCallback;
 						if (parseResponse.size() == 1) {
 							if (parseResponse.get(0).getModified() > getAppW()
 									.getSyncStamp()) {
 								Log.debug("SAVE MULTIPLE" + parseResponse.get(0).getModified() + ":"
 										+ getAppW().getSyncStamp());
-								getAppW().updateMaterialURL(0, null, null);
+								getAppW().updateMaterialURL(null, null);
 								materialCallback = newMaterialCB(base64, true);
 							} else {
 								materialCallback = newMaterialCB(base64, false);
 							}
-							String key = parseResponse.get(0).getSharingKeyOrId();
+							String key = parseResponse.get(0).getSharingKeySafe();
 							doUploadToGgt(key, visibility,
 									base64,
 									materialCallback, isMultiuser);
@@ -356,7 +353,7 @@ public class SaveControllerW implements SaveController {
 		return new MaterialCallback() {
 
 			@Override
-			public void onLoaded(final List<Material> parseResponse, ArrayList<Chapter> meta) {
+			public void onLoaded(final List<Material> parseResponse, Pagination meta) {
 				if (isWorksheet() || savedAsTemplate()) {
 					if (parseResponse.size() == 1) {
 						Material newMat = parseResponse.get(0);

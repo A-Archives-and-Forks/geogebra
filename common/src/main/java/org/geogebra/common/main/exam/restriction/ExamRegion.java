@@ -4,6 +4,7 @@ import static org.geogebra.common.GeoGebraConstants.CAS_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.G3D_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.GEOMETRY_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.GRAPHING_APPCODE;
+import static org.geogebra.common.GeoGebraConstants.PROBABILITY_APPCODE;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
@@ -35,6 +36,28 @@ public enum ExamRegion {
 			// no restrictions -> no default needed
 		}
 	},
+	/*MMS() {
+		@Override
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "Deutschland IQB MMS Abitur";
+		}
+
+		@Override
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "MMS Abitur";
+		}
+
+		@Override
+		public void applyRestrictions(ExamRestrictionModel model) {
+			model.setSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE);
+			model.setCommandFilter(CommandFilterFactory.createMmsFilter());
+		}
+
+		@Override
+		public void setDefaultSubAppCode(ExamRestrictionModel model) {
+			model.setDefaultAppCode(CAS_APPCODE);
+		}
+	},*/
 	NIEDERSACHSEN() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
@@ -56,21 +79,22 @@ public enum ExamRegion {
 			model.setDefaultAppCode(GRAPHING_APPCODE);
 		}
 	},
-	MMS() {
+	BAYERN_CAS() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
-			return "Deutschland IQB MMS Abitur";
+			return "Schulversuch CAS in Prüfungen";
 		}
 
 		@Override
 		public String getShortDisplayName(Localization loc, AppConfig config) {
-			return "MMS Abitur";
+			return "Schulversuch CAS";
 		}
 
 		@Override
 		public void applyRestrictions(ExamRestrictionModel model) {
-			model.setSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE);
-			model.setCommandFilter(CommandFilterFactory.createMmsFilter());
+			model.setSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE,
+					PROBABILITY_APPCODE);
+			model.setCommandFilter(CommandFilterFactory.createBayernCasFilter());
 		}
 
 		@Override

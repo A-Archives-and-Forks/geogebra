@@ -9,10 +9,9 @@ import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.Label;
 
 /**
  * Material card
@@ -66,14 +65,13 @@ public class MaterialCard extends FlowPanel implements MaterialCardI {
 	}
 
 	private boolean isOwnMaterial() {
-		return app.getLoginOperation().getGeoGebraTubeAPI().owns(getMaterial());
+		return app.getLoginOperation().getResourcesAPI().owns(getMaterial());
 	}
 
 	private String getCardAuthor() {
-		return "".equals(getMaterial().getAuthor())
-				&& getMaterial().getCreator() != null
-				? getMaterial().getCreator().getDisplayname()
-				: getMaterial().getAuthor();
+		return getMaterial().getCreator() != null
+				? getMaterial().getCreator().getDisplayName()
+				: "";
 	}
 
 	/**
@@ -95,14 +93,19 @@ public class MaterialCard extends FlowPanel implements MaterialCardI {
 		controller.onConfirmDelete(this);
 	}
 
-	@Override
+	/**
+	 * Change name on card and rename via API
+	 * @param text new name
+	 */
 	public void rename(String text) {
 		String oldTitle = infoPanel.getCardId();
 		infoPanel.setCardId(text);
 		controller.rename(text, this, oldTitle);
 	}
 
-	@Override
+	/**
+	 * Call API to copy yhe material.
+	 */
 	public void copy() {
 		controller.copy();
 	}
@@ -115,17 +118,17 @@ public class MaterialCard extends FlowPanel implements MaterialCardI {
 		removeDialog.setOnPositiveAction(this::onConfirmDelete);
 	}
 
-	@Override
+	/**
+	 * @return card title
+	 */
 	public String getCardTitle() {
 		return getMaterial().getTitle();
 	}
 
-	@Override
-	public String getMaterialID() {
-		return getMaterial().getSharingKeyOrId();
-	}
-
-	@Override
+	/**
+	 * @param material
+	 *            material
+	 */
 	public void updateVisibility(Material material) {
 		MaterialDesignResources res = MaterialDesignResources.INSTANCE;
 		String visibility = material.getVisibility();
@@ -147,12 +150,15 @@ public class MaterialCard extends FlowPanel implements MaterialCardI {
 		} else {
 			switch (visibility) {
 			case "P":
-				visibiltyImg = new NoDragImage(
-						res.mow_card_private(), 24);
+				visibiltyImg = new NoDragImage(res.mow_card_private(), 24);
 				visibilityTxt = new Label(app.getLocalization().getMenu("Private"));
 				break;
 			case "S":
-				visibiltyImg = new NoDragImage(res.mow_card_shared(), 24);
+				if (app.isMebis()) {
+					visibiltyImg = new NoDragImage(res.mow_card_shared(), 24);
+				} else {
+					visibiltyImg = new NoDragImage(res.resource_card_shared(), 24);
+				}
 				visibilityTxt = new Label(app.getLocalization().getMenu("Shared"));
 				break;
 			case "O":

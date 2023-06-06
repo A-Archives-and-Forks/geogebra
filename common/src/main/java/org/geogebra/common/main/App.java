@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Vector;
+import java.util.function.Predicate;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.GeoGebraConstants.Platform;
@@ -106,6 +106,7 @@ import org.geogebra.common.main.exam.restriction.ExamRegion;
 import org.geogebra.common.main.exam.restriction.ExamRestrictionFactory;
 import org.geogebra.common.main.exam.restriction.RestrictExam;
 import org.geogebra.common.main.exam.restriction.Restrictable;
+import org.geogebra.common.main.provider.ExamProvider;
 import org.geogebra.common.main.settings.AbstractSettings;
 import org.geogebra.common.main.settings.ConstructionProtocolSettings;
 import org.geogebra.common.main.settings.DefaultSettings;
@@ -132,7 +133,6 @@ import org.geogebra.common.plugin.script.Script;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.CopyPaste;
 import org.geogebra.common.util.DoubleUtil;
-import org.geogebra.common.util.GPredicate;
 import org.geogebra.common.util.LowerCaseDictionary;
 import org.geogebra.common.util.MD5EncrypterGWTImpl;
 import org.geogebra.common.util.NormalizerMinimal;
@@ -146,7 +146,7 @@ import com.himamis.retex.editor.share.util.Unicode;
 /**
  * Represents an application window, gives access to views and system stuff
  */
-public abstract class App implements UpdateSelection, AppInterface, EuclidianHost {
+public abstract class App implements UpdateSelection, AppInterface, EuclidianHost, ExamProvider {
 	/** Url for wiki article about functions */
 	public static final String WIKI_OPERATORS = "Predefined Functions and Operators";
 	/** Url for main page of manual */
@@ -385,16 +385,14 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	private ParserFunctions pf;
 	private ParserFunctions pfInputBox;
 	private SpreadsheetTraceManager traceManager;
+
+	// Exam
 	private ExamEnvironment exam;
+	protected RestrictExam restrictions;
 
 	// moved to Application from EuclidianView as the same value is used across
 	// multiple EVs
 	private int maxLayerUsed = 0;
-	/**
-	 * size of checkboxes, default in GeoGebraPreferencesXML.java
-	 * checkboxSize="26"
-	 */
-	private int booleanSize = EuclidianConstants.DEFAULT_CHECKBOX_SIZE;
 	private boolean labelDragsEnabled = true;
 	private boolean undoRedoEnabled = true;
 
@@ -452,7 +450,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	private final AppConfig appConfig = new AppConfigDefault();
 
 	private Material activeMaterial;
-	private RestrictExam restrictions;
 
 	public static String[] getStrDecimalSpacesAC() {
 		return strDecimalSpacesAC;
@@ -590,24 +587,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * @return global checkbox size 13 or 26 (all checkboxes, both views)
-	 */
-	public int getCheckboxSize() {
-		return booleanSize;
-	}
-
-	/**
-	 *
-	 * set global checkbox size (all checkboxes, both views)
-	 *
-	 * @param b
-	 *            new size for checkboxes (either 13 or 26)
-	 */
-	public void setCheckboxSize(int b) {
-		booleanSize = (b == 13) ? 13 : 26;
-	}
-
-	/**
 	 * @param type
 	 *            mouse or touch
 	 * @return capturing threshold
@@ -690,7 +669,9 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 				getKernel().getAlgebraProcessor().getCommandDispatcher();
 
 		for (String cmd : commandDictContent) {
-			commandDictCAS.addEntry(cmd);
+			if (commandDispatcher.isAllowedByNameFilter(Commands.stringToCommand(cmd))) {
+				commandDictCAS.addEntry(cmd);
+			}
 		}
 
 		// iterate through all available CAS commands, add them (translated if
@@ -1247,19 +1228,14 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 * Deletes selected objects
 	 */
 	public void deleteSelectedObjects(boolean isCut) {
-		deleteSelectedObjects(isCut, new GPredicate<GeoElement>() {
-			@Override
-			public boolean test(GeoElement geo) {
-				return !geo.isProtected(EventType.REMOVE);
-			}
-		});
+		deleteSelectedObjects(isCut, geo -> !geo.isProtected(EventType.REMOVE));
 	}
 
 	/**
 	 * Deletes some of the selected objects
 	 * @param filter which geos to delete
 	 */
-	public void deleteSelectedObjects(boolean isCut, GPredicate<GeoElement> filter) {
+	public void deleteSelectedObjects(boolean isCut, Predicate<GeoElement> filter) {
 		if (letDelete()) {
 			// also delete just created geos if possible
 			ArrayList<GeoElement> geos2 = new ArrayList<>(getActiveEuclidianView()
@@ -3005,6 +2981,13 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
+	 * Zooms and pans active EV to show all objects checking ratio from config.
+	 */
+	public final void setViewShowAllObjects() {
+		setViewShowAllObjects(appConfig.shouldKeepRatioEuclidian());
+	}
+
+	/**
 	 * Zooms and pans active EV to show all objects
 	 *
 	 * @param keepRatio
@@ -3947,7 +3930,9 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 				}
 
 			} else {
+				ScreenReader.readSpacePressed(geo);
 				geo.runClickScripts(null);
+				return true;
 			}
 
 			// read *after* state changed!
@@ -3984,6 +3969,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return true;
 	}
 
+	@Override
 	public ExamEnvironment getExam() {
 		return exam;
 	}
@@ -4017,7 +4003,11 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		CommandDispatcher commandDispatcher =
 				getKernel().getAlgebraProcessor().getCommandDispatcher();
 		examEnvironment.setCommandDispatcher(commandDispatcher);
-		updateExam(examEnvironment);
+		examEnvironment.setCopyPaste(getCopyPaste());
+	}
+
+	protected ExamEnvironment newExamEnvironment() {
+		return new ExamEnvironment(getLocalization());
 	}
 
 	private void initRestrictions(ExamRegion region) {
@@ -4028,21 +4018,34 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		}
 	}
 
-	protected ExamEnvironment newExamEnvironment() {
-		return new ExamEnvironment(getLocalization());
+	/**
+	 * Register a component to be restriced during exam
+	 *
+	 * @param restrictable the component to restrict.
+	 */
+	public void registerRestrictable(Restrictable restrictable) {
+		if (restrictions == null) {
+			ExamEnvironment exam = getExam();
+			ExamRegion region = exam != null && exam.isStarted() ? exam.getExamRegion() : null;
+			restrictions = ExamRestrictionFactory.create(region);
+		}
+		restrictions.register(restrictable);
 	}
 
 	/**
 	 * Start exam with current timestamp.
 	 */
 	public void startExam() {
-		setupExamEnvironment();
+		getExam().prepareExamForStarting();
 		getExam().setStart((new Date()).getTime());
 		restrictions.enable();
 	}
 
-	private void setupExamEnvironment() {
-		getExam().setupExamEnvironment();
+	/**
+	 * Show exam welcome message.
+	 */
+	public void examWelcome() {
+		// overridden in platforms supporting exam
 	}
 
 	/**
@@ -4147,7 +4150,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return StringTemplate.screenReaderAscii;
 	}
 
-	public void clearRestictions() {
+	public void clearRestrictions() {
 		restrictions.disable();
 	}
 
@@ -4338,13 +4341,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 				}
 			}
 		}
-	}
-
-	/**
-	 * Show exam welcome message.
-	 */
-	public void examWelcome() {
-		// overridden in platforms supporting exam
 	}
 
 	/**
@@ -5065,12 +5061,8 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		ExamEnvironment examEnvironment = getExam();
 		if (examEnvironment != null) {
 			examEnvironment.setCommandDispatcher(commandDispatcher);
-			updateExam(examEnvironment);
+			examEnvironment.setCopyPaste(getCopyPaste());
 		}
-	}
-
-	protected void updateExam(@Nonnull ExamEnvironment examEnvironment) {
-		examEnvironment.setCopyPaste(getCopyPaste());
 	}
 
 	@Override
@@ -5118,17 +5110,5 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	@Override
 	public MyImage getInternalImageAdapter(String filename, int width, int height) {
 		return null;
-	}
-
-	/**
-	 * Register a component to be restriced during exam
-	 *
-	 * @param restrictable the component to restrict.
-	 */
-	public void registerRestrictable(Restrictable restrictable) {
-		if (restrictions == null) {
-			restrictions = ExamRestrictionFactory.create(null);
-		}
-		restrictions.register(restrictable);
 	}
 }

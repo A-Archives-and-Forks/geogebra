@@ -25,11 +25,10 @@ import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.ImageManagerW;
 import org.geogebra.web.resources.SVGResource;
-
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.ListBox;
 
 public class FillingPanel extends OptionPanel implements IFillingListener {
 	FillingModel model;
@@ -238,22 +237,27 @@ public class FillingPanel extends OptionPanel implements IFillingListener {
 		iconList = new ArrayList<>();
 		iconList.add(null); // for delete
 		GuiResourcesSimple res = GuiResourcesSimple.INSTANCE;
-		iconList.add(res.pause());
 		iconList.add(res.play());
+		iconList.add(res.pause());
 		iconList.add(res.stop());
-		iconList.add(res.replay());
-		iconList.add(res.skip_next());
+		iconList.add(res.fast_rewind());
+		iconList.add(res.fast_forward());
 		iconList.add(res.skip_previous());
+		iconList.add(res.skip_next());
 		iconList.add(res.loop());
-		iconList.add(res.zoom_in());
-		iconList.add(res.zoom_out());
-		iconList.add(res.close());
+		iconList.add(res.replay());
+		iconList.add(res.undo());
+		iconList.add(res.redo());
 		iconList.add(res.arrow_up());
 		iconList.add(res.arrow_down());
-		iconList.add(res.arrow_forward());
 		iconList.add(res.arrow_back());
-		iconList.add(res.fast_forward());
-		iconList.add(res.fast_rewind());
+		iconList.add(res.arrow_forward());
+		iconList.add(res.remove());
+		iconList.add(res.add());
+		iconList.add(res.check_mark());
+		iconList.add(res.close());
+		iconList.add(res.zoom_out());
+		iconList.add(res.zoom_in());
 		iconList.add(res.zoom_to_fit());
 		iconList.add(res.center_view());
 		iconList.add(res.help());

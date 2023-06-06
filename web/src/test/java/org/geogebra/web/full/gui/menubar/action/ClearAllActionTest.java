@@ -8,11 +8,10 @@ import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.util.AppletParameters;
 import org.geogebra.web.test.AppMocker;
 import org.geogebra.web.test.GgbMockitoTestRunner;
+import org.gwtproject.user.client.ui.ListBox;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * Tests for Undo with multiple slides
@@ -36,7 +35,6 @@ public class ClearAllActionTest {
 		BaseWidgetFactory factory = mock(BaseWidgetFactory.class);
 		ListBox mockBox = mock(ListBox.class);
 		when(factory.newListBox()).thenReturn(mockBox);
-		app.getDialogManager().setWidgetFactory(factory);
 		ClearAllAction action = new ClearAllAction(true);
 		addObject("x");
 		action.execute(null, app);

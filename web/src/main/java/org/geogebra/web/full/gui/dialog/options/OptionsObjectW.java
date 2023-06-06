@@ -58,6 +58,7 @@ import org.geogebra.common.gui.dialog.options.model.TextFieldSizeModel;
 import org.geogebra.common.gui.dialog.options.model.TextOptionsModel;
 import org.geogebra.common.gui.dialog.options.model.TraceModel;
 import org.geogebra.common.gui.dialog.options.model.TrimmedIntersectionLinesModel;
+import org.geogebra.common.gui.dialog.options.model.VectorHeadStyleModel;
 import org.geogebra.common.gui.dialog.options.model.VerticalIncrementModel;
 import org.geogebra.common.gui.dialog.options.model.ViewLocationModel;
 import org.geogebra.common.gui.dialog.options.model.ViewLocationModel.IGraphicsViewLocationListener;
@@ -66,8 +67,10 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.error.ErrorHandler;
+import org.geogebra.common.properties.impl.AbstractEnumerableProperty;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.StringUtil;
+import org.geogebra.web.full.gui.components.CompDropDown;
 import org.geogebra.web.full.gui.components.ComponentCheckbox;
 import org.geogebra.web.full.gui.properties.GroupOptionsPanel;
 import org.geogebra.web.full.gui.properties.ListBoxPanel;
@@ -78,12 +81,11 @@ import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
 import org.geogebra.web.html5.gui.util.FormLabel;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.tabpanel.MultiRowsTabPanel;
-
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.ListBox;
+import org.gwtproject.user.client.ui.Widget;
 
 @SuppressWarnings("javadoc")
 public class OptionsObjectW extends OptionsObject implements OptionPanelW {
@@ -126,7 +128,7 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 	private class LabelPanel extends OptionPanel implements IShowLabelListener {
 		final ComponentCheckbox showLabelCB;
 		private final FlowPanel mainWidget;
-		final ListBox labelMode;
+		final CompDropDown labelMode;
 		ShowLabelModel model;
 
 		public LabelPanel() {
@@ -142,12 +144,9 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 
 			updateShowLabel();
 
-			labelMode = new ListBox();
-			labelMode.setMultipleSelect(false);
+			LabelStyleProperty labelStyleProp = new LabelStyleProperty(this);
 
-			labelMode.addChangeHandler(event -> model.applyModeChanges(
-					model.fromDropdown(labelMode.getSelectedIndex()),
-					true));
+			labelMode = new CompDropDown(app, "", labelStyleProp);
 			mainWidget.add(labelMode);
 		}
 
@@ -182,24 +181,18 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 		@Override
 		public void setLabels() {
 			updateShowLabel();
-			int selectedIndex = labelMode.getSelectedIndex();
-			labelMode.clear();
-			labelMode.addItem(localize("Name")); // index 0
-			labelMode.addItem(localize("NameAndValue")); // index 1
-			labelMode.addItem(localize("Value")); // index 2
-			labelMode.addItem(localize("Caption")); // index 3
-			labelMode.addItem(localize("CaptionAndValue")); // index 4
-			labelMode.setSelectedIndex(selectedIndex);
+			labelMode.setLabels();
 		}
+
 	}
 
 	private class ShowConditionPanel extends OptionPanel
 			implements IShowConditionListener, ErrorHandler, Command {
-		private ShowConditionModel model;
-		private FormLabel title;
-		private AutoCompleteTextFieldW tfCondition;
+		private final ShowConditionModel model;
+		private final FormLabel title;
+		private final AutoCompleteTextFieldW tfCondition;
 
-		private FlowPanel errorPanel;
+		private final FlowPanel errorPanel;
 
 		public ShowConditionPanel() {
 			// this.propPanel = propPanel;
@@ -283,9 +276,9 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 
 	class ReflexAnglePanel extends OptionPanel implements IReflexAngleListener {
 		ReflexAngleModel model;
-		private FlowPanel mainWidget;
-		private FormLabel intervalLabel;
-		private ListBox intervalLB;
+		private final FlowPanel mainWidget;
+		private final FormLabel intervalLabel;
+		private final ListBox intervalLB;
 
 		public ReflexAnglePanel() {
 			model = new ReflexAngleModel(app, isDefaults);
@@ -355,17 +348,17 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 			implements IColorFunctionListener, Command {
 
 		ColorFunctionModel model;
-		private InputPanelW inputPanelA;
-		private AutoCompleteTextFieldW tfRed;
-		private AutoCompleteTextFieldW tfGreen;
-		private AutoCompleteTextFieldW tfBlue;
-		private AutoCompleteTextFieldW tfAlpha;
-		private Label btRemove;
-		private Label title;
-		private FormLabel nameLabelR;
-		private FormLabel nameLabelG;
-		private FormLabel nameLabelB;
-		private FormLabel nameLabelA;
+		private final InputPanelW inputPanelA;
+		private final AutoCompleteTextFieldW tfRed;
+		private final AutoCompleteTextFieldW tfGreen;
+		private final AutoCompleteTextFieldW tfBlue;
+		private final AutoCompleteTextFieldW tfAlpha;
+		private final Label btRemove;
+		private final Label title;
+		private final FormLabel nameLabelR;
+		private final FormLabel nameLabelG;
+		private final FormLabel nameLabelB;
+		private final FormLabel nameLabelA;
 
 		ListBox cbColorSpace;
 		int colorSpace = GeoElement.COLORSPACE_RGB;
@@ -580,7 +573,7 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 			implements IGraphicsViewLocationListener {
 		ViewLocationModel model;
 
-		private Label title;
+		private final Label title;
 		ComponentCheckbox cbGraphicsView;
 		ComponentCheckbox cbGraphicsView2;
 		ComponentCheckbox cbGraphicsView3D;
@@ -834,12 +827,14 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 		DecoSegmentModel decoSegment = new DecoSegmentModel(app);
 		SegmentStyleModel segmentStartStyle = new SegmentStyleModel(app, true);
 		SegmentStyleModel segmentEndStyle = new SegmentStyleModel(app, false);
+		VectorHeadStyleModel vectorHeadStyleModel = new VectorHeadStyleModel(app);
 
 		tab.addModel(ptSize).addModel(ptStyle).addModel(lod).addModel(lineStyle)
 				.addModel(drawArrows).addModel(arcSize).addModel(slopeSize).addModel(ineqStyle)
 				.addModel(tfSize).addModel(alignModel).addModel(buttonSize)
 				.addModel(filling).addModel(interpol).addModel(decoAngle)
-				.addModel(segmentStartStyle).addModel(segmentEndStyle).addModel(decoSegment);
+				.addModel(segmentStartStyle).addModel(segmentEndStyle).addModel(decoSegment)
+				.addModel(vectorHeadStyleModel);
 		return tab;
 	}
 
@@ -974,5 +969,27 @@ public class OptionsObjectW extends OptionsObject implements OptionPanelW {
 	@Override
 	public MultiRowsTabPanel getTabPanel() {
 		return tabPanel;
+	}
+
+	private class LabelStyleProperty extends AbstractEnumerableProperty {
+		private final LabelPanel labelPanel;
+		private int index = 0;
+
+		public LabelStyleProperty(LabelPanel labelPanel) {
+			super(app.getLocalization(), "");
+			this.labelPanel = labelPanel;
+			setValues("Name", "NameAndValue", "Value", "Caption", "CaptionAndValue");
+		}
+
+		@Override
+		protected void setValueSafe(String value, int index) {
+			this.index = index;
+			labelPanel.model.applyModeChanges(labelPanel.model.fromDropdown(index), true);
+		}
+
+		@Override
+		public int getIndex() {
+			return index;
+		}
 	}
 }

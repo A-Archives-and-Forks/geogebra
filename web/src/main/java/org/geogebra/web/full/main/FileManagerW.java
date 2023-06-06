@@ -128,7 +128,7 @@ public class FileManagerW extends FileManager {
 				Material mat = JSONParserGGT.parseMaterial(this.stockStore
 				        .getItem(key));
 				if (mat == null) {
-					mat = new Material(0, MaterialType.ggb);
+					mat = new Material(MaterialType.ggb);
 					mat.setTitle(getTitleFromKey(key));
 				}
 				if (filter.check(mat)
@@ -238,10 +238,7 @@ public class FileManagerW extends FileManager {
 				.parseMaterial(materialJSON);
 		// maybe another user restores the file, so reset
 		// sensitive data
-		autoSaved.setAuthor("");
-		autoSaved.setAuthorId(0);
-		autoSaved.setId(0);
-		autoSaved.setGoogleID("");
+		autoSaved.setCreator(null);
 		openMaterial(autoSaved);
 	}
 
@@ -280,7 +277,7 @@ public class FileManagerW extends FileManager {
 		} catch (Exception e) {
 			Log.warn("setting tube ID failed");
 		}
-		this.offlineIDs.add(mat.getId());
+		this.offlineIDs.add(mat.getLocalID());
 
 	}
 
@@ -298,7 +295,7 @@ public class FileManagerW extends FileManager {
 		}
 		try {
 			this.stockStore.setItem(key, material.toJson().toString());
-			this.offlineIDs.add(material.getId());
+			this.offlineIDs.add(material.getLocalID());
 		} catch (Exception e) {
 			Log.warn("Updating local copy failed.");
 		}

@@ -340,6 +340,8 @@ public class ExpressionSerializer implements ExpressionNodeConstants {
 		case PLUS:
 			return tpl.plusString(left, right, leftStr, rightStr, valueForm,
 					loc);
+		case INVISIBLE_PLUS:
+			return tpl.invisiblePlusString(leftStr, rightStr);
 		case MINUS:
 			return tpl.minusString(left, right, leftStr, rightStr, valueForm, loc);
 
@@ -869,7 +871,7 @@ public class ExpressionSerializer implements ExpressionNodeConstants {
 				break;
 
 			default:
-				if (tpl == StringTemplate.editorTemplate) {
+				if (tpl.isForEditorParser()) {
 					sb.append("log(10,");
 				} else {
 					sb.append("lg(");
@@ -899,7 +901,7 @@ public class ExpressionSerializer implements ExpressionNodeConstants {
 				break;
 
 			default:
-				if (tpl == StringTemplate.editorTemplate) {
+				if (tpl.isForEditorParser()) {
 					sb.append("log(2,");
 				} else {
 					sb.append("ld(");
@@ -933,7 +935,7 @@ public class ExpressionSerializer implements ExpressionNodeConstants {
 				break;
 			case GEOGEBRA_XML:
 			case GEOGEBRA:
-				if (tpl.isPrintLocalizedCommandNames() && tpl != StringTemplate.editorTemplate) {
+				if (tpl.isPrintLocalizedCommandNames() && !tpl.isForEditorParser()) {
 					sb.append(loc.getFunction("nroot"));
 				} else {
 					sb.append("nroot");
@@ -1856,7 +1858,6 @@ public class ExpressionSerializer implements ExpressionNodeConstants {
 				sb.append(',');
 				sb.append(rightStr);
 				sb.append(")");
-				// AbstractApplication.debug(sb);
 			}
 			break;
 		case INVERSE_NORMAL:
@@ -1899,7 +1900,37 @@ public class ExpressionSerializer implements ExpressionNodeConstants {
 				sb.append(',');
 				sb.append(rightStr);
 				sb.append(")");
-				// AbstractApplication.debug(sb);
+			}
+			break;
+		case PRODUCT:
+			if (stringType == StringType.LATEX) {
+				sb.append("\\prod_{");
+				sb.append(((MyNumberPair) left).y.toString(tpl));
+				sb.append("=");
+				sb.append(((MyNumberPair) right).x.toString(tpl));
+				sb.append("}^{");
+				sb.append(((MyNumberPair) right).y.toString(tpl));
+				sb.append("}");
+				sb.append(((MyNumberPair) left).x.toString(tpl));
+			} else if (stringType == StringType.LIBRE_OFFICE) {
+				sb.append("product from{");
+				sb.append(((MyNumberPair) left).y.toString(tpl));
+				sb.append("=");
+				sb.append(((MyNumberPair) right).x.toString(tpl));
+				sb.append("} to{");
+				sb.append(((MyNumberPair) right).y.toString(tpl));
+				sb.append("}");
+				sb.append(((MyNumberPair) left).x.toString(tpl));
+			} else {
+				if (stringType.isGiac()) {
+					sb.append("product(");
+				} else {
+					sb.append("gGbPrOdUcT(");
+				}
+				sb.append(leftStr);
+				sb.append(',');
+				sb.append(rightStr);
+				sb.append(")");
 			}
 			break;
 		case SUBSTITUTION:

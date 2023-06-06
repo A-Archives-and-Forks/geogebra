@@ -429,7 +429,6 @@ public enum Operation {
 			return ev.handlePlus(lt, rt, tpl, holdsLaTeX);
 
 		}
-
 	},
 	MINUS {
 		@Override
@@ -535,7 +534,14 @@ public enum Operation {
 			return ev.handleDivide(lt, rt, left, right);
 		}
 	},
-
+	INVISIBLE_PLUS {
+		@Override
+		public ExpressionValue handle(ExpressionNodeEvaluator ev,
+				ExpressionValue lt, ExpressionValue rt, ExpressionValue left,
+				ExpressionValue right, StringTemplate tpl, boolean holdsLaTeX) {
+			return ev.handleInvisiblePlus(lt, rt, left, right);
+		}
+	},
 	POWER {
 		@Override
 		public ExpressionValue handle(ExpressionNodeEvaluator ev,
@@ -1832,6 +1838,16 @@ public enum Operation {
 			return new MyDouble(ev.getKernel(), Double.NaN);
 		}
 	},
+	PRODUCT {
+		@Override
+		public ExpressionValue handle(ExpressionNodeEvaluator ev,
+									  ExpressionValue lt, ExpressionValue rt,
+									  ExpressionValue left, ExpressionValue right,
+									  StringTemplate tpl, boolean holdsLaTeX) {
+			return new MyDouble(ev.getKernel(), Double.NaN);
+		}
+	},
+
 	INVERSE_NORMAL {
 		@Override
 		public ExpressionValue handle(ExpressionNodeEvaluator ev,

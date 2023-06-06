@@ -3,11 +3,13 @@ package org.geogebra.web.html5.gui.inputfield;
 import org.geogebra.web.html5.gui.util.CancelEventTimer;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.keyboard.KeyboardManagerInterface;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.InlineLabel;
 
 public class CursorOverlay extends FlowPanel {
+
+	private String text = "";
+	int cursorPos = -1;
 
 	public CursorOverlay() {
 		setStyleName("cursorOverlay");
@@ -34,6 +36,11 @@ public class CursorOverlay extends FlowPanel {
 	 * @param text textfield content
 	 */
 	public void update(int cursorPos, String text) {
+		if (text.equals(this.text) && cursorPos == this.cursorPos) {
+			return;
+		}
+		this.text = text;
+		this.cursorPos = cursorPos;
 		CursorOverlay dummyCursor = this;
 		dummyCursor.clear();
 		InlineLabel prefix = new InlineLabel(text.substring(0, cursorPos));

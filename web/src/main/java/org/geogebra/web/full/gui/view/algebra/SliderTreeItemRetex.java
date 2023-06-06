@@ -18,8 +18,7 @@ import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.web.full.gui.layout.panels.AlgebraPanelInterface;
 import org.geogebra.web.html5.gui.util.ClickEndHandler;
 import org.geogebra.web.html5.util.sliderPanel.SliderPanelW;
-
-import com.google.gwt.core.client.Scheduler;
+import org.gwtproject.core.client.Scheduler;
 
 /**
  * Slider item for Algebra View.
@@ -181,6 +180,7 @@ public class SliderTreeItemRetex extends RadioTreeItem {
 			styleContentPanel();
 		}
 		updateTextItems();
+		updateDataTest();
 	}
 
 	@Override
@@ -288,5 +288,16 @@ public class SliderTreeItemRetex extends RadioTreeItem {
 	@Override
 	public void onStopEdit() {
 		// nothing to do here
+	}
+
+	@Override
+	public void updateDataTest(int index) {
+		if (slider != null) {
+			slider.updateDataTest(index);
+		}
+		if (minMaxPanel != null) {
+			minMaxPanel.updateDataTest(index);
+		}
+		super.updateDataTest(index);
 	}
 }

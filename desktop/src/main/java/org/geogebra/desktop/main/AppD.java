@@ -80,7 +80,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import javax.imageio.ImageIO;
-import javax.naming.OperationNotSupportedException;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -558,7 +557,6 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()
 				.addKeyEventDispatcher(this);
 
-		getScriptManager().ggbOnInit();
 		getFactory();
 
 		setSaved();
@@ -1489,15 +1487,12 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 
 	/**
 	 * @return whether  just the euclidian view is visible in the document just loaded.
-	 *
-	 * @throws OperationNotSupportedException if perspective is not set
 	 */
-	private boolean isJustEuclidianVisible()
-			throws OperationNotSupportedException {
+	private boolean isJustEuclidianVisible() {
 		Perspective docPerspective = getTmpPerspective();
 
 		if (docPerspective == null) {
-			throw new OperationNotSupportedException();
+			return false;
 		}
 
 		boolean justEuclidianVisible = false;

@@ -17,9 +17,8 @@ import org.geogebra.web.html5.gui.zoompanel.FocusableWidget;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
 import org.geogebra.web.shared.GlobalHeader;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.user.client.ui.FlowPanel;
 
 import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.HTMLImageElement;
@@ -143,7 +142,7 @@ class NavigationRail extends FlowPanel {
 			return;
 		}
 		toolbarPanel.openAlgebra(isOpen());
-		toolbarPanel.getFrame().keyBoardNeeded(false, null);
+		toolbarPanel.getFrame().closeKeyboard();
 		toolbarPanel.getFrame().showKeyboardButton(true);
 	}
 
@@ -155,7 +154,7 @@ class NavigationRail extends FlowPanel {
 			onClosePressed(false);
 			return;
 		}
-		toolbarPanel.getFrame().keyBoardNeeded(false, null);
+		toolbarPanel.getFrame().closeKeyboard();
 		toolbarPanel.getFrame().showKeyboardButton(false);
 		toolbarPanel.openTools(isOpen());
 	}
@@ -168,7 +167,7 @@ class NavigationRail extends FlowPanel {
 			onClosePressed(false);
 			return;
 		}
-		toolbarPanel.getFrame().keyBoardNeeded(false, null);
+		toolbarPanel.getFrame().closeKeyboard();
 		toolbarPanel.getFrame().showKeyboardButton(true);
 		toolbarPanel.openTableView(null, isOpen());
 	}

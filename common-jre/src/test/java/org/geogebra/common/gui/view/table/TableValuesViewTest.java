@@ -1,7 +1,9 @@
 package org.geogebra.common.gui.view.table;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -61,7 +63,7 @@ public class TableValuesViewTest extends BaseUnitTest {
 	}
 
 	protected void showColumn(GeoElement element) {
-		assertTrue(element instanceof GeoEvaluatable);
+		assertThat(element, instanceOf(GeoEvaluatable.class));
 		view.add(element);
 		view.showColumn((GeoEvaluatable) element);
 	}
@@ -834,5 +836,15 @@ public class TableValuesViewTest extends BaseUnitTest {
 
 		assertThat(model.getColumnCount(), equalTo(1));
 		assertThat(model.getRowCount(), equalTo(5));
+	}
+
+	@Test
+	public void testRegressionApps4633() {
+		for (int i = 1; i < 4; i++) {
+			processor.processInput(Integer.toString(i), view.getValues(), i - 1);
+		}
+		processor.processInput("", view.getValues(), 0);
+
+		assertThat(view.getStatistics1Var(0).get(0).getValues()[0], containsString("2.5"));
 	}
 }

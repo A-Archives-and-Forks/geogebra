@@ -32,7 +32,6 @@ import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.MyList;
 import org.geogebra.common.kernel.arithmetic.MyVecNDNode;
 import org.geogebra.common.kernel.arithmetic.MyVecNode;
-import org.geogebra.common.kernel.arithmetic.NumberValue;
 import org.geogebra.common.kernel.arithmetic.Traversing;
 import org.geogebra.common.kernel.arithmetic.ValueType;
 import org.geogebra.common.kernel.arithmetic.variable.Variable;
@@ -172,7 +171,7 @@ public class GeoSymbolic extends GeoElement
 			return numericValue.toValueString(tpl);
 		} else {
 			assert twin != null;
-			return twin.toValueString(tpl);
+			return twin.toValueString(tpl.isLatex() ? tpl.deriveWithDisplayStyle() : tpl);
 		}
 	}
 
@@ -232,9 +231,7 @@ public class GeoSymbolic extends GeoElement
 		ExpressionValue casOutput = parseOutputString(casResult);
 		setValue(casOutput);
 
-		setSymbolicMode(!isTopLevelCommandNumeric()
-				&& SymbolicUtil.isValueDefined(this), false);
-
+		setSymbolicMode();
 		setFunctionVariables();
 
 		isTwinUpToDate = false;
@@ -360,7 +357,7 @@ public class GeoSymbolic extends GeoElement
 	}
 
 	private ExpressionValue maybeComputeNumericValue(ExpressionValue casOutput) {
-		if (!shouldComputeNumericValue(casOutput)) {
+		if (!SymbolicUtil.shouldComputeNumericValue(casOutput)) {
 			return null;
 		}
 		Log.debug("GeoSymbolic is a number value, calculating numeric result");
@@ -369,15 +366,6 @@ public class GeoSymbolic extends GeoElement
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	private boolean shouldComputeNumericValue(ExpressionValue casOutput) {
-		if (casOutput != null && casOutput.isNumberValue()) {
-			ExpressionValue unwrapped = casOutput.unwrap();
-			return !(unwrapped instanceof NumberValue && !((NumberValue) unwrapped).isDefined())
-					&& !(unwrapped instanceof GeoDummyVariable);
-		}
-		return false;
 	}
 
 	private ExpressionValue computeNumericValue(ExpressionValue casOutput) {
@@ -429,8 +417,13 @@ public class GeoSymbolic extends GeoElement
 		}
 	}
 
+	private void setSymbolicMode() {
+		boolean isValueDefined = isCasValueDefined();
+		setSymbolicMode(!isTopLevelCommandNumeric() && isValueDefined, false);
+	}
+
 	private void setFunctionVariables() {
-		if (!fVars.isEmpty()) {
+		if (!fVars.isEmpty() || !SymbolicUtil.isValueDefined(this)) {
 			return;
 		}
 		Iterable<FunctionVariable> variables = computeFunctionVariables();
@@ -458,11 +451,21 @@ public class GeoSymbolic extends GeoElement
 		}
 	}
 
-	private Iterable<FunctionVariable> collectVariables() {
+	protected List<FunctionVariable> collectVariables() {
 		FunctionVarCollector functionVarCollector = FunctionVarCollector
 				.getCollector();
 		getDefinition().traverse(functionVarCollector);
-		return Arrays.asList(functionVarCollector.buildVariables(kernel));
+		List<FunctionVariable> vars = Arrays.asList(functionVarCollector.buildVariables(kernel));
+		if (vars.size() > 0) {
+			return vars;
+		} else {
+			try {
+				getNodeFromOutput().traverse(functionVarCollector);
+				return Arrays.asList(functionVarCollector.buildVariables(kernel));
+			} catch (ParseException e) {
+				return vars;
+			}
+		}
 	}
 
 	private static boolean shouldShowFunctionVariablesInOutputFor(Command command) {
@@ -1001,15 +1004,15 @@ public class GeoSymbolic extends GeoElement
 
 	@Override
 	public boolean isMatrix() {
-		return twinGeo != null ? twinGeo.isMatrix() : hasMatrixDefinition();
+		return twinGeo != null ? twinGeo.isMatrix() : hasMatrixValue();
 	}
 
-	private boolean hasMatrixDefinition() {
-		ExpressionNode definition = getDefinition();
-		if (definition == null) {
+	private boolean hasMatrixValue() {
+		ExpressionValue expr = value == null ? getDefinition() : value;
+		if (expr == null) {
 			return false;
 		} else {
-			ExpressionValue unwrapped = getDefinition().unwrap();
+			ExpressionValue unwrapped = expr.unwrap();
 			return unwrapped instanceof MyList && ((MyList) unwrapped).isMatrix();
 		}
 	}
@@ -1019,7 +1022,7 @@ public class GeoSymbolic extends GeoElement
 		if (symbolicMode) {
 			return symbolic ? getDefinition(tpl) : toValueString(tpl);
 		} else if (twinGeo != null) {
-			return twinGeo.toLaTeXString(symbolic, isSymbolicMode(), tpl);
+			return twinGeo.toLaTeXString(symbolic, tpl);
 		} else {
 			return getDefinition(tpl);
 		}
@@ -1088,5 +1091,9 @@ public class GeoSymbolic extends GeoElement
 		ExpressionValue unwrapped = value.unwrap();
 		return unwrapped instanceof ListValue || (unwrapped instanceof GeoSymbolic
 				&& ((GeoSymbolic) unwrapped).unwrapSymbolic().isGeoList()) ;
+	}
+
+	private boolean isCasValueDefined() {
+		return !value.inspect(Inspecting.isUndefinedInspector);
 	}
 }

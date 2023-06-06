@@ -9,6 +9,7 @@ import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.keyboard.KeyboardRowDefinitionProvider;
 import org.geogebra.common.main.AppKeyboardType;
 import org.geogebra.common.main.Localization;
+import org.geogebra.common.main.LocalizationI;
 import org.geogebra.common.util.lang.Language;
 import org.geogebra.keyboard.base.Accents;
 import org.geogebra.keyboard.base.Action;
@@ -16,18 +17,16 @@ import org.geogebra.keyboard.base.Keyboard;
 import org.geogebra.keyboard.base.KeyboardFactory;
 import org.geogebra.keyboard.base.KeyboardType;
 import org.geogebra.keyboard.base.Resource;
-import org.geogebra.keyboard.base.model.Row;
 import org.geogebra.keyboard.base.model.WeightedButton;
 import org.geogebra.keyboard.scientific.factory.ScientificKeyboardFactory;
 import org.geogebra.keyboard.web.factory.InputBoxKeyboardFactory;
 import org.geogebra.keyboard.web.factory.NotesKeyboardFactory;
 import org.geogebra.web.html5.gui.util.BrowserStorage;
 import org.geogebra.web.resources.SVGResource;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.RequiresResize;
+import org.gwtproject.user.client.ui.Widget;
 
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
 import com.himamis.retex.editor.share.util.Unicode;
 
 /**
@@ -58,7 +57,7 @@ public class TabbedKeyboard extends FlowPanel
 	/**
 	 * localization
 	 */
-	Localization locale;
+	LocalizationI locale;
 	private boolean isSmallKeyboard;
 	/**
 	 * application
@@ -70,7 +69,7 @@ public class TabbedKeyboard extends FlowPanel
 	protected KeyboardListener processField;
 	private FlowPanel tabs;
 	protected KeyboardSwitcher switcher;
-	private final Map<KeyboardType, Widget> keyboardMap;
+	private final Map<KeyboardType, KeyPanelBase> keyboardMap;
 	private KeyboardFactory factory;
 	/**
 	 * true if keyboard wanted
@@ -117,7 +116,7 @@ public class TabbedKeyboard extends FlowPanel
 	 */
 	protected void closeButtonClicked() {
 		if (updateKeyBoardListener != null) {
-			updateKeyBoardListener.keyBoardNeeded(false, null);
+			updateKeyBoardListener.closeKeyboard();
 		}
 		keyboardWanted = false;
 		BrowserStorage.LOCAL.setItem(BrowserStorage.KEYBOARD_WANTED, "false");
@@ -159,7 +158,7 @@ public class TabbedKeyboard extends FlowPanel
 		createSpecialSymbolsKeyboard(factory);
 		createGreekKeyboard(factory);
 
-		switcher.select(KeyboardType.NUMBERS);
+		selectNumberTab();
 		layout();
 	}
 
@@ -168,8 +167,13 @@ public class TabbedKeyboard extends FlowPanel
 		createDefaultKeyboard();
 		createFunctionsKeyboard();
 		createLocalizedAbcKeyboard(false);
-		switcher.select(KeyboardType.NUMBERS);
+		selectNumberTab();
 		layout();
+	}
+
+	private void selectNumberTab() {
+		switcher.select(processField != null && processField.requestsAns() ? KeyboardType.NUMBERS
+				: KeyboardType.NUMBERS_DEFAULT);
 	}
 
 	private void createAnsMathKeyboard() {
@@ -255,12 +259,11 @@ public class TabbedKeyboard extends FlowPanel
 	}
 
 	private KeyPanelBase buildPanel(Keyboard layout) {
-		final KeyPanelBase keyboard = new KeyPanelBase(layout);
+		final KeyPanelBase keyboard = new KeyPanelBase(layout, this);
 		layouts.add(layout);
 		keyboard.addStyleName("KeyPanel");
 		keyboard.addStyleName("normal");
-		updatePanel(keyboard, layout);
-		layout.registerKeyboardObserver(l2 -> updatePanel(keyboard, l2));
+		layout.registerKeyboardObserver(keyboard::updatePanel);
 		return keyboard;
 	}
 
@@ -275,67 +278,7 @@ public class TabbedKeyboard extends FlowPanel
 				? BASE_WIDTH : (hasKeyboard.getInnerWidth() - 10) / maxWeightSum);
 	}
 
-	/**
-	 * @param keyboard
-	 *            {@link KeyPanelBase}
-	 * @param layout
-	 *            {@link Keyboard}
-	 */
-	void updatePanel(KeyPanelBase keyboard, Keyboard layout) {
-		keyboard.reset(layout);
-		int index = 0;
-		for (Row row : layout.getModel().getRows()) {
-			for (WeightedButton wb : row.getButtons()) {
-				if (!Action.NONE.name().equals(wb.getPrimaryActionName())) {
-					KeyBoardButtonBase button = makeButton(wb);
-					addSecondary(button, wb);
-					keyboard.addToRow(index, button);
-				}
-			}
-			index++;
-		}
-		updatePanelSize(keyboard);
-	}
-
-	/**
-	 * This is much faster than updatePanel as it doesn't clear the model. It
-	 * assumes the model and button layout are in sync.
-	 */
-	private void updatePanelSize(KeyPanelBase keyboard) {
-		int buttonIndex = 0;
-		int margins = 4;
-		if (keyboard.getLayout() == null) {
-			return;
-		}
-		KeyBoardButtonBase button = null;
-		double weightSum = 6; // initial guess
-		for (Row row : keyboard.getLayout().getModel().getRows()) {
-			weightSum = Math.max(row.getRowWeightSum(), weightSum);
-		}
-		int baseSize = getBaseSize(weightSum);
-		for (Row row : keyboard.getLayout().getModel().getRows()) {
-			double offset = 0;
-			for (WeightedButton wb : row.getButtons()) {
-				if (Action.NONE.name().equals(wb.getPrimaryActionName())) {
-					offset = wb.getWeight();
-				} else {
-					button = keyboard.getButtons().get(buttonIndex);
-					if (offset > 0) {
-						button.getElement().getStyle().setMarginLeft(
-								offset * baseSize + margins / 2d, Unit.PX);
-					}
-					button.getElement().getStyle().setWidth(
-							wb.getWeight() * baseSize - margins, Unit.PX);
-					offset = 0;
-					buttonIndex++;
-				}
-			}
-			if (Action.NONE.name().equals(row.getButtons()
-					.get(row.getButtons().size() - 1).getPrimaryActionName())) {
-				button.getElement().getStyle().setMarginRight(
-						offset * baseSize + margins / 2d, Unit.PX);
-			}
-		}
+	private void resizeContainer() {
 		if (hasKeyboard.getInnerWidth() < getMinWidthWithoutScaling()) {
 			addStyleName("scale");
 			removeStyleName("normal");
@@ -348,17 +291,9 @@ public class TabbedKeyboard extends FlowPanel
 			removeStyleName("scale");
 			removeStyleName("smallerFont");
 		}
-		// set width of switcher contents
-		if (hasKeyboard.getInnerWidth() > 700) {
-			switcher.getContent().getElement().getStyle().setWidth(644,
-					Unit.PX);
-		} else {
-			switcher.getContent().getElement().getStyle()
-					.setWidth(Math.min(644, hasKeyboard.getInnerWidth() - 10), Unit.PX);
-		}
 	}
 
-	private KeyBoardButtonBase makeButton(WeightedButton wb) {
+	protected KeyBoardButtonBase makeButton(WeightedButton wb) {
 		ButtonHandler b = this;
 		switch (wb.getResourceType()) {
 		case TRANSLATION_MENU_KEY:
@@ -391,13 +326,6 @@ public class TabbedKeyboard extends FlowPanel
 		}
 	}
 
-	private static void addSecondary(KeyBoardButtonBase btn,
-			WeightedButton wb) {
-		if (wb.getActionsSize() > 1) {
-			btn.setSecondaryAction(wb.getActionName(1));
-		}
-	}
-
 	private KeyBoardButtonBase textButton(WeightedButton wb, ButtonHandler b) {
 		String name = wb.getPrimaryActionName();
 		if (name.equals(Action.TOGGLE_ACCENT_ACUTE.name())) {
@@ -414,8 +342,7 @@ public class TabbedKeyboard extends FlowPanel
 		}
 		if ((Unicode.DIVIDE + "").equals(name)) {
 			// division button in scientific
-			return new KeyBoardButtonBase(Unicode.DIVIDE + "",
-					Unicode.DIVIDE + "", b);
+			return new KeyBoardButtonBase(Unicode.DIVIDE + "", "/", b);
 		}
 		if ("/".equals(name)) {
 			// division button in graphing
@@ -494,7 +421,7 @@ public class TabbedKeyboard extends FlowPanel
 	}
 
 	private KeyBoardButtonBase functionButton(WeightedButton button) {
-		Localization loc = hasKeyboard.getLocalization();
+		LocalizationI loc = hasKeyboard.getLocalization();
 		String resourceName = button.getResourceName();
 		ButtonHandler bh = this;
 		Resource resource = Resource.EMPTY_IMAGE;
@@ -634,9 +561,10 @@ public class TabbedKeyboard extends FlowPanel
 		for (int i = 0; tabs != null && i < tabs.getWidgetCount(); i++) {
 			Widget wdgt = tabs.getWidget(i);
 			if (wdgt instanceof KeyPanelBase) {
-				updatePanelSize((KeyPanelBase) wdgt);
+				((KeyPanelBase) wdgt).updatePanelSize();
 			}
 		}
+		resizeContainer();
 	}
 
 	private void updateHeight() {
@@ -694,11 +622,13 @@ public class TabbedKeyboard extends FlowPanel
 	 */
 	public void buildGUI() {
 		this.tabs = new FlowPanel();
-		if (hasKeyboard.getKeyboardType() == AppKeyboardType.SCIENTIFIC) {
+		if (hasKeyboard.getKeyboardType() == AppKeyboardType.SCIENTIFIC
+			|| hasKeyboard.getKeyboardType() == AppKeyboardType.SOLVER) {
 			buildGUIScientific();
 		} else {
 			buildGUIGgb();
 		}
+		resizeContainer();
 	}
 
 	@Override
@@ -732,7 +662,7 @@ public class TabbedKeyboard extends FlowPanel
 	 * @param keyboardType type of the keyboard
 	 * @return panel
 	 */
-	public Widget getKeyboard(KeyboardType keyboardType) {
+	public KeyPanelBase getKeyboard(KeyboardType keyboardType) {
 		return keyboardMap.get(keyboardType);
 	}
 
@@ -807,6 +737,9 @@ public class TabbedKeyboard extends FlowPanel
 	}
 
 	private void setSelected(KeyboardSwitcher.SwitcherButton btn, boolean selected) {
+		if (selected) {
+			btn.getKeyboard().updatePanel();
+		}
 		btn.getKeyboard().setVisible(selected);
 		switcher.setSelected(btn, selected);
 	}
@@ -870,7 +803,7 @@ public class TabbedKeyboard extends FlowPanel
 			// make sure enter is processed correctly
 			processField.onEnter();
 			if (processField.resetAfterEnter()) {
-				getUpdateKeyBoardListener().keyBoardNeeded(false, null);
+				getUpdateKeyBoardListener().closeKeyboard();
 			}
 			break;
 		case SWITCH_TO_SPECIAL_SYMBOLS:

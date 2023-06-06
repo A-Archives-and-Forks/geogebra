@@ -3,18 +3,20 @@ package org.geogebra.web.html5.util.sliderPanel;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.util.DoubleUtil;
+import org.geogebra.web.html5.util.DataTest;
+import org.geogebra.web.html5.util.HasDataTest;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.DOM;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.Label;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.himamis.retex.editor.share.util.Unicode;
 
 /**
  * Panel containing a slider.
  */
-public class SliderPanelW extends FlowPanel {
+public class SliderPanelW extends FlowPanel implements HasDataTest  {
 
 	private final SliderW slider;
 	private final Label minLabel;
@@ -137,5 +139,11 @@ public class SliderPanelW extends FlowPanel {
 
 	public SliderW getSlider() {
 		return slider;
+	}
+
+	@Override
+	public void updateDataTest(int index) {
+		DataTest.ALGEBRA_ITEM_SLIDER_LABEL_MIN.applyWithIndex(minLabel, index);
+		DataTest.ALGEBRA_ITEM_SLIDER_LABEL_MAX.applyWithIndex(maxLabel, index);
 	}
 }
