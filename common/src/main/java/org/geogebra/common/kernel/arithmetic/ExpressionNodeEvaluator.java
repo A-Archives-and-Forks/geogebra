@@ -1090,8 +1090,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 				}
 			}
 		}
-		// Application.debug("FUNCTION lt: " + lt + ", " + lt.getClass()
-		// + " rt: " + rt + ", " + rt.getClass());
 		throw new MyError(loc, Errors.IllegalArgument, MyError.toErrorString(rt));
 
 	}
@@ -1148,8 +1146,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 				}
 			}
 		}
-		// Application.debug("FUNCTION lt: " + lt + ", " + lt.getClass() +
-		// " rt: " + rt + ", " + rt.getClass());
 		throw new MyError(loc, Errors.IllegalArgument, MyError.toErrorString(rt));
 	}
 

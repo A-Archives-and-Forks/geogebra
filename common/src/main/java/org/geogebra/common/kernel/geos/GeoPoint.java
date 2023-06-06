@@ -2118,7 +2118,6 @@ public class GeoPoint extends GeoVec3D implements VectorValue, PathOrPoint,
 		case 2:
 			return getCoordsInD2();
 		case 3:
-			// Application.debug(getLabel()+": "+x+","+y+","+z);
 			return getCoordsInD3();
 		default:
 			return null;
