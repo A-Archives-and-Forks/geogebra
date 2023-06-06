@@ -7,6 +7,7 @@ import java.util.List;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
+import org.geogebra.common.plugin.Operation;
 
 /**
  * Model containing the exam restrictions.
@@ -96,11 +97,24 @@ public class ExamRestrictionModel {
 	 * @param node to check
 	 * @return if it is allowed.
 	 */
-	public boolean isExpressionAllowed(ExpressionNode node) {
-		return expressionFilter == null || expressionFilter.isAllowed(node);
+	public boolean isExpressionRestricted(ExpressionNode node) {
+		return hasExpressionFilter() && !expressionFilter.isAllowed(node);
 	}
 
+	/**
+	 *
+	 * @return if the model have restrictions for expressions.
+	 */
 	public boolean hasExpressionFilter() {
 		return expressionFilter != null;
+	}
+
+	/**
+	 *
+	 * @param operation to check.
+	 * @return if operation is restricted.
+	 */
+	public boolean isOperationRestricted(Operation operation) {
+		return hasExpressionFilter() && !expressionFilter.isAllowed(operation);
 	}
 }

@@ -86,4 +86,11 @@ public interface ParserFunctions {
 	 * @return suggestion updated for the editor
 	 */
 	String toEditorAutocomplete(String text, Localization loc);
+
+	/**
+	 *
+	 * @param operationName to get
+	 * @return the operation with the given name.
+	 */
+	Operation get(String operationName);
 }

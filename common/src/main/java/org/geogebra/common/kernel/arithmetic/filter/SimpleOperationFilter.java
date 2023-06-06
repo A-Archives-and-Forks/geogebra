@@ -19,6 +19,11 @@ public class SimpleOperationFilter implements ExpressionFilter {
 		return !node.inspect(v -> hasFilteredOperations(v));
 	}
 
+	@Override
+	public boolean isAllowed(Operation operation) {
+		return !filteredOperations.contains(operation);
+	}
+
 	private boolean hasFilteredOperations(ExpressionValue v) {
 		for (Operation operation : filteredOperations) {
 			if (v.isOperation(operation)) {

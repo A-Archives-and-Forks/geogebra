@@ -155,4 +155,9 @@ class ParserFunctionsImpl implements ParserFunctions {
 		}
 		return text;
 	}
+
+	@Override
+	public Operation get(String operationName) {
+		return references.get(operationName);
+	}
 }

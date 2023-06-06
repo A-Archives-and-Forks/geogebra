@@ -118,7 +118,8 @@ import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.MyError.Errors;
 import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.main.error.ErrorHelper;
-import org.geogebra.common.main.exam.ExamEnvironment;
+import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
+import org.geogebra.common.main.exam.restriction.Restrictable;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.main.syntax.CommandSyntax;
 import org.geogebra.common.main.syntax.EnglishCommandSyntax;
@@ -146,7 +147,7 @@ import com.himamis.retex.editor.share.util.Unicode;
  * @author Markus
  *
  */
-public class AlgebraProcessor {
+public class AlgebraProcessor implements Restrictable {
 
 	/**
 	 * String code returned from the dialog if the user wants to create a new
@@ -194,6 +195,7 @@ public class AlgebraProcessor {
 	// Somewhat duplicates EvalInfo.isRedefinition but propagating EvalInfo to constructors of
 	// all geos would be an overkill (needed for autocolor)
 	private boolean isRedefining;
+	private ExamRestrictionModel restrictionModel;
 
 	/**
 	 * @param kernel
@@ -212,6 +214,7 @@ public class AlgebraProcessor {
 		parser = kernel.getParser();
 		setEnableStructures(app.getConfig().isEnableStructures());
 		sqrtMinusOneReplacer = new SqrtMinusOneReplacer(kernel);
+		app.registerRestrictable(this);
 	}
 
 	/**
@@ -918,6 +921,10 @@ public class AlgebraProcessor {
 			final ErrorHandler handler,
 			final AsyncOperation<GeoElementND[]> callback0,
 			final EvalInfo info) {
+		if (isExpressionRestricted(ve.wrap())) {
+			return null;
+		}
+
 		// collect undefined variables
 		CollectUndefinedVariables collecter = new Traversing.CollectUndefinedVariables(
 				info.isMultipleUnassignedAllowed());
@@ -1076,13 +1083,14 @@ public class AlgebraProcessor {
 	}
 
 	private GeoElement evalSymbolic(final ValidExpression ve, EvalInfo info) {
+		if (isExpressionRestricted(ve.wrap())) {
+			return null;
+		}
 
 		if (symbolicProcessor == null) {
 			symbolicProcessor = new SymbolicProcessor(kernel);
 		}
-		if (isExpressionDenied(ve)) {
-			return null;
-		}
+
 		ValidExpression extracted = replaceFunctionVariables(ve);
 		if (ve.unwrap() instanceof Equation && info != null) {
 			Equation equation = (Equation) ve.unwrap();
@@ -1099,12 +1107,8 @@ public class AlgebraProcessor {
 		return sym;
 	}
 
-	private boolean isExpressionDenied(ValidExpression ve) {
-		ExamEnvironment exam = getKernel().getApplication().getExam();
-		if (exam == null || exam.getRestrictionModel() == null) {
-			return false;
-		}
-		return !exam.getRestrictionModel().isExpressionAllowed(ve.wrap());
+	private boolean isExpressionRestricted(ExpressionNode node) {
+		return restrictionModel != null && restrictionModel.isExpressionRestricted(node);
 	}
 
 	private ExpressionNode replaceFunctionVariables(ValidExpression expression) {
@@ -3817,5 +3821,20 @@ public class AlgebraProcessor {
 		params.put(Analytics.Param.STATUS, validatedParam);
 		params.put(Analytics.Param.OBJECT_CREATION, objectCreation);
 		Analytics.logEvent(Analytics.Event.COMMAND_VALIDATED, params);
+	}
+
+	@Override
+	public boolean isExamRestrictionModelAccepted(ExamRestrictionModel model) {
+		return model.hasExpressionFilter();
+	}
+
+	@Override
+	public void setExamRestrictionModel(ExamRestrictionModel model) {
+		restrictionModel = model;
+	}
+
+	@Override
+	public void applyExamRestrictions() {
+
 	}
 }

@@ -11,12 +11,15 @@ import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.GuiManagerInterface;
 import org.geogebra.common.main.Localization;
+import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
+import org.geogebra.common.main.exam.restriction.Restrictable;
 import org.geogebra.common.util.LowerCaseDictionary;
 import org.geogebra.common.util.debug.Log;
 
-public class AutocompleteProvider {
+public class AutocompleteProvider implements Restrictable {
 	private final App app;
 	private final boolean forCAS;
+	private ExamRestrictionModel restrictionModel;
 
 	/**
 	 * @param app application
@@ -25,6 +28,7 @@ public class AutocompleteProvider {
 	public AutocompleteProvider(App app, boolean forCAS) {
 		this.app = app;
 		this.forCAS = forCAS;
+		app.registerRestrictable(this);
 	}
 
 	/**
@@ -113,6 +117,7 @@ public class AutocompleteProvider {
 	 */
 	public Stream<Completion> getCompletions(String curWord) {
 		Stream<Completion> completions = app.getParserFunctions().getCompletions(curWord).stream()
+				.filter(name -> isFunctionAllowed(name))
 				.map(function -> new Completion(function.split("\\(")[0],
 						Collections.singletonList(function), App.WIKI_OPERATORS,
 						GuiManagerInterface.Help.GENERIC));
@@ -127,12 +132,36 @@ public class AutocompleteProvider {
 		return completions.filter(completion -> !completion.syntaxes.isEmpty());
 	}
 
+	private boolean isFunctionAllowed(String curWord) {
+		if (restrictionModel == null) {
+			return true;
+		}
+
+		String operationName = curWord.split("\\(")[0];
+		return !restrictionModel.isOperationRestricted(app.getParserFunctions().get(operationName));
+	}
+
 	private boolean isCas() {
 		return forCAS || app.getConfig().getVersion() == GeoGebraConstants.Version.CAS;
 	}
 
 	private LowerCaseDictionary getDictionary() {
 		return isCas() ? app.getCommandDictionaryCAS() : app.getCommandDictionary();
+	}
+
+	@Override
+	public boolean isExamRestrictionModelAccepted(ExamRestrictionModel model) {
+		return model.hasExpressionFilter();
+	}
+
+	@Override
+	public void setExamRestrictionModel(ExamRestrictionModel model) {
+		restrictionModel = model;
+	}
+
+	@Override
+	public void applyExamRestrictions() {
+		//
 	}
 
 	public static class Completion {

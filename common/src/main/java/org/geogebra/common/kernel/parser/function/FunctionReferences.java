@@ -14,6 +14,7 @@ class FunctionReferences {
 
 	private static final int MAX_ARGS = 4;
 
+	private final Map<String, Operation> operationMap = new HashMap<>();
 	private final List<Map<String, Operation>> functionMap = new ArrayList<>();
 	private final Set<String> reservedFunctions = new HashSet<>();
 	private final TreeSet<String> syntaxes = new TreeSet<>();
@@ -30,12 +31,17 @@ class FunctionReferences {
 
 	void put(int size, String name, Operation op, String arg) {
 		reservedFunctions.add(name);
+		operationMap.put(name, op);
 		if (arg != null) {
 			syntaxes.add(name + arg);
 		}
 		if (size <= MAX_ARGS && size >= 0) {
 			functionMap.get(size).put(name, op);
 		}
+	}
+
+	Operation get(String name) {
+		return operationMap.get(name);
 	}
 
 	void putReserved(String name) {

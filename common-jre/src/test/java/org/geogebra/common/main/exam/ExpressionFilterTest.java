@@ -15,4 +15,12 @@ public class ExpressionFilterTest extends BaseUnitTest {
 		GeoFunction function = add("x + fractionalPart[5/2]");
 		assertFalse(filter.isAllowed(function.getFunctionExpression()));
 	}
+
+	@Test
+	public void testMmsExpressionFilterByName() {
+		ExpressionFilter filter = ExpressionFilterFactory.createMmsExpressionFilter();
+		assertFalse(filter.isAllowed(
+				getApp().getParserFunctions().get("fractionalPart")));
+	}
+
 }

@@ -2007,11 +2007,15 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		assertThat(geo.getAlgebraDescriptionDefault(), startsWith("f(x)"));
 	}
 
-
 	@Test
 	public void fractionalPartShouldNotBeAllowed() {
 		app.setNewExam(ExamRegion.MMS);
 		GeoSymbolic symbolic = add("fractionalPart(9/4) + 2x/7");
 		assertThat(symbolic, nullValue());
+	}
+
+	@Test
+	public void fractionalPartShouldNotBeeSuggested() {
+		app.setNewExam(ExamRegion.MMS);
 	}
 }
