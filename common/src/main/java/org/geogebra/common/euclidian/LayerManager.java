@@ -3,8 +3,6 @@ package org.geogebra.common.euclidian;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -63,7 +61,7 @@ public class LayerManager {
 	 * one with the highest priority in the selection
 	 */
 	public void moveForward(List<GeoElement> selection) {
-		UpdateOrderActionStore store = new UpdateOrderActionStore(drawingOrder);
+		UpdateOrderActionStore store = new UpdateOrderActionStore(selection);
 		if (isGroupMember(selection)) {
 			moveGroupMemberForward(selection.get(0));
 			updateOrder(selection, ObjectMovement.FORWARD);
@@ -71,7 +69,6 @@ public class LayerManager {
 			moveSelectionForward(selection);
 			updateOrderingForSelection(selection, ObjectMovement.FORWARD);
 		}
-		store.updateOrder(drawingOrder);
 		store.storeUndo();
 	}
 
@@ -136,7 +133,7 @@ public class LayerManager {
 	 * lowest priority in the selection
 	 */
 	public void moveBackward(List<GeoElement> selection) {
-		UpdateOrderActionStore store = new UpdateOrderActionStore(drawingOrder);
+		UpdateOrderActionStore store = new UpdateOrderActionStore(selection);
 		if (isGroupMember(selection)) {
 			moveGroupMemberBackward(selection.get(0));
 			updateOrder(selection, ObjectMovement.BACKWARD);
@@ -145,7 +142,6 @@ public class LayerManager {
 			updateOrderingForSelection(selection, ObjectMovement.BACKWARD);
 		}
 
-		store.updateOrder(drawingOrder);
 		store.storeUndo();
 	}
 
@@ -212,7 +208,7 @@ public class LayerManager {
 	 * while respecting their relative ordering
 	 */
 	public void moveToFront(List<GeoElement> selection) {
-		UpdateOrderActionStore store = new UpdateOrderActionStore(drawingOrder);
+		UpdateOrderActionStore store = new UpdateOrderActionStore(selection);
 		if (isGroupMember(selection)) {
 			moveGroupMemberToFront(selection.get(0));
 			updateOrder(selection, ObjectMovement.FRONT);
@@ -220,7 +216,6 @@ public class LayerManager {
 			moveSelectionToFront(selection);
 			updateOrderingForSelection(selection, ObjectMovement.FRONT);
 		}
-		store.updateOrder(drawingOrder);
 		store.storeUndo();
 	}
 
@@ -250,7 +245,6 @@ public class LayerManager {
 			moveSelectionToBack(selection);
 			updateOrderingForSelection(selection, ObjectMovement.BACK);
 		}
-		store.updateOrder(drawingOrder);
 		store.storeUndo();
 	}
 
@@ -288,7 +282,6 @@ public class LayerManager {
 	 */
 	public void updateOrdering(String labels, Kernel kernel) {
 		drawingOrder.clear();
-		int counter = 0;
 		for (String label : labels.split(",")) {
 			GeoElement geo = kernel.lookupLabel(label);
 			drawingOrder.add(geo);
@@ -579,7 +572,7 @@ public class LayerManager {
 				return -1;
 			}
 			if (a.getOrdering() - b.getOrdering() != 0) {
-				return (int)a.getOrdering() - (int)b.getOrdering();
+				return Double.compare(a.getOrdering(), b.getOrdering());
 			}
 			// delete, undo => the *new* element with the same ordering should be lower
 			return b.getConstructionIndex() - a.getConstructionIndex();
