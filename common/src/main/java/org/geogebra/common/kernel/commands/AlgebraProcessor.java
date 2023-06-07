@@ -3835,6 +3835,6 @@ public class AlgebraProcessor implements Restrictable {
 
 	@Override
 	public void applyExamRestrictions() {
-
+		// nothing to do.
 	}
 }

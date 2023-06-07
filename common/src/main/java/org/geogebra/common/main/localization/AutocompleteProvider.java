@@ -161,7 +161,7 @@ public class AutocompleteProvider implements Restrictable {
 
 	@Override
 	public void applyExamRestrictions() {
-		//
+		// nothing to do.
 	}
 
 	public static class Completion {
