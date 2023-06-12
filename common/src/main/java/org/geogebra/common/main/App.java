@@ -2824,6 +2824,8 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			ParserFunctionsFactory factory = getConfig().createParserFunctionsFactory();
 			pf = factory.createParserFunctions();
 			pfInputBox = factory.createInputBoxParserFunctions();
+			registerRestrictable(pf);
+			registerRestrictable(pfInputBox);
 		}
 		pf.setInverseTrig(
 				kernel.getLoadingMode() && kernel.getInverseTrigReturnsAngle());
