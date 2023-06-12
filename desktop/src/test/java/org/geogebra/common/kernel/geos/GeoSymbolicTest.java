@@ -2034,6 +2034,7 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		t("m1(2,2)", "4");
 	}
 
+	@Test
 	public void fractionalPartShouldNotBeAllowed() {
 		app.setNewExam(ExamRegion.MMS);
 		app.startExam();
