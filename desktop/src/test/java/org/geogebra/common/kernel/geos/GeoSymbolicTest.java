@@ -1954,6 +1954,11 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		assertThat(invalid, is(nullValue()));
 	}
 
+	@Test
+	public void shouldNotReplacePiWithDecimal() {
+		t("1/sin(pi)", "Infinity");
+	}
+
 	/**
 	 * like {@link AlgebraItemTest#testIsGeoFraction}, but for GeoSymbolic
 	 */
