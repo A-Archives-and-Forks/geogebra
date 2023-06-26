@@ -299,7 +299,7 @@ public class EditorState {
 	}
 
 	/**
-	 * @return true if has selection
+	 * @return true part of expression is selected
 	 */
 	public boolean hasSelection() {
 		return currentSelStart != null;
