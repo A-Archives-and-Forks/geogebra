@@ -19,6 +19,9 @@ import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.RootPanel;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.himamis.retex.editor.web.JlmEditorLib;
+import com.himamis.retex.renderer.web.CreateLibrary;
+import com.himamis.retex.renderer.web.JlmApi;
 
 import elemental2.core.JsArray;
 import elemental2.dom.HTMLCollection;
@@ -46,6 +49,7 @@ public abstract class Web implements EntryPoint {
 		exportGGBElementRenderer();
 
 		loadAppletAsync();
+		CreateLibrary.exportLibrary(new JlmApi(new JlmEditorLib()));
 	}
 
 	/**
