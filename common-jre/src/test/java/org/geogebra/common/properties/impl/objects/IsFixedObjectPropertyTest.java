@@ -9,18 +9,19 @@ import java.util.Collections;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.properties.BooleanProperty;
+import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
+import org.geogebra.common.properties.impl.undo.UndoSavingPropertyObserver;
 import org.junit.Test;
 
-public class FixObjectPropertyTest extends BaseUnitTest {
+public class IsFixedObjectPropertyTest extends BaseUnitTest {
 
 	@Test
 	public void testConstructorSucceeds() {
 		GeoElement point = addAvInput("(1,2)");
 		try {
-			new FixObjectProperty(getLocalization(), point);
+			new IsFixedObjectProperty(getLocalization(), point);
 		} catch (NotApplicablePropertyException e) {
 			fail(e.getMessage());
 		}
@@ -31,7 +32,7 @@ public class FixObjectPropertyTest extends BaseUnitTest {
 		getApp().setGraphingConfig();
 		GeoElement f = addAvInput("f: x");
 		assertThrows(NotApplicablePropertyException.class,
-				() -> new FixObjectProperty(getLocalization(), f));
+				() -> new IsFixedObjectProperty(getLocalization(), f));
 	}
 
 	@Test
@@ -40,9 +41,10 @@ public class FixObjectPropertyTest extends BaseUnitTest {
 		getKernel().initUndoInfo();
 		GeoElement point = addAvInput("pt=(1,2)");
 		getApp().storeUndoInfo();
-		BooleanProperty prop = GeoElementPropertiesFactory.createFixObjectProperty(
+		ValuedProperty<Boolean> prop = GeoElementPropertiesFactory.createFixObjectProperty(
 				getApp().getLocalization(), Collections.singletonList(point));
 		assert prop != null;
+		prop.addValueObserver(new UndoSavingPropertyObserver(getConstruction().getUndoManager()));
 		prop.setValue(true);
 		assertThat(point.isLocked(), is(true));
 		getKernel().undo();
