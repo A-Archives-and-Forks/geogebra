@@ -1,10 +1,11 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.plugin.Operation;
 
 /**
- * Replaces the xcoode, ycoord and zcoord operations
+ * Replaces the xcoord, ycoord and zcoord operations
  * with a function_or_multiply operation.
  */
 public class CoordMultiplyReplacer implements Traversing {
@@ -37,16 +38,19 @@ public class CoordMultiplyReplacer implements Traversing {
 	private ExpressionValue processExpressionNode(ExpressionNode node) {
 		switch (node.getOperation()) {
 		case XCOORD:
+			leftResolveVariables(node);
 			if (xVar != null && !leftHasCoord(node)) {
 				return asMultiplication(node, xVar);
 			}
 			return node;
 		case YCOORD:
+			leftResolveVariables(node);
 			if (yVar != null && !leftHasCoord(node)) {
 				return asMultiplication(node, yVar);
 			}
 			return node;
 		case ZCOORD:
+			leftResolveVariables(node);
 			if (zVar != null && !leftHasCoord(node)) {
 				return asMultiplication(node, zVar);
 			}
@@ -68,5 +72,12 @@ public class CoordMultiplyReplacer implements Traversing {
 		return left.evaluatesToNDVector()
 				|| left.getValueType() == ValueType.COMPLEX
 				|| (left.unwrap() instanceof GeoLine);
+	}
+
+	private void leftResolveVariables(ExpressionNode node) {
+		ExpressionValue left = node.getLeft();
+		if (left.unwrap().isVariable()) {
+			left.resolveVariables(new EvalInfo(false));
+		}
 	}
 }
