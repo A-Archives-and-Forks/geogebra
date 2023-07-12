@@ -1,17 +1,5 @@
 package com.himamis.retex.editor.android;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.text.InputType;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +30,18 @@ import com.himamis.retex.renderer.share.TeXFormula;
 import com.himamis.retex.renderer.share.TeXIcon;
 import com.himamis.retex.renderer.share.platform.FactoryProvider;
 import com.himamis.retex.renderer.share.platform.graphics.Insets;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.text.InputType;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 
 @SuppressWarnings({"ClassWithTooManyFields", "ClassWithTooManyMethods", "OverlyComplexClass", "OverlyCoupledClass"})
 public class FormulaEditor extends View implements MathField {
@@ -615,15 +615,6 @@ public class FormulaEditor extends View implements MathField {
         mMathFieldInternal.parse(text);
     }
 
-    @Override
-    public int getBaseline() {
-        if (mTeXIcon == null) {
-            return super.getBaseline();
-        }
-        int y = Math.round((getMeasuredHeight() - mTeXIcon.getIconHeight()) / 2.0f);
-        return y + (int) Math.round(mTeXIcon.getBaseLine() * mTeXIcon.getIconHeight());
-    }
-    
     public void registerInputChangeListener(InputChangeListener inputChangeListener) {
         mInputChangeListeners.add(inputChangeListener);
     }
@@ -634,5 +625,15 @@ public class FormulaEditor extends View implements MathField {
 
     public String getSerializedFormula() {
         return mSerializer.serialize(mMathFieldInternal.getFormula());
+    }
+
+
+    @Override
+    public int getBaseline() {
+        if (mTeXIcon == null) {
+            return super.getBaseline();
+        }
+        int y = Math.round((getMeasuredHeight() - mTeXIcon.getIconHeight()) / 2.0f);
+        return y + (int) Math.round(mTeXIcon.getBaseLine() * mTeXIcon.getIconHeight());
     }
 }
