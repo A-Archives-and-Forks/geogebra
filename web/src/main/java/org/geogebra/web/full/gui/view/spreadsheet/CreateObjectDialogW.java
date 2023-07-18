@@ -222,9 +222,7 @@ public class CreateObjectDialogW extends ComponentDialog implements ICreateObjec
 		optionsPanel.add(cards);
 	}
 
-	/**
-	 * update labels
-	 */
+	@Override
 	public void setLabels() {
 		if (isIniting) {
 			return;
