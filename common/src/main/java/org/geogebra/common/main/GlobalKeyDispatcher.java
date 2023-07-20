@@ -1501,8 +1501,11 @@ public abstract class GlobalKeyDispatcher {
 			else if (geo instanceof GeoPointND) {
 				GeoPointND p = (GeoPointND) geo;
 				if (p.isPointOnPath()) {
-					p.addToPathParameter(
-							changeVal * p.getAnimationStep());
+					if (p.getPath() instanceof GeoList) {
+						loopPointOnPath(changeVal, p);
+					} else {
+						p.addToPathParameter(changeVal * p.getAnimationStep());
+					}
 					ScreenReader.readGeoMoved((GeoElement) p);
 					hasUnsavedGeoChanges = true;
 				}
@@ -1526,6 +1529,18 @@ public abstract class GlobalKeyDispatcher {
 				parentAlgorithm.compute();
 				hasUnsavedGeoChanges = true;
 			}
+		}
+	}
+
+	private static void loopPointOnPath(double changeVal, GeoPointND p) {
+		double nextIndex = p.getPathParameter().t;
+		int lastIndex = ((GeoList) p.getPath()).size() - 1;
+		if (nextIndex == 0 && changeVal < 0) {
+			p.updatePathParameter(lastIndex);
+		} else if (nextIndex == lastIndex && changeVal > 0) {
+			p.updatePathParameter(0);
+		} else {
+			p.addToPathParameter(changeVal);
 		}
 	}
 
