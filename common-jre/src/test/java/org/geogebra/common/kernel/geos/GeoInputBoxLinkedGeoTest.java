@@ -733,4 +733,13 @@ public class GeoInputBoxLinkedGeoTest extends BaseUnitTest {
 		inputBox.updateLinkedGeo("2x/3");
 		assertThat(inputBox.getLinkedGeo().getClass(), is(GeoSurfaceCartesian2D.class));
 	}
+
+	@Test
+	public void testHyphenMinusShouldBeReplaced() {
+		add("text1=\" \"");
+		GeoInputBox inputBox = add("InputBox(text1)");
+		inputBox.updateLinkedGeo("12" + Unicode.MINUS + "10");
+		assertThat(inputBox.getTextForEditor(), is("12-10"));
+	}
+
 }
