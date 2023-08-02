@@ -96,7 +96,7 @@ public class InputBoxProcessor {
 		if (contentLaTeX == null) {
 			return null;
 		}
-		return contentLaTeX.replaceAll("\\?",
+		return contentLaTeX.replace("?",
 				TeXSerializer.PLACEHOLDER);
 	}
 
