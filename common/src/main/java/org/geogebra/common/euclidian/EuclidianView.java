@@ -2469,7 +2469,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 				dynamicStyleBar.updateVisualStyle(geo);
 			}
 		}
-		if (app.hasSpecialPointsManager()) {
+		if (app.hasSpecialPointsManager() && prop == GProperty.VISIBLE) {
 			app.getSpecialPointsManager().updateSpecialPoints(null);
 		}
 	}
