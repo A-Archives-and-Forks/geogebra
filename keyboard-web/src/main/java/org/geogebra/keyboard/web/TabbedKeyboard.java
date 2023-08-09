@@ -538,6 +538,8 @@ public class TabbedKeyboard extends FlowPanel
 			return KeyboardResources.INSTANCE.sqrt();
 		case MIXED_NUMBER:
 			return KeyboardResources.INSTANCE.mixed_number();
+		case RECURRING_DECIMAL:
+			return KeyboardResources.INSTANCE.recurring_decimal();
 		default: return null;
 		}
 	}

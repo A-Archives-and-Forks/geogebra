@@ -25,6 +25,8 @@ public class VectorMatrixMathKeyboardFactory implements KeyboardModelFactory {
 
 		RowImpl row = mathKeyboard.nextRow(9.2f);
 		MathKeyUtil.addXYZ(row, buttonFactory);
+		addInputButton(row, buttonFactory, ".");
+		addButton(row, buttonFactory.createEmptySpace(0.2f));
 		NumberKeyUtil.addFirstRow(row, buttonFactory);
 
 		row = mathKeyboard.nextRow(9.2f);
@@ -34,10 +36,7 @@ public class VectorMatrixMathKeyboardFactory implements KeyboardModelFactory {
 		NumberKeyUtil.addSecondRow(row, buttonFactory);
 
 		row = mathKeyboard.nextRow(9.2f);
-		addInputButton(row, buttonFactory, Characters.imaginaryI, "i", "altText.Imaginaryi");
-		addInputButton(row, buttonFactory, INFINITY);
-		addInputButton(row, buttonFactory, DEGREE);
-		addInputButton(row, buttonFactory, ".");
+		MathKeyUtil.addPiEIDegree(row, buttonFactory);
 		addButton(row, buttonFactory.createEmptySpace(0.2f));
 
 		addInputButton(row, buttonFactory, "1");
@@ -49,7 +48,7 @@ public class VectorMatrixMathKeyboardFactory implements KeyboardModelFactory {
 				Action.BACKSPACE_DELETE);
 
 		row = mathKeyboard.nextRow(9.2f);
-		MathKeyUtil.addParenthesesPiE(row, buttonFactory);
+		MathKeyUtil.addParenthesesFractionMixed(row, buttonFactory);
 		addButton(row, buttonFactory.createEmptySpace(0.2f));
 
 		addInputButton(row, buttonFactory, "0");
