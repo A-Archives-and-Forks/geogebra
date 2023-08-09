@@ -55,8 +55,8 @@ public class MathKeyboardFactory implements KeyboardModelFactory {
         row = mathKeyboard.nextRow(9.2f);
         addInputButton(row, buttonFactory, "<");
         addInputButton(row, buttonFactory, ">");
-        addInputButton(row, buttonFactory, LEQ);
-        addInputButton(row, buttonFactory, GEQ);
+        addConstantInputButton(row, buttonFactory, Resource.RECURRING_DECIMAL, "recurringDecimal");
+        addConstantInputButton(row, buttonFactory, Resource.MIXED_NUMBER, "mixedNumber");
         addButton(row, buttonFactory.createEmptySpace(0.2f));
         addThirdRow(row, buttonFactory);
 
