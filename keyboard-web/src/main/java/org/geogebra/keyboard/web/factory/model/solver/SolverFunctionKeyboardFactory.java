@@ -1,11 +1,8 @@
 package org.geogebra.keyboard.web.factory.model.solver;
 
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.CURLY_EULER;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.CURLY_PI;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.DEGREE;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.EULER;
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.GEQ;
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.LEQ;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.PI;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.SEMICOLON;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addButton;
@@ -13,16 +10,12 @@ import static org.geogebra.keyboard.base.model.impl.factory.Util.addConstantCust
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addConstantInputButton;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addConstantInputCommandButton;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addInputButton;
-import static org.geogebra.keyboard.base.model.impl.factory.Util.addInputCommandButton;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addTranslateInputCommandButton;
 
 import org.geogebra.keyboard.base.Action;
-import org.geogebra.keyboard.base.ActionType;
 import org.geogebra.keyboard.base.Resource;
 import org.geogebra.keyboard.base.model.KeyboardModel;
 import org.geogebra.keyboard.base.model.KeyboardModelFactory;
-import org.geogebra.keyboard.base.model.Row;
-import org.geogebra.keyboard.base.model.WeightedButton;
 import org.geogebra.keyboard.base.model.impl.KeyboardModelImpl;
 import org.geogebra.keyboard.base.model.impl.RowImpl;
 import org.geogebra.keyboard.base.model.impl.factory.ButtonFactory;
@@ -67,7 +60,8 @@ public class SolverFunctionKeyboardFactory implements KeyboardModelFactory {
 		row = functionKeyboard.nextRow(9.2f);
 		addConstantInputButton(row, buttonFactory, Resource.POWE_X, EULER + "^", width);
 		addConstantInputButton(row, buttonFactory, Resource.POW10_X, "10^", width);
-		addConstantInputButton(row, buttonFactory, Resource.RECURRING_DECIMAL, "recurringDecimal", width);
+		addConstantInputButton(row, buttonFactory, Resource.RECURRING_DECIMAL,
+				"recurringDecimal", width);
 		addButton(row, buttonFactory.createEmptySpace(0.2f));
 		addConstantInputButton(row, buttonFactory, Resource.A_N, "a_n");
 		addConstantCustomButton(row, buttonFactory, Resource.LEFT_ARROW, Action.LEFT_CURSOR);

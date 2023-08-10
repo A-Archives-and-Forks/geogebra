@@ -1,7 +1,5 @@
 package org.geogebra.keyboard.web.factory.model.inputbox.math;
 
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.DEGREE;
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.INFINITY;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addButton;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addConstantCustomButton;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addInputButton;
@@ -13,7 +11,6 @@ import org.geogebra.keyboard.base.model.KeyboardModelFactory;
 import org.geogebra.keyboard.base.model.impl.KeyboardModelImpl;
 import org.geogebra.keyboard.base.model.impl.RowImpl;
 import org.geogebra.keyboard.base.model.impl.factory.ButtonFactory;
-import org.geogebra.keyboard.base.model.impl.factory.Characters;
 import org.geogebra.keyboard.base.model.impl.factory.NumberKeyUtil;
 import org.geogebra.keyboard.web.factory.model.inputbox.util.MathKeyUtil;
 

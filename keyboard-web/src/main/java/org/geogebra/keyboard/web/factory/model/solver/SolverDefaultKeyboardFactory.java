@@ -1,11 +1,7 @@
 package org.geogebra.keyboard.web.factory.model.solver;
 
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.CURLY_PI;
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.DIVISION;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.GEQ;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.LEQ;
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.MULTIPLICATION;
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.PI;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.ROOT;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.SUP2;
 import static org.geogebra.keyboard.base.model.impl.factory.NumberKeyUtil.addFirstRow;
@@ -13,13 +9,9 @@ import static org.geogebra.keyboard.base.model.impl.factory.NumberKeyUtil.addFou
 import static org.geogebra.keyboard.base.model.impl.factory.NumberKeyUtil.addSecondRow;
 import static org.geogebra.keyboard.base.model.impl.factory.NumberKeyUtil.addThirdRow;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addButton;
-import static org.geogebra.keyboard.base.model.impl.factory.Util.addConstantCustomButton;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addConstantInputButton;
-import static org.geogebra.keyboard.base.model.impl.factory.Util.addCustomButton;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addInputButton;
-import static org.geogebra.keyboard.base.model.impl.factory.Util.addTranslateInputCommandButton;
 
-import org.geogebra.keyboard.base.Action;
 import org.geogebra.keyboard.base.Resource;
 import org.geogebra.keyboard.base.model.KeyboardModel;
 import org.geogebra.keyboard.base.model.KeyboardModelFactory;

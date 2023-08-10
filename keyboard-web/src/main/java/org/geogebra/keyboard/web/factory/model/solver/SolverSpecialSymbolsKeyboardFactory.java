@@ -25,7 +25,6 @@ import static org.geogebra.keyboard.base.model.impl.factory.Characters.QUOTATION
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.RIGHTWARDS_ARROW;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.RIGHT_SQUARE_BRACKET;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.SECONDS;
-import static org.geogebra.keyboard.base.model.impl.factory.Characters.SEMICOLON;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.SUBSET_OF;
 import static org.geogebra.keyboard.base.model.impl.factory.Characters.SUBSET_OF_OR_EQUAL_TO;
 import static org.geogebra.keyboard.base.model.impl.factory.Util.addConstantCustomButton;
