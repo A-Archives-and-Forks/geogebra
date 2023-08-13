@@ -440,14 +440,14 @@ public class CASTableW extends Grid implements CASTable {
 	/**
 	 * Return value for {@link HTMLTable#getCellForEvent}.
 	 */
-	public class MyCell extends HTMLTable.Cell {
+	public class CellCoordinates extends HTMLTable.Cell {
 		/**
 		 * @param rowIndex
 		 *            row
 		 * @param cellIndex
 		 *            column
 		 */
-		public MyCell(int rowIndex, int cellIndex) {
+		public CellCoordinates(int rowIndex, int cellIndex) {
 			super(rowIndex, cellIndex);
 		}
 	}
@@ -461,7 +461,7 @@ public class CASTableW extends Grid implements CASTable {
 	 *            A click event of indeterminate origin
 	 * @return The appropriate cell, or null
 	 */
-	public MyCell getCellForEvent(HumanInputEvent<?> event) {
+	public CellCoordinates getCellForEvent(HumanInputEvent<?> event) {
 		Element td = getEventTargetCell(Event.as(event.getNativeEvent()));
 		if (td == null) {
 			return null;
@@ -470,7 +470,7 @@ public class CASTableW extends Grid implements CASTable {
 		int row = TableRowElement.as(td.getParentElement())
 				.getSectionRowIndex();
 		int column = TableCellElement.as(td).getCellIndex();
-		return new MyCell(row, column);
+		return new CellCoordinates(row, column);
 	}
 
 	/**
