@@ -2648,8 +2648,7 @@ public class Construction {
 		boolean oldSuppressLabelsActive = isSuppressLabelsActive();
 		setSuppressLabelCreation(false);
 
-		// set 0 and label
-		// result.setZero();
+		// set auxiliary and label
 		result.setAuxiliaryObject(true);
 		result.setLabel(label);
 
