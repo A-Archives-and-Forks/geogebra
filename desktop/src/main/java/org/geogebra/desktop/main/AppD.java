@@ -2037,7 +2037,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 
 		boolean updateNeeded = loc.setTooltipLanguage(s);
 
-		updateNeeded = updateNeeded || (loc.getTooltipLocale() != null);
+		updateNeeded = updateNeeded || (loc.getTooltipLanguage() != null);
 
 		if (updateNeeded) {
 			setLabels(); // update eg Tooltips for Toolbar
@@ -2121,7 +2121,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 
 		// update font for new language (needed for e.g. chinese)
 		try {
-			fontManager.setLanguage(loc.getLocale());
+			fontManager.setLanguage(loc);
 		} catch (Exception e) {
 			showGenericError(e);
 
@@ -2680,7 +2680,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 	@Override
 	public String getToolTooltipHTML(int mode) {
 
-		if (loc.getTooltipLocale() != null) {
+		if (loc.getTooltipLanguage() != null) {
 			loc.setTooltipFlag();
 		}
 

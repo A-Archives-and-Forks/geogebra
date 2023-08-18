@@ -592,7 +592,9 @@ public abstract class Localization extends LocalizationI {
 	 * 
 	 * @return 2 letter language name, eg "en"
 	 */
-	public abstract String getLanguage();
+	public abstract Language getLanguage();
+
+	public abstract String getLanguageTag();
 
 	/**
 	 * @param lang
@@ -600,7 +602,7 @@ public abstract class Localization extends LocalizationI {
 	 * @return whether we are currently using given language
 	 */
 	public boolean languageIs(String lang) {
-		return getLanguage().equals(lang);
+		return getLanguage().language.equals(lang);
 	}
 
 	/**
@@ -614,11 +616,10 @@ public abstract class Localization extends LocalizationI {
 	 */
 	public String translationFix(String text) {
 		// Currently no other language is supported than Hungarian.
-		String lang = getLanguage();
-		if (!("hu".equals(lang))) {
-			return text;
+		if (languageIs("hu")) {
+			return translationFixHu(text);
 		}
-		return translationFixHu(text);
+		return text;
 	}
 
 	/**
@@ -631,7 +632,7 @@ public abstract class Localization extends LocalizationI {
 	 * @return corresponding ordinal number
 	 */
 	public String getOrdinalNumber(int n) {
-		String lang = getLanguage();
+		String lang = getLanguage().language;
 
 		if ("en".equals(lang)) {
 			return getOrdinalNumberEn(n);
@@ -776,7 +777,7 @@ public abstract class Localization extends LocalizationI {
 	 * @return whether to use prime notation
 	 */
 	public boolean primeNotation() {
-		return !getLocaleStr().startsWith("en");
+		return !languageIs("en");
 	}
 
 	/**
@@ -788,17 +789,15 @@ public abstract class Localization extends LocalizationI {
 	 */
 	public String intervalStartBracket(boolean closed,
 			StringTemplate template) {
-		String lang = getLanguage();
-
 		if (closed) {
-			if ("cs".equals(lang)) {
+			if (languageIs("cs")) {
 				return template.leftAngleBracket();
 			}
 
 			return template.leftSquareBracket();
 		}
 
-		if ("hu".equals(lang) || "fr".equals(lang)) {
+		if (languageIs("hu") || languageIs("fr")) {
 			return template.invertedLeftSquareBracket();
 		}
 
@@ -813,17 +812,15 @@ public abstract class Localization extends LocalizationI {
 	 * @return interval end bracket
 	 */
 	public String intervalEndBracket(boolean closed, StringTemplate template) {
-		String lang = getLanguage();
-
 		if (closed) {
-			if ("cs".equals(lang)) {
+			if (languageIs("cs")) {
 				return template.rightAngleBracket();
 			}
 
 			return template.rightSquareBracket();
 		}
 
-		if ("hu".equals(lang) || "fr".equals(lang)) {
+		if (languageIs("hu") || languageIs("fr")) {
 			return template.invertedRightSquareBracket();
 		}
 
@@ -838,7 +835,7 @@ public abstract class Localization extends LocalizationI {
 		for (int i = 0; i < decimalPlaces.length; i++) {
 			String key = "ADecimalPlaces";
 			// zero is singular in eg French
-			if (decimalPlaces[i] == 0 && !isZeroPlural(getLanguage())) {
+			if (decimalPlaces[i] == 0 && !isZeroPlural()) {
 				key = "ADecimalPlace";
 			}
 			list.add(getPlain(key, String.valueOf(decimalPlaces[i])));
@@ -857,12 +854,10 @@ public abstract class Localization extends LocalizationI {
 	/**
 	 * in French, zero is singular, eg 0 dcimale rather than 0 decimal places
 	 * 
-	 * @param lang
-	 *            language code
 	 * @return whether 0 is plural
 	 */
-	public boolean isZeroPlural(String lang) {
-		return !lang.startsWith("fr");
+	public boolean isZeroPlural() {
+		return languageIs("fr");
 	}
 
 	/**
@@ -1010,7 +1005,7 @@ public abstract class Localization extends LocalizationI {
 		}
 
 		this.useLocalizedDigits = useLocalizedDigits;
-		updateLanguageFlags(getLanguage());
+		updateLanguageFlags(getLanguage().language);
 		app.getKernel().updateConstruction(false);
 		app.setUnsaved();
 
@@ -1121,7 +1116,7 @@ public abstract class Localization extends LocalizationI {
 	protected abstract boolean isCommandNull();
 
 	public int getRightAngleStyle() {
-		return Language.getRightAngleStyle(getLanguage());
+		return getLanguage().getRightAngleStyle();
 	}
 
 	/**
@@ -1312,7 +1307,7 @@ public abstract class Localization extends LocalizationI {
 	 * @return character for zero (0) in current language
 	 */
 	public char getZero() {
-		return Language.getUnicodeZero(getLanguage());
+		return getLanguage().getUnicodeZero();
 	}
 
 	/**
@@ -1345,7 +1340,7 @@ public abstract class Localization extends LocalizationI {
 	}
 
 	public boolean isUsingDecimalComma() {
-		return Language.isUsingDecimalComma(getLanguage());
+		return getLanguage().isUsingDecimalComma();
 	}
 
 	/**

@@ -35,6 +35,7 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.annotation.Nonnull;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JToggleButton;
@@ -46,7 +47,6 @@ import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.main.settings.AbstractSettings;
 import org.geogebra.common.main.settings.SettingListener;
 import org.geogebra.common.util.debug.Log;
-import org.geogebra.common.util.lang.Language;
 import org.geogebra.desktop.gui.GuiManagerD;
 import org.geogebra.desktop.main.AppD;
 import org.geogebra.desktop.main.KeyboardSettings;
@@ -82,7 +82,7 @@ public class VirtualKeyboardD extends JFrame
 	private JToggleButton GreekButton = null;
 	private JToggleButton EnglishButton = null;
 
-	AppD app;
+	private final @Nonnull AppD app;
 
 	// max width character
 	private final static char wideCharDefault = '@';
@@ -121,7 +121,7 @@ public class VirtualKeyboardD extends JFrame
 
 		super();
 
-		readConf(app, null, false);
+		readConf(app, null);
 
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
@@ -209,8 +209,7 @@ public class VirtualKeyboardD extends JFrame
 	private void setFonts() {
 
 		String fName = app
-				.getFontCanDisplayAwt(""
-						+ Language.getTestChar(app.getLocale().getLanguage()))
+				.getFontCanDisplayAwt(app.getLocalization().getLanguage().getTestChar())
 				.getFontName();
 
 		if (fName.equals(this.fontName)) {
@@ -580,7 +579,7 @@ public class VirtualKeyboardD extends JFrame
 			GreekButton.addActionListener(e -> {
 				setMode(KEYBOARD_NORMAL, null);
 				if (greek()) {
-					readConf(app, new Locale("el"), false);
+					readConf(app, new Locale("el"));
 				}
 
 				getEnglishButton().setSelected(false);
@@ -606,7 +605,7 @@ public class VirtualKeyboardD extends JFrame
 			EnglishButton.addActionListener(e -> {
 				setMode(KEYBOARD_NORMAL, null);
 				if (english()) {
-					readConf(app, new Locale("en"), false);
+					readConf(app, new Locale("en"));
 				}
 
 				getGreekButton().setSelected(false);
@@ -814,7 +813,7 @@ public class VirtualKeyboardD extends JFrame
 	void setMode(char mode, Locale loc) {
 
 		// loc==null -> restore language (eg if greek selected before)
-		readConf(app, loc, false);
+		readConf(app, loc);
 
 		if (getKeyboardMode() == mode) {
 			setKEYBOARD_MODE(KEYBOARD_NORMAL);
@@ -1188,11 +1187,11 @@ public class VirtualKeyboardD extends JFrame
 	private Locale kbLocale = null;
 
 	private void setKbLocale(Locale loc) {
-		readConf(app, loc, false);
+		readConf(app, loc);
 		doSetLabels();
 	}
 
-	void readConf(AppD appD, Locale loc0, boolean math) {
+	void readConf(AppD appD, Locale loc0) {
 
 		ResourceBundle rbKeyboard;
 
@@ -1213,21 +1212,16 @@ public class VirtualKeyboardD extends JFrame
 
 		kbLocale = locale;
 
-		if (math) {
+
+		if (loc0 == null) {
 			rbKeyboard = MyResourceBundle.createBundle(
-					"org.geogebra.desktop.gui.virtualkeyboard.keyboardMath",
+					"org.geogebra.desktop.gui.virtualkeyboard.keyboard",
 					locale);
 		} else {
-			if (loc0 == null) {
-				rbKeyboard = MyResourceBundle.createBundle(
-						"org.geogebra.desktop.gui.virtualkeyboard.keyboard",
-						locale);
-			} else {
-				rbKeyboard = MyResourceBundle.createBundle(
-						"org.geogebra.desktop.gui.virtualkeyboard.keyboard",
-						loc0);
-				kbLocale = loc0;
-			}
+			rbKeyboard = MyResourceBundle.createBundle(
+					"org.geogebra.desktop.gui.virtualkeyboard.keyboard",
+					loc0);
+			kbLocale = loc0;
 		}
 
 		Enumeration<String> keys = rbKeyboard.getKeys();
@@ -1261,7 +1255,7 @@ public class VirtualKeyboardD extends JFrame
 		setTitle((app == null) ? "Virtual Keyboard"
 				: loc.getMenu("VirtualKeyboard"));
 
-		readConf(app, null, false);
+		readConf(app, null);
 		doSetLabels();
 
 	}

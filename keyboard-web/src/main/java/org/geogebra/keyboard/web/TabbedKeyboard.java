@@ -593,7 +593,7 @@ public class TabbedKeyboard extends FlowPanel
 		if (newKeyboardLocale != null) {
 			this.keyboardLocale = newKeyboardLocale;
 		} else {
-			this.keyboardLocale = Language.English_US.getLocaleGWT();
+			this.keyboardLocale = Language.English_US.toLanguageTag();
 		}
 
 		clear();

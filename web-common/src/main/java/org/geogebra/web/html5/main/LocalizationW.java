@@ -1,7 +1,6 @@
 package org.geogebra.web.html5.main;
 
 import java.util.ArrayList;
-import java.util.MissingResourceException;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.SetLabels;
@@ -15,12 +14,13 @@ import org.geogebra.gwtutil.ScriptLoadCallback;
 import org.geogebra.web.html5.GeoGebraGlobal;
 import org.geogebra.web.html5.bridge.GeoGebraJSNativeBridge;
 import org.geogebra.web.html5.gui.util.BrowserStorage;
-import org.geogebra.web.html5.util.TranslationDictionary;
 import org.geogebra.web.resources.StyleInjector;
 
 import com.google.gwt.core.client.GWT;
 
 import elemental2.core.Global;
+import elemental2.core.JsArray;
+import elemental2.core.JsObject;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -42,7 +42,7 @@ public final class LocalizationW extends Localization {
 	// must be updated whenever localeStr changes
 	// (cached for speed)
 	private Language lang = Language.English_US;
-	private String langGWT = lang.getLocaleGWT();
+	private String languageTag = lang.toLanguageTag();
 
 	private ScriptLoadCallback scriptCallback;
 
@@ -105,7 +105,7 @@ public final class LocalizationW extends Localization {
 	private String getPropertyWithFallback(String lang, String key,
 			String fallback, String category) {
 		String ret = getPropertyNative(lang, key, category);
-		if (ret == null || "".equals(ret)) {
+		if (StringUtil.empty(ret)) {
 			if (GWT.isScript()) { // no error message in test
 				Log.debug(category + " key not found: " + key);
 			}
@@ -123,13 +123,11 @@ public final class LocalizationW extends Localization {
 		return getPropertyWithFallback("en", key, key, "command");
 	}
 
-	// TODO: implement getCommandLocale()
 	private String getCommandLocaleString() {
 		if (!lang.hasTranslatedKeyboard()) {
-			// TODO: implement if LocalizationW uses Locale rather than String
 			return "en";
 		}
-		return langGWT;
+		return languageTag;
 	}
 
 	/**
@@ -189,22 +187,20 @@ public final class LocalizationW extends Localization {
 	@Override
 	public String reverseGetColor(String locColor) {
 		String str = StringUtil.removeSpaces(StringUtil.toLowerCaseUS(locColor));
-
-		try {
-			TranslationDictionary colorKeysDict = TranslationDictionary
-					.getDictionary("colors", localeStr);
-			for (String key : colorKeysDict.keySet()) {
-				if (key != null
-						&& str.equals(StringUtil.removeSpaces(StringUtil
-						.toLowerCaseUS(this.getColor(key))))) {
-					return key;
-				}
-			}
-
-			return str;
-		} catch (MissingResourceException e) {
+		JsPropertyMap<JsPropertyMap<String>> dict = GeoGebraGlobal.__GGB__keysVar.get(localeStr);
+		if (dict == null || !dict.has("colors")) {
 			return str;
 		}
+		JsArray<String> keys = JsObject.keys(dict.get("colors"));
+		for (int i = 0; i < keys.length; i++) {
+			String key = keys.getAt(i);
+			if (key != null
+					&& str.equals(StringUtil.removeSpaces(StringUtil
+					.toLowerCaseUS(this.getColor(key))))) {
+				return key;
+			}
+		}
+		return str;
 	}
 
 	@Override
@@ -229,8 +225,13 @@ public final class LocalizationW extends Localization {
 	 * locale is English.
 	 */
 	@Override
-	public String getLanguage() {
-		return localeStr.substring(0, 2);
+	public Language getLanguage() {
+		return lang;
+	}
+
+	@Override
+	public String getLanguageTag() {
+		return languageTag;
 	}
 
 	@Override
@@ -265,14 +266,14 @@ public final class LocalizationW extends Localization {
 		}
 
 		// these must be updated whenever localeStr changes
-		lang = Language.getClosestGWTSupportedLanguage(localeStr);
-		langGWT = lang.getLocaleGWT();
+		lang = Language.fromLanguageTagOrLocaleString(localeStr);
+		languageTag = lang.toLanguageTag();
 
 		setCommandChanged(true);
 
 		Log.debug("keys loaded for language: " + lang0);
 
-		updateLanguageFlags(lang0);
+		updateLanguageFlags(lang.language);
 
 		// For styling on Firefox. (Mainly for rtl-languages.)
 		// TODO set RTL to the correct element when ready

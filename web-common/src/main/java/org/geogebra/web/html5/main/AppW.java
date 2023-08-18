@@ -608,8 +608,9 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 	@Override
 	public void setLanguage(final String browserLang) {
-		final String lang = Language
-				.getClosestGWTSupportedLanguage(browserLang).getLocaleGWT();
+		Language language1 = Language
+				.fromLanguageTagOrLocaleString(browserLang);
+		final String lang = language1.toLanguageTag();
 		getLocalization().cancelCallback();
 		if (lang != null && lang.equals(loc.getLocaleStr())) {
 			Log.debug("Language is already " + loc.getLocaleStr());
@@ -1577,7 +1578,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	public final ClientInfo getClientInfo() {
 		ClientInfo clientInfo = new ClientInfo();
 		clientInfo.setModel(getLoginOperation().getModel());
-		clientInfo.setLanguage(getLocalization().getLanguage());
+		clientInfo.setLanguage(getLocalization().getLanguageTag());
 		clientInfo.setWidth((int) getWidth());
 		clientInfo.setHeight((int) getHeight());
 		clientInfo.setType(getClientType());

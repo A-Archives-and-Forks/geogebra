@@ -58,7 +58,7 @@ public class LanguageProperty extends AbstractEnumerableProperty {
         for (int i = 0; i < languages.length; i++) {
             Language language = languages[i];
             values[i] = language.name;
-            languageCodes[i] = language.getLocaleGWT();
+			languageCodes[i] = language.toLanguageTag();
         }
         locales = localization.getLocales(languages);
         setValues(values);
