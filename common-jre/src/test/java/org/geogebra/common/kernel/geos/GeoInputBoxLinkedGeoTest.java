@@ -766,4 +766,5 @@ public class GeoInputBoxLinkedGeoTest extends BaseUnitTest {
 	private void shouldNotBeLinkable(String command) {
 		assertFalse(isGeoLinkable(add(command)));
 	}
+
 }
