@@ -975,6 +975,9 @@ public class ConstructionDefaults implements SettingListener {
 			}
 			if (geo instanceof GeoInputBox) {
 				geo.setObjColor(GeoGebraColorConstants.NEUTRAL_900);
+			} else if (geo instanceof GeoList) {
+				geo.setObjColor(GeoGebraColorConstants.NEUTRAL_900);
+				geo.setBackgroundColor(GColor.WHITE);
 			}
 
 			if (!isReset) {
@@ -989,7 +992,7 @@ public class ConstructionDefaults implements SettingListener {
 		if (defaultLabelMode) {
 			// label visibility
 			int labelingStyle = app == null ? LABEL_VISIBLE_USE_DEFAULTS
-					: app.getCurrentLabelingStyle();
+					: app.getCurrentLabelingStyle().getValue();
 
 			// automatic labelling:
 			// if algebra window open -> all labels

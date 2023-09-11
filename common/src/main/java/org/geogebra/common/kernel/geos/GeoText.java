@@ -116,8 +116,8 @@ public class GeoText extends GeoElement
 	// for absolute screen location
 	private boolean hasAbsoluteScreenLocation = false;
 
-	private GeoNumeric verticalAlignment;
-	private GeoNumeric horizontalAlignment;
+	private Integer verticalAlignment;
+	private Integer horizontalAlignment;
 
 	/**
 	 */
@@ -686,20 +686,33 @@ public class GeoText extends GeoElement
 	}
 
 	private void setSameLocation(GeoText text) {
-		if (text.hasAbsoluteScreenLocation) {
-			setAbsoluteScreenLocActive(true);
-			setAbsoluteScreenLoc(text.getAbsoluteScreenLocX(),
-					text.getAbsoluteScreenLocY());
+		if (text.isAbsoluteScreenLocActive()) {
+			if (text.startPoint == null) {
+				nullifyStartPointAndSetScreenLoc(text);
+			} else {
+				setAbsoluteStartPoint(text.startPoint, true);
+			}
 		} else {
 			if (text.startPoint != null) {
-				try {
-					setStartPoint(text.startPoint);
-				} catch (Exception e) {
-					// Circular definition, do nothing
-				}
+				setAbsoluteStartPoint(text.startPoint, false);
 			}
 		}
 	}
+
+	private void nullifyStartPointAndSetScreenLoc(GeoText oldText) {
+		hasAbsoluteScreenLocation = true;
+		startPoint = null;
+		setAbsoluteScreenLoc(oldText.getAbsoluteScreenLocX(), oldText.getAbsoluteScreenLocY());
+	}
+
+	private void setAbsoluteStartPoint(GeoPointND oldStartPoint, boolean isAbsolute) {
+		hasAbsoluteScreenLocation = isAbsolute;
+			try {
+				setStartPoint(oldStartPoint);
+			} catch (CircularDefinitionException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
 	/**
 	 * Returns true for LaTeX texts
@@ -778,7 +791,7 @@ public class GeoText extends GeoElement
 	@Override
 	public void setRealWorldLoc(double x, double y) {
 		GeoPointND locPoint = getStartPoint();
-		if (locPoint == null) {
+		if (locPoint == null || hasAbsoluteScreenLocation) {
 			locPoint = new GeoPoint(cons);
 			try {
 				setStartPoint(locPoint);
@@ -1547,19 +1560,19 @@ public class GeoText extends GeoElement
 		}
 	}
 
-	public void setHorizontalAlignment(GeoNumeric horizAlign) {
+	public void setHorizontalAlignment(Integer horizAlign) {
 		horizontalAlignment = horizAlign;
 	}
 
-	public GeoNumeric getHorizontalAlignment() {
+	public Integer getHorizontalAlignment() {
 		return horizontalAlignment;
 	}
 
-	public void setVerticalAlignment(GeoNumeric vertAlign) {
+	public void setVerticalAlignment(Integer vertAlign) {
 		verticalAlignment = vertAlign;
 	}
 
-	public GeoNumeric getVerticalAlignment() {
+	public Integer getVerticalAlignment() {
 		return verticalAlignment;
 	}
 
