@@ -2084,6 +2084,7 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		add("m1={{1,2},{3,4}}");
 		t("m1(2,2)", "4");
 	}
+
 	@Test
 	public void testConstantFunctionsPlottedOnReload() {
 		add("f(x) = 3");
