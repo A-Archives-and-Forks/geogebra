@@ -1150,6 +1150,10 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return scriptManager;
 	}
 
+	public final boolean hasScriptManager() {
+		return scriptManager != null;
+	}
+
 	/**
 	 * Get the event dispatcher, which dispatches events objects that manage
 	 * event driven scripts
@@ -1836,9 +1840,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			}
 		}
 
-		if (getGuiManager() != null) {
-			getGuiManager().getViewsXML(sb, asPreference);
-		}
+		getViewsXML(sb, asPreference);
 
 		if (asPreference) {
 			getKeyboardXML(sb);
@@ -1849,6 +1851,12 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		getScriptingXML(sb, asPreference);
 
 		return sb.toString();
+	}
+
+	protected void getViewsXML(StringBuilder sb, boolean asPreference) {
+		if (getGuiManager() != null) {
+			getGuiManager().getViewsXML(sb, asPreference);
+		}
 	}
 
 	private void getScriptingXML(StringBuilder sb, boolean asPreference) {
