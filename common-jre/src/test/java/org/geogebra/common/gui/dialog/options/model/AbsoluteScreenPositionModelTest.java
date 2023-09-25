@@ -107,7 +107,7 @@ public class AbsoluteScreenPositionModelTest extends BaseUnitTest {
 		GeoList drop = add("drop={1,2,3}");
 		add("pic=ToolImage(42)");
 		drop.setDrawAsComboBox(true);
-		String[] def = new String[] {"Slider(-5,5,1)", "Checkbox()", "Button()", "InputBox()",
+		String[] def = new String[]{"Slider(-5,5,1)", "Checkbox()", "Button()", "InputBox()",
 				"drop", "pic", "\"GeoGebra rocks\""};
 		GeoElement[] geos = Arrays.stream(def).map(this::<GeoElement>add)
 				.toArray(GeoElement[]::new);
