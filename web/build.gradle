@@ -54,7 +54,7 @@ dependencies {
         project(':web-common'),
         project(':editor-web'),
         project(':keyboard-web'),
-        'org.webjars.npm:pdfjs-dist:2.5.207',
+        'org.webjars.npm:pdfjs-dist:3.11.174',
         "org.geogebra:multiplayer:$multiplayerVersion",
         "org.geogebra:multiplayer:$multiplayerVersion:sources",
         'com.google.j2objc:annotations:2.8:sources',
