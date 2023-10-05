@@ -1034,7 +1034,7 @@ public class GeoList extends GeoElement
 	@Override
 	public void update(boolean drag) {
 		super.update(drag);
-
+		ensureSelectedIndexInRange();
 		// update information on whether this path is fit for AlgoLocus
 		// or it can only support AlgoLocusList (call this method here again
 		// because the GeoList might change - code will run only if locus used
@@ -1051,6 +1051,12 @@ public class GeoList extends GeoElement
 				geo.updateVisualStyle(GProperty.COLOR);
 			}
 			// kernel.notifyRepaint();
+		}
+	}
+
+	private void ensureSelectedIndexInRange() {
+		if (selectedIndex < 0 || selectedIndex > size() - 1) {
+			selectedIndex = 0;
 		}
 	}
 
@@ -1643,15 +1649,12 @@ public class GeoList extends GeoElement
 	}
 
 	/**
-	 * @param selectedIndex0
+	 * @param selectedIndex
 	 *            new selected index
 	 */
-	public void setSelectedIndex(final int selectedIndex0) {
-		selectedIndex = selectedIndex0;
-
-		if (selectedIndex < 0 || selectedIndex > size() - 1) {
-			selectedIndex = 0;
-		}
+	public void setSelectedIndex(final int selectedIndex) {
+		this.selectedIndex = selectedIndex;
+		ensureSelectedIndexInRange();
 	}
 
 	/**
