@@ -371,12 +371,21 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 			break;
 		case SUITE_APPCODE:
 			String disableCAS = NavigatorUtil.getUrlParameter("disableCAS");
-			activity = new SuiteActivity(GeoGebraConstants.GRAPHING_APPCODE,
-					"".equals(disableCAS) || "true".equals(disableCAS));
+			activity = new SuiteActivity(getLastUsedSubApp(), "".equals(disableCAS)
+					|| "true".equals(disableCAS));
 			break;
 		default:
 			activity = new ClassicActivity(new AppConfigDefault());
 		}
+	}
+
+	/**
+	 * @return last used subapp, if saved in local storage, graphing otherwise
+	 */
+	public String getLastUsedSubApp() {
+		String lastUsedSubApp = BrowserStorage.LOCAL.getItem(BrowserStorage.LAST_USED_SUB_APP);
+		return lastUsedSubApp != null && !lastUsedSubApp.isEmpty()
+				? lastUsedSubApp : GRAPHING_APPCODE;
 	}
 
 	/**
@@ -2355,6 +2364,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 
 	@Override
 	public void switchToSubapp(String subAppCode) {
+		BrowserStorage.LOCAL.setItem(BrowserStorage.LAST_USED_SUB_APP, subAppCode);
 		getDialogManager().hideCalcChooser();
 		getKernel().getAlgebraProcessor().getCmdDispatcher()
 				.removeCommandFilter(getConfig().getCommandFilter());
