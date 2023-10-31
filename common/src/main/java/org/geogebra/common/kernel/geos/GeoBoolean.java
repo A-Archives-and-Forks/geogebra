@@ -147,7 +147,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 
 		// update all registered conditionals (they have this boolean as condition to show object)
 		for (GeoElement geo: conditionals) {
-			geo.updateVisualStyle(GProperty.VISIBLE);
+			geo.notifyUpdate();
 		}
 	}
 
