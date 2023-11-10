@@ -3302,6 +3302,9 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 	@Override
 	public String getSlideID() {
+		if (!isWhiteboardActive()) {
+			return super.getSlideID();
+		}
 		return getPageController() == null
 				? GgbFile.SLIDE_PREFIX + GgbFile.getCounter()
 				: getPageController().getSlideID();
