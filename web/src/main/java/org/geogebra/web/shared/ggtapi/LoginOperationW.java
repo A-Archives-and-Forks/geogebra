@@ -10,11 +10,13 @@ import org.geogebra.common.move.views.EventRenderable;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.common.util.debug.analytics.LoginAnalytics;
+import org.geogebra.gwtutil.Cookies;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.ggtapi.models.AuthenticationModelW;
 
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.MessageEvent;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -71,7 +73,8 @@ public class LoginOperationW extends LogInOperation {
 		app.getGlobalHandlers().addEventListener(DomGlobal.window,
 						"message",
 						event -> {
-							Object data = Js.asPropertyMap(event).get("data");
+							MessageEvent<?> message = Js.uncheckedCast(event);
+							Object data = message.data;
 							// later if event.origin....
 							if ("string".equals(Js.typeof(data))) {
 								try {
@@ -123,12 +126,12 @@ public class LoginOperationW extends LogInOperation {
 	}
 
 	@Override
-	public String getLoginURL(String languageCode) {
+	public String getLoginURL(String languageTag) {
 		if (!StringUtil.empty(app.getAppletParameters().getParamLoginURL())) {
 			return app.getAppletParameters().getParamLoginURL();
 		}
 
-		return super.getLoginURL(languageCode);
+		return super.getLoginURL(languageTag);
 	}
 
 	private void processCookie(boolean passive) {
@@ -152,7 +155,14 @@ public class LoginOperationW extends LogInOperation {
 	@Override
 	public void passiveLogin() {
 		model.setLoginStarted();
-		processCookie(true);
+		if (!app.isMebis()) {
+			String cookie = Cookies.getCookie("SSID");
+			if (cookie != null) {
+				doPerformTokenLogin(new GeoGebraTubeUser(null, cookie), true);
+			} else {
+				stayLoggedOut();
+			}
+		}
 	}
 
 	@Override

@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
+import javax.annotation.CheckForNull;
+
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GFont;
 import org.geogebra.common.euclidian.DrawableND;
@@ -26,6 +28,7 @@ import org.geogebra.common.euclidian.draw.CanvasDrawable;
 import org.geogebra.common.euclidian.draw.dropdown.DrawDropDownList;
 import org.geogebra.common.kernel.CircularDefinitionException;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.ConstructionDefaults;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.Path;
 import org.geogebra.common.kernel.PathMover;
@@ -238,7 +241,7 @@ public class GeoList extends GeoElement
 		reuseDefinition(geo);
 		if (geo.isGeoNumeric()) { // eg SetValue[list, 2]
 			// 1 -> first element
-			setSelectedIndex(-1 + (int) ((GeoNumeric) geo).getDouble(), false);
+			setSelectedIndex(-1 + (int) ((GeoNumeric) geo).getDouble());
 			isDefined = true;
 
 			return;
@@ -877,7 +880,7 @@ public class GeoList extends GeoElement
 	@Override
 	public String toString(StringTemplate tpl) {
 		return label
-				+ tpl.getEqualsWithSpace()
+				+ getLabelDelimiterWithSpace(tpl)
 				+ toValueString(tpl);
 	}
 
@@ -1031,7 +1034,7 @@ public class GeoList extends GeoElement
 	@Override
 	public void update(boolean drag) {
 		super.update(drag);
-
+		ensureSelectedIndexInRange();
 		// update information on whether this path is fit for AlgoLocus
 		// or it can only support AlgoLocusList (call this method here again
 		// because the GeoList might change - code will run only if locus used
@@ -1048,6 +1051,12 @@ public class GeoList extends GeoElement
 				geo.updateVisualStyle(GProperty.COLOR);
 			}
 			// kernel.notifyRepaint();
+		}
+	}
+
+	private void ensureSelectedIndexInRange() {
+		if (selectedIndex < 0 || selectedIndex > size() - 1) {
+			selectedIndex = 0;
 		}
 	}
 
@@ -1640,23 +1649,23 @@ public class GeoList extends GeoElement
 	}
 
 	/**
-	 * @param selectedIndex0
+	 * @param selectedIndex
 	 *            new selected index
-	 * @param update
-	 *            t
 	 */
-	public void setSelectedIndex(final int selectedIndex0, boolean update) {
-		selectedIndex = selectedIndex0;
+	public void setSelectedIndex(final int selectedIndex) {
+		this.selectedIndex = selectedIndex;
+		ensureSelectedIndexInRange();
+	}
 
-		if (selectedIndex < 0 || selectedIndex > size() - 1) {
-			selectedIndex = 0;
-		}
-
-		if (update) {
-			updateCascade();
-			getKernel().notifyRepaint();
-			getKernel().storeUndoInfo();
-		}
+	/**
+	 * Select index, update cascade, create undo point
+	 * @param selectedIndex0 newly selected index
+	 */
+	public void setSelectedIndexUpdate(final int selectedIndex0) {
+		setSelectedIndex(selectedIndex0);
+		updateCascade();
+		getKernel().notifyRepaint();
+		getKernel().storeUndoInfo();
 	}
 
 	/*
@@ -1673,7 +1682,7 @@ public class GeoList extends GeoElement
 	 *
 	 * @return selected element
 	 */
-	public GeoElement getSelectedElement() {
+	public @CheckForNull GeoElement getSelectedElement() {
 		if ((selectedIndex > -1) && (selectedIndex < size())) {
 			return get(selectedIndex);
 		}
@@ -3144,6 +3153,20 @@ public class GeoList extends GeoElement
 	}
 
 	/**
+	 * @return True if background color is set, false else
+	 */
+	public boolean isBackgroundColorSet() {
+		return bgColor != null;
+	}
+
+	/**
+	 * @return True if the default object color {@link ConstructionDefaults#colList} is set, false else
+	 */
+	public boolean isDefaultObjectColorSet() {
+		return objColor.equals(ConstructionDefaults.colList);
+	}
+
+	/**
 	 * Sets the total width of the geo.
 	 *
 	 * @param width
@@ -3197,9 +3220,12 @@ public class GeoList extends GeoElement
 	 *            template
 	 * @return The displayed string of item.
 	 */
-	public String getItemDisplayString(GeoElement geoItem,
+	public String getItemDisplayString(@CheckForNull GeoElement geoItem,
 			StringTemplate tpl) {
-		String displayString = "";
+		if (geoItem == null) {
+			return "";
+		}
+		String displayString;
 		if (!"".equals(geoItem.getRawCaption())) {
 			displayString =  geoItem.getCaption(tpl);
 		} else if (geoItem.isGeoPoint() || geoItem.isGeoVector() || geoItem.isGeoList()) {
@@ -3461,5 +3487,14 @@ public class GeoList extends GeoElement
 	@Override
 	public void updateLocation() {
 		update();
+	}
+
+	@Override
+	public char getLabelDelimiter() {
+		ExpressionNode definition = getDefinition();
+		if (definition != null && definition.unwrap() instanceof Equation) {
+			return ':';
+		}
+		return '=';
 	}
 }

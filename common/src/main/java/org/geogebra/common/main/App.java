@@ -37,7 +37,6 @@ import org.geogebra.common.euclidian.inline.InlineTextController;
 import org.geogebra.common.euclidian.smallscreen.AdjustScreen;
 import org.geogebra.common.euclidian.smallscreen.AdjustViews;
 import org.geogebra.common.euclidian3D.EuclidianView3DInterface;
-import org.geogebra.common.euclidian3D.Input3DConstants;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.Format;
@@ -152,8 +151,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	public static final String WIKI_MANUAL = "Manual";
 	/** Url for wiki article about CAS */
 	public static final String WIKI_CAS_VIEW = "CAS_View";
-	/** Url for Intel RealSense tutorials */
-	public static final String REALSENSE_TUTORIAL = "https://www.geogebra.org/m/OaGmb7LE";
 
 	/** Url for wiki article about functions */
 	public static final String WIKI_TEXT_TOOL = "Text Tool";
@@ -338,7 +335,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	/** XML input / output handler */
 	private MyXMLio myXMLio;
 	/** kernel */
-	public Kernel kernel;
+	protected Kernel kernel;
 	/** whether points can be created by other tools than point tool */
 	protected boolean isOnTheFlyPointCreationActive = true;
 	/** Settings object */
@@ -778,7 +775,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		// command dictionary for all public command names available in
 		// GeoGebra's input field
 		// removed check for null: commandDict.clear() removes keys, but they
-		// are still available with commandDict.getIterator()
+		// are still available with commandDict.iterator()
 		// so change English -> French -> English doesn't work in the input bar
 		// see AutoCompleteTextfield.lookup()
 		// if (commandDict == null)
@@ -1144,6 +1141,10 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			scriptManager = newScriptManager();
 		}
 		return scriptManager;
+	}
+
+	public final boolean hasScriptManager() {
+		return scriptManager != null;
 	}
 
 	/**
@@ -1828,9 +1829,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			}
 		}
 
-		if (getGuiManager() != null) {
-			getGuiManager().getViewsXML(sb, asPreference);
-		}
+		getViewsXML(sb, asPreference);
 
 		if (asPreference) {
 			getKeyboardXML(sb);
@@ -1841,6 +1840,12 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		getScriptingXML(sb, asPreference);
 
 		return sb.toString();
+	}
+
+	protected void getViewsXML(StringBuilder sb, boolean asPreference) {
+		if (getGuiManager() != null) {
+			getGuiManager().getViewsXML(sb, asPreference);
+		}
 	}
 
 	private void getScriptingXML(StringBuilder sb, boolean asPreference) {
@@ -1963,10 +1968,10 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 
 	/**
 	 * @param ttl
-	 *            tooltip language
+	 *            tooltip language, may be either BCP47 tag or Java locale string
 	 */
 	public void setTooltipLanguage(String ttl) {
-		// TODO Auto-generated method stub
+		// only in desktop ATM
 	}
 
 	public Perspective getTmpPerspective() {
@@ -3882,7 +3887,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * handle space key hitted
+	 * handle space key hit
 	 *
 	 * @return true if key is consumed
 	 */
@@ -3894,6 +3899,11 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		ArrayList<GeoElement> selGeos = selection.getSelectedGeos();
 		if (selGeos.size() == 1) {
 			GeoElement geo = selGeos.get(0);
+			if (!selection.isSelectableForEV(geo)) {
+				// if some selection-preventing property (e.g. visibility) changed in scripts
+				// between selecting the geo and pressing <Space>, just do nothing
+				return false;
+			}
 			if (geo.isGeoBoolean()) {
 				if (!geo.isIndependent()) {
 					return true;
@@ -3915,7 +3925,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 
 				// <Space> -> toggle slider animation off/on
 				GeoNumeric num = (GeoNumeric) geo;
-				if (num.isAnimatable()) {
+				if (num.isAnimatable() && isRightClickEnabled()) {
 					num.setAnimating(!num.isAnimating());
 
 					storeUndoInfo();
@@ -4093,10 +4103,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		}
 	}
 
-	public String getInput3DType() {
-		return Input3DConstants.PREFS_NONE;
-	}
-
 	/**
 	 * Close popups and dropdowns; keep active dropdown at (x,y).
 	 *
@@ -4159,6 +4165,15 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 
 	public void clearRestrictions() {
 		restrictions.disable();
+	}
+
+	/**
+	 *
+	 * @param e event to examine
+	 * @return if event has the modifier that user can select multiple elements.
+	 */
+	public boolean hasMultipleSelectModifier(AbstractEvent e) {
+		return e.isControlDown();
 	}
 
 	/**

@@ -53,6 +53,8 @@ import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 /**
  * AlgoElement is the superclass of all algorithms.
  * 
@@ -206,7 +208,7 @@ public abstract class AlgoElement extends ConstructionElement
 		while (it.hasNext()) {
 			OutputHandler<?> handler = it.next();
 			for (int k = 0; k < handler.size(); k++) {
-				output[i++] = handler.getElement(k);
+				output[i++] = handler.getElement(k).toGeoElement();
 			}
 		}
 	}
@@ -262,7 +264,7 @@ public abstract class AlgoElement extends ConstructionElement
 	 * @param <T>
 	 *            extends GeoElement: type of the OutputHandler
 	 */
-	public class OutputHandler<T extends GeoElement> {
+	public class OutputHandler<T extends GeoElementND> {
 		private ElementFactory<T> fac;
 		private ArrayList<T> outputList;
 		private String[] labels;
@@ -563,7 +565,7 @@ public abstract class AlgoElement extends ConstructionElement
 	 * @param <S>
 	 *            element type
 	 */
-	public interface ElementFactory<S extends GeoElement> {
+	public interface ElementFactory<S extends GeoElementND> {
 
 		/**
 		 * this is called by the OutputHandler every Time a new Element is
@@ -629,6 +631,7 @@ public abstract class AlgoElement extends ConstructionElement
 	// public static double counter;
 
 	@Override
+	@AutoreleasePool
 	public void update() {
 		if (stopUpdateCascade) {
 			return;
@@ -852,7 +855,7 @@ public abstract class AlgoElement extends ConstructionElement
 	 * @param output
 	 *            output element
 	 */
-	protected void setOutputDependencies(GeoElement output) {
+	protected void setOutputDependencies(GeoElementND output) {
 		// parent algorithm of output
 		output.setParentAlgorithm(this);
 
@@ -866,7 +869,7 @@ public abstract class AlgoElement extends ConstructionElement
 		// this is important for macro constructions that have input geos from
 		// outside the macro: the output should be part of the macro
 		// construction!
-		if (cons != output.cons) {
+		if (cons != output.getConstruction()) {
 			output.setConstruction(cons);
 		}
 
@@ -1480,6 +1483,7 @@ public abstract class AlgoElement extends ConstructionElement
 	 *            builder for the expression XML tag
 	 */
 	protected void getExpXML(StringTemplate tpl, StringBuilder sb) {
+		String expString = toExpString(tpl);
 		sb.append("<expression");
 		// add label
 		if (/* output != null && */getOutputLength() == 1) {
@@ -1491,7 +1495,7 @@ public abstract class AlgoElement extends ConstructionElement
 		}
 		// add expression
 		sb.append(" exp=\"");
-		StringUtil.encodeXML(sb, toExpString(tpl));
+		StringUtil.encodeXML(sb, expString);
 		sb.append("\"");
 
 		// make sure that a vector remains a vector and a point remains a point

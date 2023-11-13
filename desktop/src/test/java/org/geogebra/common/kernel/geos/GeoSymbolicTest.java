@@ -3,6 +3,7 @@ package org.geogebra.common.kernel.geos;
 import static com.himamis.retex.editor.share.util.Unicode.EULER_STRING;
 import static com.himamis.retex.editor.share.util.Unicode.pi;
 import static org.geogebra.common.BaseUnitTest.hasValue;
+import static org.hamcrest.CoreMatchers.either;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -23,17 +24,15 @@ import static org.junit.Assert.assertTrue;
 import org.geogebra.common.cas.giac.CASgiac;
 import org.geogebra.common.gui.view.algebra.AlgebraItem;
 import org.geogebra.common.gui.view.algebra.AlgebraItemTest;
-import org.geogebra.common.gui.view.algebra.EvalInfoFactory;
 import org.geogebra.common.gui.view.algebra.Suggestion;
 import org.geogebra.common.gui.view.algebra.SuggestionRootExtremum;
 import org.geogebra.common.kernel.CASGenericInterface;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
-import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.commands.EvalInfo;
-import org.geogebra.common.main.error.ErrorHelper;
+import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.scientific.LabelController;
 import org.geogebra.common.util.DoubleUtil;
@@ -43,6 +42,7 @@ import org.geogebra.test.TestErrorHandler;
 import org.geogebra.test.TestStringUtil;
 import org.geogebra.test.UndoRedoTester;
 import org.geogebra.test.commands.AlgebraTestHelper;
+import org.geogebra.test.commands.ErrorAccumulator;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -408,7 +408,10 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		t("list=Solutions(f''(x)=0)", "{(2 * sqrt(6) + 3) / 3}");
 		t("root=Element(list,1)", "(2 * sqrt(6) + 3) / 3");
 		t("Numeric(f(root))", Matchers.in(new String[]{"9.091256074573", "9.091256074574"}));
-		t("Solve(f'(x)=tan(30deg))", "{x = 0.9446513611798, x = 5.126711116935}");
+		t("Solve(f'(x)=tan(30deg))", Matchers.in(new String[]{
+				"{x = 0.94465136117983, x = 5.126711116934559}",
+				"{x = 0.9446513611798301, x = 5.12671111693456}",
+				"{x = 0.9446513611798, x = 5.126711116935}"}));
 		t("Tangent(2,f)", "y = -15 * sqrt(2) / 4 * x + 33 * sqrt(2) / 2");
 	}
 
@@ -787,9 +790,13 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 	public void redefinitionInOneCellsShouldWork() {
 		t("a=p+q", "p + q");
 		GeoElement a = getSymbolic("a");
-		ap.changeGeoElement(a, "a = p-q", true, false, TestErrorHandler.INSTANCE,
-				null);
+		redefineSymbolic(a, "a = p-q", TestErrorHandler.INSTANCE);
 		checkInput("a", "a = p - q");
+	}
+
+	private void redefineSymbolic(GeoElement geo, String def, ErrorHandler instance) {
+		ap.changeGeoElement(geo, def, true, false, instance,
+				null);
 	}
 
 	@Test
@@ -1009,7 +1016,7 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 	@Test
 	public void testCASSpecialPoints() {
 		t("f:x", "x");
-		GeoSymbolic line = (GeoSymbolic) app.kernel.lookupLabel("f");
+		GeoSymbolic line = (GeoSymbolic) app.getKernel().lookupLabel("f");
 		Suggestion suggestion = SuggestionRootExtremum.get(line);
 		Assert.assertNotNull(suggestion);
 		suggestion.execute(line);
@@ -1276,6 +1283,36 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 	}
 
 	@Test
+	public void testSymbolicDiffersForPointCommands() {
+		GeoSymbolic root = add("Root(x-sqrt(3))");
+		GeoSymbolic extremum = add("Extremum(x^2+sqrt(3))");
+		GeoSymbolic extremumInterval = add("Extremum(x^2+sqrt(3),-5,5)");
+		GeoSymbolic intersect = add("Intersect(x=y,x=sqrt(3))");
+		GeoSymbolic intersectBoring = add("Intersect(x=y,x=0)");
+		assertThat(AlgebraItem.isSymbolicDiffers(root), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(extremum), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(extremumInterval), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(intersect), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(intersectBoring), is(false));
+	}
+
+	@Test
+	public void testSymbolicDiffersForMode() {
+		add("l={1,2,2}");
+		GeoSymbolic mode = add("mode=Mode(l)");
+		assertThat(AlgebraItem.isSymbolicDiffers(mode), is(false));
+	}
+
+	@Test
+	public void testRedefineForMode() {
+		GeoSymbolic list = add("l={1,2,2}");
+		GeoSymbolic mode = add("mode=Mode(l)");
+		assertThat(mode, hasValue("{2}"));
+		redefineSymbolic(list, "{1,3,3}", TestErrorHandler.INSTANCE);
+		assertThat(lookup("mode"), hasValue("{3}"));
+	}
+
+	@Test
 	public void testNoToggleButtonForSymbolicUndefined() {
 		GeoSymbolic solve = add("Solve(0.05>=(1-x)^50)");
 		assertThat(AlgebraItem.isSymbolicDiffers(solve), is(true));
@@ -1439,7 +1476,7 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 				equalTo("{x = 4.134008006438, y = 1.134008006438}"));
 		assertThat(AlgebraItem.shouldShowSymbolicOutputButton(symbolic), equalTo(false));
 
-		symbolic = add("Solve(exp(|sin(x)|)=2)");
+		symbolic = add("sinsolve:=Solve(exp(|sin(x)|)=2)");
 		assertThat(symbolic.getDefinition(StringTemplate.defaultTemplate),
 				equalTo("NSolve(ℯ^(abs(sin(x))) = 2)"));
 		assertThat(symbolic.toValueString(StringTemplate.defaultTemplate), anyOf(
@@ -1448,13 +1485,13 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 						+ "x = -98.15521845604, x = -93.48193341286, x = -69.88088457379, "
 						+ "x = -65.20759953054, x = -63.59769926661, x = -62.06600687697, "
 						+ "x = -60.45610661301, x = -58.92441422337, x = -54.17292130584, "
-						+ "x = -52.64122891619, x = -51.03132865224, x = -49.49963626261, "),
+						+ "x = -52.64122891619"),
 				startsWith("{x = -333.7746674754, x = -303.9686412034, x = -208.1109613317,"
 						+ " x = -168.880157099, x = -123.2879596848, x = -102.9067113736, "
 						+ "x = -98.1552184561, x = -93.48193341287, x = -69.88088457379, "
 						+ "x = -65.20759953057, x = -63.59769926661, x = -62.06600687698, "
 						+ "x = -60.45610661303, x = -58.92441422339, x = -54.17292130585, "
-						+ "x = -52.64122891621, x = -51.03132865226, x = -49.49963626262, ")));
+						+ "x = -52.64122891621")));
 		assertThat(AlgebraItem.shouldShowSymbolicOutputButton(symbolic), equalTo(false));
 
 		// 2 variables
@@ -1487,6 +1524,16 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		assertThat(symbolic.toValueString(StringTemplate.defaultTemplate),
 				equalTo("{x = -(1 / 5)^(1 / 1000), x = (1 / 5)^(1 / 1000)}"));
 		assertThat(AlgebraItem.shouldShowSymbolicOutputButton(symbolic), equalTo(true));
+
+		symbolic = add("Solve((1-0.0064)^(n)≤0.03,n)");
+		assertThat(symbolic.getDefinition(StringTemplate.defaultTemplate),
+				equalTo("Solve((1 - 0.0064)^n ≤ 0.03, n)"));
+		assertThat(symbolic.toValueString(StringTemplate.defaultTemplate),
+				equalTo("{n ≥ ln(3 / 100) / ln(621 / 625)}"));
+		SymbolicUtil.toggleSymbolic(symbolic);
+		assertThat(symbolic.toValueString(StringTemplate.defaultTemplate),
+				either(equalTo("{n ≥ 546.1445163345}"))
+						.or(equalTo("{n ≥ 546.1445163342}")));
 	}
 
 	@Test
@@ -1513,6 +1560,14 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 	public void testSolveNSolveCase5() {
 		GeoSymbolic symbolic = add("Solve(x^2>5)");
 		assertThat(AlgebraItem.shouldShowSymbolicOutputButton(symbolic), equalTo(true));
+	}
+
+	@Test
+	public void testNumericWrapIsNumeric() {
+		GeoSymbolic symbolic = add("Solve((1-0.0064)^(x)≤0.03,x)");
+		assertThat(symbolic.isSymbolicMode(), equalTo(true));
+		SymbolicUtil.toggleSymbolic(symbolic);
+		assertThat(symbolic.isSymbolicMode(), equalTo(false));
 	}
 
 	@Test
@@ -1898,14 +1953,11 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 	@Test
 	public void testThrowsCircularDefinitionException() {
 		GeoElement element = add("c(0,0)");
-		AlgebraProcessor processor = kernel.getAlgebraProcessor();
-		EvalInfo info = EvalInfoFactory.getEvalInfoForRedefinition(kernel, element, true);
-		processor.changeGeoElementNoExceptionHandling(element, "C=(0,0)", info, false, null,
-				ErrorHelper.silent());
-		info = EvalInfoFactory.getEvalInfoForRedefinition(kernel, element, true);
-		processor.changeGeoElementNoExceptionHandling(element, "C(0,0)", info, false, null,
-				ErrorHelper.silent());
+		redefineSymbolic(element, "C=(0,0)", TestErrorHandler.INSTANCE);
+		ErrorAccumulator errAcc = new ErrorAccumulator();
+		redefineSymbolic(element, "C(0,0)", errAcc);
 		assertThat(element.getDefinition(), is(notNullValue()));
+		assertThat(errAcc.getErrors(), equalTo("Circular definition"));
 	}
 
 	@Test
@@ -2072,5 +2124,13 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 	public void testElementOfMatrix() {
 		add("m1={{1,2},{3,4}}");
 		t("m1(2,2)", "4");
+	}
+
+	@Test
+	public void testConstantFunctionsPlottedOnReload() {
+		add("f(x) = 3");
+		add("g(x) = 2 * 5");
+		app.setXML(app.getXML(), true);
+		assertEquals(2, app.getActiveEuclidianView().getAllDrawableList().size());
 	}
 }

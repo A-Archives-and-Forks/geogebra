@@ -356,10 +356,11 @@ public class AppletParameters {
 	}
 
 	/**
+	 * @param fallback border color if none is set
 	 * @return border color (valid CSS color)
 	 */
-	public String getDataParamBorder() {
-		return getStringDataParam("borderColor", "");
+	public String getDataParamBorder(String fallback) {
+		return getStringDataParam("borderColor", fallback);
 	}
 
 	/**
@@ -515,6 +516,13 @@ public class AppletParameters {
 	 */
 	public String getMaterialsAPIurl() {
 		return getStringDataParam("materialsApi", "");
+	}
+
+	/**
+	 * @return URL of materials plaftform API (empty string if not set)
+	 */
+	public String getMaterialId() {
+		return getStringDataParam("material_id", "");
 	}
 
 	/**
@@ -746,5 +754,9 @@ public class AppletParameters {
 
 	public String getParamMultiplayerUrl() {
 		return getStringDataParam("multiplayerUrl", "");
+	}
+
+	public double getBorderRadius() {
+		return getIntDataParam("borderRadius", 0);
 	}
 }

@@ -77,6 +77,7 @@ import org.geogebra.common.main.settings.SettingListener;
 import org.geogebra.common.util.FileExtensions;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.desktop.awt.GColorD;
+import org.geogebra.desktop.euclidian.event.MouseEventUtil;
 import org.geogebra.desktop.export.ConstructionProtocolExportDialogD;
 import org.geogebra.desktop.gui.GuiManagerD;
 import org.geogebra.desktop.gui.TitlePanel;
@@ -95,7 +96,7 @@ public class ConstructionProtocolViewD extends ConstructionProtocolView
 	private static final Color COLOR_DRAG_HIGHLIGHT = new Color(250, 250, 200);
 	private static final Color COLOR_DROP_HIGHLIGHT = Color.lightGray;
 
-	public JTable table;
+	protected JTable table;
 	// public JPanel cpPanel;
 
 	private final TableColumn[] tableColumns;
@@ -110,7 +111,7 @@ public class ConstructionProtocolViewD extends ConstructionProtocolView
 	// public ConstructionProtocolNavigationD protNavBar; // navigation bar of
 	// protocol window
 	private final ConstructionProtocolViewD view = this;
-	public JScrollPane scrollPane;
+	protected JScrollPane scrollPane;
 	private ConstructionProtocolStyleBar helperBar;
 	private AbstractAction exportHtmlAction;
 	private AbstractAction printPreviewAction;
@@ -120,9 +121,8 @@ public class ConstructionProtocolViewD extends ConstructionProtocolView
 	 * @param app application
 	 */
 	public ConstructionProtocolViewD(final AppD app) {
-		this.app = app;
+		super(app);
 		this.loc = app.getLocalization();
-		kernel = app.getKernel();
 		data = new ConstructionTableDataD(this);
 		useColors = true;
 		addIcons = false;
@@ -486,7 +486,7 @@ public class ConstructionProtocolViewD extends ConstructionProtocolView
 				}
 
 				// right click
-				if (AppD.isRightClick(e)) {
+				if (MouseEventUtil.isRightClick(e)) {
 					GeoElement geo = ((ConstructionTableDataD) data)
 							.getGeoElement(row);
 					ArrayList<GeoElement> temp = new ArrayList<>();
@@ -541,13 +541,16 @@ public class ConstructionProtocolViewD extends ConstructionProtocolView
 					&& (e.getClickCount() == 2)) {
 				setConstructionStep(-1);
 				table.repaint();
-			} else if ((e.getClickCount() == 1) && (AppD.isRightClick(e))
-					&& ((ob == table.getTableHeader()) || (ob == scrollPane))) {
-				ConstructionProtocolContextMenu contextMenu = new ConstructionProtocolContextMenu(
-						(AppD) app);
-				contextMenu.show(view.scrollPane, e.getPoint().x,
-						e.getPoint().y);
+			} else {
+				if ((e.getClickCount() == 1) && (MouseEventUtil.isRightClick(e))
+						&& ((ob == table.getTableHeader()) || (ob == scrollPane))) {
+					ConstructionProtocolContextMenu contextMenu =
+							new ConstructionProtocolContextMenu(
+									(AppD) app);
+					contextMenu.show(view.scrollPane, e.getPoint().x,
+							e.getPoint().y);
 
+				}
 			}
 		}
 

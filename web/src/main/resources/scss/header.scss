@@ -1,5 +1,6 @@
 @use 'colors';
 @use 'z-index';
+@use 'colorMap' as *;
 
 $header_shadow:
 	0 4px 5px 0 colors.$black-14,
@@ -50,19 +51,13 @@ $button_hover_transition: background-color 0.15s;
 			min-width: fit-content;
 			border-radius: 2px;
 			cursor: pointer;
-			color: black;
-			opacity: 0.87;
+			color: neutral(900);
+			background: transparent;
+			transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
 
 			&:hover{
-				opacity: 0.87;
-				background-color: colors.$hover-calc-btn-bg;
+				background-color: neutral(200);
 			}
-		}
-
-		.profilePanel {
-			padding: 12px;
-			margin: 0 12px 0 32px;
-			width: 64px;
 		}
 
 		.examInfoBtn {
@@ -80,14 +75,7 @@ $button_hover_transition: background-color 0.15s;
 	}
 
 	.signInIcon {
-		opacity: 0.54;
-		margin-left: 8px;
-		padding: 12px;
-		cursor: pointer;
-
-		&:hover{
-			opacity: 1;
-		}
+		margin: 6px 8px;
 	}
 
 	%compactHeaderViewShared {
@@ -108,20 +96,27 @@ $button_hover_transition: background-color 0.15s;
 			line-height: $small_header_height;
 		}
 		.headerBackButton {
+			height: 40px;
 			margin-left: 8px;
 			margin-right: 24px;
 		}
 
 		.profilePanel {
-			height: 36px;
-			margin: 0 0 0 8px;
-			padding: 6px;
+        	width: 40px;
+        	height: 40px;
+        	margin: 4px 24px 4px 12px;
+        	padding-right: 14px;
 
-			.profileImage {
-				width: 36px;
-				height: 36px !important;
-			}
-		}
+       		.imageHolder {
+        		width: 40px;
+        		height: 40px;
+
+        		.profileImage {
+        			width: 32px;
+        			height: 32px;
+        		}
+        	}
+        }
 
 		.examTimer {
 			margin: 12px 0;
@@ -142,6 +137,7 @@ $button_hover_transition: background-color 0.15s;
 			font-size: 112.5%;
 		}
 		.headerBackButton {
+			height: 40px;
 			margin: auto 8px;
 		}
 	}

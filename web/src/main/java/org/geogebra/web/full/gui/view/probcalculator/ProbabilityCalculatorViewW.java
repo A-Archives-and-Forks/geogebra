@@ -3,8 +3,8 @@ package org.geogebra.web.full.gui.view.probcalculator;
 import org.geogebra.common.gui.view.data.PlotSettings;
 import org.geogebra.common.gui.view.probcalculator.ProbabilityCalculatorView;
 import org.geogebra.common.gui.view.probcalculator.ProbabilityManager;
+import org.geogebra.common.gui.view.probcalculator.ProbabilityTable;
 import org.geogebra.common.gui.view.probcalculator.StatisticsCalculator;
-import org.geogebra.common.kernel.commands.CommandDispatcher;
 import org.geogebra.common.main.App;
 import org.geogebra.ggbjdk.java.awt.geom.Dimension;
 import org.geogebra.web.full.css.GuiResources;
@@ -70,8 +70,9 @@ public class ProbabilityCalculatorViewW extends ProbabilityCalculatorView {
 			distrPanel.setLabels();
 		}
 
-		if (getTable() != null) {
-			getTable().setLabels();
+		ProbabilityTable table = getTable();
+		if (table != null) {
+			table.setLabels();
 		}
 
 		btnLineGraph.setTitle(loc.getMenu("LineGraph"));
@@ -99,17 +100,10 @@ public class ProbabilityCalculatorViewW extends ProbabilityCalculatorView {
 			int euclidianViewID = GlobalKeyDispatcherW.getShiftDown()
 						? getApp().getEuclidianView2(1).getViewID()
 						: getApp().getEuclidianView1().getViewID();
-			// do the export
+			// do the export, preload Take, Pascal/Binomial, Integral, ...
 			AsyncManager manager = ((AppW) app).getAsyncManager();
-			manager.runOrSchedule(() -> {
-				final CommandDispatcher cmdDispatcher = app.getKernel()
-						.getAlgebraProcessor().getCmdDispatcher();
-				// preload Take, Pascal/Binomial, Integral, ...
-				cmdDispatcher.getAdvancedDispatcher();
-				cmdDispatcher.getStatsDispatcher();
-				cmdDispatcher.getCASDispatcher();
-				exportGeosToEV(euclidianViewID);
-			});
+			manager.prefetch(() -> exportGeosToEV(euclidianViewID),
+					"advanced", "stats", "cas");
 		};
 	}
 
@@ -235,7 +229,7 @@ public class ProbabilityCalculatorViewW extends ProbabilityCalculatorView {
 
 	@Override
 	public void updateDiscreteTable() {
-		if (!isDiscreteProbability()) {
+		if (!isDiscreteProbability() || getTable() == null) {
 			return;
 		}
 		int[] firstXLastX = generateFirstXLastXCommon();

@@ -26,6 +26,7 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.algos.AlgoConicFivePoints;
 import org.geogebra.common.kernel.algos.AlgoIntersectPolyLines;
 import org.geogebra.common.kernel.algos.AlgoTableText;
+import org.geogebra.common.kernel.arithmetic.ExpressionNodeConstants;
 import org.geogebra.common.kernel.arithmetic.FunctionalNVar;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
@@ -1027,13 +1028,14 @@ public class CommandsTest {
 				newPoint(-0.4410243233086352, 0.14553384365563557),
 				newPoint(-0.35858986503875784, -0.06827447415125582)
 		};
-		AlgoConicFivePoints algo = new AlgoConicFivePoints(app.kernel.getConstruction(), points);
+		AlgoConicFivePoints algo = new AlgoConicFivePoints(app.getKernel().getConstruction(),
+				points);
 		GeoConicND conic = algo.getConic();
 		assertThat(conic, isDefined());
 	}
 
 	private GeoPoint newPoint(double x, double y) {
-		return new GeoPoint(app.kernel.getConstruction(), x, y, 0.001);
+		return new GeoPoint(app.getKernel().getConstruction(), x, y, 0.001);
 	}
 
 	@Test
@@ -2020,11 +2022,16 @@ public class CommandsTest {
 				false, "(1, 1)");
 		intersect("Segment((0,0),(0,5))", "x^2+y^2+z^2=4",
 				false, "(?, ?, ?)", "(0, 2, 0)");
-
 		if (app.has(Feature.IMPLICIT_SURFACES)) {
 			intersect("x^4+y^4+z^4=2", "x=y", false, "(-1, -1, 0)",
 					"(1, 1, 0)");
 		}
+	}
+
+	@Test
+	public void testIntersectCurves3D() {
+		tRound("Intersect(Curve(v,v,pi/4,v,0,4),Curve(cos(u),sin(u),u,u,0,6),1,1)",
+				"(0.70711, 0.70711, 0.7854)");
 	}
 
 	@Test
@@ -2610,6 +2617,12 @@ public class CommandsTest {
 	public void cmdNDerivative() {
 		tRound("NDerivative[x^2]", unicode("NDerivative(x^2)"));
 		tRound("NDerivative[x^2, 5]", unicode("NDerivative(x^2, 5)"));
+	}
+
+	@Test
+	public void cmdDerivativeNoCas() {
+		// no CAS used; ExpressionNode manipulations should keep fractions
+		tRound("Derivative[x^2/3]", unicode("2 / 3 x"));
 	}
 
 	@Test
@@ -3288,6 +3301,26 @@ public class CommandsTest {
 		t("Root(a)", "(NaN, NaN)");
 		t("b:=0/5", "0");
 		t("Root(b)", "(NaN, NaN)");
+	}
+
+	@Test
+	public void cmdRootHighDeg() {
+		long time = System.currentTimeMillis();
+		t("Root((x+1)^99)", "(-1, 0)");
+		t("Root((x+1)^99+1)", "(NaN, NaN)");
+		assertTrue(System.currentTimeMillis() - time < 1000);
+	}
+
+	@Test
+	public void cmdExtremumHighDeg() {
+		long time = System.currentTimeMillis();
+		StringTemplate lowPrecision = StringTemplate.printDecimals(
+				ExpressionNodeConstants.StringType.GEOGEBRA, 2, false);
+		t("Extremum((x+1)^24)", "(-1, 0)");
+		t("Extremum((x+1)^98)", lowPrecision, "(-1, 0)");
+		// nearly horizontal => x coordinate random, assert on y only
+		t("y(Extremum((x+1)^98+1))", lowPrecision, "1");
+		assertTrue(System.currentTimeMillis() - time < 1000);
 	}
 
 	@Test
@@ -4206,10 +4239,11 @@ public class CommandsTest {
 
 	@Test
 	public void cmdPieChart() {
-		t("p1=PieChart({1,2,3})", "PieChart[{1, 2, 3}, (0, 0)]");
-		t("p2=PieChart({1,2,3}, (1,1), 2)", "PieChart[{1, 2, 3}, (1, 1), 2]");
+		// the "value" of pie chart is just the command name (no sensible way to define it)
+		t("p1=PieChart({1,2,3})", "PieChart");
+		t("p2=PieChart({1,2,3}, (1,1), 2)", "PieChart");
 		assertThat(get("p2"), isDefined());
-		t("p3=PieChart({1,2,-3})", "PieChart[{1, 2, -3}, (0, 0)]");
+		t("p3=PieChart({1,2,-3})", "PieChart");
 		assertThat(get("p3"), not(isDefined()));
 	}
 
@@ -4392,6 +4426,12 @@ public class CommandsTest {
 	public void testZipWithObject() {
 		t("a:x=y", "y = x");
 		t("RemoveUndefined(Zip(Object(xx), xx, {\"y\",\"a\",\"x\"}))", "{y = x}");
+	}
+
+	@Test
+	public void testZipWithText() {
+		t("Zip(Text[A,B,true,true,C,0], A, {\"t1\", \"t2\", \"t3\"}, B, {(0,1),(0,2),(0,3)} , "
+				+ "C, {-1, 0, 1})", "{\"t1\", \"t2\", \"t3\"}");
 	}
 
 	@Test
