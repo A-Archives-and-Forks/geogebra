@@ -1285,6 +1285,20 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 	}
 
 	@Test
+	public void testSymbolicDiffersForPointCommands() {
+		GeoSymbolic root = add("Root(x-sqrt(3))");
+		GeoSymbolic extremum = add("Extremum(x^2+sqrt(3))");
+		GeoSymbolic extremumInterval = add("Extremum(x^2+sqrt(3),-5,5)");
+		GeoSymbolic intersect = add("Intersect(x=y,x=sqrt(3))");
+		GeoSymbolic intersectBoring = add("Intersect(x=y,x=0)");
+		assertThat(AlgebraItem.isSymbolicDiffers(root), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(extremum), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(extremumInterval), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(intersect), is(true));
+		assertThat(AlgebraItem.isSymbolicDiffers(intersectBoring), is(false));
+	}
+
+	@Test
 	public void testSymbolicDiffersForMode() {
 		add("l={1,2,2}");
 		GeoSymbolic mode = add("mode=Mode(l)");
@@ -1298,20 +1312,6 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		assertThat(mode, hasValue("{2}"));
 		redefineSymbolic(list, "{1,3,3}", TestErrorHandler.INSTANCE);
 		assertThat(lookup("mode"), hasValue("{3}"));
-	}
-
-	@Test
-	public void testSymbolicDiffersForPointCommands() {
-		GeoSymbolic root = add("Root(x-sqrt(3))");
-		GeoSymbolic extremum = add("Extremum(x^2+sqrt(3))");
-		GeoSymbolic extremumInterval = add("Extremum(x^2+sqrt(3),-5,5)");
-		GeoSymbolic intersect = add("Intersect(x=y,x=sqrt(3))");
-		GeoSymbolic intersectBoring = add("Intersect(x=y,x=0)");
-		assertThat(AlgebraItem.isSymbolicDiffers(root), is(true));
-		assertThat(AlgebraItem.isSymbolicDiffers(extremum), is(true));
-		assertThat(AlgebraItem.isSymbolicDiffers(extremumInterval), is(true));
-		assertThat(AlgebraItem.isSymbolicDiffers(intersect), is(true));
-		assertThat(AlgebraItem.isSymbolicDiffers(intersectBoring), is(false));
 	}
 
 	@Test
