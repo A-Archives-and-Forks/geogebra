@@ -108,6 +108,12 @@ public final class DataImporter {
 		return importCSV(reader, decimalSeparator);
 	}
 
+	// Delete after APPS-5014's testing is completed
+	public boolean slowedImportCSV(String csv, char decimalSeparator) {
+		StringReader reader = new StringReader(csv);
+		return slowedImportCSV(reader, decimalSeparator);
+	}
+
 	/**
 	 * Imports CSV data into the {@link TableValuesView}.
 	 * <p/>
@@ -137,14 +143,23 @@ public final class DataImporter {
 	 * canceled by the delegate, or if import was canceled by the delegate; true otherwise.
 	 */
 	public boolean importCSV(Reader reader, char decimalSeparator) {
-		List<Row> rows = validateAndCollectRowsFromCSV(reader, decimalSeparator);
+		List<Row> rows = validateAndCollectRowsFromCSV(reader, decimalSeparator, false);
 		if (rows == null) {
 			return false;
 		}
-		return importRows(rows);
+		return importRows(rows, false);
 	}
 
-	private List<Row> validateAndCollectRowsFromCSV(Reader reader, char decimalSeparator) {
+	// For testing purposes only, delete after APPS-5014's testing is completed
+	public boolean slowedImportCSV(Reader reader, char decimalSeparator) {
+		List<Row> rows = validateAndCollectRowsFromCSV(reader, decimalSeparator, true);
+		if (rows == null) {
+			return false;
+		}
+		return importRows(rows, true);
+	}
+
+	private List<Row> validateAndCollectRowsFromCSV(Reader reader, char decimalSeparator, boolean slowed/* Delete after APPS-5014's testing is completed */) {
 		char csvSeparator = 0;
 		boolean dataHasHeader = false;
 		int columnCount = -1;
@@ -155,6 +170,16 @@ public final class DataImporter {
 		String line;
 		try {
 			while ((line = lineReader.readLine()) != null) {
+				// * * * Delete after APPS-5014's testing is completed
+				if (slowed) {
+					try {
+						Thread.sleep(100);
+					} catch (Exception exception) {
+
+					}
+				}
+				// * * *
+
 				currentRow++;
 				if (currentRow > maxRowCount) {
 					notifyAboutWarning(DATA_SIZE_LIMIT_EXCEEDED, currentRow);
@@ -206,7 +231,7 @@ public final class DataImporter {
 		return rows;
 	}
 
-	private boolean importRows(List<Row> rows) {
+	private boolean importRows(List<Row> rows, boolean slowed/* Delete after APPS-5014's testing is completed */) {
 		if (rows == null || rows.size() == 0) {
 			return false;
 		}
@@ -214,6 +239,16 @@ public final class DataImporter {
 		String[] columnNames = getColumnNames(firstRow);
 		tableValuesView.startImport(rows.size(), firstRow.columnCount, columnNames);
 		for (Row row : rows) {
+			// * Delete after APPS-5014's testing is completed
+			if (slowed) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception exception) {
+
+				}
+			}
+			// *
+
 			if (row.isHeader) {
 				continue;
 			}
