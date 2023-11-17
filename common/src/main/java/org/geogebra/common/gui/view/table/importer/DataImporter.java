@@ -7,7 +7,6 @@ import static org.geogebra.common.gui.view.table.importer.DataImporterWarning.NU
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
