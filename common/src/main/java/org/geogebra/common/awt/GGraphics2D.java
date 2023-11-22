@@ -4,6 +4,8 @@ import javax.annotation.Nonnull;
 
 import org.geogebra.common.awt.font.GTextLayout;
 
+import com.himamis.retex.renderer.share.platform.graphics.Graphics2DInterface;
+
 public interface GGraphics2D {
 
 	/**
@@ -337,8 +339,7 @@ public interface GGraphics2D {
 
 	void updateCanvasColor();
 
-	void drawStraightLine(double xCrossPix, double d,
-			double xCrossPix2, double i);
+	void drawStraightLine(double x1, double y1, double x2, double y2);
 
 	/**
 	 * Saves the state of the current transformation matrix.
@@ -396,4 +397,6 @@ public interface GGraphics2D {
 			int dy, int dw, int dh);
 
 	void drawImage(MyImage img, int dx, int dy, int dw, int dh);
+
+	Graphics2DInterface getGraphicsForLaTeX();
 }
