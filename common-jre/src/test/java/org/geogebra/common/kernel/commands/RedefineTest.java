@@ -674,4 +674,40 @@ public class RedefineTest extends BaseUnitTest {
 		reload();
 		assertThat(lookup("c"), not(isFixed));
 	}
+
+	@Test
+	public void constructionOrderShouldNotChangeMuch() {
+		add("f:x");
+		add("a=1");
+		add("b=2");
+		add("l={a,b}");
+		add("c=3");
+		add("d=4");
+		add("e=5");
+		add("s=Sum(l)");
+		// redefine
+		assertEquals("f,a,b,l,c,d,e,s",
+				String.join(",", getApp().getGgbApi().getAllObjectNames()));
+		add("l={a,b,c}");
+		assertEquals("f,a,b,c,l,d,e,s",
+				String.join(",", getApp().getGgbApi().getAllObjectNames()));
+	}
+
+	@Test
+	public void constructionOrderShouldNotChangeMuchWithSiblings() {
+		add("f:x");
+		add("a=1");
+		add("b=2");
+		add("Intersect(x^2=a,y=b)"); // autolabel A
+		add("c=3");
+		add("d=4");
+		add("e=5");
+		add("s=Angle(A)");
+		// redefine
+		assertEquals("f,a,b,A,B,c,d,e,s",
+				String.join(",", getApp().getGgbApi().getAllObjectNames()));
+		add("A=Intersect(x^2=a,y=b+c)");
+		assertEquals("f,a,b,c,A,B,d,e,s",
+				String.join(",", getApp().getGgbApi().getAllObjectNames()));
+	}
 }
