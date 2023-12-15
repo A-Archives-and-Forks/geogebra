@@ -3,12 +3,15 @@ package org.geogebra.common.kernel.geos;
 import static org.geogebra.common.kernel.geos.GeoInputBox.isGeoLinkable;
 import static org.geogebra.test.TestStringUtil.unicode;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Collections;
 
 import org.geogebra.common.AppCommonFactory;
 import org.geogebra.common.BaseUnitTest;
@@ -745,14 +748,6 @@ public class GeoInputBoxLinkedGeoTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testHyphenMinusShouldBeReplaced() {
-		add("text1=\" \"");
-		GeoInputBox inputBox = add("InputBox(text1)");
-		inputBox.updateLinkedGeo("12" + Unicode.MINUS + "10");
-		assertThat(inputBox.getTextForEditor(), is("12-10"));
-	}
-
-	@Test
 	public void testLinkableGeos() {
 		shouldBeLinkable("(1,1)");
 		add("a=1");
@@ -774,6 +769,26 @@ public class GeoInputBoxLinkedGeoTest extends BaseUnitTest {
 
 	private void shouldNotBeLinkable(String command) {
 		assertFalse(isGeoLinkable(add(command)));
+	}
+
+	@Test
+	public void testHyphenMinusShouldBeReplaced() {
+		add("text1=\" \"");
+		GeoInputBox inputBox = add("InputBox(text1)");
+		inputBox.updateLinkedGeo("12" + Unicode.MINUS + "10");
+		assertThat(inputBox.getTextForEditor(), is("12-10"));
+	}
+
+	@Test
+	public void shouldKeepComplexFunction() {
+		add("f(w) = w + i");
+		inputBox = add("ib=InputBox(f)");
+		updateInput("w/");
+		assertThat(lookup("f"), not(isDefined()));
+		inputBox = (GeoInputBox) lookup("ib");
+		assertEquals(Collections.singletonList("w"), inputBox.getFunctionVars());
+		updateInput("w-i");
+		t("f", "w - " + Unicode.IMAGINARY);
 	}
 
 }
