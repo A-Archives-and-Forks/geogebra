@@ -35,6 +35,8 @@ import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.Widget;
 
+import jsinterop.base.Js;
+
 /**
  * Web implementation of the inline text controller.
  */
@@ -65,6 +67,13 @@ public class InlineTextControllerW implements InlineTextController {
 		}
 		this.contentDefaultSize = getCurrentFontSize();
 		checkFonts(getFormat(geo.getContent()), getCallback());
+	}
+
+	private String checkEncodedPaste(String s) {
+		if (Js.isTruthy(s) && CopyPasteW.pasteIfEncoded(geo.getApp(), s)) {
+			return null;
+		}
+		return s;
 	}
 
 	@Override
@@ -139,6 +148,7 @@ public class InlineTextControllerW implements InlineTextController {
 	@Override
 	public void create() {
 		editor = new CarotaEditor(DrawInlineText.PADDING);
+		editor.addInsertFilter(this::checkEncodedPaste);
 		final Widget widget = editor.getWidget();
 		widget.addStyleName(INVISIBLE);
 		EventUtil.stopPointerEvents(widget.getElement(), btn -> btn <= 0);
