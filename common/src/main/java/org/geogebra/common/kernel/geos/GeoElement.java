@@ -1990,7 +1990,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	private static boolean containsOnlyMoveableGeos(
 			final ArrayList<GeoElementND> geos) {
-		if ((geos == null) || (geos.size() == 0)) {
+		if (geos == null || geos.isEmpty()) {
 			return false;
 		}
 
@@ -7177,5 +7177,12 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	@Override
 	public boolean isRecurringDecimal() {
 		return false;
+	}
+
+	/**
+	 * @return True if this is a free input point, false else
+	 */
+	public boolean isFreeInputPoint() {
+		return isGeoPoint() && (isIndependent() || isMoveable());
 	}
 }
