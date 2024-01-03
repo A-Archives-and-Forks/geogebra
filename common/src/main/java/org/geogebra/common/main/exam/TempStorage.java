@@ -71,15 +71,6 @@ public class TempStorage {
         tempMaterials = new LinkedHashMap<>();
     }
 
-    /**
-     * THIS IS A COPY OF A CHANGE IN APPS-5280. I MERGED THE iOS BRANCH
-     * BEFORE THE COMMON/WEB BRANCH WAS MERGED, AND WE NEED THIS, SO
-     * THIS IS WHY THIS IS HERE.
-     */
-    public void deleteTempMaterial(Material material) {
-        tempMaterials.remove(material.getLocalID());
-    }
-
     public boolean isEmpty() {
         return tempMaterials.isEmpty();
     }
