@@ -69,7 +69,12 @@ public class InlineTextControllerW implements InlineTextController {
 		checkFonts(getFormat(geo.getContent()), getCallback());
 	}
 
-	private String checkEncodedPaste(String s) {
+	/**
+	 * @param s string inserted by user
+	 * @param geo construction element
+	 * @return string to be actually inserted
+	 */
+	public static String checkEncodedPaste(String s, GeoInline geo) {
 		if (Js.isTruthy(s) && CopyPasteW.pasteIfEncoded(geo.getApp(), s)) {
 			return null;
 		}
@@ -148,7 +153,7 @@ public class InlineTextControllerW implements InlineTextController {
 	@Override
 	public void create() {
 		editor = new CarotaEditor(DrawInlineText.PADDING);
-		editor.addInsertFilter(this::checkEncodedPaste);
+		editor.addInsertFilter(s -> checkEncodedPaste(s, geo));
 		final Widget widget = editor.getWidget();
 		widget.addStyleName(INVISIBLE);
 		EventUtil.stopPointerEvents(widget.getElement(), btn -> btn <= 0);
