@@ -52,6 +52,7 @@ public class GlobalHeader implements EventRenderable {
 
 	private boolean shareButtonInitialized;
 	private boolean assignButtonInitialized;
+
 	private ActionButton undoButton;
 	private ActionButton redoButton;
 	private ActionButton settingsButton;

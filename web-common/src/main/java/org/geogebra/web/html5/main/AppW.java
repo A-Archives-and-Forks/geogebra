@@ -23,6 +23,9 @@ import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianController;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
+import org.geogebra.common.export.pstricks.GeoGebraToAsymptote;
+import org.geogebra.common.export.pstricks.GeoGebraToPgf;
+import org.geogebra.common.export.pstricks.GeoGebraToPstricks;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.factories.CASFactory;
 import org.geogebra.common.factories.Factory;
@@ -96,9 +99,7 @@ import org.geogebra.web.html5.euclidian.EuclidianPanelWAbstract;
 import org.geogebra.web.html5.euclidian.EuclidianViewW;
 import org.geogebra.web.html5.euclidian.EuclidianViewWInterface;
 import org.geogebra.web.html5.euclidian.profiler.FpsProfilerW;
-import org.geogebra.web.html5.export.GeoGebraToAsymptoteW;
-import org.geogebra.web.html5.export.GeoGebraToPgfW;
-import org.geogebra.web.html5.export.GeoGebraToPstricksW;
+import org.geogebra.web.html5.export.ExportGraphicsFactoryW;
 import org.geogebra.web.html5.factories.AwtFactoryW;
 import org.geogebra.web.html5.factories.FactoryW;
 import org.geogebra.web.html5.factories.FormatFactoryW;
@@ -3100,7 +3101,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 			@Override
 			public void onSuccess() {
 				LoggerW.loaded("export");
-				callback.callback(new GeoGebraToPstricksW(AppW.this));
+				callback.callback(new GeoGebraToPstricks(AppW.this, new ExportGraphicsFactoryW()));
 
 			}
 		});
@@ -3120,7 +3121,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 			@Override
 			public void onSuccess() {
 				LoggerW.loaded("export");
-				callback.callback(new GeoGebraToAsymptoteW(AppW.this));
+				callback.callback(new GeoGebraToAsymptote(AppW.this, new ExportGraphicsFactoryW()));
 
 			}
 		});
@@ -3140,7 +3141,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 			@Override
 			public void onSuccess() {
 				LoggerW.loaded("export");
-				callback.callback(new GeoGebraToPgfW(AppW.this));
+				callback.callback(new GeoGebraToPgf(AppW.this, new ExportGraphicsFactoryW()));
 
 			}
 		});
