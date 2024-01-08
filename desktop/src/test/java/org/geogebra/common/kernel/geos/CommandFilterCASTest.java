@@ -124,4 +124,22 @@ public class CommandFilterCASTest extends BaseSymbolicTest {
         t("Distance[(0,0,0), x+y+x=2]", "0.894427190999916");
         t("Distance[(0,0),1]", "?");
     }
+
+    @Test
+    public void cmdEvaluate() {
+        t("Evaluate((((((8168)(sqrt(((1)/(100))((-(sqrt(13610)))+(175)))))-(6335))"
+                + "+(((70)(sqrt(((1)/(100))((-(sqrt(13610)))+(175)))))(sqrt(13610))))/(7500))-"
+                + "(((1)/(37500))((sqrt((2)(((8338847)(sqrt(13610)))+(972825875))))-(31675))))",
+                "0");
+    }
+
+    @Test
+    public void cmdLimit() {
+        t("Limit(abs(ln(x+1)-x),x,0)", "0");
+    }
+
+    @Test
+    public void cmdSolve() {
+        t("Solve(abs(ln(x+1)-x),x)", "x");
+    }
 }
