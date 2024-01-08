@@ -127,6 +127,7 @@ public abstract class CasTestJsonCommon {
 					&& !"Binomial.2".equals(key)
 					&& !"ComplexRoot.1".equals(key)
 					&& !"CorrectSolution.3".equals(key)
+					&& !"ComplexRoot.1".equals(key)
 					&& !"Eliminate.2".equals(key) && !"ExpandOnly.1".equals(key)
 					&& !"ExpSimplify.1".equals(key)
 					&& !"GroebnerDegRevLex.1".equals(key)
