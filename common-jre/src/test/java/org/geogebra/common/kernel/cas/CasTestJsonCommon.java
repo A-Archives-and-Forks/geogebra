@@ -28,6 +28,7 @@ import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.test.CASTestLogger;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -440,10 +441,11 @@ public abstract class CasTestJsonCommon {
 		testCat("Cross");
 	}
 
-//	@Test
-//	public void testComplexRoot() {
-//		testCat("ComplexRoot");
-//	}
+	@Ignore
+	@Test
+	public void testComplexRoot() {
+		testCat("ComplexRoot");
+	}
 
 	@Test
 	public void testCSolutions() {
