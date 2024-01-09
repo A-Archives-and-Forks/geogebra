@@ -46,6 +46,7 @@ import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoElementGraphicsAdapter;
 import org.geogebra.common.kernel.geos.GeoImage;
+import org.geogebra.common.kernel.geos.GeoLocusStroke;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
@@ -272,7 +273,8 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		super(getPlatform(appletParameters, dimension, laf));
 		this.geoGebraElement = geoGebraElement;
 		this.appletParameters = appletParameters;
-
+		GeoLocusStroke.setSmoothing(appletParameters.getDataParamSmoothing());
+		GeoLocusStroke.setBlur(appletParameters.getDataParamBlur());
 		setPrerelease(appletParameters.getDataParamPrerelease());
 
 		// laf = null in webSimple

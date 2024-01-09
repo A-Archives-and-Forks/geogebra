@@ -1,7 +1,6 @@
 package org.geogebra.common.kernel.geos;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,7 +29,7 @@ import org.geogebra.common.util.StringUtil;
 
 /**
  * Class for polylines created using pen
- * 
+ *
  * @author Zbynek
  */
 public class GeoLocusStroke extends GeoLocus
@@ -39,6 +38,8 @@ public class GeoLocusStroke extends GeoLocus
 
 	private static final double MIN_CURVE_ANGLE = Math.PI / 60; // 3degrees
 	private static final int MAX_SEGMENT_LENGTH = 50;
+	private static double smoothing = 0.5;
+	private static double blur = 0.1;
 
 	/** cache the part of XML that follows after expression label="stroke1" */
 	private StringBuilder xmlPoints;
@@ -98,7 +99,7 @@ public class GeoLocusStroke extends GeoLocus
 
 	/**
 	 * Run a callback for points, skipping the control points.
-	 * 
+	 *
 	 * @param handler
 	 *            handler to be called for each point
 	 */
@@ -570,12 +571,7 @@ public class GeoLocusStroke extends GeoLocus
 		}
 
 		final MyPoint p = getPoints().get(index);
-		Collections.sort(interPointList, new Comparator<MyPoint>() {
-			@Override
-			public int compare(MyPoint p1, MyPoint p2) {
-				return Double.compare(p.distanceSq(p1), p.distanceSq(p2));
-			}
-		});
+		interPointList.sort(Comparator.comparingDouble(p::distanceSq));
 		return interPointList;
 	}
 
@@ -741,15 +737,21 @@ public class GeoLocusStroke extends GeoLocus
 		//do not use first point for averaging
 		averagedPoints.add(stroke.get(start));
 		int end = start + length;
+		double lastDist = 0;
 		for (int i = start + 1; i < end; i++) {
 			if (i < end - 2) {
 				// check if next point is close enough for averaging
-				if (areClosePoints(stroke.get(i), stroke.get(i + 1))) {
+				double dist = dist(stroke.get(i), stroke.get(i + 1));
+				if (dist < 6) {
 					averagedPoints.add(calculateAveragePoint(stroke.get(i), stroke.get(i + 1)));
 					i++;
+				} else if (dist < 35 && lastDist < 35) {
+					averagedPoints.add(calculateAveragePoint(stroke.get(i - 1), stroke.get(i),
+							stroke.get(i + 1)));
 				} else {
 					averagedPoints.add(stroke.get(i));
 				}
+				lastDist = dist;
 			} else {
 				averagedPoints.add(stroke.get(i));
 			}
@@ -757,20 +759,29 @@ public class GeoLocusStroke extends GeoLocus
 		return averagedPoints;
 	}
 
-	private boolean areClosePoints(MyPoint a, MyPoint b) {
+	private double dist(MyPoint a, MyPoint b) {
 		EuclidianView view = app.getActiveEuclidianView();
 		double screenCoordXA = view.toScreenCoordXd(a.getX());
 		double screenCoordYA = view.toScreenCoordYd(a.getY());
 		double screenCoordXB = view.toScreenCoordXd(b.getX());
 		double screenCoordYB = view.toScreenCoordYd(b.getY());
 
-		return Math.abs(screenCoordXA - screenCoordXB) < 4
-				&& Math.abs(screenCoordYA - screenCoordYB) < 4;
+		return Math.abs(screenCoordXA - screenCoordXB) + Math.abs(screenCoordYA - screenCoordYB);
 	}
 
 	private MyPoint calculateAveragePoint(MyPoint a, MyPoint b) {
 		double newX = (a.getX() + b.getX()) / 2;
 		double newY = (a.getY() + b.getY()) / 2;
+
+		return new MyPoint(newX, newY, SegmentType.LINE_TO);
+	}
+
+	private MyPoint calculateAveragePoint(MyPoint a, MyPoint b, MyPoint c) {
+		if (angle(a, b, c) > Math.PI / 2) {
+			return b; // keep sharp edges
+		}
+		double newX = a.getX() * blur + b.getX() * (1 - 2 * blur) + c.getX() * blur;
+		double newY = a.getY() * blur + b.getY() * (1 - 2 * blur) + c.getY() * blur;
 
 		return new MyPoint(newX, newY, SegmentType.LINE_TO);
 	}
@@ -859,8 +870,10 @@ public class GeoLocusStroke extends GeoLocus
 		xCoordsP1[n - 1] = rX[n - 1] / b[n - 1];
 		yCoordsP1[n - 1] = rY[n - 1] / b[n - 1];
 		for (int i = n - 2; i >= 0; --i) {
-			xCoordsP1[i] = (rX[i] - c[i] * xCoordsP1[i + 1]) / b[i];
-			yCoordsP1[i] = (rY[i] - c[i] * yCoordsP1[i + 1]) / b[i];
+			xCoordsP1[i] = smoothing * ((rX[i] - c[i] * xCoordsP1[i + 1]) / b[i])
+			+ (1 - smoothing) * stroke.get(start + i).getX();
+			yCoordsP1[i] = smoothing * (rY[i] - c[i] * yCoordsP1[i + 1]) / b[i]
+					+ (1 - smoothing) * stroke.get(start + i).getY();
 		}
 
 		/* we have p1, now compute p2 */
@@ -894,5 +907,13 @@ public class GeoLocusStroke extends GeoLocus
 
 	public void setSplitParentLabel(String string) {
 		this.splitParentLabel = string;
+	}
+
+	public static void setSmoothing(double smoothing) {
+		GeoLocusStroke.smoothing = smoothing;
+	}
+
+	public static void setBlur(double blur) {
+		GeoLocusStroke.blur = blur;
 	}
 }

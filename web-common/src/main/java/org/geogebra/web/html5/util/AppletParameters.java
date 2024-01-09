@@ -195,6 +195,14 @@ public class AppletParameters {
 		return getBoolDataParam("showMenuBar", def) || getDataParamApp();
 	}
 
+	public double getDataParamSmoothing() {
+		return getDoubleDataParam("smoothing", 1);
+	}
+
+	public double getDataParamBlur() {
+		return getDoubleDataParam("blur", 0);
+	}
+
 	/**
 	 * @param def
 	 *            fallback if parameter is not set
