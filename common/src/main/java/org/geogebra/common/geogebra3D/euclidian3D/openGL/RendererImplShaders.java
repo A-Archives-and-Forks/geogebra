@@ -977,7 +977,6 @@ public abstract class RendererImplShaders extends RendererImpl {
 		}
 		glAttachShader(vertShader);
 		glAttachShader(fragShader);
-
 		glBindAttribLocation(GLSL_ATTRIB_POSITION, "attribute_Position");
 		glBindAttribLocation(GLSL_ATTRIB_NORMAL, "attribute_Normal");
 		glBindAttribLocation(GLSL_ATTRIB_COLOR, "attribute_Color");

@@ -72,9 +72,17 @@ public class RendererImplShadersW extends RendererImplShaders {
 
 	private WebGLShader getShader(int type, String source) {
 		WebGLShader shader = glContext.createShader(type);
-
-		glContext.shaderSource(shader, source);
-		glContext.compileShader(shader);
+		try {
+			Log.debug("Setting shader " + type);
+			glContext.shaderSource(shader, source);
+			Log.debug("Compiling shader " + type);
+			glContext.compileShader(shader);
+			Log.debug("Done " + type);
+		} catch (Throwable t) {
+			Log.debug(t);
+			Log.debug(glContext.getShaderInfoLog(shader));
+			Log.debug(glContext.getError());
+		}
 
 		if (Js.isFalsy(glContext.getShaderParameter(shader,
 				WebGLRenderingContext.COMPILE_STATUS))) {
