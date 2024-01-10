@@ -8,7 +8,7 @@ import org.geogebra.common.move.views.BooleanRenderable;
 import org.geogebra.common.move.views.EventRenderable;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.ShareControllerW;
-import org.geogebra.web.full.gui.menu.icons.DefaultMenuIconProvider;
+import org.geogebra.web.full.gui.menu.icons.DefaultMenuIconResources;
 import org.geogebra.web.full.gui.menubar.action.ClearAllAction;
 import org.geogebra.web.full.gui.menubar.action.ExportImage;
 import org.geogebra.web.full.gui.menubar.action.SaveAction;
@@ -141,7 +141,7 @@ public class FileMenuW extends Submenu implements BooleanRenderable, EventRender
 
 	private void addShareItem() {
 		shareItem = addItem(new MenuItem<>("Share",
-				DefaultMenuIconProvider.INSTANCE.exportFile(),
+				DefaultMenuIconResources.INSTANCE.exportFile(),
 				new ShareAction()));
 	}
 
@@ -154,11 +154,11 @@ public class FileMenuW extends Submenu implements BooleanRenderable, EventRender
 	private void addSaveItems() {
 		if (getApp().getLAF().undoRedoSupported()) {
 			addItem(new MenuItem<>("SaveOnline",
-					DefaultMenuIconProvider.INSTANCE.saveOnline(),
+					DefaultMenuIconResources.INSTANCE.saveOnline(),
 					new SaveAction()));
 
 			addItem(new MenuItem<>("SaveToYourPC",
-					DefaultMenuIconProvider.INSTANCE.save(),
+					DefaultMenuIconResources.INSTANCE.save(),
 					new SaveLocalAction()));
 		}
 	}

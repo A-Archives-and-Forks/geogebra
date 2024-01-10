@@ -30,9 +30,10 @@ import org.geogebra.web.full.gui.menu.icons.DefaultMenuIconProvider;
 import org.geogebra.web.full.gui.menu.icons.MebisMenuIconProvider;
 import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.gui.GeoGebraFrameW;
+import org.geogebra.web.html5.gui.view.IconSpec;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.LocalizationW;
-import org.geogebra.web.resources.SVGResource;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.resources.client.impl.ImageResourcePrototype;
 import org.gwtproject.safehtml.shared.UriUtils;
@@ -94,7 +95,7 @@ public class MenuViewController implements EventRenderable, SetLabels, RequiresR
 		frame = app.getAppletFrame();
 		loginOperation = app.getLoginOperation();
 		menuIconResource = new MenuIconResource(app.isMebis()
-				? MebisMenuIconProvider.INSTANCE : DefaultMenuIconProvider.INSTANCE);
+				? new MebisMenuIconProvider() : new DefaultMenuIconProvider());
 	}
 
 	private void createViews() {
@@ -326,9 +327,9 @@ public class MenuViewController implements EventRenderable, SetLabels, RequiresR
 
 	private MenuItemView createMenuItemView(MenuItem menuItem) {
 		if (menuItem.getIcon() == Icon.USER_ICON) {
-			return new MenuItemView(getUserImage(), menuItem.getLabel(), true);
+			return new MenuItemView(new ImageIconSpec(getUserImage()), menuItem.getLabel(), true);
 		} else {
-			SVGResource icon = menuItem.getIcon() != null
+			IconSpec icon = menuItem.getIcon() != null
 					? menuIconResource.getImageResource(menuItem.getIcon()) : null;
 			String label = localization.getMenu(menuItem.getLabel());
 			return new MenuItemView(icon, label);
