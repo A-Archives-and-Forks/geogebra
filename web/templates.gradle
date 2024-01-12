@@ -92,8 +92,8 @@ ext.appHtml = { app, prerelease, offline = false, inlineCss = false ->
             "content=\"app-id=${app.appStoreId}\"><link rel=\"manifest\" href=\"https://www.geogebra.org/apps/manifest/${appID}.json\">" : ""
     def splashContent = template("${app.id}-splash.html")
     def splashStyle = "<style>" + file("war/css/app-header.css").text + "</style>"
-    if (!inlineCss) {
-        splashStyle = "<link rel=stylesheet href=\"css/app-header.css\"/>"
+    if (!inlineCss && vendor != "Mebis") {
+       splashStyle = "<link rel=stylesheet href=\"css/app-header.css\"/>"
     }
     def matomo = vendor == "Mebis" ? "" : template("partials/matomo.html")
     return replaceVendor(html, vendor, offline)
