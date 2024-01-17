@@ -1668,7 +1668,7 @@ public class ConsElementXMLHandler {
 		try {
 			handleMatrixConicOrQuadric(attrs);
 			return true;
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			return false;
 		}
 	}
@@ -1678,11 +1678,8 @@ public class ConsElementXMLHandler {
 	 * 
 	 * @param attrs
 	 *            attributes
-	 * @throws Exception
-	 *             exception
 	 */
-	private void handleMatrixConicOrQuadric(LinkedHashMap<String, String> attrs)
-			throws Exception {
+	private void handleMatrixConicOrQuadric(LinkedHashMap<String, String> attrs) {
 		if (geo.isGeoQuadric()) {
 			if (geo.isDefaultGeo()) { // avoid setting for default geo
 				return;
