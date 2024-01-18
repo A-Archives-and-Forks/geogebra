@@ -1,13 +1,10 @@
 package org.geogebra.web.full.gui.toolbarpanel;
 
 import org.geogebra.common.gui.SetLabels;
-<<<<<<< HEAD
 import org.geogebra.common.io.layout.DockPanelData;
-=======
 import org.geogebra.web.full.gui.layout.PaintToCanvas;
 import org.geogebra.web.full.gui.layout.ViewCounter;
 import org.geogebra.web.full.gui.util.Domvas;
->>>>>>> 244110da5d084ec49809f0fbb868f3e0cc4474ac
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.gwtproject.dom.client.Style;
