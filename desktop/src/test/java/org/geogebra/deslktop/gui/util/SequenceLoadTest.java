@@ -1,7 +1,9 @@
 package org.geogebra.deslktop.gui.util;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.euclidian.DrawEquation;
 import org.geogebra.common.jre.headless.AppCommon;
+import org.geogebra.common.jre.headless.DrawEquationStub;
 import org.geogebra.common.jre.util.Base64;
 import org.geogebra.desktop.headless.AppDNoGui;
 import org.geogebra.desktop.main.LocalizationD;
@@ -20,7 +22,15 @@ public class SequenceLoadTest extends BaseUnitTest {
 
 	@Before
 	public void setUp() {
-		app = new AppDNoGui(new LocalizationD(3), false);
+		app = new AppDNoGui(new LocalizationD(3), false) {
+
+			@Override
+			public DrawEquation getDrawEquation() {
+				return new DrawEquationStub();
+			}
+
+		};
+
 		app.getGgbApi().setBase64(sequenceBase64);
 		undoRedoTester = new UndoRedoTester(app);
 		undoRedoTester.setupUndoRedo();
@@ -29,8 +39,6 @@ public class SequenceLoadTest extends BaseUnitTest {
 
 	@Test
 	public void testUndo() {
-//		addAvInput("Sequence(Sequence(Element(m1, lig, col) - Element(m1, lig, col + 1), "
-//				+ "col, 1, dimjeu2), lig, 1, Dimension(jeunonnul))");
 		add("(1,1)");
 		app.storeUndoInfo();
 		undoRedoTester.undo();
