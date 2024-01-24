@@ -19,6 +19,7 @@ import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.geos.GeoNumberValue;
+import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.geos.GeoPolygon;
 import org.geogebra.common.kernel.geos.TestGeo;
 import org.geogebra.common.plugin.GeoClass;
@@ -158,7 +159,7 @@ public class AlgoListElement extends AlgoElement {
 				}
 				k++;
 			} while (current.isGeoList() && k < num2.length);
-			element = current.copyInternal(cons);
+			element = k == num2.length - 1 ? current.copyInternal(cons) : new GeoNumeric(cons);
 		} catch (Exception e) {
 			Log.debug("error initialising list");
 		}

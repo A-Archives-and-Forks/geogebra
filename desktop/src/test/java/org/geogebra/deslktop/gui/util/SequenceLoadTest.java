@@ -40,6 +40,7 @@ public class SequenceLoadTest extends BaseUnitTest {
 	@Before
 	public void setUp() {
 		app = getApp();
+		app.enableCAS(false);
 		app.getGgbApi().setBase64(sequenceBase64);
 		undoRedoTester = new UndoRedoTester(app);
 		undoRedoTester.setupUndoRedo();
@@ -52,7 +53,7 @@ public class SequenceLoadTest extends BaseUnitTest {
 
 	@Test
 	public void testMatrixFromCommandAfterLoad() {
-		add("Sequence(Sequence(Element(m1, lig, col) - Element(m1, lig, col + 1), col, 1, dimjeu2),"
+		add("m4 = Sequence(Sequence(Element(m1, lig, col) - Element(m1, lig, col + 1), col, 1, dimjeu2),"
 				+ " lig, 1, Dimension(jeunonnul))");
 		assertThat(app.getKernel().lookupLabel("m4"), hasValue(M2));
 	}
