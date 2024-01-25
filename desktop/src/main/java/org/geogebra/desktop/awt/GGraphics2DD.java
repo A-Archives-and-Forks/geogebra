@@ -24,11 +24,6 @@ import org.geogebra.common.util.debug.Log;
 import org.geogebra.desktop.factories.AwtFactoryD;
 import org.geogebra.desktop.gui.MyImageD;
 
-
-import com.himamis.retex.renderer.desktop.graphics.Graphics2DD;
-import com.himamis.retex.renderer.share.platform.graphics.Graphics2DInterface;
-
-
 /**
  * Desktop implementation of Graphics2D; wraps the java.awt.Graphics2D class
  * 
@@ -455,9 +450,8 @@ public class GGraphics2DD implements GGraphics2D {
 		impl.drawImage(((MyImageD) img).getImage(), dx, dy, dx, dy, null);
 	}
 
-	@Override
-	public Graphics2DInterface getGraphicsForLaTeX() {
-		return new Graphics2DD(impl);
+	public Graphics2D getNativeImplementation() {
+		return impl;
 	}
 
 }
