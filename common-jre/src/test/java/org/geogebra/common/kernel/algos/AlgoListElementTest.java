@@ -15,15 +15,6 @@ public class AlgoListElementTest extends BaseUnitTest {
 	private GeoElement[] output;
 
 	@Test
-	public void testSimpleList() {
-		GeoList list = add("{1,2,3,4}");
-		GeoNumeric index = new GeoNumeric(getConstruction(), 2);
-		AlgoListElement algo = new AlgoListElement(getConstruction(), list, index);
-		GeoElement[] output = algo.getOutput();
-		assertThat(output[0], hasValue("2"));
-	}
-
-	@Test
 	public void testExistingValueInFlatList() {
 		withList("{1,2,3,4}").at(1).shouldHaveValue("1");
 	}
