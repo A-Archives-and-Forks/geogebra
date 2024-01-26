@@ -59,4 +59,37 @@ public class AlgoListElementTest extends BaseUnitTest {
 		assertThat(output[0], hasValue(value));
 
 	}
+
+	private AlgoListElementTest at(int... indexes) {
+		GeoNumeric[] nums = new GeoNumeric[indexes.length];
+		for (int i = 0; i < nums.length; i++) {
+			nums[i] = new GeoNumeric(getConstruction(), indexes[i]);
+		}
+
+		AlgoListElement algo = new AlgoListElement(getConstruction(), list, nums);
+		output = algo.getOutput();
+		return this;
+	}
+
+	@Test
+	public void testExistingValueInMatrix() {
+		withList("{{1,2},{3,4}}").at(1, 1).shouldHaveValue("1");
+	}
+
+	@Test
+	public void testNonExistingIndexInMatrix() {
+		withList("{{1,2},{3,4}}").at(3, 1).shouldHaveType(GeoClass.NUMERIC);
+	}
+
+	@Test
+	public void testNonExistingIndexInPointMatrix() {
+		withList("{{(1,1),(0,0)},{(0,0),(4,4)}}").at(2, 2)
+				.shouldHaveType(GeoClass.POINT);
+	}
+
+	@Test
+	public void testEmptyMatrixShouldHaveElementTypeNumeric() {
+		withList("{{},{}}").at(3, 1).shouldHaveType(GeoClass.NUMERIC);
+		withList("{{},{}}").at(3, 16).shouldHaveType(GeoClass.NUMERIC);
+	}
 }
