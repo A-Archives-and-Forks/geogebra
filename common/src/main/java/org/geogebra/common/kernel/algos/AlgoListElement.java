@@ -19,7 +19,6 @@ import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.geos.GeoNumberValue;
-import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.geos.GeoPolygon;
 import org.geogebra.common.kernel.geos.TestGeo;
 import org.geogebra.common.plugin.GeoClass;
@@ -62,7 +61,7 @@ public class AlgoListElement extends AlgoElement {
 		this.num = num;
 		numGeo = num.toGeoElement();
 
-		int initIndex = Math.max(0, (int) Math.round(num.getDouble()) - 1);
+		int initIndex = getInitIndex(num);
 
 		// init return element as copy of initIndex list element
 		if (geoList.size() > initIndex) {
@@ -102,6 +101,10 @@ public class AlgoListElement extends AlgoElement {
 		compute();
 	}
 
+	private static int getInitIndex(GeoNumberValue number) {
+		return Math.max(0, (int) Math.round(number.getDouble()) - 1);
+	}
+
 	private static GeoElement getGenericElement(GeoList geoList, int index) {
 		GeoElement toCopy = geoList.get(index);
 		if (geoList.getElementType() == GeoClass.DEFAULT
@@ -124,42 +127,27 @@ public class AlgoListElement extends AlgoElement {
 	 *            construction
 	 * @param geoList
 	 *            list
-	 * @param num2
+	 * @param indexes
 	 *            element coordinates
 	 */
 	public AlgoListElement(Construction cons, GeoList geoList,
-			GeoNumberValue[] num2) {
+			GeoNumberValue[] indexes) {
 		super(cons);
 		this.geoList = geoList;
-		this.num2 = num2;
+		this.num2 = indexes;
 
 		element = null;
+		GeoElement parent = null;
 		GeoElement current = geoList;
-		int k = 0;
+		int n = 0;
 		try {
 			do {
-				int initIndex = Math.max(0,
-						(int) Math.round(num2[k].getDouble()) - 1);
-				GeoList currentList = (GeoList) current;
-				// init return element as copy of initIndex list element
-				if (currentList.size() > initIndex) {
-					// create copy of initIndex GeoElement in list
-					current = k == num2.length - 1
-							? getGenericElement(currentList, initIndex)
-							: currentList.get(initIndex);
-				}
-
-				// if not enough elements in list:
-				// init return element as copy of first list element
-				else if (geoList.size() > 0) {
-					// create copy of first GeoElement in list
-					current = k == num2.length - 1
-							? getGenericElement(currentList, 0)
-							: currentList.get(0);
-				}
-				k++;
-			} while (current.isGeoList() && k < num2.length);
-			element = k == num2.length - 1 ? current.copyInternal(cons) : new GeoNumeric(cons);
+				parent = current;
+				current = getNthElement(n, current);
+				n++;
+			} while (current.isGeoList() && n < indexes.length);
+			element = n == indexes.length - 1 ? current.copyInternal(cons)
+					: getSameTypeAs(cons, parent, n);
 		} catch (Exception e) {
 			Log.debug("error initialising list");
 		}
@@ -172,6 +160,49 @@ public class AlgoListElement extends AlgoElement {
 		setInputOutput();
 		compute();
 
+	}
+
+	private GeoElement getSameTypeAs(Construction cons, GeoElement parent, int index) {
+		if (parent == null || !parent.isGeoList()) {
+			return null;
+		}
+
+		GeoList list = ((GeoList) parent);
+		if (index < list.size()) {
+			return getGenericElement(list, index);
+		}
+
+		if (!list.isEmptyList()) {
+			return getGenericElement(list, 0);
+		}
+
+		if (list.getTypeStringForXML() != null) {
+			return kernel.createGeoElement(cons, list.getTypeStringForXML());
+		}
+
+		return cons.getOutputGeo();
+	}
+
+	private GeoElement getNthElement(int n,	GeoElement current) {
+		int initIndex = getInitIndex(num2[n]);
+		GeoList currentList = (GeoList) current;
+		// init return element as copy of initIndex list element
+		if (currentList.size() > initIndex) {
+			// create copy of initIndex GeoElement in list
+			current = n == num2.length - 1
+					? getGenericElement(currentList, initIndex)
+					: currentList.get(initIndex);
+		}
+
+		// if not enough elements in list:
+		// init return element as copy of first list element
+		else if (geoList.size() > 0) {
+			// create copy of first GeoElement in list
+			current = n == num2.length - 1
+					? getGenericElement(currentList, 0)
+					: currentList.get(0);
+		}
+		return current;
 	}
 
 	@Override

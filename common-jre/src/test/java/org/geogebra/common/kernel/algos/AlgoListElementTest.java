@@ -65,11 +65,15 @@ public class AlgoListElementTest extends BaseUnitTest {
 	@Test
 	public void testExistingValueInMatrix() {
 		withList("{{1,2},{3,4}}").at(1, 1).shouldHaveValue("1");
+		withList("{{1,2},{3,4}}").at(1, 2).shouldHaveValue("2");
+		withList("{{1,2},{3,4}}").at(2, 1).shouldHaveValue("3");
+		withList("{{1,2},{3,4}}").at(2, 2).shouldHaveValue("4");
 	}
 
 	@Test
 	public void testNonExistingIndexInMatrix() {
 		withList("{{1,2},{3,4}}").at(3, 1).shouldHaveType(GeoClass.NUMERIC);
+		withList("{{1,2},{3,4}}").at(1, 3).shouldHaveType(GeoClass.NUMERIC);
 	}
 
 	@Test
