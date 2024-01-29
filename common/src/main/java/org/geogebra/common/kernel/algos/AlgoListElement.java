@@ -19,6 +19,7 @@ import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.geos.GeoNumberValue;
+import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.geos.GeoPolygon;
 import org.geogebra.common.kernel.geos.TestGeo;
 import org.geogebra.common.plugin.GeoClass;
@@ -39,14 +40,15 @@ public class AlgoListElement extends AlgoElement {
 
 	private GeoList geoList; // input
 	private GeoNumberValue num;
-	private GeoNumberValue[] num2 = null; // input
+	private GeoNumberValue[] indexes = null; // input
+	private final boolean topLevelCommand;
 	private GeoElement numGeo;
 	private GeoElement element; // output
 	private String elementLabel;
 
 	/**
 	 * Creates new labeled element algo
-	 * 
+	 *
 	 * @param cons
 	 *            construction
 	 * @param geoList
@@ -60,37 +62,9 @@ public class AlgoListElement extends AlgoElement {
 		this.geoList = geoList;
 		this.num = num;
 		numGeo = num.toGeoElement();
+		topLevelCommand = false;
 
-		int initIndex = getInitIndex(num);
-
-		// init return element as copy of initIndex list element
-		if (geoList.size() > initIndex) {
-			// create copy of initIndex GeoElement in list
-			element = getGenericElement(geoList, initIndex).copyInternal(cons);
-		}
-
-		// if not enough elements in list:
-		// init return element as copy of first list element
-		else if (geoList.size() > 0) {
-			// create copy of first GeoElement in list
-
-			element = getGenericElement(geoList, 0).copyInternal(cons);
-		}
-
-		// desperate case: empty list
-		else if (geoList.getTypeStringForXML() != null) {
-			// if the list was non-empty at some point before saving, get the
-			// same type of geo
-			// saved in XML from 4.1.131.0
-			element = kernel.createGeoElement(cons,
-					geoList.getTypeStringForXML());
-		}
-
-		// desperate case: empty list
-		else {
-			// saved in XML from 4.0.18.0
-			element = cons.getOutputGeo();
-		}
+		element = createElementForList(geoList, getInitIndex(num));
 
 		if (element.isGeoPolygon()) { // ensure type will not be sticked to e.g.
 										// "triangle"
@@ -99,6 +73,31 @@ public class AlgoListElement extends AlgoElement {
 
 		setInputOutput();
 		compute();
+	}
+
+	private GeoElement createElementForList(GeoElement source, int index) {
+		if (source == null || !source.isGeoList()) {
+			return createDefaultElement();
+		}
+
+		GeoList list = ((GeoList) source);
+		if (index < list.size()) {
+			return getGenericElement(list, index).copyInternal(cons);
+		}
+
+		if (!list.isEmptyList()) {
+			return getGenericElement(list, 0).copyInternal(cons);
+		}
+
+		if (list.getTypeStringForXML() != null) {
+			return kernel.createGeoElement(cons, list.getTypeStringForXML());
+		}
+
+		return createDefaultElement();
+	}
+
+	private GeoElement createDefaultElement() {
+		return topLevelCommand ? new GeoNumeric(cons) : cons.getOutputGeo();
 	}
 
 	private static int getInitIndex(GeoNumberValue number) {
@@ -127,27 +126,28 @@ public class AlgoListElement extends AlgoElement {
 	 *            construction
 	 * @param geoList
 	 *            list
-	 * @param indexes
+	 * @param nums
 	 *            element coordinates
 	 */
 	public AlgoListElement(Construction cons, GeoList geoList,
-			GeoNumberValue[] indexes) {
+			GeoNumberValue[] nums) {
 		super(cons);
 		this.geoList = geoList;
-		this.num2 = indexes;
+		this.indexes = nums;
+		this.topLevelCommand = geoList.isLabelSet();
 
 		element = null;
 		GeoElement parent = null;
 		GeoElement current = geoList;
-		int n = 0;
+		int depth = 0;
 		try {
 			do {
 				parent = current;
-				current = getNthElement(n, current);
-				n++;
-			} while (current.isGeoList() && n < indexes.length);
-			element = n == indexes.length - 1 ? current.copyInternal(cons)
-					: getSameTypeAs(cons, parent, n);
+				current = getNthElement(current, depth);
+				depth++;
+			} while (current.isGeoList() && depth < maxDepth());
+			element = depth == maxDepth() - 1 ? current.copyInternal(cons)
+					: createElementForList(parent, depth);
 		} catch (Exception e) {
 			Log.debug("error initialising list");
 		}
@@ -162,47 +162,32 @@ public class AlgoListElement extends AlgoElement {
 
 	}
 
-	private GeoElement getSameTypeAs(Construction cons, GeoElement parent, int index) {
-		if (parent == null || !parent.isGeoList()) {
-			return null;
-		}
-
-		GeoList list = ((GeoList) parent);
-		if (index < list.size()) {
-			return getGenericElement(list, index);
-		}
-
-		if (!list.isEmptyList()) {
-			return getGenericElement(list, 0);
-		}
-
-		if (list.getTypeStringForXML() != null) {
-			return kernel.createGeoElement(cons, list.getTypeStringForXML());
-		}
-
-		return cons.getOutputGeo();
+	private int maxDepth() {
+		return indexes.length;
 	}
 
-	private GeoElement getNthElement(int n,	GeoElement current) {
-		int initIndex = getInitIndex(num2[n]);
+	private GeoElement getNthElement(GeoElement current, int depth) {
+		int initIndex = getInitIndex(indexes[depth]);
 		GeoList currentList = (GeoList) current;
 		// init return element as copy of initIndex list element
 		if (currentList.size() > initIndex) {
 			// create copy of initIndex GeoElement in list
-			current = n == num2.length - 1
-					? getGenericElement(currentList, initIndex)
-					: currentList.get(initIndex);
+			current = getCurrent(depth, currentList, initIndex);
 		}
 
 		// if not enough elements in list:
 		// init return element as copy of first list element
 		else if (geoList.size() > 0) {
 			// create copy of first GeoElement in list
-			current = n == num2.length - 1
-					? getGenericElement(currentList, 0)
-					: currentList.get(0);
+			current = getCurrent(depth, currentList, 0);
 		}
 		return current;
+	}
+
+	private GeoElement getCurrent(int depth, GeoList currentList, int initIndex) {
+		return depth == maxDepth() - 1
+				? getGenericElement(currentList, initIndex)
+				: currentList.get(initIndex);
 	}
 
 	@Override
@@ -212,21 +197,32 @@ public class AlgoListElement extends AlgoElement {
 
 	@Override
 	protected void setInputOutput() {
-
-		if (num2 == null) {
-			input = new GeoElement[2];
-			input[0] = geoList;
-			input[1] = numGeo;
+		if (isFlatList()) {
+			setInputForFlatList();
 		} else {
-			input = new GeoElement[num2.length + 1];
-			input[0] = geoList;
-			for (int i = 0; i < num2.length; i++) {
-				input[i + 1] = num2[i].toGeoElement();
-			}
+			setInputForListOfLists();
 		}
 
 		setOnlyOutput(element);
 		setDependencies(); // done by AlgoElement
+	}
+
+	private boolean isFlatList() {
+		return indexes == null;
+	}
+
+	private void setInputForFlatList() {
+		input = new GeoElement[2];
+		input[0] = geoList;
+		input[1] = numGeo;
+	}
+
+	private void setInputForListOfLists() {
+		input = new GeoElement[maxDepth() + 1];
+		input[0] = geoList;
+		for (int i = 0; i < maxDepth(); i++) {
+			input[i + 1] = indexes[i].toGeoElement();
+		}
 	}
 
 	/**
@@ -245,7 +241,7 @@ public class AlgoListElement extends AlgoElement {
 			return;
 		}
 
-		if (num2 == null) {
+		if (isFlatList()) {
 			// index of wanted element
 			int n = (int) Math.round(num.getDouble()) - 1;
 			if (n >= 0 && n < geoList.size()) {
@@ -257,17 +253,17 @@ public class AlgoListElement extends AlgoElement {
 
 		} else {
 
-			for (int k = 0; k < num2.length; k++) {
-				if (!num2[k].toGeoElement().isDefined()) {
+			for (int k = 0; k < maxDepth(); k++) {
+				if (!indexes[k].toGeoElement().isDefined()) {
 					element.setUndefined();
 					return;
 				}
 			}
 
-			int m = (int) Math.round(num2[num2.length - 1].getDouble()) - 1;
+			int m = (int) Math.round(indexes[maxDepth() - 1].getDouble()) - 1;
 			GeoElement current = geoList;
-			for (int k = 0; k < num2.length - 1; k++) {
-				int index = (int) Math.round(num2[k].getDouble() - 1);
+			for (int k = 0; k < maxDepth() - 1; k++) {
+				int index = (int) Math.round(indexes[k].getDouble() - 1);
 				if (index >= 0 && current.isGeoList()
 						&& index < ((GeoList) current).size()) {
 					current = ((GeoList) current).get(index);
