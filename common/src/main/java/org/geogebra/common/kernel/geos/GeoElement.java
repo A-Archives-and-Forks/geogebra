@@ -6885,8 +6885,8 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	@Override
 	public void addAuralName(ScreenReaderBuilder sb) {
-		addAuralType(sb);
 		if (!addAuralCaption(sb)) {
+			addAuralType(sb);
 			addAuralLabel(sb);
 			addAuralValue(sb);
 		}
