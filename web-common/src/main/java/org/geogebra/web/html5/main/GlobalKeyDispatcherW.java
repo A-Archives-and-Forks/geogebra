@@ -168,6 +168,8 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 						((AppW) GlobalKeyDispatcherW.this.app).moveFocusToLastWidget();
 					} else {
 						app.setMoveMode();
+						app.getActiveEuclidianView().getEuclidianController().clearSelections();
+						app.getActiveEuclidianView().setSelectionRectangle(null);
 					}
 					handled = true;
 				} else {
