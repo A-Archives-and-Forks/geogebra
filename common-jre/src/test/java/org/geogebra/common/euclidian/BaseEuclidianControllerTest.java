@@ -17,6 +17,7 @@ import org.geogebra.test.TestEvent;
 import org.junit.Before;
 
 public class BaseEuclidianControllerTest extends BaseUnitTest {
+
 	private EuclidianController ec;
 
 	@Override
@@ -28,7 +29,7 @@ public class BaseEuclidianControllerTest extends BaseUnitTest {
 	 * Setup the app
 	 */
 	@Before
-	public void clear() {
+	public void setupController() {
 		ec = getApp().getActiveEuclidianView().getEuclidianController();
 		reset();
 	}
