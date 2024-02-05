@@ -41,7 +41,6 @@ public class AlgoListElement extends AlgoElement {
 	private GeoList geoList; // input
 	private GeoNumberValue index;
 	private GeoNumberValue[] indexes = null; // input
-	private final boolean topLevelCommand;
 	private GeoElement indexGeo;
 	private GeoElement element; // output
 	private String elementLabel;
@@ -62,9 +61,8 @@ public class AlgoListElement extends AlgoElement {
 		this.geoList = geoList;
 		this.index = index;
 		indexGeo = index.toGeoElement();
-		topLevelCommand = false;
 
-		element = createElementForList(geoList, indexFrom(index));
+		element = createGenericElementForFlatList(geoList, indexFrom(index));
 
 		if (element.isGeoPolygon()) { // ensure type will not be sticked to e.g.
 										// "triangle"
@@ -75,9 +73,9 @@ public class AlgoListElement extends AlgoElement {
 		compute();
 	}
 
-	private GeoElement createElementForList(GeoElement source, int index) {
+	private GeoElement createGenericElementForFlatList(GeoElement source, int index) {
 		if (source == null || !source.isGeoList()) {
-			return createDefaultElement();
+			return cons.getOutputGeo();
 		}
 
 		GeoList list = ((GeoList) source);
@@ -93,11 +91,7 @@ public class AlgoListElement extends AlgoElement {
 			return kernel.createGeoElement(cons, list.getTypeStringForXML());
 		}
 
-		return createDefaultElement();
-	}
-
-	private GeoElement createDefaultElement() {
-		return topLevelCommand ? new GeoNumeric(cons) : cons.getOutputGeo();
+		return cons.getOutputGeo();
 	}
 
 	private static GeoElement getGenericElement(GeoList geoList, int index) {
@@ -118,27 +112,27 @@ public class AlgoListElement extends AlgoElement {
 	}
 
 	/**
-	 * @param cons
-	 *            construction
-	 * @param geoList
-	 *            list
-	 * @param nums
-	 *            element coordinates
+	 * @param cons construction
+	 * @param geoList list
+	 * @param nums element coordinates
+	 * @param labelOutput
 	 */
 	public AlgoListElement(Construction cons, GeoList geoList,
-			GeoNumberValue[] nums) {
+			GeoNumberValue[] nums, boolean topLevelCommand) {
 		super(cons);
 		this.geoList = geoList;
 		this.indexes = nums;
-		this.topLevelCommand = geoList.isLabelSet();
+		element = createGenericElementForNestedList();
 
-		element = retrieveElementInDepth();
+		if (element == null) {
+			element = topLevelCommand ? cons.getOutputGeo() : new GeoNumeric(cons);
+		}
 
-		setInputOutput();
+	 	setInputOutput();
 		compute();
 	}
 
-	private GeoElement retrieveElementInDepth() {
+	private GeoElement createGenericElementForNestedList() {
 		try {
 			GeoElement parent = null;
 			GeoElement current = geoList;
@@ -149,14 +143,14 @@ public class AlgoListElement extends AlgoElement {
 				depth++;
 			} while (current.isGeoList() && depth < maxDepth());
 			return depth == maxDepth() - 1 ? current.copyInternal(cons)
-					: createElementForList(parent, depth);
+					: createGenericElementForFlatList(parent, depth);
 		} catch (Exception e) {
 			Log.debug("error initialising list");
 		}
 
 		// desperate case: empty list, or malformed 2D array
 		// saved in XML from 4.0.18.0
-		return cons.getOutputGeo();
+		return null;
 	}
 
 	private int maxDepth() {

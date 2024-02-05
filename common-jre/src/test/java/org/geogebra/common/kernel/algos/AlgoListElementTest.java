@@ -57,7 +57,8 @@ public class AlgoListElementTest extends BaseUnitTest {
 			nums[i] = new GeoNumeric(getConstruction(), indexes[i]);
 		}
 
-		AlgoListElement algo = new AlgoListElement(getConstruction(), list, nums);
+		AlgoListElement algo = new AlgoListElement(getConstruction(), list, nums,
+				false);
 		output = algo.getOutput();
 		return this;
 	}

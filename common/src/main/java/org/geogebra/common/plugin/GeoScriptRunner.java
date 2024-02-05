@@ -30,6 +30,7 @@ public class GeoScriptRunner implements EventListener {
 		if (script == null) {
 			return;
 		}
+
 		if (evt.type != EventType.CLICK) {
 			if (app.isBlockUpdateScripts() && !evt.isAlwaysDispatched()) {
 				return;
