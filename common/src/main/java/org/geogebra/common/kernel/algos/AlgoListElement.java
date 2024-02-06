@@ -45,6 +45,11 @@ public class AlgoListElement extends AlgoElement {
 	private GeoElement element; // output
 	private String elementLabel;
 
+	public AlgoListElement(Construction cons, GeoList geoList,
+			GeoNumberValue index) {
+		this(cons, geoList, index, true);
+	}
+
 	/**
 	 * Creates new labeled element algo
 	 *
@@ -56,13 +61,13 @@ public class AlgoListElement extends AlgoElement {
 	 *            index
 	 */
 	public AlgoListElement(Construction cons, GeoList geoList,
-			GeoNumberValue index) {
+			GeoNumberValue index, boolean topLevel) {
 		super(cons);
 		this.geoList = geoList;
 		this.index = index;
 		indexGeo = index.toGeoElement();
 
-		element = createGenericElementForFlatList(geoList, indexFrom(index));
+		element = createGenericElementForFlatList(geoList, indexFrom(index), topLevel);
 
 		if (element.isGeoPolygon()) { // ensure type will not be sticked to e.g.
 										// "triangle"
@@ -73,12 +78,11 @@ public class AlgoListElement extends AlgoElement {
 		compute();
 	}
 
-	private GeoElement createGenericElementForFlatList(GeoElement source, int index) {
-		if (source == null || !source.isGeoList()) {
-			return cons.getOutputGeo();
+	private GeoElement createGenericElementForFlatList(GeoList list, int index, boolean topLevel) {
+		if (list == null) {
+			return getOutputGeo(topLevel);
 		}
 
-		GeoList list = ((GeoList) source);
 		if (index < list.size()) {
 			return getGenericElement(list, index).copyInternal(cons);
 		}
@@ -91,7 +95,7 @@ public class AlgoListElement extends AlgoElement {
 			return kernel.createGeoElement(cons, list.getTypeStringForXML());
 		}
 
-		return cons.getOutputGeo();
+		return getOutputGeo(topLevel);
 	}
 
 	private static GeoElement getGenericElement(GeoList geoList, int index) {
@@ -115,42 +119,44 @@ public class AlgoListElement extends AlgoElement {
 	 * @param cons construction
 	 * @param geoList list
 	 * @param nums element coordinates
-	 * @param labelOutput
+	 * @param topLevelCommand whether this is top level
 	 */
 	public AlgoListElement(Construction cons, GeoList geoList,
 			GeoNumberValue[] nums, boolean topLevelCommand) {
 		super(cons);
 		this.geoList = geoList;
 		this.indexes = nums;
-		element = createGenericElementForNestedList();
+		element = createGenericElementForNestedList(topLevelCommand);
 
 		if (element == null) {
-			element = topLevelCommand ? cons.getOutputGeo() : new GeoNumeric(cons);
+			element = getOutputGeo(topLevelCommand);
 		}
-
-	 	setInputOutput();
+		setInputOutput();
 		compute();
 	}
 
-	private GeoElement createGenericElementForNestedList() {
+	private GeoElement getOutputGeo(boolean topLevelCommand) {
+		return topLevelCommand ? cons.getOutputGeo() : new GeoNumeric(cons);
+	}
+
+	private GeoElement createGenericElementForNestedList(boolean topLevel) {
 		try {
-			GeoElement parent = null;
 			GeoElement current = geoList;
 			int depth = 0;
-			do {
-				parent = current;
+			while (isList(current) && depth < maxDepth() - 1) {
 				current = getElementInDepth(current, depth);
 				depth++;
-			} while (current.isGeoList() && depth < maxDepth());
-			return depth == maxDepth() - 1 ? current.copyInternal(cons)
-					: createGenericElementForFlatList(parent, depth);
+			}
+			return depth == maxDepth() - 1 && isList(current)
+					? createGenericElementForFlatList((GeoList) current, 0, topLevel) : null;
 		} catch (Exception e) {
 			Log.debug("error initialising list");
 		}
-
-		// desperate case: empty list, or malformed 2D array
-		// saved in XML from 4.0.18.0
 		return null;
+	}
+
+	private boolean isList(GeoElement geo) {
+		return geo != null && geo.isGeoList();
 	}
 
 	private int maxDepth() {
@@ -161,11 +167,11 @@ public class AlgoListElement extends AlgoElement {
 		int initIndex = indexFrom(indexes[depth]);
 		GeoList currentList = (GeoList) current;
 		if (currentList.size() > initIndex) {
-			current = getCurrent(depth, currentList, initIndex);
+			return getCurrent(depth, currentList, initIndex);
 		} else if (currentList.size() > 0) {
-			current = getCurrent(depth, currentList, 0);
+			return getCurrent(depth, currentList, 0);
 		}
-		return current;
+		return null;
 	}
 
 	private static int indexFrom(GeoNumberValue number) {

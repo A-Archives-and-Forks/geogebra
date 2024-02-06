@@ -2,6 +2,8 @@ package org.geogebra.common.kernel.algos;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.Arrays;
+
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
@@ -52,10 +54,9 @@ public class AlgoListElementTest extends BaseUnitTest {
 	}
 
 	private AlgoListElementTest at(int... indexes) {
-		GeoNumeric[] nums = new GeoNumeric[indexes.length];
-		for (int i = 0; i < nums.length; i++) {
-			nums[i] = new GeoNumeric(getConstruction(), indexes[i]);
-		}
+		GeoNumeric[] nums = Arrays.stream(indexes)
+				.mapToObj(idx ->  new GeoNumeric(getConstruction(), idx))
+				.toArray(GeoNumeric[]::new);
 
 		AlgoListElement algo = new AlgoListElement(getConstruction(), list, nums,
 				false);
