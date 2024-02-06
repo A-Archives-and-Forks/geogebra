@@ -512,7 +512,6 @@ public class TableValuesView implements TableValues, SettingListener {
 	 * Commits the imported data.
 	 */
 	public void commitImport() {
-		clearView();
 		elements.clear();
 		model.commitImport();
 	}
