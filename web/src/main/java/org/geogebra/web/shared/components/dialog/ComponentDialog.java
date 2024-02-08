@@ -143,6 +143,7 @@ public class ComponentDialog extends GPopupPanel implements RequiresResize, Pers
 
 	private void setBtnDisabled(StandardButton btn, boolean disabled) {
 		Dom.toggleClass(btn, "disabled", disabled);
+		btn.setEnabled(!disabled);
 	}
 
 	public void setPreventHide(boolean preventHide) {

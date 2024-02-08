@@ -250,6 +250,7 @@ public class StandardButton extends Widget implements HasResource {
 		} else {
 			getElement().setAttribute("disabled", "true");
 		}
+		AriaHelper.setDisabled(this, !enabled);
 	}
 
 	/**

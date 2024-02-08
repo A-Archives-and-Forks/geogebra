@@ -104,4 +104,12 @@ public class AriaHelper {
 	public static void setTabIndex(UIObject uiObject, int tabIndex) {
 		uiObject.getElement().setAttribute("tabindex", tabIndex + "");
 	}
+
+	/**
+	 * @param uiObject - element
+	 * @param disabled - true or false
+	 */
+	public static void setDisabled(UIObject uiObject, boolean disabled) {
+		uiObject.getElement().setAttribute("aria-disabled", String.valueOf(disabled));
+	}
 }
