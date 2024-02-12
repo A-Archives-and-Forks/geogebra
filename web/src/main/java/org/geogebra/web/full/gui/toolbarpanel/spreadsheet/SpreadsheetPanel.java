@@ -7,23 +7,29 @@ import org.geogebra.common.spreadsheet.kernel.KernelTabularDataAdapter;
 import org.geogebra.common.util.MouseCursor;
 import org.geogebra.common.util.shape.Rectangle;
 import org.geogebra.gwtutil.NativePointerEvent;
+import org.geogebra.web.full.gui.view.probcalculator.MathTextFieldW;
 import org.geogebra.web.html5.awt.GGraphics2DW;
+import org.geogebra.web.html5.gui.util.ClickStartHandler;
+import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.GlobalHandlerRegistry;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.Style;
 import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.event.dom.client.KeyDownEvent;
+import org.gwtproject.event.dom.client.KeyEvent;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.RequiresResize;
 import org.gwtproject.user.client.ui.ScrollPanel;
+
+import com.himamis.retex.editor.share.util.KeyCodes;
 
 import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 
 public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 
-	private final Canvas spreadsheetWidget;
 	private final Spreadsheet spreadsheet;
 	private final GGraphics2DW graphics;
 	private final AppW app;
@@ -32,12 +38,13 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 	// otherwise there is jumping between scroll event and repaint
 	// on high-res screens
 	private final ScrollPanel scrollOverlay;
+	private final MathTextFieldW mathField;
 
 	/**
 	 * @param app application
 	 */
 	public SpreadsheetPanel(AppW app) {
-		spreadsheetWidget = Canvas.createIfSupported();
+		Canvas spreadsheetWidget = Canvas.createIfSupported();
 		spreadsheetWidget.addStyleName("spreadsheetWidget");
 		graphics = new GGraphics2DW(spreadsheetWidget);
 		this.app = app;
@@ -47,9 +54,12 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 		app.getKernel().notifyAddAll(tabularData);
 		spreadsheet = new Spreadsheet(tabularData, new GeoElementCellRendererFactory(
 				new AwtReTexGraphicsBridgeW()));
+
 		app.getKernel().attach(tabularData);
 		add(spreadsheetWidget);
 		scrollOverlay = new ScrollPanel();
+		mathField = new MathTextFieldW(app);
+		spreadsheet.setControlsDelegate(new SpreadsheetControlsDelegateW(app, this, mathField));
 		FlowPanel scrollContent = new FlowPanel();
 		scrollOverlay.setWidget(scrollContent);
 		scrollOverlay.setStyleName("spreadsheetScrollOverlay");
@@ -60,11 +70,17 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 			NativePointerEvent ptr = Js.uncheckedCast(event);
 			spreadsheet.handlePointerDown(getEventX(ptr), getEventY(ptr),
 					getModifiers(ptr));
+			if (ptr.getButton() == 2) {
+				event.preventDefault();
+			}
 		});
 		registry.addEventListener(spreadsheetElement, "pointerup", event -> {
 			NativePointerEvent ptr = Js.uncheckedCast(event);
 			spreadsheet.handlePointerUp(getEventX(ptr), getEventY(ptr),
 					getModifiers(ptr));
+			if (!spreadsheet.isEditorActive()) {
+				app.hideKeyboard();
+			}
 		});
 		registry.addEventListener(spreadsheetElement, "pointermove", event -> {
 			NativePointerEvent ptr = Js.uncheckedCast(event);
@@ -74,6 +90,16 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 			spreadsheet.handlePointerMove(offsetX, offsetY,
 					getModifiers(ptr));
 		});
+		ClickStartHandler.initDefaults(scrollContent, false, true);
+		scrollContent.getElement().setTabIndex(0);
+		scrollContent.addDomHandler(evt -> {
+			spreadsheet.handleKeyPressed(KeyCodes.translateGWTcode(
+					evt.getNativeKeyCode()).getJavaKeyCode(),
+					Js.asPropertyMap(evt.getNativeEvent()).getAsAny("key").asString(),
+					getKeyboardModifiers(evt));
+			evt.stopPropagation(); // do not let global event handler interfere
+			evt.preventDefault(); // do not scroll the view
+		}, KeyDownEvent.getType());
 		updateTotalSize();
 		DomGlobal.setInterval((ignore) -> {
 			repaint();
@@ -81,6 +107,11 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 		scrollOverlay.addScrollHandler(event -> {
 			onScroll();
 		});
+	}
+
+	private Modifiers getKeyboardModifiers(KeyEvent<?> evt) {
+		return new Modifiers(evt.isAltKeyDown(),
+				evt.isControlKeyDown(), evt.isShiftKeyDown(), false);
 	}
 
 	private int getEventX(NativePointerEvent ptr) {
@@ -121,10 +152,6 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 		onScroll();
 	}
 
-	private int toLogicalPx(int size) {
-		 return (int) Math.round(size * app.getPixelRatio());
-	}
-
 	private void repaint() {
 		graphics.restoreTransform();
 		spreadsheet.draw(graphics);
@@ -144,5 +171,9 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 
 	private int getWidth() {
 		return scrollOverlay.getOffsetWidth();
+	}
+
+	public MathKeyboardListener getKeyboardListener() {
+		return mathField.getKeyboardListener();
 	}
 }
