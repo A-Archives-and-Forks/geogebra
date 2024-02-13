@@ -412,6 +412,9 @@ public class GeoText extends GeoElement
 	private void notifyListeners() {
 		for (GeoElement geo : updateListeners) {
 			geo.notifyUpdate();
+			if (geo.isGeoNumeric()) {
+				((GeoNumeric) geo).notifyScreenReader();
+			}
 		}
 	}
 
