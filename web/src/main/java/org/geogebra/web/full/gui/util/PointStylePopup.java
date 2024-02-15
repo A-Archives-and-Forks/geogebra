@@ -114,7 +114,7 @@ public class PointStylePopup extends PopupMenuButtonW
 		return new ImageOrText();
 	}
 	
-	@Override 
+	@Override
 	public int getSliderValue() {
 		int val = super.getSliderValue();
 		return val == -1 ? DEFAULT_SIZE : val;

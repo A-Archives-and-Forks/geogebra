@@ -235,7 +235,7 @@ public class ConstructionDefaults implements SettingListener {
 	/** default color for quadrics */
 	public static final GColor colQuadric = GeoGebraColorConstants.GGB_RED;
 	/** new default color for quadrics */
-	public static final GColor colQuadricAndArchimedeanSolid = 
+	public static final GColor colQuadricAndArchimedeanSolid =
 			GeoGebraColorConstants.GEOGEBRA_OBJECT_RED;
 
 	/** preview color */
