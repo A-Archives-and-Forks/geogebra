@@ -101,17 +101,26 @@ public class GeoGebraSerializer extends SerializerAdapter {
 			stringBuilder.append("))");
 			break;
 		case MIXED_NUMBER:
-			boolean isNegative = mathFunction.getArgument(0).getArgument(0) != null
-					&& mathFunction.getArgument(0).getArgument(0).toString().equals("-");
-			if (isNegative) {
-				stringBuilder.append("-");
+			boolean hasIntegerPart = mathFunction.getArgument(0).size() > 0;
+			if (hasIntegerPart) {
+				boolean isNegative = mathFunction.getArgument(0).getArgument(0) != null
+						&& mathFunction.getArgument(0).getArgument(0).toString().equals("-");
+				if (isNegative) {
+					stringBuilder.append("-");
+				}
+				stringBuilder.append("(");
+				StringBuilder intPart = new StringBuilder();
+				serialize(mathFunction.getArgument(0), intPart);
+				stringBuilder.append(intPart);
+				if (isNegative) {
+					stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("-"));
+				}
+				if (java.lang.Character.isDigit(intPart.charAt(intPart.length() - 1))) {
+					stringBuilder.append(Unicode.INVISIBLE_PLUS);
+				}
+			} else {
+				stringBuilder.append('(');
 			}
-			stringBuilder.append("(");
-			serialize(mathFunction.getArgument(0), stringBuilder);
-			if (isNegative) {
-				stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("-"));
-			}
-			stringBuilder.append(Unicode.INVISIBLE_PLUS);
 			stringBuilder.append("(");
 			serialize(mathFunction.getArgument(1), stringBuilder);
 			stringBuilder.append(")/(");
