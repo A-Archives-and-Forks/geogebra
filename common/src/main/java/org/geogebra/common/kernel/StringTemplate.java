@@ -1170,41 +1170,13 @@ public class StringTemplate implements ExpressionNodeConstants {
 			} else if ((left.evaluatesToNumber(false)
 					|| left instanceof NumberValue)
 					&& right.evaluatesTo3DVector()) {
-				// Log.debug(left.getClass()+" "+right.getClass());
-				// eg 10 + (1,2,3)
-				sb.append("((");
-				sb.append(rightStr);
-				sb.append(")[0]+");
-				sb.append(leftStr);
-				sb.append(",(");
-				sb.append(rightStr);
-				sb.append(")[1]+");
-				sb.append(leftStr);
-				sb.append(",(");
-				sb.append(rightStr);
-				sb.append(")[2]+");
-				sb.append(leftStr);
-				sb.append(')');
+				vector3DNumberOperation(rightStr, leftStr, '+', sb);
 
 				// don't use isNumberValue() as that leads to an evaluate()
 			} else if (left.evaluatesTo3DVector()
 					&& (right.evaluatesToNumber(false)
 							|| right instanceof NumberValue)) {
-				// Log.debug(left.getClass()+" "+right.getClass());
-				// eg (1,2,3) + 10
-				sb.append("((");
-				sb.append(leftStr);
-				sb.append(")[0]+");
-				sb.append(rightStr);
-				sb.append(",(");
-				sb.append(leftStr);
-				sb.append(")[1]+");
-				sb.append(rightStr);
-				sb.append(",(");
-				sb.append(leftStr);
-				sb.append(")[2]+");
-				sb.append(rightStr);
-				sb.append(')');
+				vector3DNumberOperation(leftStr, rightStr, '+', sb);
 
 			} else if (left.evaluatesToVectorNotPoint()
 					&& right.evaluatesToVectorNotPoint()) {
@@ -1375,6 +1347,23 @@ public class StringTemplate implements ExpressionNodeConstants {
 		}
 		return sb.toString();
 
+	}
+
+	private void vector3DNumberOperation(String vectorStr, String numberStr,
+			char operation, StringBuilder sb) {
+		sb.append("(xcoord(");
+		sb.append(vectorStr);
+		sb.append(")").append(operation);
+		sb.append(numberStr);
+		sb.append(",ycoord(");
+		sb.append(vectorStr);
+		sb.append(")").append(operation);
+		sb.append(numberStr);
+		sb.append(",zcoord(");
+		sb.append(vectorStr);
+		sb.append(")").append(operation);
+		sb.append(numberStr);
+		sb.append(')');
 	}
 
 	/**
@@ -1600,19 +1589,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 					|| left instanceof NumberValue)
 					&& right.evaluatesTo3DVector()) {
 				// eg 10 - (1,2,3)
-				sb.append("(");
-				sb.append(leftStr);
-				sb.append("-(");
-				sb.append(rightStr);
-				sb.append(")[0],");
-				sb.append(leftStr);
-				sb.append("-(");
-				sb.append(rightStr);
-				sb.append(")[1],");
-				sb.append(leftStr);
-				sb.append("-(");
-				sb.append(rightStr);
-				sb.append(")[2])");
+				vector3DNumberOperation(rightStr, leftStr, '-', sb);
 
 				// don't use isNumberValue(), isListValue as those lead to an
 				// evaluate()
@@ -1620,19 +1597,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 					&& (right.evaluatesToNumber(false)
 							|| right instanceof NumberValue)) {
 				// eg (1,2,3) - 10
-				sb.append("((");
-				sb.append(leftStr);
-				sb.append(")[0]-(");
-				sb.append(rightStr);
-				sb.append("),(");
-				sb.append(leftStr);
-				sb.append(")[1]-(");
-				sb.append(rightStr);
-				sb.append("),(");
-				sb.append(leftStr);
-				sb.append(")[2]-(");
-				sb.append(rightStr);
-				sb.append("))");
+				vector3DNumberOperation(leftStr, rightStr, '-', sb);
 
 			} else if (left.evaluatesToVectorNotPoint()
 					&& right.evaluatesToVectorNotPoint()) {
