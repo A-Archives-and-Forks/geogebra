@@ -2261,4 +2261,12 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		t("X=(1,2,3)+r(1,2,3)", "?");
 		t("X=(1,2)+s(1,2)", "(s(1, 2) + 1, 2)");
 	}
+
+	@Test
+	@Issue("APPS-5454")
+	public void shouldUseFunctionVariables() {
+		GeoSymbolic jd = add("f(x)=floor(x)");
+		assertThat(jd.getFunctionVariables().length, equalTo(1));
+		assertThat(jd.getVarString(StringTemplate.defaultTemplate), equalTo("x"));
+	}
 }
