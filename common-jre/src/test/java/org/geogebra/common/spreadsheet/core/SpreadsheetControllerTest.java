@@ -9,20 +9,26 @@ import org.junit.Test;
 
 public class SpreadsheetControllerTest {
 
+	// TODO testing: I think it's better/safer to create a new instance of the system under test
+	// *for each test case*. This way, you cannot run into test interdependencies (a situation where
+	// one test depends on the final state of another test).
 	private final SpreadsheetController controller =
 			new SpreadsheetController(new TestTabularData(), null);
 
+	// TODO testing: all the selection logic tests should go into a SpreadsheetSelectionControllerTests
 	@Test
 	public void testMove() {
 		controller.selectCell(1, 1, false, false);
-		Selection initialCell = controller.getLastSelection();
+		Selection initialSelection = controller.getLastSelection();
 
+		// TODO It would be better to test a scenario where the start and end states are different.
+		// Otherwise this test would succeed even if moveXx didn't do anything at all.
 		controller.moveRight(false);
 		controller.moveDown(false);
 		controller.moveLeft(false);
 		controller.moveUp(false);
 
-		assertRangeEquals(initialCell, Selection.getSingleCellSelection(1, 1));
+		assertRangeEquals(initialSelection, Selection.getSingleCellSelection(1, 1));
 	}
 
 	@Test
