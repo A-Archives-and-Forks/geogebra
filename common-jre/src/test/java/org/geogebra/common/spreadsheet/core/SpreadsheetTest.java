@@ -1,4 +1,4 @@
-package org.geogebra.common.spreadsheet;
+package org.geogebra.common.spreadsheet.core;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -15,6 +15,8 @@ import java.awt.event.KeyEvent;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.awt.GFont;
+import org.geogebra.common.spreadsheet.StringCapturingGraphics;
+import org.geogebra.common.spreadsheet.TestTabularData;
 import org.geogebra.common.spreadsheet.core.CellRenderableFactory;
 import org.geogebra.common.spreadsheet.core.Modifiers;
 import org.geogebra.common.spreadsheet.core.Spreadsheet;
