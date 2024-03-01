@@ -42,7 +42,7 @@ final class SpreadsheetSelectionController {
 		//  explains that. But this ignores the case that there may not be a row or column
 		// header. Also, the code would be easier to understand if the index calculation included the
 		// header row information, e.g.
-		void setSelection(new Selection(SelectionType.ALL,
+		setSelection(new Selection(SelectionType.ALL,
 				TabularRange.range(0, numberOfRows - 1 - numberOfColumnHeaders,
 						0, numberOfColumns - 1 - numberOfRowHeaders)));
 	}

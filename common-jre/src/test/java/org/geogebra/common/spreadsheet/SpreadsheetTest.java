@@ -36,7 +36,6 @@ public class SpreadsheetTest extends BaseUnitTest {
 	private final int rowHeader = TableLayout.DEFAULT_ROW_HEADER_WIDTH;
 	private Spreadsheet spreadsheet;
 	private TestTabularData tabularData;
-	private SpreadsheetController controller;
 	private Rectangle viewport;
 
 	@Before
@@ -48,8 +47,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 		spreadsheet.setWidthForColumns(40, 0, 5);
 		viewport = new Rectangle(0, 100, 0, 120);
 		spreadsheet.setViewport(viewport);
-		controller = spreadsheet.getController();
-		controller.setViewportAdjustmentHandler(getMockForScrollable());
+		spreadsheet.setViewportAdjustmentHandler(getMockForScrollable());
 	}
 
 	@Test
@@ -84,10 +82,10 @@ public class SpreadsheetTest extends BaseUnitTest {
 		spreadsheet.draw(graphics);
 		// initially we have 3 columns
 		assertThat(graphics.toString(), startsWith("col0,col1,col2,1"));
-		spreadsheet.getController().selectColumn(1, false, false);
-		spreadsheet.getController().selectColumn(2, true, false);
-		spreadsheet.getController().selectColumn(3, true, false);
-		spreadsheet.getController().selectColumn(4, true, false);
+		spreadsheet.selectColumn(1, false, false);
+		spreadsheet.selectColumn(2, true, false);
+		spreadsheet.selectColumn(3, true, false);
+		spreadsheet.selectColumn(4, true, false);
 		spreadsheet.handlePointerDown(rowHeader + 80, 5, Modifiers.NONE);
 		spreadsheet.handlePointerMove(rowHeader + 50, 5, Modifiers.NONE);
 		spreadsheet.handlePointerUp(rowHeader + 50, 5, Modifiers.NONE);
@@ -135,10 +133,10 @@ public class SpreadsheetTest extends BaseUnitTest {
 		spreadsheet.draw(graphics);
 		// initially we have 5 rows
 		assertThat(graphics.toString(), endsWith(",5"));
-		spreadsheet.getController().selectRow(1, false, false);
-		spreadsheet.getController().selectRow(2, true, false);
-		spreadsheet.getController().selectRow(3, true, false);
-		spreadsheet.getController().selectRow(4, true, false);
+		spreadsheet.selectRow(1, false, false);
+		spreadsheet.selectRow(2, true, false);
+		spreadsheet.selectRow(3, true, false);
+		spreadsheet.selectRow(4, true, false);
 		spreadsheet.handlePointerDown(15, colHeader + 20, Modifiers.NONE);
 		spreadsheet.handlePointerMove(15, colHeader + 45, Modifiers.NONE);
 		spreadsheet.handlePointerUp(15, colHeader + 45, Modifiers.NONE);
@@ -150,7 +148,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 
 	@Test
 	public void testViewportIsAdjustedRightwardsWithArrowKey() {
-		controller.selectCell(1, 1, false, false);
+		spreadsheet.selectCell(1, 1, false, false);
 		fakeRightArrowPress(viewport);
 		assertNotEquals(0, viewport.getMinX(), 0);
 	}
@@ -164,7 +162,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 	@Test
 	public void testViewportIsNotAdjustedRightwardsWithArrowKey() {
 		spreadsheet.setViewport(new Rectangle(0, 500, 0, 500));
-		controller.selectCell(2, 0, false, false);
+		spreadsheet.selectCell(2, 0, false, false);
 		fakeRightArrowPress(viewport);
 		assertEquals(0, viewport.getMinX(), 0);
 	}
@@ -178,7 +176,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 
 	@Test
 	public void testViewportShouldNotBeAdjustedWhenMovingLeftAtLeftmostPositionWithArrowKey() {
-		controller.selectCell(0, 0, false, false);
+		spreadsheet.selectCell(0, 0, false, false);
 		fakeLeftArrowPress(viewport);
 		assertEquals(0, viewport.getMinX(), 0);
 	}
@@ -186,7 +184,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 	@Test
 	public void testViewportIsNotAdjustedHorizontallyWithArrowKey() {
 		spreadsheet.setViewport(new Rectangle(0, 300, 0, 300));
-		controller.selectCell(2, 0, false, false);
+		spreadsheet.selectCell(2, 0, false, false);
 		fakeRightArrowPress(viewport);
 		assertEquals(0, viewport.getMinX(), 0);
 		fakeLeftArrowPress(viewport);
@@ -196,7 +194,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 	@Test
 	public void testViewportIsAdjustedDownwardsWithArrowKey() {
 		spreadsheet.setViewport(new Rectangle(0, 300, 0, 100));
-		controller.selectCell(1, 1, false, false);
+		spreadsheet.selectCell(1, 1, false, false);
 		fakeDownArrowPress(viewport);
 		assertNotEquals(0, viewport.getMinY(), 0);
 	}
@@ -209,7 +207,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 
 	@Test
 	public void testViewportIsNotAdjustedDownwardsWithArrowKey() {
-		controller.selectCell(0, 0, false, false);
+		spreadsheet.selectCell(0, 0, false, false);
 		fakeDownArrowPress(viewport);
 		assertEquals(0, viewport.getMinY(), 0);
 	}
@@ -222,14 +220,14 @@ public class SpreadsheetTest extends BaseUnitTest {
 
 	@Test
 	public void testViewportShouldNotBeAdjustedWhenMovingUpAtTopmostPositionWithArrowKey() {
-		controller.selectCell(0, 2, false, false);
+		spreadsheet.selectCell(0, 2, false, false);
 		fakeUpArrowPress(viewport);
 		assertEquals(0, viewport.getMinY(), 0);
 	}
 
 	@Test
 	public void testViewportIsNotAdjustedUpwardsWithArrowKey() {
-		controller.selectCell(2, 1, false, false);
+		spreadsheet.selectCell(2, 1, false, false);
 		fakeDownArrowPress(viewport);
 		double verticalScrollPosition = viewport.getMinY();
 		fakeUpArrowPress(viewport);
@@ -247,22 +245,22 @@ public class SpreadsheetTest extends BaseUnitTest {
 
 	private void fakeLeftArrowPress(Rectangle viewport) {
 		KeyEvent e = fakeKeyEvent(37);
-		controller.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
+		spreadsheet.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
 	}
 
 	private void fakeUpArrowPress(Rectangle viewport) {
 		KeyEvent e = fakeKeyEvent(38);
-		controller.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
+		spreadsheet.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
 	}
 
 	private void fakeRightArrowPress(Rectangle viewport) {
 		KeyEvent e = fakeKeyEvent(39);
-		controller.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
+		spreadsheet.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
 	}
 
 	private void fakeDownArrowPress(Rectangle viewport) {
 		KeyEvent e = fakeKeyEvent(40);
-		controller.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
+		spreadsheet.handleKeyPressed(e.getKeyCode(), e.getKeyChar() + "", Modifiers.NONE);
 	}
 
 	private KeyEvent fakeKeyEvent(int keyCode) {

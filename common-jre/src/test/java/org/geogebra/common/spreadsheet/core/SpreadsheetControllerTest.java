@@ -13,7 +13,7 @@ public class SpreadsheetControllerTest {
 	// *for each test case*. This way, you cannot run into test interdependencies (a situation where
 	// one test depends on the final state of another test).
 	private final SpreadsheetController controller =
-			new SpreadsheetController(new TestTabularData(), null);
+			new SpreadsheetController(new TestTabularData());
 
 	// TODO testing: all the selection logic tests should go into a SpreadsheetSelectionControllerTests
 	@Test
