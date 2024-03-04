@@ -2276,4 +2276,5 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		assertThat(jd.getFunctionVariables().length, equalTo(1));
 		assertThat(jd.getVarString(StringTemplate.defaultTemplate), equalTo("x"));
 	}
+
 }
