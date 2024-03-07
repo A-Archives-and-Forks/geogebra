@@ -89,6 +89,7 @@ public final class WindowReference implements EventRenderable {
 			public void onInvoke(double timestamp) {
 				if (instance != null && instance.closed()) {
 					if (loginOperation != null) {
+						loginOperation.stayLoggedOut();
 						loginOperation.loginCanceled();
 					}
 					cleanWindowReferences();

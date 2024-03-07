@@ -16,7 +16,7 @@ import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Image;
 
-public class SaveDialog extends DoYouWantToSaveChangesDialog {
+public class SaveDialog extends SaveFileDialog {
 	private ComponentCheckbox templateCheckbox;
 	private Image providerImage;
 	private Set<Material.Provider> availableProviders;
@@ -27,20 +27,22 @@ public class SaveDialog extends DoYouWantToSaveChangesDialog {
 	 * base dialog constructor
 	 * @param app - see {@link AppW}
 	 * @param dialogData - contains trans keys for title and buttons
-	 *
+	 * @param addTemplateCheckBox whether template checkbox should be visible
 	 */
-	public SaveDialog(AppW app, DialogData dialogData, boolean addTempCheckBox) {
+	public SaveDialog(AppW app, DialogData dialogData, boolean addTemplateCheckBox) {
 		super(app, dialogData, false);
-		if (addTempCheckBox) {
-			addStyleName("templateSave");
-		} else {
-			templateCheckbox.setVisible(false);
+		buildTemplateCheckbox(addTemplateCheckBox);
+		buildLocationDropDown();
+
+		if (app.getGoogleDriveOperation() != null) {
+			app.getGoogleDriveOperation().initGoogleDriveApi();
 		}
+
 		setOnPositiveAction(() -> {
 			if (templateCheckbox.isSelected()) {
 				setSaveType(Material.MaterialType.ggsTemplate);
 				app.getSaveController().ensureTypeOtherThan(Material.MaterialType.ggs);
-			} else if (addTempCheckBox) {
+			} else if (addTemplateCheckBox) {
 				setSaveType(Material.MaterialType.ggs);
 				app.getSaveController().ensureTypeOtherThan(Material.MaterialType.ggsTemplate);
 			}
@@ -49,15 +51,11 @@ public class SaveDialog extends DoYouWantToSaveChangesDialog {
 		});
 	}
 
-	@Override
-	public void buildContent() {
-		super.buildContent();
-
+	private void buildTemplateCheckbox(boolean visible) {
 		templateCheckbox = new ComponentCheckbox(app.getLocalization(), false,
 				"saveTemplate");
 		getContentPanel().add(templateCheckbox);
-
-		buildLocationDropDown();
+		templateCheckbox.setVisible(visible);
 	}
 
 	private void buildLocationDropDown() {
@@ -145,5 +143,10 @@ public class SaveDialog extends DoYouWantToSaveChangesDialog {
 		case TUBE:
 			return BrowseResources.INSTANCE.location_tube();
 		}
+	}
+
+	@Override
+	protected boolean shouldInputPanelBeVisible() {
+		return true;
 	}
 }
