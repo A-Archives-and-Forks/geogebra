@@ -2913,8 +2913,7 @@ public class GeoPoint extends GeoVec3D implements VectorValue, PathOrPoint,
 		ScreenReaderBuilder sbWithValue = new ScreenReaderBuilder(loc);
 		sbWithValue.appendDegreeIfNeeded(geoPoint,
 				geoPoint.toValueString(geoPoint.getApp().getScreenReaderTemplate()));
-		return loc.getPlainDefault("PointAMovedToB",
-				"Point %0 moved to %1",
+		return loc.getPlainDefault("PointAMovedToB", "Point %0 moved to %1",
 				sb.toString(),
 				sbWithValue.toString());
 	}
