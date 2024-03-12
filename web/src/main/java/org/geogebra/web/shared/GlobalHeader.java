@@ -71,7 +71,8 @@ public class GlobalHeader implements EventRenderable {
 	 */
 	public void addSignIn(final AppW appW) {
 		this.app = appW;
-		signIn = RootPanel.get("signInTextID").getElement().getParentElement();
+		signIn = getSignInTextButton() != null
+				? getSignInTextButton().getElement().getParentElement() : null;
 		if (signIn == null) {
 			return;
 		}
@@ -84,6 +85,10 @@ public class GlobalHeader implements EventRenderable {
 			e.preventDefault();
 		});
 		app.getLoginOperation().getView().add(this);
+	}
+
+	private RootPanel getSignInTextButton() {
+		return RootPanel.get("signInTextID");
 	}
 
 	private void registerSignInButtonsAsFocusable() {
@@ -455,13 +460,15 @@ public class GlobalHeader implements EventRenderable {
 	 */
 	public void initLogo(AppW app) {
 		RootPanel logo = RootPanel.get("logoID");
-		registerFocusable(app, AccessibilityGroup.GEOGEBRA_LOGO, logo);
-		Dom.addEventListener(logo.getElement(), "click", (e) -> {
-			e.stopPropagation();
-			e.preventDefault();
-			String link = logo.getElement().getAttribute("href");
-			DomGlobal.window.open(link, "_self");
-		});
+		if (logo != null) {
+			registerFocusable(app, AccessibilityGroup.GEOGEBRA_LOGO, logo);
+			Dom.addEventListener(logo.getElement(), "click", (e) -> {
+				e.stopPropagation();
+				e.preventDefault();
+				String link = logo.getElement().getAttribute("href");
+				DomGlobal.window.open(link, "_self");
+			});
+		}
 	}
 
 	private void registerFocusable(AppW app, AccessibilityGroup group, Widget widget) {
