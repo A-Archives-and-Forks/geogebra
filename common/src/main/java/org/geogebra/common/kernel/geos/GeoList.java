@@ -263,11 +263,18 @@ public class GeoList extends GeoElement
 			// copy geoList
 			copyListElements(l);
 		}
+		copyAttributesFromOtherList(l);
+	}
 
-		isDefined = l.isDefined;
-		elementType = l.elementType;
-		if (l.isElementTypeXMLNeeded()) {
-			typeStringForXML = l.typeStringForXML;
+	/**
+	 * Copies vital attributes from another list to this list
+	 * @param other GeoList
+	 */
+	public void copyAttributesFromOtherList(GeoList other) {
+		isDefined = other.isDefined;
+		elementType = other.elementType;
+		if (other.isElementTypeXMLNeeded()) {
+			typeStringForXML = other.typeStringForXML;
 		}
 	}
 
