@@ -18,7 +18,6 @@ final class Selection {
 	private final TabularRange range;
 	private final SelectionType type;
 
-
 	Selection(SelectionType type, TabularRange range) {
 		this.range = range;
 		this.type = type;
