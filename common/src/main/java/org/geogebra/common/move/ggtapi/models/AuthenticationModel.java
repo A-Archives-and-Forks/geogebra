@@ -128,7 +128,7 @@ public abstract class AuthenticationModel {
 	/**
 	 * from GGT error happened, cleanup, etc
 	 */
-	private void onLoginError(GeoGebraTubeUser user) {
+	private void onLoginError() {
 		this.preventLoginPrompt = false;
 		if (getLoginToken() != null) {
 			clearLoginToken();
