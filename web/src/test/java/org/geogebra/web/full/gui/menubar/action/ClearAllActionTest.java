@@ -39,14 +39,13 @@ public class ClearAllActionTest {
 		app.getSettings().getEuclidian(1).setBackground(GColor.PURPLE);
 		action.execute(app);
 		app.getSaveController().cancel();
-		assertEquals(0, app.getKernel().getConstruction()
-				.getGeoSetConstructionOrder().size());
+		assertThat(app.getKernel().getConstruction()
+				.getGeoSetConstructionOrder().size(), equalTo(0));
 		assertThat(app.isSaved(), equalTo(true));
 		EuclidianSettings euclidianSettings = app.getSettings().getEuclidian(1);
 		// MOW-1259, MOW-1249
 		assertEquals(GColor.WHITE, euclidianSettings.getBackground());
 		assertFalse("Should not show grid", euclidianSettings.getShowGrid());
-
 	}
 
 	private static void addObject(String string) {

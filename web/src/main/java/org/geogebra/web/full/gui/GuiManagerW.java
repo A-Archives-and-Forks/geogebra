@@ -2249,8 +2249,9 @@ public class GuiManagerW extends GuiManager
 	public boolean toolbarHasImageMode() {
 		if (!app.showToolBar()) {
 			return false;
-		}
-		if (app.getConfig().getToolbarType().equals(AppType.CLASSIC)) {
+		} else if (getApp().isWhiteboardActive()) {
+			return true;
+		} else if (app.getConfig().getToolbarType().equals(AppType.CLASSIC)) {
 			Vector<ToolbarItem> toolbarItems =
 					ToolBar.parseToolbarString(app.getGuiManager().getToolbarDefinition());
 
@@ -2263,8 +2264,6 @@ public class GuiManagerW extends GuiManager
 					return true;
 				}
 			}
-		} else if (getApp().isWhiteboardActive()) {
-			return true;
 		} else {
 			ToolCollection toolCollection =
 					app.createToolCollectionFactory().createToolCollection();

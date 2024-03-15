@@ -303,7 +303,7 @@ public class RelativeCopy {
 
 	/**
 	 * Tests if a cell range can be used as the source for a pattern drag-copy.
-	 * 
+	 *
 	 * @param range
 	 *            cell range
 	 * @return whether all geos are acceptable

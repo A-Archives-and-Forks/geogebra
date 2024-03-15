@@ -17,8 +17,8 @@ final class SpreadsheetSelectionController {
 	 }
 
 	void selectAll(int numberOfRows, int numberOfColumns) {
-		setSelections(new Selection(SelectionType.ALL,
-				TabularRange.range(0, numberOfRows - 2, 0, numberOfColumns - 2)));
+		setSelections(new Selection(
+				TabularRange.range(-1, numberOfRows - 2, -1, numberOfColumns - 2)));
 	}
 
 	List<Selection> selections() {
@@ -48,7 +48,7 @@ final class SpreadsheetSelectionController {
 	 */
 	void selectRow(int rowIndex,
 			boolean extendSelection, boolean addSelection) {
-		Selection row = new Selection(SelectionType.ROWS,
+		Selection row = new Selection(
 				TabularRange.range(rowIndex, rowIndex, -1, -1));
 		select(row, extendSelection, addSelection);
 	}
@@ -61,7 +61,7 @@ final class SpreadsheetSelectionController {
 	 */
 	void selectColumn(int columnIndex,
 			boolean extendSelection, boolean addSelection) {
-		Selection column = new Selection(SelectionType.COLUMNS,
+		Selection column = new Selection(
 				TabularRange.range(-1, -1, columnIndex, columnIndex));
 		select(column, extendSelection, addSelection);
 	}
@@ -188,5 +188,10 @@ final class SpreadsheetSelectionController {
 	 */
 	public @CheckForNull Selection getLastSelection() {
 		return selections.isEmpty() ? null : selections.get(selections.size() - 1);
+	}
+
+	public boolean isOnlyCellSelected(int row, int column) {
+		return selections.size() == 1 && selections.get(0).getRange().isSingleCell()
+				&& isSelected(row, column);
 	}
 }
