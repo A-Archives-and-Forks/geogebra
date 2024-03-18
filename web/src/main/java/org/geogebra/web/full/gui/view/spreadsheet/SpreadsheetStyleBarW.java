@@ -161,7 +161,6 @@ public class SpreadsheetStyleBarW extends StyleBarW {
 	private void handleFormatting() {
 		ArrayList<TabularRange> selectedCells = table.getSelectedRanges();
 		int fontStyle = CellFormat.STYLE_PLAIN;
-
 		if (btnBold.isSelected()) {
 			fontStyle += CellFormat.STYLE_BOLD;
 		}
