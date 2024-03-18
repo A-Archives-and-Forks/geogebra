@@ -90,8 +90,7 @@ public class CASStylebarW extends StyleBarW {
 				setVisible(geosOK);
 
 				if (geosOK) {
-					GeoElement geo = geos.get(0)
-					        .getGeoElementForPropertiesDialog();
+					GeoElement geo = geos.get(0).getGeoElementForPropertiesDialog();
 					GColor geoColor = ((GeoCasCell) geo).getFontColor();
 					updateColorTable();
 
@@ -117,8 +116,7 @@ public class CASStylebarW extends StyleBarW {
 				boolean geosOK = checkGeoText(geos);
 				setVisible(geosOK);
 				if (geosOK) {
-					GeoElement geo = geos.get(0)
-					        .getGeoElementForPropertiesDialog();
+					GeoElement geo = geos.get(0).getGeoElementForPropertiesDialog();
 					int style = ((TextProperties) geo).getFontStyle();
 					btnBold.setSelected(style == GFont.BOLD
 							|| style == (GFont.BOLD + GFont.ITALIC));
@@ -135,8 +133,7 @@ public class CASStylebarW extends StyleBarW {
 				boolean geosOK = checkGeoText(geos);
 				setVisible(geosOK);
 				if (geosOK) {
-					GeoElement geo = geos.get(0)
-					        .getGeoElementForPropertiesDialog();
+					GeoElement geo = geos.get(0).getGeoElementForPropertiesDialog();
 					int style = ((GeoCasCell) geo).getGeoText().getFontStyle();
 					btnItalic.setSelected(style == GFont.ITALIC
 							|| style == (GFont.BOLD + GFont.ITALIC));
