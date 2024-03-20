@@ -91,7 +91,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 		boolean holdsLaTeXtext = expressionNode.holdsLaTeXtext;
 
 		ExpressionValue lt, rt;
-
 		lt = left.evaluate(tpl); // left tree
 		// TODO Evaluation of equations is expensive, but better soln needed
 		// #4816

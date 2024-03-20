@@ -98,6 +98,7 @@ public class MyDouble extends ValidExpression
 		kernel = d.kernel;
 		val = d.val;
 		angleDim = d.angleDim;
+		setImprecise(d.isImprecise());
 	}
 
 	@Override

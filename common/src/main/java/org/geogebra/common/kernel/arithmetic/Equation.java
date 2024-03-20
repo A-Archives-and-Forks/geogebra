@@ -285,6 +285,9 @@ public class Equation extends ValidExpression implements EquationValue {
 		fixStructure(lhs, xVar, yVar, zVar);
 		fixStructure(rhs, xVar, yVar, zVar);
 		final boolean keepFractions = false;
+		lhs.setImprecise(true);
+		rhs.setImprecise(true);
+		setImprecise(true);
 		leftPoly = Polynomial.fromNode(lhs, this, keepFractions);
 		rightPoly = Polynomial.fromNode(rhs, this, keepFractions);
 

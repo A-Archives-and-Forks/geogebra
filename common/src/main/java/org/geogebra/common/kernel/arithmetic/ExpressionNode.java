@@ -342,6 +342,7 @@ public class ExpressionNode extends ValidExpression
 		} else {
 			ret = ev;
 		}
+		ret.wrap().setImprecise(ev.wrap().isImprecise());
 		return ret;
 	}
 
@@ -3704,6 +3705,7 @@ public class ExpressionNode extends ValidExpression
 		newNode.secretMaskingAlgo = secretMaskingAlgo;
 		newNode.holdsLaTeXtext = holdsLaTeXtext;
 		newNode.forceAngle = forceAngle;
+		newNode.setImprecise(isImprecise());
 	}
 
 	@Override

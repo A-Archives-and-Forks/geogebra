@@ -714,7 +714,11 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 		}
 		evalArray[0] = x;
 		evalArray[1] = y;
-		return getFactor(factor).evaluate(evalArray);
+		FunctionNVar functionNVar = getFactor(factor);
+		functionNVar.getExpression().setImprecise(true);
+		double result = functionNVar.evaluate(evalArray);
+		functionNVar.getExpression().setImprecise(false);
+		return result;
 	}
 
 	/**
@@ -1712,74 +1716,96 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 							factor);
 				}
 
-				// initialize grid configuration at the search depth
-				int i, j;
-				double dx, dy, fx, fy;
-				// debug = true;
-				timer.reset();
-				for (i = 1; i <= sh; i++) {
-					prev = evaluateImplicitCurve(xcoords[0], ycoords[i],
-							factor);
-					fy = ycoords[i] - 0.5 * fry;
-					for (j = 1; j <= sw; j++) {
-						cur = evaluateImplicitCurve(xcoords[j], ycoords[i],
-								factor);
-						Rect rect = new Rect(j - 1, i - 1, frx, fry, false);
-						rect.coords.val[0] = xcoords[j - 1];
-						rect.coords.val[1] = ycoords[i - 1];
-						rect.evals[0] = vertices[j - 1];
-						rect.evals[1] = vertices[j];
-						rect.evals[2] = cur;
-						rect.evals[3] = prev;
-						rect.status = edgeConfig(rect);
-						rect.shares = 0xff;
-						fx = xcoords[j] - 0.5 * frx;
-						dx = derivativeX(fx, fy);
-						dy = derivativeY(fx, fy);
-						dx = Math.abs(dx) + Math.abs(dy);
-						if (DoubleUtil.isZero(dx, 0.001)) {
-							rect.singular = true;
-						}
-						this.grid[i - 1][j - 1] = rect;
-						vertices[j - 1] = prev;
-						prev = cur;
-					}
-					vertices[sw] = prev;
-				}
+				initGrid(xcoords, ycoords, factor, fry, frx, vertices);
 
 				timer.record();
 
-				if (timer.elapse <= fastDrawThreshold) {
-					// Fast device optimize for UX
-					plotDepth = 3;
-					segmentCheckDepth = 2;
-					LIST_THRESHOLD = 48;
-				} else {
-					// Slow device detected reduce parameters
-					plotDepth = 2;
-					segmentCheckDepth = 1;
-					LIST_THRESHOLD = 24;
-				}
+				checkPerformanceAndRefine();
 
-				for (i = 0; i < sh; i++) {
-					for (j = 0; j < sw; j++) {
-						if (grid[i][j].status != EMPTY) {
-							plot(grid[i][j], 0, factor);
-						}
-					}
-				}
+				plotGrid(factor);
 
 				timer.record();
 
-				if (timer.elapse >= 500) {
-					// I can't do anything more. I've been working for 500 ms
-					// Therefore I am tired
+				if (!refineDepth()) {
 					return;
-				} else if (timer.elapse >= 300) {
-					// I am exhausted, reducing load!
-					plotDepth -= 1;
-					segmentCheckDepth -= 1;
 				}
+			}
+		}
+
+		private void checkPerformanceAndRefine() {
+			if (timer.elapse <= fastDrawThreshold) {
+				// Fast device optimize for UX
+				plotDepth = 3;
+				segmentCheckDepth = 2;
+				LIST_THRESHOLD = 48;
+			} else {
+				// Slow device detected reduce parameters
+				plotDepth = 2;
+				segmentCheckDepth = 1;
+				LIST_THRESHOLD = 24;
+			}
+		}
+
+		private boolean refineDepth() {
+			if (timer.elapse >= 500) {
+				// I can't do anything more. I've been working for 500 ms
+				// Therefore I am tired
+				return false;
+			} else if (timer.elapse >= 300) {
+				// I am exhausted, reducing load!
+				plotDepth -= 1;
+				segmentCheckDepth -= 1;
+			}
+			return true;
+		}
+
+		private void plotGrid(int factor) {
+			for (int i = 0; i < sh; i++) {
+				for (int j = 0; j < sw; j++) {
+					if (grid[i][j].status != EMPTY) {
+						plot(grid[i][j], 0, factor);
+					}
+				}
+			}
+		}
+
+		private void initGrid(double[] xcoords, double[] ycoords, int factor, double fry,
+				double frx, double[] vertices) {
+			double cur;
+			double prev;
+			// initialize grid configuration at the search depth
+			int i, j;
+			double dx, dy, fx, fy;
+			// debug = true;
+			timer.reset();
+			for (i = 1; i <= sh; i++) {
+				prev = evaluateImplicitCurve(xcoords[0], ycoords[i],
+						factor);
+				fy = ycoords[i] - 0.5 * fry;
+				for (j = 1; j <= sw; j++) {
+					cur = evaluateImplicitCurve(xcoords[j], ycoords[i],
+							factor);
+					Rect rect = new Rect(j - 1, i - 1, frx, fry, false);
+					rect.coords.val[0] = xcoords[j - 1];
+					rect.coords.val[1] = ycoords[i - 1];
+					rect.evals[0] = vertices[j - 1];
+					rect.evals[1] = vertices[j];
+					rect.evals[2] = cur;
+					rect.evals[3] = prev;
+					rect.status = edgeConfig(rect);
+					rect.shares = 0xff;
+					fx = xcoords[j] - 0.5 * frx;
+					dx = derivativeX(fx, fy);
+					dy = derivativeY(fx, fy);
+					dx = Math.abs(dx) + Math.abs(dy);
+					if (DoubleUtil.isZero(dx, 0.001)) {
+						rect.singular = true;
+					}
+					this.grid[i - 1][j - 1] = rect;
+					vertices[j - 1] = prev;
+					prev = cur;
+				}
+				vertices[sw] = prev;
 			}
 		}
 
