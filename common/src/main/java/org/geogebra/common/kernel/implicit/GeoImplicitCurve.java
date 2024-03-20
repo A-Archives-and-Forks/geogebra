@@ -1680,15 +1680,16 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 		@Override
 		public void updatePath() {
 			for (int factor = 0; factor < factorLength(); ++factor) {
-				try {
-					evaluateImplicitCurve(0, 0, factor);
-				} catch (Throwable e) {
-					continue;
-				}
 				this.sw = Math.min(MAX_SPLIT, (int) (w * scaleX / RES_COARSE));
 				this.sh = Math.min(MAX_SPLIT, (int) (h * scaleY / RES_COARSE));
 				if (sw == 0 || sh == 0) {
 					return;
+				}
+
+				try {
+					evaluateImplicitCurve(0, 0, factor);
+				} catch (Throwable e) {
+					continue;
 				}
 
 				this.grid = new Rect[sh][sw];
@@ -1701,15 +1702,12 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 				double[] ycoords = new double[sh + 1];
 				double cur, prev;
 
-				for (int i = 0; i <= sw; i++) {
-					xcoords[i] = x + i * frx;
-				}
-
 				for (int i = 0; i <= sh; i++) {
 					ycoords[i] = y + i * fry;
 				}
 
 				for (int i = 0; i <= sw; i++) {
+					xcoords[i] = x + i * frx;
 					vertices[i] = evaluateImplicitCurve(xcoords[i], ycoords[0],
 							factor);
 				}
