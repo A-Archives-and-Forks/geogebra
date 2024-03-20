@@ -791,4 +791,9 @@ public class GeoInputBoxLinkedGeoTest extends BaseUnitTest {
 		t("f", "w - " + Unicode.IMAGINARY);
 	}
 
+	@Test
+	public void shouldEscapeText() {
+		setupInput("txt", "\"--^\\\"");
+		assertEquals(inputBox.getText(), "\\text{-{}-{}\\^{} \\backslash{}}");
+	}
 }
