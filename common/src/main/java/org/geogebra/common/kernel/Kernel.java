@@ -1802,8 +1802,8 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 
 		int i, leadingNonZero = numbers.length;
 		for (i = 0; i < numbers.length; i++) {
-			if ((i != pos) && // except y^2 coefficient
-					!isZeroFigure(numbers[i], tpl)) {
+			if ((i != pos) // except y^2 coefficient
+					&& !isZeroFigure(numbers[i], tpl)) {
 				leadingNonZero = i;
 				break;
 			}
