@@ -183,8 +183,8 @@ public class SpreadsheetControllerTest {
         KeyEvent downArrow = fakeKeyEvent(40);
         controller.handleKeyPressed(downArrow.getKeyCode(), downArrow.getKeyChar() + "",
                 new Modifiers(false, false, true, false));
-        assertEquals(4 ,controller.getLastSelection().getRange().getToColumn());
-        assertEquals(4 ,controller.getLastSelection().getRange().getToRow());
+        assertEquals(4, controller.getLastSelection().getRange().getToColumn());
+        assertEquals(4, controller.getLastSelection().getRange().getToRow());
     }
 
     private void setViewport(Rectangle viewport) {
