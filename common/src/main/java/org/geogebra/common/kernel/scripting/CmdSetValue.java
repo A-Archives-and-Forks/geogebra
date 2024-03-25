@@ -197,12 +197,7 @@ public class CmdSetValue extends CmdScripting {
 	}
 
 	private static void setValueForLists(GeoList target, GeoList from) {
-		target.clear();
-		from.elements().forEach(element -> target.add(element.copy()));
-		target.copyAttributesFromOtherList(from);
-		if (from.isChildOf(target)) {
-			target.resetDefinition();
-		}
+		target.set(from.copy(), false);
 		target.updateRepaint();
 	}
 
