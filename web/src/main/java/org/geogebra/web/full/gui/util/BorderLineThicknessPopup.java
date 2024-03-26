@@ -66,7 +66,7 @@ public class BorderLineThicknessPopup extends GPopupPanel {
 				selectThickness(selectedItem.equals(thin),
 						selectedItem.equals(thick));
 				if (popupHandler != null) {
-					popupHandler.processSelectionWithUndo(popupHandler::handleBorderStyle);
+					popupHandler.processSelectionWithUndoAction(popupHandler::handleBorderStyle);
 				}
 
 				hide();
