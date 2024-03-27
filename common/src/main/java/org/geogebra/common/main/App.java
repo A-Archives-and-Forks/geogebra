@@ -12,6 +12,7 @@ import java.util.Vector;
 import java.util.function.Predicate;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.GeoGebraConstants.Platform;
@@ -37,6 +38,9 @@ import org.geogebra.common.euclidian.inline.InlineTextController;
 import org.geogebra.common.euclidian.smallscreen.AdjustScreen;
 import org.geogebra.common.euclidian.smallscreen.AdjustViews;
 import org.geogebra.common.euclidian3D.EuclidianView3DInterface;
+import org.geogebra.common.exam.ExamRegion;
+import org.geogebra.common.exam.restrictions.ExamRestrictable;
+import org.geogebra.common.exam.restrictions.ExamRestrictions;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.Format;
@@ -101,7 +105,6 @@ import org.geogebra.common.main.MyError.Errors;
 import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.main.error.ErrorHelper;
 import org.geogebra.common.main.exam.ExamEnvironment;
-import org.geogebra.common.main.exam.restriction.ExamRegion;
 import org.geogebra.common.main.exam.restriction.ExamRestrictionFactory;
 import org.geogebra.common.main.exam.restriction.FeatureRestriction;
 import org.geogebra.common.main.exam.restriction.RestrictExam;
@@ -149,7 +152,9 @@ import com.himamis.retex.editor.share.util.Unicode;
 /**
  * Represents an application window, gives access to views and system stuff
  */
-public abstract class App implements UpdateSelection, AppInterface, EuclidianHost, ExamProvider {
+public abstract class App implements UpdateSelection, AppInterface, EuclidianHost,
+		ExamRestrictable, ExamProvider {
+
 	/** Url for wiki article about functions */
 	public static final String WIKI_OPERATORS = "Predefined Functions and Operators";
 	/** Url for main page of manual */
@@ -388,7 +393,9 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	private SpreadsheetTraceManager traceManager;
 
 	// Exam
+	@Deprecated // use ExamController instead
 	private ExamEnvironment exam;
+	@Deprecated // use ExamController instead
 	protected RestrictExam restrictions;
 
 	// moved to Application from EuclidianView as the same value is used across
@@ -674,7 +681,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		// available, otherwise untranslated)
 		for (String cmd : cas.getAvailableCommandNames()) {
 			try {
-				if (!commandDispatcher.isAllowedByNameFilter(Commands.valueOf(cmd))) {
+				if (!commandDispatcher.isAllowedByCommandFilters(Commands.valueOf(cmd))) {
 					continue;
 				}
 			} catch (Exception e) {
@@ -789,7 +796,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 				.getTranslateCommandTable();
 
 		for (Commands comm : Commands.values()) {
-			if (!cf.isAllowedByNameFilter(comm)) {
+			if (!cf.isAllowedByCommandFilters(comm)) {
 				continue;
 			}
 
@@ -3982,23 +3989,28 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return true;
 	}
 
-	@Override
+	@Deprecated // use ExamController instead
+	@Override // from deprecated ExamProvider
 	public ExamEnvironment getExam() {
 		return exam;
 	}
 
+	@Deprecated // use ExamController instead
 	public boolean isExam() {
 		return getExam() != null;
 	}
 
+	@Deprecated // use ExamController instead
 	public boolean isExamStarted() {
 		return isExam() && getExam().isStarted();
 	}
 
+	@Deprecated // use ExamController instead
 	public void setExam(ExamEnvironment exam) {
 		this.exam = exam;
 	}
 
+	@Deprecated // use ExamController instead
 	public void setNewExam() {
 		setNewExam(ExamRegion.GENERIC);
 	}
@@ -4006,6 +4018,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	/**
 	 * Initializes a new ExamEnvironment instance.
 	 */
+	@Deprecated // use ExamController instead
 	public void setNewExam(ExamRegion region) {
 		ExamEnvironment examEnvironment = newExamEnvironment();
 		examEnvironment.setExamRegion(region);
@@ -4019,10 +4032,12 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		examEnvironment.setCopyPaste(getCopyPaste());
 	}
 
+	@Deprecated // use ExamController instead
 	protected ExamEnvironment newExamEnvironment() {
 		return new ExamEnvironment(getLocalization());
 	}
 
+	@Deprecated // use ExamController instead
 	private void initRestrictions(ExamRegion region) {
 		RestrictExam oldRestrictions = restrictions;
 		restrictions = ExamRestrictionFactory.create(region);
@@ -4036,6 +4051,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *
 	 * @param restrictable the component to restrict.
 	 */
+	@Deprecated // use ExamController instead
 	public void registerRestrictable(Restrictable restrictable) {
 		if (restrictions == null) {
 			ExamEnvironment exam = getExam();
@@ -4048,6 +4064,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	/**
 	 * Start exam with current timestamp.
 	 */
+	@Deprecated // use ExamController instead
 	public void startExam() {
 		getExam().prepareExamForStarting();
 		getExam().setStart((new Date()).getTime());
@@ -4057,6 +4074,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	/**
 	 * If an exam is active, re-enable any exam restrictions.
 	 */
+	@Deprecated // use ExamController instead
 	public void reEnableExamRestrictions() {
 		if (getExam() != null && isExamStarted() && restrictions != null) {
 			restrictions.enable();
@@ -4066,6 +4084,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	/**
 	 * Show exam welcome message.
 	 */
+	@Deprecated // use ExamController instead
 	public void examWelcome() {
 		// overridden in platforms supporting exam
 	}
@@ -4156,12 +4175,13 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return getGuiManager() == null ? null : getGuiManager().getLayout();
 	}
 
-    public void clearRestrictions() {
-        restrictions.disable();
-    }
-
 	public StringTemplate getScreenReaderTemplate() {
 		return StringTemplate.screenReaderAscii;
+	}
+
+	@Deprecated // restrictions are handled by ExamController
+	public void clearRestrictions() {
+		restrictions.disable();
 	}
 
 	/**
@@ -5085,6 +5105,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *
 	 * @param commandDispatcher command dispatcher
 	 */
+	@Deprecated
 	public void onCommandDispatcherSet(CommandDispatcher commandDispatcher) {
 		ExamEnvironment examEnvironment = getExam();
 		if (examEnvironment != null) {
@@ -5150,5 +5171,23 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			return false;
 		}
 		return getExam().getRestrictionModel().isFeatureRestricted(featureRestriction);
+	}
+
+	// ExamRestrictable
+
+	/**
+	 * Note: Client code adopting the new exam handling needs to register the current instance
+	 * as an {@link ExamRestrictable} with the {@link org.geogebra.common.exam.ExamController}.
+	 *
+	 * @param examRestrictions The restrictions for the current exam.
+	 */
+	@Override
+	public void applyRestrictions(@Nonnull ExamRestrictions examRestrictions) {
+		resetCommandDict();
+	}
+
+	@Override
+	public void removeRestrictions(@Nonnull ExamRestrictions examRestrictions) {
+		// probably nothing to do here
 	}
 }

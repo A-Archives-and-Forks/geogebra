@@ -1,6 +1,5 @@
 package org.geogebra.common.main.exam.restriction;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,14 +8,15 @@ import org.geogebra.common.kernel.commands.selector.CommandFilter;
 /**
  * Model containing the exam restrictions.
  */
+@Deprecated // use org.geogebra.common.exam API instead
 public class ExamRestrictionModel {
-	private List<String> subAppCodes = Collections.emptyList();
+	private List<String> restrictedSubAppCodes = Collections.emptyList();
 	private String defaultAppCode;
 	private CommandFilter commandFilter;
 	private List<FeatureRestriction> featureRestrictions = Collections.emptyList();
 
-	void setSubAppCodes(String... list) {
-		subAppCodes = Arrays.asList(list);
+	public void setRestrictedSubAppCodes(String... subAppCodes) {
+		restrictedSubAppCodes = List.of(subAppCodes);
 	}
 
 	/**
@@ -25,7 +25,7 @@ public class ExamRestrictionModel {
 	 * @return if the subApp specified is restricted during exam or not.
 	 */
 	public boolean isAppRestricted(String subAppCode) {
-		return subAppCodes.contains(subAppCode);
+		return restrictedSubAppCodes.contains(subAppCode);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class ExamRestrictionModel {
 	 * @return if model has restricted subApps.
 	 */
 	public boolean hasSubApps() {
-		return !subAppCodes.isEmpty();
+		return !restrictedSubAppCodes.isEmpty();
 	}
 
 	public CommandFilter getCommandFilter() {
