@@ -10,6 +10,6 @@ public class ShowSettingsAction extends DefaultMenuAction<AppWFull> {
 
 	@Override
 	public void execute(AppWFull app) {
-		app.getCurrentActivity().showSettingsView(app);
+		app.getActivity().showSettingsView(app);
 	}
 }
