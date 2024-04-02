@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.geogebra.common.gui.view.spreadsheet.CopyPasteCut;
 import org.geogebra.common.gui.view.spreadsheet.DataImport;
@@ -145,7 +146,7 @@ public class CopyPasteCutD extends CopyPasteCut {
 		try {
 			InputStream is = url.openStream();
 			BufferedReader input = new BufferedReader(
-					new InputStreamReader(is, Charsets.getUtf8()));
+					new InputStreamReader(is, StandardCharsets.UTF_8));
 			try {
 				String line = null;
 				while ((line = input.readLine()) != null) {
