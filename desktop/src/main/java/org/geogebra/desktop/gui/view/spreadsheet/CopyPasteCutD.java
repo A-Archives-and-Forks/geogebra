@@ -16,7 +16,6 @@ import org.geogebra.common.gui.view.spreadsheet.DataImport;
 import org.geogebra.common.gui.view.spreadsheet.RelativeCopy;
 import org.geogebra.common.main.App;
 import org.geogebra.common.spreadsheet.core.TabularRange;
-import org.geogebra.common.util.Charsets;
 import org.geogebra.common.util.StringUtil;
 
 public class CopyPasteCutD extends CopyPasteCut {
