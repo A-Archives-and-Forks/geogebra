@@ -779,4 +779,15 @@ public class AppletParameters {
 		return getBoolDataParam("sandboxJavaScript",
 				getDataParamApp() || Browser.isGeoGebraOrg());
 	}
+
+	/**
+	 * When set, keyboard should be attached to the first element in DOM
+	 * that fits the selector.
+	 *
+	 * @return the selector where the keyboard should be attached in DOM.
+	 */
+	public String getDetachKeyboardParent() {
+		return getStringDataParam("detachedKeyboardParent", "");
+
+	}
 }
