@@ -6671,8 +6671,26 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 		return null;
 	}
 
-	public void setMeasurementTool(GeoImage tool, int width, int height, int posLeftCorner) {
-		// do nothing
+	/**
+	 * Adds a measurement tool with given size
+	 *
+	 * @param tool image of the tool
+	 * @param left coordinate of the tool
+	 * @param width of the tool
+	 * @param height of the tool
+	 */
+	public void setMeasurementTool(GeoImage tool, int left, int width, int height) {
+		// implemented in web.
+	}
+
+	/**
+	 * Adds a measurement tool with its own size
+	 *
+	 * @param tool image of the tool
+	 * @param left coordinate of the tool
+	 */
+	public void setMeasurementTool(GeoImage tool, int left) {
+		// implemented in web.
 	}
 
 	/**
