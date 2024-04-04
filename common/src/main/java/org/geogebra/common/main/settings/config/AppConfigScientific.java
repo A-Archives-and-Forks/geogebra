@@ -195,4 +195,9 @@ public class AppConfigScientific extends AppConfigGraphing {
 	public boolean hasSpreadsheetView() {
 		return false;
 	}
+
+	@Override
+	public boolean hasDataImport() {
+		return false;
+	}
 }

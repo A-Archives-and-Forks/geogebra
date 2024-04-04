@@ -352,4 +352,7 @@ public interface AppConfig extends Serializable {
 	 * @return true, if app has spreadsheet view
 	 */
 	boolean hasSpreadsheetView();
+
+	boolean hasDataImport();
+
 }
