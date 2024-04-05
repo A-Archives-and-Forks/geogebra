@@ -2795,4 +2795,11 @@ public class GeoGebraCasIntegrationTest extends BaseCASIntegrationTest {
 		assertThat(((GeoCasCell) lookup("$1")).getLaTeXInput(),
 				equalTo("\\sqrt{30.6001}"));
 	}
+
+	@Test
+	@Issue("APPS-5264")
+	public void testIntegral2() {
+		t("f(x):=b", "b");
+		t("Integral[f]", "b * x + c_{1}");
+	}
 }

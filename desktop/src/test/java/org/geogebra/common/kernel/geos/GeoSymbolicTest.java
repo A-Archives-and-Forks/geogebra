@@ -2285,4 +2285,11 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		reload();
 		t("f(3)", "(8, 9, 10)");
 	}
+
+	@Test
+	@Issue("APPS-5264")
+	public void testIntegral2() {
+		t("f(x)=b", "b");
+		t("Integral[f]", "b * x + c_{1}");
+	}
 }
