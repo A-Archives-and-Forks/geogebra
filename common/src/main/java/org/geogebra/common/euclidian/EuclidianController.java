@@ -9847,22 +9847,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			}
 		}
 
-		if (getResizedShape() != null) { // resize, single selection
-			view.resetHitHandler();
-			selection.addSelectedGeo(getResizedShape().getGeoElement());
-			if (!isDraggingOccuredBeyondThreshold()) {
-				showDynamicStylebar();
-			}
-			storeUndo();
-			setResizedShape(null);
+		if (handleResizeFinished()) {
 			decreaseTargets();
-			return;
-		} else if (isMultiResize) { // resize, multi selection
-			view.resetHitHandler();
-			storeUndo();
-			isMultiResize = false;
-			setBoundingBoxFromList(selection.getSelectedGeos());
-			decreaseTargets();
+			view.repaintView();
 			return;
 		}
 
@@ -9959,6 +9946,26 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 
 		decreaseTargets();
+	}
+
+	private boolean handleResizeFinished() {
+		if (getResizedShape() != null) { // resize, single selection
+			view.resetHitHandler();
+			selection.addSelectedGeo(getResizedShape().getGeoElement());
+			if (!isDraggingOccuredBeyondThreshold()) {
+				showDynamicStylebar();
+			}
+			storeUndo();
+			setResizedShape(null);
+			return true;
+		} else if (isMultiResize) { // resize, multi selection
+			view.resetHitHandler();
+			storeUndo();
+			isMultiResize = false;
+			setBoundingBoxFromList(selection.getSelectedGeos());
+			return true;
+		}
+		return false;
 	}
 
 	private void storeUndo() {
