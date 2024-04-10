@@ -308,6 +308,8 @@ public class ToolbarPanel extends FlowPanel
 		} else {
 			removeTab(TabIds.TOOLS);
 		}
+		// reset tool even if toolbar not available (needed on app switch)
+		app.setMoveMode();
 
 		StickyProbabilityTable table = null;
 		DistributionTab tabDist;
