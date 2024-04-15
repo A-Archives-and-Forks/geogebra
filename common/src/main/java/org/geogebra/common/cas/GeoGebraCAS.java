@@ -273,7 +273,7 @@ public class GeoGebraCAS implements GeoGebraCasInterface {
 		return null;
 	}
 
-	final private static String toString(final ExpressionValue ev,
+	private static String toString(final ExpressionValue ev,
 			final boolean symbolic, StringTemplate tpl) {
 		/*
 		 * previously this method also replaced f by f(x), but FunctionExpander
@@ -572,15 +572,11 @@ public class GeoGebraCAS implements GeoGebraCasInterface {
 
 				sbCASCommand.append('(');
 			}
-			for (int i = 0; i < args.size(); i++) {
-				ExpressionValue ev = args.get(i);
+			for (ExpressionValue ev : args) {
 				sbCASCommand.append(toString(ev, symbolic, tpl));
 				sbCASCommand.append(',');
 			}
 			sbCASCommand.setCharAt(sbCASCommand.length() - 1, ')');
-			if (!handled) {
-				// sbCASCommand.append(")");
-			}
 		}
 
 		// translation found:
@@ -749,7 +745,8 @@ public class GeoGebraCAS implements GeoGebraCasInterface {
 
 	private ExpressionValue unwrapSymbolic(ExpressionValue v) {
 		return v instanceof GeoSymbolic && ((GeoSymbolic) v).getDefinition() != null
-				? ((GeoSymbolic) v).getDefinition() : v;
+				? ((GeoSymbolic) v).getDefinition().deepCopy(((GeoSymbolic) v)
+				.getKernel()).traverse(this::unwrapSymbolic) : v;
 	}
 
 	private String getVarargTranslation(StringBuilder builder, String name,
@@ -854,7 +851,6 @@ public class GeoGebraCAS implements GeoGebraCasInterface {
 			sbCASCommand.append(1);
 		} else {
 			sbCASCommand.setLength(0);
-			Log.debug(args.get(0));
 			GeoElementND newArg = computeWithGGB(kernel, "Area", args);
 			args.clear();
 			args.add(newArg.wrap());
