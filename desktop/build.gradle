@@ -1,11 +1,10 @@
 plugins {
     alias libs.plugins.spotbugs
     id 'application'
-    id 'eclipse'
     id 'checkstyle'
 }
 
-project.setDescription('Parts of GeoGebra related to desktop platforms')
+description 'Parts of GeoGebra related to desktop platforms'
 
 sourceSets {
     nonfree
@@ -28,16 +27,6 @@ sourceSets {
 configurations {
     e2eTestImplementation.extendsFrom testImplementation
     e2eTestImplementation.extendsFrom testRuntime
-}
-
-eclipse.classpath.sourceSets.removeAll { it.name == 'nonfree' || it.name == 'gpl' }
-eclipse.classpath.file {
-    // Eclipse dependecies are based on projects, not source paths
-    whenMerged { classpath ->
-        classpath.entries.removeAll { entry ->
-            entry.kind == 'lib' && entry.path.matches(".*common-jre/build/.*/test")
-        }
-    }
 }
 
 dependencies {
@@ -66,7 +55,9 @@ dependencies {
     testImplementation libs.junit, libs.mockito.core, libs.hamcrest
 }
 
-mainClassName = "org.geogebra.desktop.GeoGebra3D"
+application {
+    mainClassName = "org.geogebra.desktop.GeoGebra3D"
+}
 
 run {
     // Copying JOGL related native JARs into the same directory where the non-native JAR takes place.
@@ -88,29 +79,18 @@ run {
     }
 
 }
+
 test {
     systemProperty "ggb.prerelease", project.findProperty("prerelease") ?: "true";
 
     ignoreFailures = true
     outputs.upToDateWhen { false }
 }
+
 spotbugs {
     ignoreFailures = true
     excludeFilter = file("../config/spotbugs.xml")
     jvmArgs = ['-Dfindbugs.sf.comment=true']
-}
-
-import org.gradle.plugins.ide.eclipse.model.AccessRule
-
-eclipse {
-    classpath {
-        file {
-            whenMerged { classpath ->
-                def jre = entries.find { it.path.contains 'org.eclipse.jdt.launching.JRE_CONTAINER' }
-                jre.accessRules.add(new AccessRule('accessible', 'com/**'))
-            }
-        }
-    }
 }
 
 checkstyle {
@@ -126,7 +106,8 @@ jar {
     }
 }
 
-task debugJars(type: Zip, dependsOn: 'jar') {
+tasks.register('debugJars', Zip) {
+    dependsOn 'jar'
     description = 'Collect all jar files in a single archive. Fast: no proguard or code signing.'
     archiveBaseName = 'jars'
     destinationDirectory = file('build')
@@ -143,7 +124,7 @@ task debugJars(type: Zip, dependsOn: 'jar') {
 
 tasks['checkstyleMain'].setSource(files([]))
 
-task e2eTest(type: Test) {
+tasks.register('e2eTest', Test) {
     description 'Run end-to-end tests'
     testClassesDirs = sourceSets.e2eTest.output.classesDirs
     classpath = sourceSets.e2eTest.runtimeClasspath
