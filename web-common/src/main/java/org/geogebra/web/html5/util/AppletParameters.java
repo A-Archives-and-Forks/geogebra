@@ -591,7 +591,7 @@ public class AppletParameters {
 	}
 
 	/**
-	 * @return whether to allow scale > 1
+	 * @return whether to allow scale &gt; 1
 	 */
 	public boolean getParamAllowUpscale() {
 		return getBoolDataParam("allowUpscale", false);
