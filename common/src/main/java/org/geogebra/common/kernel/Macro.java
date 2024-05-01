@@ -400,7 +400,7 @@ public class Macro {
 	 * @param geo
 	 *            Element to be added (with parent and siblings)
 	 * @param consElementSet
-	 *            Set of geos & algos used in macro construction
+	 *            Set of geos and algos used in macro construction
 	 * @param usedAlgoIds
 	 *            Set of IDs of algorithms used in macro construction
 	 */
@@ -424,7 +424,7 @@ public class Macro {
 	 * @param algo
 	 *            Element to be added
 	 * @param consElementSet
-	 *            Set of geos & algos used in macro construction
+	 *            Set of geos and algos used in macro construction
 	 * @param usedAlgoIds
 	 *            Set of IDs of algorithms used in macro construction
 	 */
