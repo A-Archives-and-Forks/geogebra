@@ -56,7 +56,7 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 
 [plugins]
-spotbugs = "com.github.spotbugs:6.0.9"
+spotbugs = "com.github.spotbugs:6.0.13"
 javacc = "org.javacc.javacc:3.0.2"
 gwt = "org.docstr.gwt:1.1.30"
 cpd = "de.aaschmid.cpd:3.3"
