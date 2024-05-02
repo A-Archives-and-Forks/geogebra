@@ -773,14 +773,6 @@ public class AppletParameters {
 	}
 
 	/**
-	 * @return whether to run JS in QuickJS sandbox
-	 */
-	public boolean getParamSandbox() {
-		return getBoolDataParam("sandboxJavaScript",
-				getDataParamApp() || Browser.isGeoGebraOrg());
-	}
-
-	/**
 	 * When set, keyboard should be attached to the first element in DOM
 	 * that fits the selector.
 	 *
@@ -788,6 +780,13 @@ public class AppletParameters {
 	 */
 	public String getDetachKeyboardParent() {
 		return getStringDataParam("detachedKeyboardParent", "");
+	}
 
+	/**
+	 * @return whether to run JS in QuickJS sandbox
+	 */
+	public boolean getParamSandbox() {
+		return getBoolDataParam("sandboxJavaScript",
+				getDataParamApp() || Browser.isGeoGebraOrg());
 	}
 }
