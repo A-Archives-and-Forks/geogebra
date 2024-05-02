@@ -2,7 +2,9 @@ package org.geogebra.web.full.gui.toolbarpanel.spreadsheet;
 
 import java.util.List;
 
+import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GPoint;
+import org.geogebra.common.main.GeoGebraColorConstants;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.spreadsheet.core.ClipboardInterface;
 import org.geogebra.common.spreadsheet.core.ContextMenuItem;
@@ -25,6 +27,7 @@ import org.gwtproject.dom.style.shared.TextAlign;
 import org.gwtproject.dom.style.shared.Unit;
 
 import com.google.gwt.core.client.Scheduler;
+import com.himamis.retex.editor.share.input.KeyboardInputAdapter;
 
 public class SpreadsheetControlsDelegateW implements SpreadsheetControlsDelegate {
 
@@ -42,6 +45,8 @@ public class SpreadsheetControlsDelegateW implements SpreadsheetControlsDelegate
 		public SpreadsheetCellEditorW(AppW app, SpreadsheetPanel parent, MathTextFieldW mathField,
 				Spreadsheet spreadsheet) {
 			this.mathField = mathField;
+			this.mathField.getMathField().setForegroundColor(
+					GColor.getColorString(GeoGebraColorConstants.NEUTRAL_900));
 			mathField.addStyleName("spreadsheetEditor");
 			this.parent = parent;
 			this.app = app;
@@ -80,6 +85,11 @@ public class SpreadsheetControlsDelegateW implements SpreadsheetControlsDelegate
 		@Override
 		public void setContent(Object content) {
 			mathField.getMathField().parse(new KernelDataSerializer().getStringForEditor(content));
+		}
+
+		@Override
+		public void type(String content) {
+			KeyboardInputAdapter.type(mathField.getMathField().getInternal(), content);
 		}
 
 		@Override

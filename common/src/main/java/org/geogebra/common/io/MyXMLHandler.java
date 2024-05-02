@@ -83,6 +83,7 @@ import org.geogebra.common.main.settings.ProbabilityCalculatorSettings.Dist;
 import org.geogebra.common.main.settings.SpreadsheetSettings;
 import org.geogebra.common.main.settings.TableSettings;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
+import org.geogebra.common.spreadsheet.core.TableLayout;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.StringUtil;
@@ -107,6 +108,7 @@ public class MyXMLHandler implements DocHandler {
 	private static final int MODE_EUCLIDIAN_VIEW = 100;
 	/** currently parsing tags for Euclidian3D view */
 	protected static final int MODE_EUCLIDIAN_VIEW3D = 101; // only for 3D
+	private static final int MODE_SPREADSHEET_LAYOUT_SUITE = 149;
 	private static final int MODE_SPREADSHEET_VIEW = 150;
 	private static final int MODE_ALGEBRA_VIEW = 151;
 	private static final int MODE_CONST_CAS_CELL = 161;
@@ -347,6 +349,10 @@ public class MyXMLHandler implements DocHandler {
 			startEuclidianView3DElement(eName, attrs);
 			break;
 
+		case MODE_SPREADSHEET_LAYOUT_SUITE:
+			startSpreadsheetLayoutForSuiteElement(eName, attrs);
+			break;
+
 		case MODE_SPREADSHEET_VIEW:
 			startSpreadsheetViewElement(eName, attrs);
 			break;
@@ -518,6 +524,12 @@ public class MyXMLHandler implements DocHandler {
 			}
 			break;
 
+		case MODE_SPREADSHEET_LAYOUT_SUITE:
+			if ("spreadsheetLayoutSuite".equals(eName)) {
+				mode = MODE_GEOGEBRA;
+			}
+			break;
+
 		case MODE_SPREADSHEET_VIEW:
 			if ("spreadsheetView".equals(eName)) {
 				mode = MODE_GEOGEBRA;
@@ -645,6 +657,12 @@ public class MyXMLHandler implements DocHandler {
 			break;
 		case "tableview":
 			setTableParameters(attrs);
+			break;
+		case "spreadsheetLayoutSuite":
+			if (app.getGuiManager().getSpreadsheetLayoutForSuite() != null) {
+				app.getGuiManager().getSpreadsheetLayoutForSuite().resetCellSizes();
+			}
+			mode = MODE_SPREADSHEET_LAYOUT_SUITE;
 			break;
 		case "spreadsheetView":
 			mode = MODE_SPREADSHEET_VIEW;
@@ -919,6 +937,26 @@ public class MyXMLHandler implements DocHandler {
 
 		if (!ok) {
 			Log.error("error in <spreadsheetView>: " + eName);
+		}
+	}
+
+	private void startSpreadsheetLayoutForSuiteElement(String eName,
+			LinkedHashMap<String, String> attrs) {
+		boolean ok = true;
+
+		switch (eName) {
+		case "row":
+			ok = handleSpreadsheetLayoutRowForSuite(attrs);
+			break;
+		case "column":
+			ok = handleSpreadsheetLayoutColumnForSuite(attrs);
+			break;
+		default:
+			Log.error("unknown tag in <spreadsheetLayoutSuite>: " + eName);
+		}
+
+		if (!ok) {
+			Log.error("error in <spreadsheetLayoutSuite>: " + eName);
 		}
 	}
 
@@ -1388,6 +1426,30 @@ public class MyXMLHandler implements DocHandler {
 
 			return true;
 
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
+	private boolean handleSpreadsheetLayoutRowForSuite(LinkedHashMap<String, String> attrs) {
+		TableLayout layout = app.getGuiManager().getSpreadsheetLayoutForSuite();
+		try {
+			int rowIndex = Integer.parseInt(attrs.get("index"));
+			int rowHeight = Integer.parseInt(attrs.get("height"));
+			layout.setHeightForRows(rowHeight, rowIndex, rowIndex);
+			return true;
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
+	private boolean handleSpreadsheetLayoutColumnForSuite(LinkedHashMap<String, String> attrs) {
+		TableLayout layout = app.getGuiManager().getSpreadsheetLayoutForSuite();
+		try {
+			int columnIndex = Integer.parseInt(attrs.get("index"));
+			int columnWidth = Integer.parseInt(attrs.get("width"));
+			layout.setWidthForColumns(columnWidth, columnIndex, columnIndex);
+			return true;
 		} catch (RuntimeException e) {
 			return false;
 		}
