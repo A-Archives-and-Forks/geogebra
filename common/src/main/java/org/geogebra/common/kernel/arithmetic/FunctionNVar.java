@@ -1564,6 +1564,25 @@ public class FunctionNVar extends ValidExpression
 		}
 	}
 
+	public Polynomial getPolynomial() {
+		ExpressionNode lhs = replaceFunctionVarsIn(getExpression());
+		Equation equ = new Equation(kernel, lhs, new MyDouble(kernel, 0));
+
+		try {
+			Polynomial polynomial = Polynomial.fromNode(lhs, equ, false);
+			equ.initEquation();
+			if (!equ.isPolynomial()) {
+				return null;
+			}
+			return polynomial;
+		} catch (Throwable t) {
+			Log.warn(getExpression() + " couldn't be transformed to polynomial:"
+					+ t.getMessage());
+			return null;
+		}
+
+	}
+
 	private ExpressionNode replaceFunctionVarsIn(ExpressionValue ev) {
 		FunctionVariable[] vars = getFunctionVariables();
 		String var1 = vars[0].getSetVarString();
