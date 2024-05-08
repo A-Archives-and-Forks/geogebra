@@ -1,6 +1,8 @@
 package org.geogebra.common.kernel.implicit;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.factories.AwtFactory;
+import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +16,12 @@ public class ImplicitPolyToBernsteinConverterTest extends BaseUnitTest {
 
 	@Test
 	public void testMain() {
-		GeoImplicitCurve curve = add("x^3+y^2+3x=4");
-		converter.convert(curve);
+		GeoImplicitCurve curve = add(" 3 * x^3 + 2 * y^2 + 1*y + 1x= 5");
+		BernsteinPolynomial bernstein =
+				new BernsteinPolynomial(curve.getFunctionDefinition().getPolynomial(),
+						curve.getKernel(),
+						AwtFactory.getPrototype().newRectangle(100, 100),
+						curve.getDegX(), curve.getDegY());
+
 	}
 }

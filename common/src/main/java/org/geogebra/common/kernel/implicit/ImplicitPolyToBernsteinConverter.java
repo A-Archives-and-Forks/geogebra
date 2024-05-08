@@ -5,10 +5,11 @@ import org.geogebra.common.kernel.arithmetic.Polynomial;
 
 public class ImplicitPolyToBernsteinConverter {
 
-	private FunctionNVar function;
+	private Polynomial polynomial;
 
 	public void convert(GeoImplicitCurve curve) {
-		function = curve.getFunctionDefinition();
-		Polynomial polynomial = function.getPolynomial();
+		FunctionNVar function = curve.getFunctionDefinition();
+		polynomial = function.getPolynomial();
+		int a=1;
 	}
 }

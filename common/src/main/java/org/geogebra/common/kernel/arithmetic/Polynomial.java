@@ -43,7 +43,7 @@ public class Polynomial implements HasDebugString {
 	 * @param kernel
 	 *            kernel
 	 */
-	private Polynomial(Kernel kernel) {
+	Polynomial(Kernel kernel) {
 		this.kernel = kernel;
 	}
 
