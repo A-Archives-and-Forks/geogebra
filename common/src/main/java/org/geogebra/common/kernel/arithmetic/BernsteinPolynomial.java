@@ -23,25 +23,63 @@ public class BernsteinPolynomial {
 		coeffs = polynomial.getCoeff();
 		output = new Polynomial(kernel);
 		this.kernel = kernel;
-		for (int i = 0; i < degX; i++) {
-			getBasis(i);
-		}
 	}
 
-	private int getBasis(int i) {
+	void construct(int degX) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < degX; i++) {
+			getBasis(i, sb);
+		}
+		Log.debug("Output: " + sb);
+	}
+
+	int getBasis(int i, StringBuilder sb) {
 		for (int j = 0; j < i; j++) {
-			Log.debug(b(i, j) + " * (1 - y)^"+j+" * y^" + (i-j));
+			int b_ij = b(i, j);
+
+			sb.append(b_ij);
+			if (j > 0) {
+				sb.append(" * (1 - x)");
+				if (j > 1) {
+					sb.append("^");
+					sb.append(j);
+				}
+				sb.append(" * x");
+				if (i-j > 1) {
+					sb.append("^");
+					sb.append((i-j));
+				}
+			}
+			sb.append(" + ");
+
 		}
 		return 0;
 	}
 
-	private int b(int i, int j) {
-		return (int) (MyMath.binomial(degX - i, j) * coeffX(degX - i)
-				+ bounds.getMinX() * b( i - 1, j)
-				+ bounds.getMaxX() * b( i - 1, j - 1));
+	int b(int i, int j) {
+		if (i == 0 && j == 0) {
+			return coeffX(degX);
+		}
+
+		double xl = bounds.getMinX();
+		double xh = bounds.getMaxX();
+
+		if (j == 0) {
+			return (int) (coeffX(degX - i) + xl * b(i - 1, 0));
+		}
+
+		if (i == j) {
+			return (int) (coeffX(degX - i) + xh * b(i - 1, i - 1));
+		}
+
+		int n = degX;
+		return (int) (MyMath.binomial(n - i, j) * coeffX(n - i)
+				+ xl * b( i - 1, j)
+				+ xh * b( i - 1, j - 1));
 	}
 
 	private int coeffX(int i) {
-		return (int) coeffs[0][i - 1].evaluateDouble();
+		Term term = polynomial.getTerm(i);
+		return (int) term.coefficient.evaluateDouble();
 	}
 }
