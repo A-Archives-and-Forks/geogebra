@@ -15,12 +15,14 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Before
 	public void setUp() throws Exception {
-		curve = add("1 + 5x + 2x^2 + 3x^3 + 4x^4 = 0");
-		bernstein =
-				new BernsteinPolynomial(curve.getFunctionDefinition().getPolynomial(),
+//		curve = add("1 + 5x + 2x^2 + 3x^3 + 4x^4 = 0");
+		curve = add("x^3+2x^2+3x=0");
+		FunctionNVar functionNVar = curve.getFunctionDefinition();
+		bernstein = new BernsteinPolynomial(functionNVar.getPolynomial(),
 						curve.getKernel(),
-						AwtFactory.getPrototype().newRectangle(10, 10),
-						curve.getDegX(), curve.getDegY());
+						AwtFactory.getPrototype().newRectangle(1, 1),
+						curve.getDegX(), curve.getDegY(),
+						functionNVar.getFunctionVariables());
 
 	}
 
@@ -35,7 +37,10 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testBad() {
-		assertEquals(1, bernstein.b(2, 1));
+		int b21 = bernstein.b(2, 1);
+		int b11 = bernstein.b(1, 1);
+		int b10 = bernstein.b(1, 0);
+		assertEquals(1, b21);
 
 	}
 

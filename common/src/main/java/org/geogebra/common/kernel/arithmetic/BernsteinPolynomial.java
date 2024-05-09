@@ -2,6 +2,7 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.awt.GRectangle;
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.debug.Log;
 
@@ -9,51 +10,71 @@ public class BernsteinPolynomial {
 	private final Polynomial polynomial;
 	private final GRectangle bounds;
 	private final int degX;
-	private final int degY;
-	private final Polynomial output;
+	private ExpressionNode output;
 	private final Kernel kernel;
-	private final ExpressionValue[][] coeffs;
+	private final FunctionVariable[] functionVariables;
 
 	public BernsteinPolynomial(Polynomial polynomial, Kernel kernel,
-			GRectangle bounds, int degX, int degY) {
+			GRectangle bounds, int degX, int degY, FunctionVariable[] functionVariables) {
 		this.polynomial = polynomial;
 		this.bounds = bounds;
 		this.degX = degX;
-		this.degY = degY;
-		coeffs = polynomial.getCoeff();
-		output = new Polynomial(kernel);
 		this.kernel = kernel;
+		this.functionVariables = functionVariables;
 	}
 
 	void construct(int degX) {
-		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < degX; i++) {
-			getBasis(i, sb);
+			makeBasis(i, functionVariables[0]);
 		}
-		Log.debug("Output: " + sb);
+		output.simplifyLeafs();
+		Log.debug("Out: " + output);
 	}
 
-	int getBasis(int i, StringBuilder sb) {
-		for (int j = 0; j < i; j++) {
-			int b_ij = b(i, j);
-
-			sb.append(b_ij);
-			if (j > 0) {
-				sb.append(" * (1 - x)");
-				if (j > 1) {
-					sb.append("^");
-					sb.append(j);
-				}
-				sb.append(" * x");
-				if (i-j > 1) {
-					sb.append("^");
-					sb.append((i-j));
-				}
+	void makeBasis(int i, FunctionVariable fv) {
+		for (int j = 0; j <= i; j++) {
+			if (j == 0 && i == j) {
+				continue;
 			}
-			sb.append(" + ");
+
+			MyDouble binomialCoefficient = new MyDouble(kernel, b(i, j));
+			ExpressionNode oneMinusXPowerJ = powerOf(getOneMinusX(fv), j);
+			ExpressionNode xPowerIMinusJ = powerOf(fv.wrap(), i - j);
+			ExpressionNode tag = binomialCoefficient.wrap();
+			if (oneMinusXPowerJ != null) {
+				tag = tag.multiply(oneMinusXPowerJ);
+			}
+			if (xPowerIMinusJ != null) {
+				tag = tag.multiply(xPowerIMinusJ);
+			}
+
+			if (output == null) {
+				output = tag;
+			} else {
+				output = new ExpressionNode(kernel, output, Operation.PLUS, tag);
+			}
 
 		}
-		return 0;
+	}
+
+	private ExpressionNode powerOf(ExpressionNode node, int power) {
+		if (power == 0) {
+			return null;
+		}
+
+		if (power == 1) {
+			return node;
+		}
+
+		return new ExpressionNode(kernel,
+				node,
+				Operation.POWER,
+				new MyDouble(kernel, power));
+	}
+
+	private ExpressionNode getOneMinusX(FunctionVariable fv) {
+		return new ExpressionNode(kernel, new MyDouble(kernel, 1), Operation.MINUS,
+				fv);
 	}
 
 	int b(int i, int j) {
@@ -73,13 +94,17 @@ public class BernsteinPolynomial {
 		}
 
 		int n = degX;
-		return (int) (MyMath.binomial(n - i, j) * coeffX(n - i)
-				+ xl * b( i - 1, j)
-				+ xh * b( i - 1, j - 1));
+		double binomial = MyMath.binomial(n - i, j);
+		int a_ni = coeffX(n - i);
+		int b_i1j = b(i - 1, j);
+		int b_i1j1 = b(i - 1, j - 1);
+		return (int) (binomial * a_ni
+				+ xl * b_i1j
+				+ xh * b_i1j1);
 	}
 
 	private int coeffX(int i) {
-		Term term = polynomial.getTerm(i);
+		Term term = polynomial.getTerm(i - 1);
 		return (int) term.coefficient.evaluateDouble();
 	}
 }
