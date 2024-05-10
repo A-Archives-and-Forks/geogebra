@@ -20,6 +20,10 @@ public class NullHeaderResizer implements HeaderResizer {
 		return INSTANCE;
 	}
 
+	private NullHeaderResizer() {
+		// singleton constructor
+	}
+
 	@Override
 	public void resizeHeader() {
 		// nothing to do.
