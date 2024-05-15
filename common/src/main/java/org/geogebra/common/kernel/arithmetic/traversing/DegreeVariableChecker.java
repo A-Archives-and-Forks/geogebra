@@ -13,7 +13,7 @@ import org.geogebra.common.plugin.Operation;
  * See GGB-2183, APPS-3112, APPS-3452
  */
 public final class DegreeVariableChecker implements Inspecting {
-	private static DegreeVariableChecker replacer = new DegreeVariableChecker();
+	private static final DegreeVariableChecker replacer = new DegreeVariableChecker();
 	private static final int NONLINEAR = 4;
 	private static final int VARIABLE = 2;
 	private static final int ANGLE_UNIT = 1;

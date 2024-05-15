@@ -15,7 +15,7 @@ import org.geogebra.common.plugin.Operation;
  */
 public final class FunctionVarCollector implements Traversing {
 	private Set<String> variableNames;
-	private static FunctionVarCollector collector = new FunctionVarCollector();
+	private static final FunctionVarCollector collector = new FunctionVarCollector();
 
 	private FunctionVarCollector() {
 		// singleton constructor
