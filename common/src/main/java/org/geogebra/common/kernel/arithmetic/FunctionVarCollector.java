@@ -13,7 +13,7 @@ import org.geogebra.common.plugin.Operation;
  * 
  * @author Zbynek Konecny
  */
-public class FunctionVarCollector implements Traversing {
+public final class FunctionVarCollector implements Traversing {
 	private Set<String> variableNames;
 	private static FunctionVarCollector collector = new FunctionVarCollector();
 
