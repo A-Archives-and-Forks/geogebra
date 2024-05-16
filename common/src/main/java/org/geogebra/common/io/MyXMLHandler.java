@@ -1965,9 +1965,6 @@ public class MyXMLHandler implements DocHandler {
 		case "menuFont":
 			ok = handleMenuFont(app, attrs);
 			break;
-		case "notesToolbarOpen":
-			ok = handleNotesToolbarOpen(app, attrs);
-			break;
 		case "labelingStyle":
 			ok = handleLabelingStyle(app, attrs);
 			break;
@@ -2330,17 +2327,6 @@ public class MyXMLHandler implements DocHandler {
 				// not a number, do nothing (use -1)
 			}
 			app.setTooltipTimeout(ttt);
-			return true;
-		} catch (RuntimeException e) {
-			return false;
-		}
-	}
-
-	private static boolean handleNotesToolbarOpen(App app,
-			LinkedHashMap<String, String> attrs) {
-		try {
-			boolean open = Boolean.parseBoolean(attrs.get("val"));
-			app.setNotesToolbarOpen(open);
 			return true;
 		} catch (RuntimeException e) {
 			return false;

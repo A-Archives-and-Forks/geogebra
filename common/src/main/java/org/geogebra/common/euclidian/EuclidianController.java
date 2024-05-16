@@ -12,6 +12,12 @@ the Free Software Foundation.
 
 package org.geogebra.common.euclidian;
 
+import static org.geogebra.common.euclidian.EuclidianCursor.CROSSHAIR;
+import static org.geogebra.common.euclidian.EuclidianCursor.DEFAULT;
+import static org.geogebra.common.euclidian.EuclidianCursor.MINDMAP;
+import static org.geogebra.common.euclidian.EuclidianCursor.TABLE;
+import static org.geogebra.common.euclidian.EuclidianCursor.TEXT;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,6 +50,7 @@ import org.geogebra.common.euclidian.draw.DrawVideo;
 import org.geogebra.common.euclidian.draw.dropdown.DrawDropDownList;
 import org.geogebra.common.euclidian.event.AbstractEvent;
 import org.geogebra.common.euclidian.event.PointerEventType;
+import org.geogebra.common.euclidian.measurement.MeasurementController;
 import org.geogebra.common.euclidian.modes.ModeDeleteLocus;
 import org.geogebra.common.euclidian.modes.ModeMacro;
 import org.geogebra.common.euclidian.modes.ModeShape;
@@ -437,6 +444,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	private final GeoPriorityComparator priorityComparator;
 	private RotateBoundingBox rotateBoundingBox;
+	private final MeasurementController measurementController;
 	private final UpdateActionStore storeUndo;
 
 	/**
@@ -496,6 +504,11 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		spotlightController = new SpotlightController(app);
 		storeUndo = new UpdateActionStore(selection, app.getUndoManager());
 		createCompanions();
+		measurementController = new MeasurementController(this::createMeasurementToolImage);
+	}
+
+	protected GeoImage createMeasurementToolImage(int mode, String fileName) {
+		return null;
 	}
 
 	protected static void removeAxes(ArrayList<GeoElement> geos) {
@@ -610,6 +623,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		return deleteMode;
 	}
 
+	/**
+	 * @return get shape mode controller
+	 */
 	ModeShape getShapeMode() {
 		if (shapeMode == null && view != null) {
 			shapeMode = new ModeShape(view);
@@ -724,7 +740,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		if (ms == ModeSetter.TOOLBAR) {
 			if (app.getGuiManager() != null) {
-				new ModeSwitcher(app).switchMode(newMode);
+				new ModeSwitcher(app, measurementController).switchMode(newMode);
 			}
 
 			if (newMode == EuclidianConstants.MODE_IMAGE) {
@@ -740,8 +756,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				}
 				return;
 			}
-			if (newMode == EuclidianConstants.MODE_RULER
-					|| newMode == EuclidianConstants.MODE_PROTRACTOR) {
+			if (isRulerMode(newMode)) {
 				app.setMode(mode, ModeSetter.DOCK_PANEL);
 				return;
 			}
@@ -774,6 +789,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 
 		kernel.notifyRepaint();
+	}
+
+	private boolean isRulerMode(int newMode) {
+		return newMode == EuclidianConstants.MODE_RULER
+				|| newMode == EuclidianConstants.MODE_PROTRACTOR
+				|| newMode == EuclidianConstants.MODE_TRIANGLE_PROTRACTOR;
 	}
 
 	/**
@@ -5022,7 +5043,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				if (isDraggingOccuredBeyondThreshold() && (selection.selectedGeosSize() == 1)) {
 					selection.clearSelectedGeos();
 				}
-
 			}
 			break;
 
@@ -5222,16 +5242,19 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			break;
 
 		case EuclidianConstants.MODE_MEDIA_TEXT:
+			view.setCursor(TEXT);
 			createInlineObject(selectionPreview, GeoInlineText::new);
 			changedKernel = false;
 			break;
 
 		case EuclidianConstants.MODE_TABLE:
+			view.setCursor(TABLE);
 			// no undo: actual undo point created later (InlineTableControllerW::onEditorChanged)
 			createInlineObject(selectionPreview, GeoInlineTable::new);
 			break;
 
 		case EuclidianConstants.MODE_MIND_MAP:
+			view.setCursor(MINDMAP);
 			changedKernel = createInlineObject(selectionPreview, new GeoInlineFactory() {
 				@Override
 				public GeoInline newInlineObject(Construction cons, GPoint2D location) {
@@ -5247,14 +5270,25 @@ public abstract class EuclidianController implements SpecialPointsListener {
 						mindMap.setBorderColor(GColor.MIND_MAP_PARENT_BORDER_COLOR);
 					}
 
+					view.setCursor(DEFAULT);
 					return mindMap;
 				}
 			});
 			break;
 
 		case EuclidianConstants.MODE_EQUATION:
+			view.setCursor(TEXT);
 			changedKernel = createInlineObject(selectionPreview,
 					(cons, location) -> new GeoFormula(cons, location));
+			break;
+		case EuclidianConstants.MODE_SHAPE_RECTANGLE:
+		case EuclidianConstants.MODE_SHAPE_CIRCLE:
+		case EuclidianConstants.MODE_SHAPE_ELLIPSE:
+		case EuclidianConstants.MODE_SHAPE_LINE:
+		case EuclidianConstants.MODE_SHAPE_PENTAGON:
+		case EuclidianConstants.MODE_SHAPE_SQUARE:
+		case EuclidianConstants.MODE_SHAPE_TRIANGLE:
+			view.setCursor(CROSSHAIR);
 			break;
 
 		// new image
@@ -5363,7 +5397,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		case EuclidianConstants.MODE_PEN:
 		case EuclidianConstants.MODE_FREEHAND_SHAPE:
 		case EuclidianConstants.MODE_FREEHAND_FUNCTION:
-			// MOW-75
 			view.setCursor(EuclidianCursor.PEN);
 			break;
 
@@ -5371,7 +5404,6 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			view.setCursor(EuclidianCursor.HIGHLIGHTER);
 			break;
 
-		// Michael Borcherds 2008-03-13
 		case EuclidianConstants.MODE_COMPASSES:
 			ret = compasses(hits, selectionPreview);
 			break;
@@ -6243,6 +6275,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			app.getEventDispatcher().lockTextElement(drawable.getGeoElement());
 		}
 
+		view.setCursor(DEFAULT);
 		return true;
 	}
 
@@ -6354,12 +6387,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		if (hits.isEmpty()) {
 			view.setToolTipText(null);
-			view.setCursor(EuclidianCursor.DEFAULT);
+			view.setCursor(DEFAULT);
 			if (event.isShiftDown()
 					|| mode == EuclidianConstants.MODE_TRANSLATEVIEW) {
 				setCursorForTranslateViewNoHit();
 			} else {
-				view.setCursor(EuclidianCursor.DEFAULT);
+				view.setCursor(DEFAULT);
 			}
 		} else {
 			if ((event.isShiftDown()
@@ -6428,7 +6461,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	protected void setCursorForTranslateViewNoHit() {
-		view.setCursor(EuclidianCursor.DEFAULT);
+		view.setCursor(DEFAULT);
 	}
 
 	/**
@@ -7467,7 +7500,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			// bounds exist
 			if (bounds != null) {
 				if (rotateBoundingBox == null) {
-					rotateBoundingBox = new RotateBoundingBox(this);
+					rotateBoundingBox = new RotateBoundingBox(this, measurementController);
 					rotateBoundingBox.setView(view);
 				}
 
@@ -10097,11 +10130,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			draggingOccured = false;
 			return;
 		}
+		view.invalidateCache();
 		// make sure we start the timer also for single point
 		if (penMode(mode)) {
 			getPen().handleMouseReleasedForPenMode(rightClick, x, y,
 					numOfTargets > 0);
-			view.invalidateCache();
+
 			draggingOccured = false;
 			return;
 		}
@@ -10425,7 +10459,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	public void endOfWrapMouseReleased(Hits hits, boolean control, boolean alt,
 			PointerEventType type) {
 		if (!hits.isEmpty()) {
-			view.setCursor(EuclidianCursor.DEFAULT);
+			view.setCursor(DEFAULT);
 		} else {
 			setHitCursor();
 		}
@@ -10704,7 +10738,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		case EuclidianConstants.MODE_PEN:
 		case EuclidianConstants.MODE_HIGHLIGHTER:
 			if (pen == null || pen.isFreehand()) {
-				pen = new EuclidianPen(app, view);
+				pen = new EuclidianPen(app, view, measurementController);
 			}
 			break;
 
@@ -10978,7 +11012,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 */
 	public EuclidianPen getPen() {
 		if (pen == null) {
-			pen = new EuclidianPen(app, view);
+			pen = new EuclidianPen(app, view, measurementController);
 		}
 		return pen;
 	}
@@ -12336,5 +12370,20 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	protected App getApp() {
 		return app;
+	}
+
+	/**
+	 * Clears all measurement tools.
+	 */
+	public void clearMeasurementTools() {
+		measurementController.unselect();
+	}
+
+	/**
+	 * Removes measurement tool from construction.
+	 * @param mode of tool to remove.
+	 */
+	public void removeMeasurementTool(Integer mode) {
+		measurementController.removeTool(mode);
 	}
 }
