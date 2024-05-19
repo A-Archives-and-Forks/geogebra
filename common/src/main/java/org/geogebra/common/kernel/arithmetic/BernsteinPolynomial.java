@@ -2,7 +2,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.awt.GRectangle;
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.debug.Log;
 
@@ -32,50 +31,27 @@ public class BernsteinPolynomial {
 	}
 
 	void makeBasis(int i, FunctionVariable fv) {
-		for (int j = 0; j <= i; j++) {
-			if (j == 0 && i == j) {
-				continue;
-			}
+//			MyDouble binomialCoefficient = new MyDouble(kernel, b(i, j));
+//			ExpressionNode oneMinusXPowerJ = powerOf(getOneMinusX(fv), j);
+//			ExpressionNode xPowerIMinusJ = powerOf(fv.wrap(), i - j);
+//			ExpressionNode tag = binomialCoefficient.wrap();
+//			if (oneMinusXPowerJ != null) {
+//				tag = tag.multiply(oneMinusXPowerJ);
+//			}
+//			if (xPowerIMinusJ != null) {
+//				tag = tag.multiply(xPowerIMinusJ);
+//			}
+//
+//			if (output == null) {
+//				output = tag;
+//			} else {
+//				output = new ExpressionNode(kernel, output, Operation.PLUS, tag);
+//			}
 
-			MyDouble binomialCoefficient = new MyDouble(kernel, b(i, j));
-			ExpressionNode oneMinusXPowerJ = powerOf(getOneMinusX(fv), j);
-			ExpressionNode xPowerIMinusJ = powerOf(fv.wrap(), i - j);
-			ExpressionNode tag = binomialCoefficient.wrap();
-			if (oneMinusXPowerJ != null) {
-				tag = tag.multiply(oneMinusXPowerJ);
-			}
-			if (xPowerIMinusJ != null) {
-				tag = tag.multiply(xPowerIMinusJ);
-			}
-
-			if (output == null) {
-				output = tag;
-			} else {
-				output = new ExpressionNode(kernel, output, Operation.PLUS, tag);
-			}
-
-		}
 	}
 
-	private ExpressionNode powerOf(ExpressionNode node, int power) {
-		if (power == 0) {
-			return null;
-		}
 
-		if (power == 1) {
-			return node;
-		}
 
-		return new ExpressionNode(kernel,
-				node,
-				Operation.POWER,
-				new MyDouble(kernel, power));
-	}
-
-	private ExpressionNode getOneMinusX(FunctionVariable fv) {
-		return new ExpressionNode(kernel, new MyDouble(kernel, 1), Operation.MINUS,
-				fv);
-	}
 
 	int b(int i, int j) {
 		if (i == 0 && j == 0) {

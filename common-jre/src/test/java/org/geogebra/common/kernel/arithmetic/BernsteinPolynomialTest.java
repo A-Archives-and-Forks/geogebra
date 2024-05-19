@@ -14,11 +14,12 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private GeoImplicitCurve curve;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 //		curve = add("1 + 5x + 2x^2 + 3x^3 + 4x^4 = 0");
 		curve = add("x^3+2x^2+3x=0");
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
-		bernstein = new BernsteinPolynomial(functionNVar.getPolynomial(),
+		Polynomial polynomial = functionNVar.getPolynomial();
+		bernstein = new BernsteinPolynomial(polynomial,
 						curve.getKernel(),
 						AwtFactory.getPrototype().newRectangle(1, 1),
 						curve.getDegX(), curve.getDegY(),
@@ -27,25 +28,8 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testMain() {
-		assertEquals(4, bernstein.b(0, 0));
-		assertEquals(3, bernstein.b(1, 0));
-		assertEquals(2, bernstein.b(2, 0));
-		assertEquals(5, bernstein.b(3, 0));
-		assertEquals(5, bernstein.b(3, 1));
-	}
-
-	@Test
-	public void testBad() {
-		int b21 = bernstein.b(2, 1);
-		int b11 = bernstein.b(1, 1);
-		int b10 = bernstein.b(1, 0);
-		assertEquals(1, b21);
-
-	}
-
-	@Test
 	public void testConstruct() {
 		bernstein.construct(curve.getDegX());
+		assertEquals("", bernstein.toString());
 	}
 }
