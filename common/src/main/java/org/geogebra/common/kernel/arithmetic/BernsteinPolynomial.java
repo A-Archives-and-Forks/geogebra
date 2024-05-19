@@ -1,86 +1,79 @@
 package org.geogebra.common.kernel.arithmetic;
 
-import org.geogebra.common.awt.GRectangle;
+
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial {
 	private final Polynomial polynomial;
-	private final GRectangle bounds;
+	private final double xmin;
+	private final double xmax;
 	private final int degX;
+	private int degree;
 	private ExpressionNode output;
 	private final Kernel kernel;
+	private final int degY;
 	private final FunctionVariable[] functionVariables;
-
 	public BernsteinPolynomial(Polynomial polynomial, Kernel kernel,
-			GRectangle bounds, int degX, int degY, FunctionVariable[] functionVariables) {
+			double xmin, double xmax, int degX, int degY, FunctionVariable[] functionVariables) {
 		this.polynomial = polynomial;
-		this.bounds = bounds;
+		this.xmin = xmin;
+		this.xmax = xmax;
 		this.degX = degX;
 		this.kernel = kernel;
+		this.degY = degY;
 		this.functionVariables = functionVariables;
 	}
 
-	void construct(int degX) {
-		for (int i = 0; i < degX; i++) {
-			makeBasis(i, functionVariables[0]);
+	void construct(int n) {
+		degree = n;
+		for (int i = 0; i <= degree; i++) {
+			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(degree, i,
+					functionVariables[0]);
+			double bernsteinCoefficient = bernsteinCoefficient(degree, i);
+			ExpressionNode beta = new MyDouble(kernel, bernsteinCoefficient).wrap();
+			ExpressionNode result = basis.multiply(beta);
+			addToOutput(result);
 		}
+
 		output.simplifyLeafs();
 		Log.debug("Out: " + output);
 	}
 
-	void makeBasis(int i, FunctionVariable fv) {
-//			MyDouble binomialCoefficient = new MyDouble(kernel, b(i, j));
-//			ExpressionNode oneMinusXPowerJ = powerOf(getOneMinusX(fv), j);
-//			ExpressionNode xPowerIMinusJ = powerOf(fv.wrap(), i - j);
-//			ExpressionNode tag = binomialCoefficient.wrap();
-//			if (oneMinusXPowerJ != null) {
-//				tag = tag.multiply(oneMinusXPowerJ);
-//			}
-//			if (xPowerIMinusJ != null) {
-//				tag = tag.multiply(xPowerIMinusJ);
-//			}
-//
-//			if (output == null) {
-//				output = tag;
-//			} else {
-//				output = new ExpressionNode(kernel, output, Operation.PLUS, tag);
-//			}
-
+	private void addToOutput(ExpressionNode result) {
+		output = output == null ? result : output.plus(result);
 	}
 
-
-
-
-	int b(int i, int j) {
+	private double bernsteinCoefficient(int i, int j) {
+		double xl = 1;
+		double xh = 1;
 		if (i == 0 && j == 0) {
-			return coeffX(degX);
+			return coeffX(degree - 1);
 		}
-
-		double xl = bounds.getMinX();
-		double xh = bounds.getMaxX();
-
+		int a_i = coeffX(degree - i);
 		if (j == 0) {
-			return (int) (coeffX(degX - i) + xl * b(i - 1, 0));
+			return a_i + xl * bernsteinCoefficient(i - 1, 0);
 		}
 
-		if (i == j) {
-			return (int) (coeffX(degX - i) + xh * b(i - 1, i - 1));
+		if (j == i) {
+			return a_i + xh * bernsteinCoefficient(i - 1, i - 1);
 		}
 
-		int n = degX;
-		double binomial = MyMath.binomial(n - i, j);
-		int a_ni = coeffX(n - i);
-		int b_i1j = b(i - 1, j);
-		int b_i1j1 = b(i - 1, j - 1);
-		return (int) (binomial * a_ni
-				+ xl * b_i1j
-				+ xh * b_i1j1);
+		return MyMath.binomial(degree - i, j) * a_i
+				+ xl * bernsteinCoefficient(i - 1, j)
+				+ xh * bernsteinCoefficient(i - 1, i - 1);
 	}
 
 	private int coeffX(int i) {
-		Term term = polynomial.getTerm(i - 1);
-		return (int) term.coefficient.evaluateDouble();
+		Term term = polynomial.getTerm(i);
+		return term != null ? (int) term.coefficient.evaluateDouble() : 0;
+	}
+
+	public double evaluate(double value) {
+		double y = (value - xmax) / (xmax - xmin);
+		FunctionVariable fv = functionVariables[0];
+		fv.set(y);
+		return output.evaluateDouble();
 	}
 }

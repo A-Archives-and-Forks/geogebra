@@ -10,27 +10,26 @@ public final class BernsteinBasisPolynomial {
 	private final int degree;
 	private final FunctionVariable fv;
 	private final Kernel kernel;
-	private final ExpressionNode value;
+	private final ExpressionNode node;
 
-	public BernsteinBasisPolynomial(int index, int degree, FunctionVariable fv) {
+	public BernsteinBasisPolynomial(int degree, int index, FunctionVariable fv) {
 		this.index = index;
 		this.degree = degree;
 		this.fv = fv;
 		kernel = fv.kernel;
-		value = compute();
+		node = compute();
 	}
 
 	private ExpressionNode compute() {
 		ExpressionNode powerOfX = powerOf(fv.wrap(), index);
-		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), degree);
+		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), degree - index);
 		MyDouble binomial = new MyDouble(kernel, MyMath.binomial(degree, index));
-		return binomial.wrap().multiply(powerOfX).multiply(powerOfOneMinusX);
-
+		return powerOfOneMinusX.multiply(powerOfX).multiply(binomial);
 	}
 
 	private ExpressionNode powerOf(ExpressionNode node, int power) {
 		if (power == 0) {
-			return new MyDouble(kernel, 1).wrap();
+			return one().wrap();
 		}
 
 		if (power == 1) {
@@ -44,12 +43,32 @@ public final class BernsteinBasisPolynomial {
 	}
 
 	private ExpressionNode getOneMinusX(FunctionVariable fv) {
-		return new ExpressionNode(kernel, new MyDouble(kernel, 1), Operation.MINUS,
+		return new ExpressionNode(kernel, one(), Operation.MINUS,
 				fv);
+	}
+
+	private MyDouble one() {
+		return new MyDouble(kernel, 1);
 	}
 
 	@Override
 	public String toString() {
-		return value.toOutputValueString(StringTemplate.defaultTemplate);
+		return node.toOutputValueString(StringTemplate.defaultTemplate);
+	}
+
+	public ExpressionNode getNode() {
+		return node;
+	}
+
+	public ExpressionNode multiply(ExpressionNode arg) {
+		return node.multiply(arg);
+	}
+
+	public double evaluate(double value) {
+		if (value < 0 || value > 1) {
+			return 0;
+		}
+		fv.set(value);
+		return node.evaluateDouble();
 	}
 }
