@@ -78,7 +78,7 @@ public class BernsteinPolynomial {
 	}
 
 	private int coeffX(int i) {
-		Term term = polynomial.getTerm(i);
+		Term term = polynomial.getTerm(degree - 1 - i);
 		return term != null ? (int) term.coefficient.evaluateDouble() : 0;
 	}
 

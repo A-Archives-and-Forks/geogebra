@@ -16,6 +16,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Before
 	public void setUp() {
+		add("ZoomIn(0,0,1,1)");
 		view = getApp().getEuclidianView1();
 //		newBernsteinPolynomialFrom("x^3+x^2 +2x-1=0");
 
