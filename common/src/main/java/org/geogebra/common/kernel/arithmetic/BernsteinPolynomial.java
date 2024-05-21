@@ -15,7 +15,8 @@ public class BernsteinPolynomial {
 	private final Kernel kernel;
 	private final int degY;
 	private final FunctionVariable[] functionVariables;
-	private double[][] bcoeffs;
+	private double[][] bcoeffsX;
+	private double[] coeffsX;
 	public BernsteinPolynomial(Polynomial polynomial, Kernel kernel,
 			double xmin, double xmax, int degX, int degY, FunctionVariable[] functionVariables) {
 		this.polynomial = polynomial;
@@ -25,31 +26,45 @@ public class BernsteinPolynomial {
 		this.kernel = kernel;
 		this.degY = degY;
 		this.functionVariables = functionVariables;
+		construct(degX);
 	}
 
 	void construct(int n) {
-		Bernstein(3);
-//		output.simplifyLeafs();
+		degree = n;
+		coeffsX = getCoeffsX();
+		createBernsteinCoeffs(n);
+		createBernsteinPolynomial(n);
 		Log.debug("Out: " + output);
 	}
 
-	private void Bernstein(int i) {
-		degree = i;
-		fillCoeffs(i);
+	double[] getCoeffsX() {
+		double[] coeffs = new double[polynomial.length()];
+		for (int i = 0; i < polynomial.length(); i++) {
+			Term term = polynomial.getTerm(i);
+			coeffs[degree - i] = term != null ? (int) term.coefficient.evaluateDouble() : 0;
+		}
+		return coeffs;
+	}
+
+	private void createBernsteinCoeffs(int n) {
+		bcoeffsX = new double[n + 1][n + 1];
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= i; j++) {
+				bcoeffsX[i][j] = bernsteinCoefficient(i, j);
+			}
+		}
+	}
+
+	private void createBernsteinPolynomial(int i) {
 		for (int j = 0; j <= i; j++) {
-			ExpressionNode beta = new MyDouble(kernel, bcoeffs[i][j]).wrap();
+			ExpressionNode beta = new MyDouble(kernel, bcoeffsX[i][j]).wrap();
 			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(i, j,
 					functionVariables[0]);
 			addToOutput(basis.multiply(beta));
 		}
-	}
 
-	private void fillCoeffs(int n) {
-		bcoeffs = new double[n + 1][n + 1];
-		for (int i = 0; i <= n; i++) {
-			for (int j = 0; j <= i; j++) {
-				bcoeffs[i][j] = bernsteinCoefficient(i, j);
-			}
+		if (output != null) {
+			output.simplifyLeafs();
 		}
 	}
 
@@ -61,29 +76,26 @@ public class BernsteinPolynomial {
 		double xl = xmin;
 		double xh = xmax;
 		if (i == 0 && j == 0) {
-			return coeffX(degree - 1);
+			return coeffsX[degree];
 		}
-		int a_nMinusI = coeffX(degree - i);
+
+		double a_nMinusI = coeffsX[degree - i];
+
 		if (j == 0) {
-			return a_nMinusI + xl * bcoeffs[i - 1][0];
+			return a_nMinusI + xl * bcoeffsX[i - 1][0];
 		}
 
 		if (j == i) {
-			return a_nMinusI + xh * bcoeffs[i - 1][i - 1];
+			return a_nMinusI + xh * bcoeffsX[i - 1][i - 1];
 		}
 
 		return MyMath.binomial(degree - i, j) * a_nMinusI
-				+ xl * bcoeffs[i - 1][j]
-				+ xh * bcoeffs[i - 1][i - 1];
-	}
-
-	private int coeffX(int i) {
-		Term term = polynomial.getTerm(i);
-		return term != null ? (int) term.coefficient.evaluateDouble() : 0;
+				+ xl * bcoeffsX[i - 1][j]
+				+ xh * bcoeffsX[i - 1][i - 1];
 	}
 
 	public double evaluate(double value) {
-		double y = (value - xmax) / Math.abs(xmax - xmin);
+		double y = (value - xmin) / (xmax - xmin);
 		FunctionVariable fv = functionVariables[0];
 		fv.set(y);
 		return output.evaluateDouble();

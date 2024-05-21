@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.geogebra.common.BaseUnitTest;
@@ -16,12 +17,13 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Before
 	public void setUp() {
+		add("ZoomIn(0,0,1,1)");
 		view = getApp().getEuclidianView1();
 //		newBernsteinPolynomialFrom("x^3+x^2 +2x-1=0");
 
 	}
 
-	private void newBernsteinPolynomialFrom(String definition) {
+	private void newCreateBernsteinPolynomialPolynomialFrom(String definition) {
 		curve = add(definition);
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
 		Polynomial polynomial = functionNVar.getPolynomial();
@@ -33,23 +35,21 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testConstruct() {
-		newBernsteinPolynomialFrom("2 * x^3+ 3*x^2+x-1=0");
-		bernstein.construct(3);
-		assertEquals(0, bernstein.evaluate(view.getXmin()), 0);
-	}
-
-	@Test
 	public void xminShouldGiveZero() {
-		newBernsteinPolynomialFrom("2 * x^3+ 3*x^2+x-1=0");
-		bernstein.construct(3);
+		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x + 1=0");
 		assertEquals(0, bernstein.evaluate(view.getXmin()), 0);
 	}
 
 	@Test
 	public void xmaxShouldGiveOne() {
-		newBernsteinPolynomialFrom("2 * x^3+ 3*x^2+x-1=0");
-		bernstein.construct(3);
+		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x + 1=0");
 		assertEquals(1, bernstein.evaluate(view.getXmax()), 0);
+	}
+
+	@Test
+	public void testOriginalCoefficents() {
+		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x + 1=0");
+		double[] expected = {1, 2, 3, 4};
+		assertArrayEquals(expected, bernstein.getCoeffsX(), 0);
 	}
 }
