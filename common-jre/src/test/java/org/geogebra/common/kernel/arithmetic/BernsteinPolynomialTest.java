@@ -36,6 +36,20 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void testConstruct() {
 		newBernsteinPolynomialFrom("2 * x^3+ 3*x^2+x-1=0");
 		bernstein.construct(3);
-		assertEquals(curve.evaluate(1, 0), bernstein.evaluate(1), 0);
+		assertEquals(0, bernstein.evaluate(view.getXmin()), 0);
+	}
+
+	@Test
+	public void xminShouldGiveZero() {
+		newBernsteinPolynomialFrom("2 * x^3+ 3*x^2+x-1=0");
+		bernstein.construct(3);
+		assertEquals(0, bernstein.evaluate(view.getXmin()), 0);
+	}
+
+	@Test
+	public void xmaxShouldGiveOne() {
+		newBernsteinPolynomialFrom("2 * x^3+ 3*x^2+x-1=0");
+		bernstein.construct(3);
+		assertEquals(1, bernstein.evaluate(view.getXmax()), 0);
 	}
 }

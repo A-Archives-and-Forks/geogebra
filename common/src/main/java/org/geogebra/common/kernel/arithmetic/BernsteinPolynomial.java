@@ -27,18 +27,20 @@ public class BernsteinPolynomial {
 	}
 
 	void construct(int n) {
-		degree = n;
-		for (int i = 0; i <= degree; i++) {
-			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(degree, i,
-					functionVariables[0]);
-			double bernsteinCoefficient = bernsteinCoefficient(degree, i);
-			ExpressionNode beta = new MyDouble(kernel, bernsteinCoefficient).wrap();
-			ExpressionNode result = basis.multiply(beta);
-			addToOutput(result);
-		}
-
-		output.simplifyLeafs();
+		Bernstein(3);
+//		output.simplifyLeafs();
 		Log.debug("Out: " + output);
+	}
+
+	private void Bernstein(int i) {
+		degree = i;
+		for (int j = 0; j <= i; j++) {
+			double b = bernsteinCoefficient(i, j);
+			ExpressionNode beta = new MyDouble(kernel, b).wrap();
+			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(i, j,
+					functionVariables[0]);
+			addToOutput(basis.multiply(beta));
+		}
 	}
 
 	private void addToOutput(ExpressionNode result) {
@@ -46,21 +48,21 @@ public class BernsteinPolynomial {
 	}
 
 	private double bernsteinCoefficient(int i, int j) {
-		double xl = 1;
-		double xh = 1;
+		double xl = xmin;
+		double xh = xmax;
 		if (i == 0 && j == 0) {
 			return coeffX(degree - 1);
 		}
-		int a_i = coeffX(degree - i);
+		int a_nMinusI = coeffX(degree - i);
 		if (j == 0) {
-			return a_i + xl * bernsteinCoefficient(i - 1, 0);
+			return a_nMinusI + xl * bernsteinCoefficient(i - 1, 0);
 		}
 
 		if (j == i) {
-			return a_i + xh * bernsteinCoefficient(i - 1, i - 1);
+			return a_nMinusI + xh * bernsteinCoefficient(i - 1, i - 1);
 		}
 
-		return MyMath.binomial(degree - i, j) * a_i
+		return MyMath.binomial(degree - i, j) * a_nMinusI
 				+ xl * bernsteinCoefficient(i - 1, j)
 				+ xh * bernsteinCoefficient(i - 1, i - 1);
 	}
@@ -71,7 +73,7 @@ public class BernsteinPolynomial {
 	}
 
 	public double evaluate(double value) {
-		double y = (value - xmax) / (xmax - xmin);
+		double y = (value - xmax) / Math.abs(xmax - xmin);
 		FunctionVariable fv = functionVariables[0];
 		fv.set(y);
 		return output.evaluateDouble();
