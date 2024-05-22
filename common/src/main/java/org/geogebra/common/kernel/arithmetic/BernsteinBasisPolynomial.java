@@ -3,7 +3,6 @@ package org.geogebra.common.kernel.arithmetic;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.plugin.Operation;
-import org.geogebra.common.util.MyMath;
 
 public final class BernsteinBasisPolynomial {
 	private final int index;
@@ -21,10 +20,9 @@ public final class BernsteinBasisPolynomial {
 	}
 
 	private ExpressionNode compute() {
-		ExpressionNode powerOfX = powerOf(fv.wrap(), index);
-		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), degree - index);
-		MyDouble binomial = new MyDouble(kernel, MyMath.binomial(degree, index));
-		return powerOfOneMinusX.multiply(powerOfX).multiply(binomial);
+		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), index);
+		ExpressionNode powerOfX = powerOf(fv.wrap(), degree - index);
+		return powerOfX.multiply(powerOfOneMinusX);
 	}
 
 	private ExpressionNode powerOf(ExpressionNode node, int power) {

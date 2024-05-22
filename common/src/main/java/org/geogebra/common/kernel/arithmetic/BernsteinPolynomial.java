@@ -33,7 +33,7 @@ public class BernsteinPolynomial {
 		degree = n;
 		coeffsX = getCoeffsX();
 		createBernsteinCoeffs(n);
-		createBernsteinPolynomial(n);
+		createBernsteinPolynomial();
 		Log.debug("Out: " + output);
 	}
 
@@ -55,7 +55,8 @@ public class BernsteinPolynomial {
 		}
 	}
 
-	private void createBernsteinPolynomial(int i) {
+	private void createBernsteinPolynomial() {
+		int i = degree;
 		for (int j = 0; j <= i; j++) {
 			ExpressionNode beta = new MyDouble(kernel, bcoeffsX[i][j]).wrap();
 			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(i, j,

@@ -36,19 +36,19 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void xminShouldGiveZero() {
-		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x + 1=0");
+		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x - 1=0");
 		assertEquals(0, bernstein.evaluate(view.getXmin()), 0);
 	}
 
 	@Test
 	public void xmaxShouldGiveOne() {
-		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x + 1=0");
+		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x-1=0");
 		assertEquals(1, bernstein.evaluate(view.getXmax()), 0);
 	}
 
 	@Test
 	public void testOriginalCoefficents() {
-		newCreateBernsteinPolynomialPolynomialFrom("4 x^3+ 3 x^2 + 2x + 1=0");
+		newCreateBernsteinPolynomialPolynomialFrom("4 x^3 + 3 x^2 + 2x + 1=0");
 		double[] expected = {1, 2, 3, 4};
 		assertArrayEquals(expected, bernstein.getCoeffsX(), 0);
 	}
