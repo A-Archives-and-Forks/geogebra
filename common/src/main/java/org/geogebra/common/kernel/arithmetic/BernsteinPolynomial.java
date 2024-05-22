@@ -57,11 +57,14 @@ public class BernsteinPolynomial {
 
 	private void createBernsteinPolynomial() {
 		int i = degree;
+
 		for (int j = 0; j <= i; j++) {
 			ExpressionNode beta = new MyDouble(kernel, bcoeffsX[i][j]).wrap();
 			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(i, j,
 					functionVariables[0]);
-			addToOutput(basis.multiply(beta));
+			ExpressionNode result = basis.multiply(beta);
+			addToOutput(result);
+			Log.debug("B_" + i + "" + j + " = " + result);
 		}
 
 		if (output != null) {
