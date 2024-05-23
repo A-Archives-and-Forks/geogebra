@@ -197,6 +197,13 @@ public final class ExamController {
 	}
 
 	/**
+	 * @return The cheating events.
+	 */
+	public CheatingEvents getCheatingEvents() {
+		return cheatingEvents;
+	}
+
+	/**
 	 * @return The ExamRegion if an exam is currently active, or null otherwise.
 	 */
 	public @CheckForNull ExamRegion getExamType() {
@@ -380,6 +387,12 @@ public final class ExamController {
 		createNewTempMaterial();
 
 		cheatingEvents = new CheatingEvents();
+		cheatingEvents.delegate = (cheatingEvent) -> {
+			if (cheatingEvents.size() == 1) {
+				notifyListenersCheatingStarted();
+			}
+		};
+
 		startDate = new Date();
 		setState(ExamState.ACTIVE);
 	}
@@ -437,6 +450,12 @@ public final class ExamController {
 	private void notifyListeners(ExamState newState) {
 		for (ExamListener listener : listeners) {
 			listener.examStateChanged(newState);
+		}
+	}
+
+	private void notifyListenersCheatingStarted() {
+		for (ExamListener listener : listeners) {
+			listener.cheatingStarted();
 		}
 	}
 
