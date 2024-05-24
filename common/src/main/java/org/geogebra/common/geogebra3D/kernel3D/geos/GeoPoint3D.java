@@ -31,7 +31,6 @@ import org.geogebra.common.geogebra3D.kernel3D.transform.MirrorableAtPlane;
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.LocateableList;
-import org.geogebra.common.kernel.MatrixTransformable;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.Path;
 import org.geogebra.common.kernel.PathMover;
@@ -87,8 +86,7 @@ import org.geogebra.common.util.debug.Log;
  * @author Markus + ggb3D
  */
 public class GeoPoint3D extends GeoVec4D implements GeoPointND, PathOrPoint,
-		MatrixTransformable, RotatableND,
-		Transformable, MirrorableAtPlane {
+		RotatableND, Transformable, MirrorableAtPlane {
 
 	private boolean isInfinite;
 	private boolean isDefined;
@@ -118,7 +116,7 @@ public class GeoPoint3D extends GeoVec4D implements GeoPointND, PathOrPoint,
 	private double z2D = 0;
 
 	/** temp inhomogeneous coordinates */
-	private Coords inhom = Coords.createInhomCoorsInD3();
+	private final Coords inhom = Coords.createInhomCoorsInD3();
 	private Coords inhom2D;
 	private double zScale = 1;
 	private boolean setEuclidianVisibleBySetParentAlgorithm = true;
@@ -1121,6 +1119,11 @@ public class GeoPoint3D extends GeoVec4D implements GeoPointND, PathOrPoint,
 	}
 
 	@Override
+	public String getValueXML() {
+		return getPartialXML(this::getCoordXML);
+	}
+
+	@Override
 	public void appendStartPointXML(StringBuilder sb, boolean absolute) {
 		sb.append("\t<startPoint ");
 
@@ -2035,7 +2038,7 @@ public class GeoPoint3D extends GeoVec4D implements GeoPointND, PathOrPoint,
 		}
 
 		ArrayList<NumberValue> coords = getCoordParentNumbers();
-		if (coords.size() == 0) {
+		if (coords.isEmpty()) {
 			return false;
 		}
 

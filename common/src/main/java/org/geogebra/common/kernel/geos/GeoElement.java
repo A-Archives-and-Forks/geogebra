@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -4375,9 +4376,13 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	@Override
 	public String getStyleXML() {
+		return getPartialXML(this::getStyleXML);
+	}
+
+	protected String getPartialXML(Consumer<StringBuilder> partialPrinter) {
 		final StringBuilder sb = new StringBuilder();
 		getElementOpenTagXML(sb);
-		getStyleXML(sb);
+		partialPrinter.accept(sb);
 		getElementCloseTagXML(sb);
 		return sb.toString();
 	}

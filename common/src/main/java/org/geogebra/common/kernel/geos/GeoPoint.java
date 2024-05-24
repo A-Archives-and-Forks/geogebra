@@ -1788,6 +1788,11 @@ public class GeoPoint extends GeoVec3D implements VectorValue, PathOrPoint,
 	}
 
 	@Override
+	public String getValueXML() {
+		return getPartialXML(this::getCoordXML);
+	}
+
+	@Override
 	public void appendStartPointXML(StringBuilder sb, boolean absPosition) {
 		sb.append("\t<startPoint ");
 
