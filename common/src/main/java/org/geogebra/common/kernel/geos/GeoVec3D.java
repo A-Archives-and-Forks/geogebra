@@ -613,13 +613,13 @@ public abstract class GeoVec3D extends GeoElement
 	@Override
 	protected void getXMLtags(StringBuilder sb) {
 		super.getXMLtags(sb);
-		sb.append("\t<coords x=\"");
-		sb.append(x);
-		sb.append("\" y=\"");
-		sb.append(y);
-		sb.append("\" z=\"");
-		sb.append(z);
-		sb.append("\"/>\n");
+		getCoordXML(sb);
+	}
+
+	protected void getCoordXML(StringBuilder sb) {
+		sb.append("\t<coords x=\"").append(x)
+				.append("\" y=\"").append(y)
+				.append("\" z=\"").append(z).append("\"/>\n");
 	}
 
 	@Override

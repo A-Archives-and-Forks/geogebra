@@ -5,6 +5,7 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInline;
 import org.geogebra.common.kernel.geos.GeoWidget;
+import org.geogebra.common.kernel.kernelND.GeoPointND;
 
 class UndoItem {
 	private final String previousContent;
@@ -23,6 +24,9 @@ class UndoItem {
 	}
 
 	public String content() {
+		if (geo.isPointOnPath() || geo.isPointInRegion()) {
+			return ((GeoPointND) geo).getValueXML();
+		}
 		return isXml ? geo.getStyleXML() : getDefinition();
 	}
 

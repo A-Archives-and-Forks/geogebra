@@ -51,7 +51,8 @@ public class UpdateActionStore {
 	private ArrayList<GeoElement> getGeosToStore() {
 		ArrayList<GeoElement> geosToStore = new ArrayList<>();
 		for (GeoElement geo : selection.getSelectedGeos()) {
-			if (geo.getParentAlgorithm() != null) {
+			if (geo.getParentAlgorithm() != null
+					&& !geo.isPointOnPath() && !geo.isPointInRegion()) {
 				geosToStore.addAll(geo.getParentAlgorithm().getDefinedAndLabeledInput());
 			} else if (geo instanceof GeoImage) {
 				geosToStore.addAll(((GeoImage) geo).getDefinedAndLabeledStartPoints());
@@ -91,7 +92,6 @@ public class UpdateActionStore {
 			undoActions.add(item.previousContent());
 			labels.add(item.getLabel());
 		}
-
 		undoManager.buildAction(ActionType.UPDATE, actions.toArray(new String[0]))
 				.withUndo(ActionType.UPDATE, undoActions.toArray(new String[0]))
 				.withLabels(labels.toArray(new String[0]))
