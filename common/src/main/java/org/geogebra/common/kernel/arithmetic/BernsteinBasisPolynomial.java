@@ -20,8 +20,8 @@ public final class BernsteinBasisPolynomial {
 	}
 
 	private ExpressionNode compute() {
-		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), index);
-		ExpressionNode powerOfX = powerOf(fv.wrap(), degree - index);
+		ExpressionNode powerOfX = powerOf(fv.wrap(), index);
+		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), degree - index);
 		return powerOfX.multiply(powerOfOneMinusX);
 	}
 

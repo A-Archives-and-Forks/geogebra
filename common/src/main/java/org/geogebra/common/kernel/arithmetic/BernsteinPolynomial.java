@@ -33,8 +33,9 @@ public class BernsteinPolynomial {
 		degree = n;
 		coeffsX = getCoeffsX();
 		createBernsteinCoeffs(n);
-		createBernsteinPolynomial();
-		Log.debug("Out: " + output);
+//		createBernsteinPolynomial();
+		debugBernsteinCoeffs();
+//		Log.debug("Out: " + output);
 	}
 
 	double[] getCoeffsX() {
@@ -55,28 +56,49 @@ public class BernsteinPolynomial {
 		}
 	}
 
-	private void createBernsteinPolynomial() {
-		int i = degree;
-
-		for (int j = 0; j <= i; j++) {
-			ExpressionNode beta = new MyDouble(kernel, bcoeffsX[i][j]).wrap();
-			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(i, j,
-					functionVariables[0]);
-			ExpressionNode result = basis.multiply(beta);
-			addToOutput(result);
-			Log.debug("B_" + i + "" + j + " = " + result);
+	private void debugBernsteinCoeffs() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i <= degree; i++) {
+			sb.append("(");
+			String fs = "";
+			for (int j = 0; j <= i; j++) {
+				sb.append(fs);
+				fs=", ";
+				sb.append(bcoeffsX[i][j]);
+			}
+			sb.append(")\n");
 		}
+		Log.debug(sb);
+	}
+
+	private void createBernsteinPolynomial() {
+		for (int i = 0; i <= degree; i++) {
+			output = createB(i);
+			Log.debug("B_" + i + " = " + output);
+		}
+
 
 		if (output != null) {
 			output.simplifyLeafs();
 		}
 	}
 
+	ExpressionNode createB(int i) {
+		output = null;
+		for (int j = i; j >= 0; j--) {
+			ExpressionNode beta = new MyDouble(kernel, bcoeffsX[i][j]).wrap();
+			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(i, j,
+					functionVariables[0]);
+			addToOutput(basis.multiply(beta));
+		}
+ 		return output;
+	}
+
 	private void addToOutput(ExpressionNode result) {
 		output = output == null ? result : output.plus(result);
 	}
 
-	private double bernsteinCoefficient(int i, int j) {
+	double bernsteinCoefficient(int i, int j) {
 		double xl = xmin;
 		double xh = xmax;
 		if (i == 0 && j == 0) {
@@ -93,9 +115,10 @@ public class BernsteinPolynomial {
 			return a_nMinusI + xh * bcoeffsX[i - 1][i - 1];
 		}
 
-		return MyMath.binomial(degree - i, j) * a_nMinusI
+		double binomial = MyMath.binomial((degree - i), j);
+		return binomial * a_nMinusI
 				+ xl * bcoeffsX[i - 1][j]
-				+ xh * bcoeffsX[i - 1][i - 1];
+				+ xh * bcoeffsX[i - 1][j - 1];
 	}
 
 	public double evaluate(double value) {
