@@ -92,6 +92,7 @@ public class UpdateActionStore {
 			undoActions.add(item.previousContent());
 			labels.add(item.getLabel());
 		}
+
 		undoManager.buildAction(ActionType.UPDATE, actions.toArray(new String[0]))
 				.withUndo(ActionType.UPDATE, undoActions.toArray(new String[0]))
 				.withLabels(labels.toArray(new String[0]))

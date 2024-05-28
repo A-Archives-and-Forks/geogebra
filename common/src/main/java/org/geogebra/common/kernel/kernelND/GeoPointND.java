@@ -502,9 +502,4 @@ public interface GeoPointND extends PointProperties, Translateable,
 	NumberValue getVerticalIncrement();
 
 	void setVerticalIncrement(NumberValue step);
-
-	/**
-	 * @return XML containing only the label and value (coordinates), no style
-	 */
-	String getValueXML();
 }
