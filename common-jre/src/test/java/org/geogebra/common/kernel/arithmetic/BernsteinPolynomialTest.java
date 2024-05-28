@@ -37,6 +37,9 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		shouldEvaluateTheSame("3x^3 + 2x^2 + x - 1=0");
 		shouldEvaluateTheSame("3x^3 + 2x^2 + 6x + 11=0");
 		shouldEvaluateTheSame("2x^4 + 5x^3 + x^2 + x - 1=0");
+		shouldEvaluateTheSame("x^3+x=0");
+		shouldEvaluateTheSame("x^3+1=0");
+		shouldEvaluateTheSame("x^4+5x^3=0");
 	}
 
 	private void shouldEvaluateTheSame(String definition) {

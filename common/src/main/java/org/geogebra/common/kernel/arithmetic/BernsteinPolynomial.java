@@ -36,13 +36,16 @@ public class BernsteinPolynomial {
 		createBernsteinPolynomial();
 		debugBernsteinCoeffs();
 		Log.debug("Out: " + output);
-	}
+ 	}
 
 	double[] getCoeffsX() {
-		double[] coeffs = new double[polynomial.length()];
-		for (int i = 0; i < polynomial.length(); i++) {
-			Term term = polynomial.getTerm(i);
-			coeffs[degree - i] = term != null ? (int) term.coefficient.evaluateDouble() : 0;
+		double[] coeffs = new double[degree + 1];
+		for (int i = 0; i <= degree; i++) {
+			Term term = i < polynomial.length() ? polynomial.getTerm(i): null;
+			if (term != null) {
+				int power = term.getVars().length();
+				coeffs[power] = term.coefficient.evaluateDouble();
+			}
 		}
 		return coeffs;
 	}
