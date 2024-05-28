@@ -22,7 +22,7 @@ public final class BernsteinBasisPolynomial {
 	private ExpressionNode compute() {
 		ExpressionNode powerOfX = powerOf(fv.wrap(), index);
 		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), degree - index);
-		return powerOfX.multiply(powerOfOneMinusX);
+		return powerOfOneMinusX.multiply(powerOfX);
 	}
 
 	private ExpressionNode powerOf(ExpressionNode node, int power) {

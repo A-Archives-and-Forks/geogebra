@@ -33,9 +33,9 @@ public class BernsteinPolynomial {
 		degree = n;
 		coeffsX = getCoeffsX();
 		createBernsteinCoeffs(n);
-//		createBernsteinPolynomial();
+		createBernsteinPolynomial();
 		debugBernsteinCoeffs();
-//		Log.debug("Out: " + output);
+		Log.debug("Out: " + output);
 	}
 
 	double[] getCoeffsX() {
@@ -51,7 +51,8 @@ public class BernsteinPolynomial {
 		bcoeffsX = new double[n + 1][n + 1];
 		for (int i = 0; i <= n; i++) {
 			for (int j = 0; j <= i; j++) {
-				bcoeffsX[i][j] = bernsteinCoefficient(i, j);
+				double b_ij = bernsteinCoefficient(i, j);
+				bcoeffsX[i][j] = b_ij;
 			}
 		}
 	}
@@ -115,7 +116,7 @@ public class BernsteinPolynomial {
 			return a_nMinusI + xh * bcoeffsX[i - 1][i - 1];
 		}
 
-		double binomial = MyMath.binomial((degree - i), j);
+		double binomial = MyMath.binomial(i, j);
 		return binomial * a_nMinusI
 				+ xl * bcoeffsX[i - 1][j]
 				+ xh * bcoeffsX[i - 1][j - 1];
