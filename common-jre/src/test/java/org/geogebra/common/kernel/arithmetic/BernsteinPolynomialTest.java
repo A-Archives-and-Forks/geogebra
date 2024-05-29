@@ -48,4 +48,9 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 			assertEquals(curve.evaluate(v, 0), bernstein.evaluate(v), 1E-8);
 		}
 	}
+
+	@Test
+	public void testTwoVars() {
+		newCreateBernsteinPolynomialPolynomialFrom("x⁶ - 4y³ + 3x⁴ y=0");
+	}
 }

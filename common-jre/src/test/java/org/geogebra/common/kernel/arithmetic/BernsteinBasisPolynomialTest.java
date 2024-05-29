@@ -16,25 +16,54 @@ public class BernsteinBasisPolynomialTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testBasis0() {
+	public void test1VarBasisNIndex0() {
 		basisShouldBe("1", 0, 0);
-		basisShouldBe("1 - x", 0, 1);
-		basisShouldBe("(1 - x)\u00b2", 0, 2);
-		basisShouldBe("(1 - x)\u00b3", 0, 3);
-		basisShouldBe("(1 - x)\u2074", 0, 4);
-		basisShouldBe("(1 - x)\u2075", 0, 5);
+		basisShouldBe("1 - x", 1, 0);
+		basisShouldBe("(1 - x)\u00b2", 2, 0);
+		basisShouldBe("(1 - x)\u00b3", 3, 0);
+		basisShouldBe("(1 - x)\u2074", 4, 0);
+		basisShouldBe("(1 - x)\u2075", 5, 0);
 	}
 
 	@Test
-	public void testBasisDegree3() {
-		basisShouldBe("x\u00b3", 3, 0);
-		basisShouldBe("(1 - x) x\u00b2", 3, 1);
-		basisShouldBe("(1 - x)\u00b2 x", 3, 2);
-		basisShouldBe("(1 - x)\u00b3", 3, 3);
+	public void test1VarBasisNIndex1() {
+		basisShouldBe("x", 1, 1);
+		basisShouldBe("x (1 - x)", 2, 1);
+		basisShouldBe("x (1 - x)\u00b2", 3, 1);
+		basisShouldBe("x (1 - x)\u00b3", 4, 1);
+		basisShouldBe("x (1 - x)\u2074", 5, 1);
 	}
 
-	private void basisShouldBe(String value, int i, int j) {
-		BernsteinBasisPolynomial b00 = new BernsteinBasisPolynomial(i, j, fv);
+	@Test
+	public void test1VarBasisNIndex2() {
+		basisShouldBe("x\u00b2", 2, 2);
+		basisShouldBe("x\u00b2 (1 - x)", 3, 2);
+		basisShouldBe("x\u00b2 (1 - x)\u00b2", 4, 2);
+		basisShouldBe("x\u00b2 (1 - x)\u00b3", 5, 2);
+	}
+
+	@Test
+	public void test1VarBasisNIndex3() {
+		basisShouldBe("x\u00b3", 3, 3);
+		basisShouldBe("x\u00b3 (1 - x)", 4, 3);
+		basisShouldBe("x\u00b3 (1 - x)\u00b2", 5, 3);
+	}
+
+	@Test
+	public void test1VarBasisNIndex4() {
+		basisShouldBe("x\u2074", 4, 4);
+		basisShouldBe("x\u2074 (1 - x)", 5, 4);
+	}
+
+	@Test
+	public void test1VarBasisNIndex5() {
+		basisShouldBe("x\u00b3", 3, 3);
+		basisShouldBe("x\u00b3 (1 - x)", 4, 3);
+		basisShouldBe("x\u00b3 (1 - x)\u00b2", 5, 3);
+	}
+
+	private void basisShouldBe(String value, int degree, int index) {
+		BernsteinBasisPolynomial b00 = new BernsteinBasisPolynomial(fv, degree, index);
 		assertEquals(value, b00.toString());
 	}
 

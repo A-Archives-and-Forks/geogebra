@@ -91,8 +91,8 @@ public class BernsteinPolynomial {
 		output = null;
 		for (int j = i; j >= 0; j--) {
 			ExpressionNode beta = new MyDouble(kernel, bcoeffsX[i][j]).wrap();
-			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(i, j,
-					functionVariables[0]);
+			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(functionVariables[0], i, j
+			);
 			addToOutput(basis.multiply(beta));
 		}
  		return output;

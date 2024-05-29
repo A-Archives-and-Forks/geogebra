@@ -11,7 +11,7 @@ public final class BernsteinBasisPolynomial {
 	private final Kernel kernel;
 	private final ExpressionNode node;
 
-	public BernsteinBasisPolynomial(int degree, int index, FunctionVariable fv) {
+	public BernsteinBasisPolynomial(FunctionVariable fv, int degree, int index) {
 		this.index = index;
 		this.degree = degree;
 		this.fv = fv;
@@ -20,8 +20,8 @@ public final class BernsteinBasisPolynomial {
 	}
 
 	private ExpressionNode compute() {
-		ExpressionNode powerOfX = powerOf(fv.wrap(), index);
 		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), degree - index);
+		ExpressionNode powerOfX = powerOf(fv.wrap(), index);
 		return powerOfOneMinusX.multiply(powerOfX);
 	}
 
