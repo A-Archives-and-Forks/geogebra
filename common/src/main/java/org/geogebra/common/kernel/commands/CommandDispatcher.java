@@ -82,7 +82,6 @@ public abstract class CommandDispatcher implements Restrictable {
 
 	/** stores internal (String name, CommandProcessor cmdProc) pairs */
 	private MacroProcessor macroProc;
-
 	private final List<CommandFilter> commandFilters = new ArrayList<>();
 	private final List<CommandArgumentFilter> commandArgumentFilters = new ArrayList<>();
 
