@@ -516,6 +516,7 @@ public class ToolbarPanel extends FlowPanel
 		moveBtn.setTitle(altText);
 		moveBtn.setAltText(altText);
 		moveBtn.setStyleName("moveFloatingBtn");
+		moveBtn.addStyleName("floatingActionButton");
 		// moveMoveBtnDown style added for moveBtn to fix the position on tablet
 		// too
 		moveBtn.addStyleName("moveMoveBtnDown");

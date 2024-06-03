@@ -47,6 +47,7 @@ public class NotesLayout implements SetLabels {
 		new FocusableWidget(AccessibilityGroup.PAGE_LIST_OPEN, null, pageControlButton)
 				.attachTo(appW);
 		pageControlButton.setStyleName("mowFloatingButton");
+		pageControlButton.addStyleName("floatingActionButton");
 		showPageControlButton(true);
 
 		pageControlButton.addBitlessDomHandler(event -> setTouchStyleForCards(),
