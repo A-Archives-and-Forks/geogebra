@@ -1,6 +1,6 @@
 package org.geogebra.web.full.gui.dialog;
 
-import org.geogebra.common.GeoGebraConstants;
+import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.exam.ExamListener;
 import org.geogebra.common.exam.ExamState;
 import org.geogebra.common.main.App;
@@ -64,18 +64,18 @@ public class AppSwitcherPopup extends GPopupPanel implements ExamListener {
 
 	private void updateGUI() {
 		contentPanel.clear();
-		addElement(GeoGebraConstants.GRAPHING_APPCODE);
+		addElement(SuiteSubApp.GRAPHING);
 		if (app.getSettings().getEuclidian(-1).isEnabled()) {
-			addElement(GeoGebraConstants.G3D_APPCODE);
+			addElement(SuiteSubApp.G3D);
 		}
-		addElement(GeoGebraConstants.GEOMETRY_APPCODE);
+		addElement(SuiteSubApp.GEOMETRY);
 		if (app.getSettings().getCasSettings().isEnabled()) {
-			addElement(GeoGebraConstants.CAS_APPCODE);
+			addElement(SuiteSubApp.CAS);
 		}
-		addElement(GeoGebraConstants.PROBABILITY_APPCODE);
+		addElement(SuiteSubApp.PROBABILITY);
 	}
 
-	private void addElement(final String subAppCode) {
+	private void addElement(final SuiteSubApp subAppCode) {
 		if (GlobalScope.examController.isExamActive()
 				&& GlobalScope.examController.isDisabledSubApp(subAppCode)) {
 			return;
@@ -97,7 +97,7 @@ public class AppSwitcherPopup extends GPopupPanel implements ExamListener {
 		contentPanel.add(rowPanel);
 	}
 
-	private void switchToSubApp(String subAppCode) {
+	private void switchToSubApp(SuiteSubApp subAppCode) {
 		hide();
 		appPickerButton.setIconAndLabel(subAppCode);
 		GlobalHeader.onResize();
