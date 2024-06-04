@@ -6,56 +6,52 @@ import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial {
-	private final Polynomial polynomial;
 	private final double xmin;
 	private final double xmax;
-	private final int degX;
 	private int degree;
 	private ExpressionNode output;
 	private final Kernel kernel;
-	private final int degY;
-	private final FunctionVariable[] functionVariables;
-	private double[][] bcoeffsX;
-	private double[] coeffsX;
-	public BernsteinPolynomial(Polynomial polynomial, Kernel kernel,
-			double xmin, double xmax, int degX, int degY, FunctionVariable[] functionVariables) {
-		this.polynomial = polynomial;
+	private final FunctionVariable variable;
+	private final char variableName;
+	private double[] coeffs;
+	private double[][] bernsteinCoeffs;
+	public BernsteinPolynomial(Kernel kernel, Polynomial polynomial,
+			FunctionVariable variable, double xmin, double xmax, int degree) {
+		this.kernel = kernel;
+		this.variable = variable;
+		this.variableName = variable.getSetVarString().charAt(0);
 		this.xmin = xmin;
 		this.xmax = xmax;
-		this.degX = degX;
-		this.kernel = kernel;
-		this.degY = degY;
-		this.functionVariables = functionVariables;
-		construct(degX);
+		this.degree = degree;
+		coeffs = getCoeffs(polynomial);
+		construct();
 	}
 
-	void construct(int n) {
-		degree = n;
-		coeffsX = getCoeffsX();
-		createBernsteinCoeffs(n);
+	void construct() {
+		createBernsteinCoeffs();
 		createBernsteinPolynomial();
 		debugBernsteinCoeffs();
 		Log.debug("Out: " + output);
  	}
 
-	double[] getCoeffsX() {
+	double[] getCoeffs(Polynomial polynomial) {
 		double[] coeffs = new double[degree + 1];
 		for (int i = 0; i <= degree; i++) {
 			Term term = i < polynomial.length() ? polynomial.getTerm(i): null;
 			if (term != null) {
-				int power = term.getVars().length();
+				int power = term.degree(variableName);
 				coeffs[power] = term.coefficient.evaluateDouble();
 			}
 		}
 		return coeffs;
 	}
 
-	private void createBernsteinCoeffs(int n) {
-		bcoeffsX = new double[n + 1][n + 1];
-		for (int i = 0; i <= n; i++) {
+	private void createBernsteinCoeffs() {
+		bernsteinCoeffs = new double[degree + 1][degree + 1];
+		for (int i = 0; i <= degree; i++) {
 			for (int j = 0; j <= i; j++) {
 				double b_ij = bernsteinCoefficient(i, j);
-				bcoeffsX[i][j] = b_ij;
+				bernsteinCoeffs[i][j] = b_ij;
 			}
 		}
 	}
@@ -68,7 +64,7 @@ public class BernsteinPolynomial {
 			for (int j = 0; j <= i; j++) {
 				sb.append(fs);
 				fs=", ";
-				sb.append(bcoeffsX[i][j]);
+				sb.append(bernsteinCoeffs[i][j]);
 			}
 			sb.append(")\n");
 		}
@@ -90,8 +86,8 @@ public class BernsteinPolynomial {
 	ExpressionNode createB(int i) {
 		output = null;
 		for (int j = i; j >= 0; j--) {
-			ExpressionNode beta = new MyDouble(kernel, bcoeffsX[i][j]).wrap();
-			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(functionVariables[0], i, j
+			ExpressionNode beta = new MyDouble(kernel, bernsteinCoeffs[i][j]).wrap();
+			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(variable, i, j
 			);
 			addToOutput(basis.multiply(beta));
 		}
@@ -106,29 +102,28 @@ public class BernsteinPolynomial {
 		double xl = xmin;
 		double xh = xmax;
 		if (i == 0 && j == 0) {
-			return coeffsX[degree];
+			return coeffs[degree];
 		}
 
-		double a_nMinusI = coeffsX[degree - i];
+		double a_nMinusI = coeffs[degree - i];
 
 		if (j == 0) {
-			return a_nMinusI + xl * bcoeffsX[i - 1][0];
+			return a_nMinusI + xl * bernsteinCoeffs[i - 1][0];
 		}
 
 		if (j == i) {
-			return a_nMinusI + xh * bcoeffsX[i - 1][i - 1];
+			return a_nMinusI + xh * bernsteinCoeffs[i - 1][i - 1];
 		}
 
 		double binomial = MyMath.binomial(i, j);
 		return binomial * a_nMinusI
-				+ xl * bcoeffsX[i - 1][j]
-				+ xh * bcoeffsX[i - 1][j - 1];
+				+ xl * bernsteinCoeffs[i - 1][j]
+				+ xh * bernsteinCoeffs[i - 1][j - 1];
 	}
 
 	public double evaluate(double value) {
 		double y = (value - xmin) / (xmax - xmin);
-		FunctionVariable fv = functionVariables[0];
-		fv.set(y);
+		variable.set(y);
 		return output.evaluateDouble();
 	}
 }

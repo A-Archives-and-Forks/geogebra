@@ -25,11 +25,10 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		curve = add(definition);
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
 		Polynomial polynomial = functionNVar.getPolynomial();
-		bernstein = new BernsteinPolynomial(polynomial,
-						curve.getKernel(),
-						view.getXmin(), view.getXmax(),
-						curve.getDegX(), curve.getDegY(),
-						functionNVar.getFunctionVariables());
+		bernstein = new BernsteinPolynomial(curve.getKernel(), polynomial,
+				functionNVar.getFunctionVariables()[0], view.getXmin(), view.getXmax(),
+						curve.getDegX()
+		);
 	}
 
 	@Test
