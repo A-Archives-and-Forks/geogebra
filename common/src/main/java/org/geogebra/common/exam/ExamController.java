@@ -148,6 +148,15 @@ public final class ExamController {
 	}
 
 	/**
+	 * Unregister an `ExamRestrictable`.
+	 * @param restrictable An object that that was previously registered with
+	 * {@link #registerRestrictable(ExamRestrictable)}..
+	 */
+	public void unregisterRestrictable(@Nonnull ExamRestrictable restrictable) {
+		restrictables.remove(restrictable);
+	}
+
+	/**
 	 * Adds an {@link ExamListener}.
 	 * @param listener The listener to add.
 	 * @apiNote Trying to add a listener that is already registered will have no effect.
@@ -185,6 +194,13 @@ public final class ExamController {
 		}
 		state = newState;
 		notifyListeners(newState);
+	}
+
+	/**
+	 * @return The cheating events.
+	 */
+	public CheatingEvents getCheatingEvents() {
+		return cheatingEvents;
 	}
 
 	/**
@@ -371,6 +387,12 @@ public final class ExamController {
 		createNewTempMaterial();
 
 		cheatingEvents = new CheatingEvents();
+		cheatingEvents.delegate = (cheatingEvent) -> {
+			if (cheatingEvents.size() == 1) {
+				notifyListenersCheatingStarted();
+			}
+		};
+
 		startDate = new Date();
 		setState(ExamState.ACTIVE);
 	}
@@ -428,6 +450,12 @@ public final class ExamController {
 	private void notifyListeners(ExamState newState) {
 		for (ExamListener listener : listeners) {
 			listener.examStateChanged(newState);
+		}
+	}
+
+	private void notifyListenersCheatingStarted() {
+		for (ExamListener listener : listeners) {
+			listener.cheatingStarted();
 		}
 	}
 
