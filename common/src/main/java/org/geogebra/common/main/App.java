@@ -127,6 +127,7 @@ import org.geogebra.common.main.undo.UndoableDeletionExecutor;
 import org.geogebra.common.media.VideoManager;
 import org.geogebra.common.move.ggtapi.models.Material;
 import org.geogebra.common.move.ggtapi.operations.LogInOperation;
+import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventDispatcher;
@@ -4097,6 +4098,15 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
+	 * Prepares the exam mode and shows the exam welcome message<br/>
+	 * Note: Only implemented within AppWFull, method still declared here so it can also be
+	 * accessed by {@link org.geogebra.common.plugin.GgbAPI}
+	 */
+	public void showExamWelcomeMessage() {
+		// Not needed here
+	}
+
+	/**
 	 * @param lang
 	 *            locale description
 	 */
@@ -4633,7 +4643,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public ToolCollectionFactory createToolCollectionFactory() {
 		String toolbarDefinition = getGuiManager().getToolbarDefinition();
-		if (toolbarDefinition == null || isExam()
+		if (toolbarDefinition == null || !GlobalScope.examController.isIdle()
 				|| ToolBar.isDefaultToolbar(toolbarDefinition)) {
 			return createDefaultToolCollectionFactory();
 		} else {

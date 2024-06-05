@@ -259,14 +259,14 @@ public final class ExamController {
 	}
 
 	/**
-	 * Get the exam display name.
+	 * Get the exam short display name.
 	 * @param appConfig The current app config.
 	 * @param localization The localization.
-	 * @return The current exam's display name (see
-	 * {@link ExamRegion#getDisplayName(Localization, AppConfig)}.
+	 * @return The current exam's short display name (see
+	 * {@link ExamRegion#getShortDisplayName(Localization, AppConfig)}.
 	 */
 	public @CheckForNull String getExamName(AppConfig appConfig, Localization localization) {
-		return examType == null ? null : examType.getDisplayName(localization, appConfig);
+		return examType == null ? null : examType.getShortDisplayName(localization, appConfig);
 	}
 
 	/**
@@ -286,14 +286,14 @@ public final class ExamController {
 	/**
 	 * @param localization A localization.
 	 * @return The formatted duration since the start of the exam, if an exam is currently
-	 * active, or null otherwise.
+	 * active, or zero (0:00) otherwise.
 	 */
-	public @CheckForNull String getDurationFormatted(Localization localization) {
-		if (startDate == null) {
-			return null;
-		}
+	public String getDurationFormatted(Localization localization) {
 		if (timeFormatter == null) {
 			timeFormatter = FormatFactory.getPrototype().getTimeFormat();
+		}
+		if (startDate == null) {
+			return timeFormatter.format(localization.getLanguageTag(), 0);
 		}
 		return timeFormatter.format(localization.getLanguageTag(),
 				System.currentTimeMillis() - startDate.getTime());
