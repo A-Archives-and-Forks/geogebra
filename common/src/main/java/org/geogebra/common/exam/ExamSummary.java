@@ -17,21 +17,21 @@ import org.geogebra.common.util.TimeFormatAdapter;
  */
 public final class ExamSummary {
 
-	private boolean isExamFinished;
-	private boolean cheated;
-	private String examName;
-	private String title;
-	private String finishedInfoText;
-	private String startDateHintText;
-	private String startDateLabelText;
-	private String startTimeHintText;
-	private String startTimeLabelText;
-	private String endTimeHintText;
+	private final boolean isExamFinished;
+	private final boolean cheated;
+	private final String examName;
+	private final String title;
+	private final String finishedInfoText;
+	private final String startDateHintText;
+	private final String startDateLabelText;
+	private final String startTimeHintText;
+	private final String startTimeLabelText;
+	private final String endTimeHintText;
 	private String endTimeLabelText = "";
-	private String durationHintText;
+	private final String durationHintText;
 	private String durationLabelText = "";
-	private String activityHintText;
-	public String activityLabelText;
+	private final String activityHintText;
+	private final String activityLabelText;
 
 	private static String formatDate(Date date, Localization localization) {
 		// copied over from ExamEnvironment
@@ -69,7 +69,7 @@ public final class ExamSummary {
 	 * @param timeFormatter A {@link TimeFormatAdapter} for formatting durations.
 	 * @param localization A localization.
 	 */
-	public ExamSummary(@Nonnull ExamRegion examType,
+	public ExamSummary(@Nonnull ExamType examType,
 			@Nonnull Date startDate,
 			@Nullable Date finishDate,
 			@Nonnull CheatingEvents cheatingEvents,
@@ -130,7 +130,7 @@ public final class ExamSummary {
 	}
 
 	/**
-	 * @return The exam name (see {@link ExamRegion#getDisplayName(Localization, AppConfig)}).
+	 * @return The exam name (see {@link ExamType#getDisplayName(Localization, AppConfig)}).
 	 */
 	public String getExamName() {
 		return examName;

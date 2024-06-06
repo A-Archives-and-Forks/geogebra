@@ -38,7 +38,7 @@ import org.geogebra.common.euclidian.inline.InlineTextController;
 import org.geogebra.common.euclidian.smallscreen.AdjustScreen;
 import org.geogebra.common.euclidian.smallscreen.AdjustViews;
 import org.geogebra.common.euclidian3D.EuclidianView3DInterface;
-import org.geogebra.common.exam.ExamRegion;
+import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.ExamRestrictable;
 import org.geogebra.common.exam.restrictions.ExamRestrictions;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
@@ -126,6 +126,7 @@ import org.geogebra.common.main.undo.UndoableDeletionExecutor;
 import org.geogebra.common.media.VideoManager;
 import org.geogebra.common.move.ggtapi.models.Material;
 import org.geogebra.common.move.ggtapi.operations.LogInOperation;
+import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventDispatcher;
@@ -4009,14 +4010,14 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 
 	@Deprecated // use ExamController instead
 	public void setNewExam() {
-		setNewExam(ExamRegion.GENERIC);
+		setNewExam(ExamType.GENERIC);
 	}
 
 	/**
 	 * Initializes a new ExamEnvironment instance.
 	 */
 	@Deprecated // use ExamController instead
-	public void setNewExam(ExamRegion region) {
+	public void setNewExam(ExamType region) {
 		ExamEnvironment examEnvironment = newExamEnvironment();
 		examEnvironment.setExamRegion(region);
 		initRestrictions(region);
@@ -4035,7 +4036,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	@Deprecated // use ExamController instead
-	private void initRestrictions(ExamRegion region) {
+	private void initRestrictions(ExamType region) {
 		RestrictExam oldRestrictions = restrictions;
 		restrictions = ExamRestrictionFactory.create(region);
 		if (oldRestrictions != null) {
@@ -4052,7 +4053,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	public void registerRestrictable(Restrictable restrictable) {
 		if (restrictions == null) {
 			ExamEnvironment exam = getExam();
-			ExamRegion region = exam != null && exam.isStarted() ? exam.getExamRegion() : null;
+			ExamType region = exam != null && exam.isStarted() ? exam.getExamRegion() : null;
 			restrictions = ExamRestrictionFactory.create(region);
 		}
 		restrictions.register(restrictable);
@@ -4077,13 +4078,22 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			restrictions.enable();
 		}
 	}
-	
+
 	/**
 	 * Show exam welcome message.
 	 */
 	@Deprecated // use ExamController instead
 	public void examWelcome() {
 		// overridden in platforms supporting exam
+	}
+
+	/**
+	 * Prepares the exam mode and shows the exam welcome message<br/>
+	 * Note: Only implemented within AppWFull, method still declared here so it can also be
+	 * accessed by {@link org.geogebra.common.plugin.GgbAPI}
+	 */
+	public void showExamWelcomeMessage() {
+		// Not needed here
 	}
 
 	/**
@@ -4623,7 +4633,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public ToolCollectionFactory createToolCollectionFactory() {
 		String toolbarDefinition = getGuiManager().getToolbarDefinition();
-		if (toolbarDefinition == null || isExam()
+		if (toolbarDefinition == null || !GlobalScope.examController.isIdle()
 				|| ToolBar.isDefaultToolbar(toolbarDefinition)) {
 			return createDefaultToolCollectionFactory();
 		} else {
