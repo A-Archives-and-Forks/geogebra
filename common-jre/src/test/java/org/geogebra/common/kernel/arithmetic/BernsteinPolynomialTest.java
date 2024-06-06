@@ -25,10 +25,14 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		curve = add(definition);
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
 		Polynomial polynomial = functionNVar.getPolynomial();
-		bernstein = new BernsteinPolynomial(curve.getKernel(), polynomial,
+
+		bernstein = curve.getDegY() == 0 ?
+				new BernsteinPolynomial1Var(curve.getKernel(), polynomial,
 				functionNVar.getFunctionVariables()[0], view.getXmin(), view.getXmax(),
-						curve.getDegX()
-		);
+						curve.getDegX())
+		: new BernsteinPolynomial2Var(curve.getKernel(), polynomial,
+				functionNVar.getFunctionVariables(), view.getXmin(), view.getXmax(),
+				curve.getDegX(), curve.getDegY());
 	}
 
 	@Test
@@ -50,6 +54,15 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testTwoVars() {
-		newCreateBernsteinPolynomialPolynomialFrom("x⁶ - 4y³ + 3x⁴ y=0");
+		newCreateBernsteinPolynomialPolynomialFrom("x^3 + 2x*y^2 + 2x + y=0");
+		assertEquals("y, 2, 2y\u00B2 + 2, 1", bernstein.coeffsToString());
+	}
+
+	@Test
+	public void testOneVariableToBernsteinPolynomial() {
+		Polynomial polynomial = new Polynomial(getKernel(), "y");
+		BernsteinPolynomial1Var bernsteinPolynomial = new BernsteinPolynomial1Var(getKernel(), polynomial,
+				new FunctionVariable(getKernel(), "y"),
+				0, 1, 1);
 	}
 }
