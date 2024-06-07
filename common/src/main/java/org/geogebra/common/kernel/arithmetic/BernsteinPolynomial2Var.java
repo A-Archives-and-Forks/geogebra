@@ -82,16 +82,20 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		functionNVar.initFunction();
 		Polynomial poly = functionNVar.getPolynomial();
 		return new BernsteinPolynomial1Var(kernel, poly, fvY, xmin, xmax,
-				poly.degree());
+				degreeY);
 	}
 
 	private void createBernsteinCoeffs() {
 		bernsteinCoeffs = new ExpressionNode[degree + 1][degree + 1];
 		for (int i = 0; i <= degree; i++) {
 			for (int j = 0; j <= i; j++) {
-				bernsteinCoeffs[i][j] = bernsteinCoefficient(i, j);
+				ExpressionNode node = bernsteinCoefficient(i, j);
+				BernsteinPolynomial1Var polynomial =
+						node2BernsteinPolynomial(node);
+				bernsteinCoeffs[i][j] = polynomial.output();
 			}
-		}	}
+		}
+	}
 
 
 	@Override
@@ -180,5 +184,10 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	@Override
 	public ExpressionNode output() {
 		return output;
+	}
+
+	@Override
+	public String toString() {
+		return output.toString(StringTemplate.defaultTemplate);
 	}
 }

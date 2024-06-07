@@ -55,7 +55,11 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	@Test
 	public void testTwoVars() {
 		newCreateBernsteinPolynomialPolynomialFrom("x^3 + 2x*y^2 + 2x + y=0");
-		assertEquals("y, 2, 2y\u00B2 + 2, 1", bernstein.coeffsToString());
+		assertEquals("(6y\u00B2 + 7y (1 - y) + 3(1 - y)\u00B2) x\u00B3 + (11y\u00B2 + "
+						+ "11y (1 - y) + 4(1 - y)\u00B2) x\u00B2 (1 - x) + (7y\u00B2 + 7y (1 - y)"
+						+ " + 2(1 - y)\u00B2) x (1 - x)\u00B2 + (y\u00B2"
+						+ " + y (1 - y)) (1 - x)\u00B3",
+				bernstein.toString());
 	}
 
 	@Test
@@ -63,6 +67,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		Polynomial polynomial = new Polynomial(getKernel(), "y");
 		BernsteinPolynomial1Var bernsteinPolynomial = new BernsteinPolynomial1Var(getKernel(), polynomial,
 				new FunctionVariable(getKernel(), "y"),
-				0, 1, 1);
+				0, 1, 2);
+		assertEquals("y\u00B2 + y (1 - y)", bernsteinPolynomial.toString());
 	}
 }
