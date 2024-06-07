@@ -158,11 +158,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		ExpressionNode a_nMinusI = coeffs[degree - i].output();
 
 		if (j == 0) {
-			return a_nMinusI.multiply(bernsteinCoeffs[i - 1][0].multiply(xl));
+			return a_nMinusI.plus(bernsteinCoeffs[i - 1][0].multiply(xl));
 		}
 
 		if (j == i) {
-			return a_nMinusI.multiply(bernsteinCoeffs[i - 1][i - 1].multiply(xh));
+			return a_nMinusI.plus(bernsteinCoeffs[i - 1][i - 1].multiply(xh));
 		}
 
 		double binomial = MyMath.binomial(i, j);
