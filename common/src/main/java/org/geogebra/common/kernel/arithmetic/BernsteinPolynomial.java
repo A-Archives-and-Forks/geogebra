@@ -6,5 +6,5 @@ public interface BernsteinPolynomial {
 
 	ExpressionNode output();
 
-	ExpressionNode derivative();
+	BernsteinPolynomial derivative();
 }

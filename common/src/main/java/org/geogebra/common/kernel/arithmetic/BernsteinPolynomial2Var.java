@@ -187,7 +187,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public ExpressionNode derivative() {
+	public BernsteinPolynomial derivative() {
 		return null;
 	}
 

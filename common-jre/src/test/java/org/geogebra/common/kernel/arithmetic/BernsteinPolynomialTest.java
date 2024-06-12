@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
-import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,8 +78,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testDerivatives() {
-		derivativeShouldBe("2 * 2x", 0, 0, 2);
-		derivativeShouldBe("2 * 2x", 0, 2, 0);
+		derivativeShouldBe("4x", 0, 0, 2);
 	}
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
@@ -88,6 +86,6 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 				new BernsteinPolynomial1Var(coeffs, 'x', view.getXmin(), view.getXmax(),
 						coeffs.length - 1);
 		assertEquals(expected,
-				bernsteinPolynomial1Var.derivative().toOutputValueString(StringTemplate.defaultTemplate));
+				bernsteinPolynomial1Var.derivative().toString());
 	}
 }

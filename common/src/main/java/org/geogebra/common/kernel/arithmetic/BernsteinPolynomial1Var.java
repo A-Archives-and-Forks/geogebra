@@ -1,29 +1,21 @@
 package org.geogebra.common.kernel.arithmetic;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.geogebra.common.util.MyMath;
-import org.geogebra.common.util.StringUtil;
-import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double xmin;
 	private final double xmax;
-	private final int degree;
-	private final char variableName;
+	final int degree;
+	final char variableName;
 	private final double[] powerBasisCoeffs;
 	private double[][] bernsteinCoeffs;
-	private List<BernsteinBasisPolynomial> bases = new ArrayList<>();
+	private BernsteinPolynomialFormatter formatter;
+
 	public BernsteinPolynomial1Var(Polynomial polynomial,
 			char variableName, double xmin, double xmax, int degree) {
-		this.variableName = variableName;
-		this.xmin = xmin;
-		this.xmax = xmax;
-		this.degree = degree;
-		powerBasisCoeffs = coeffsFromPolynomial(polynomial);
-		construct();
+		this(coeffsFromPolynomial(polynomial, degree, variableName),
+				variableName, xmin, xmax, degree);
 	}
 
 	public BernsteinPolynomial1Var(double[] coeffs,
@@ -33,10 +25,11 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this.xmax = xmax;
 		this.degree = degree;
 		this.powerBasisCoeffs = coeffs;
+		formatter = new BernsteinPolynomialFormatter(this);
 		construct();
 	}
 
-	double[] coeffsFromPolynomial(Polynomial polynomial) {
+	static double[] coeffsFromPolynomial(Polynomial polynomial, int degree, char variableName) {
 		double[] coeffs = new double[degree + 1];
 		for (int i = 0; i <= degree; i++) {
 			Term term = i < polynomial.length() ? polynomial.getTerm(i): null;
@@ -50,14 +43,8 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	void construct() {
 		createBernsteinCoeffs();
-		debugBernsteinCoeffs();
+		formatter.debugBernsteinCoeffs();
  	}
-
-	private void debugBases() {
-		for (BernsteinBasisPolynomial basis: bases) {
-			Log.debug(basis.toString());
-		}
-	}
 
 	private void createBernsteinCoeffs() {
 		bernsteinCoeffs = new double[degree + 1][degree + 1];
@@ -66,26 +53,6 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 				double b_ij = bernsteinCoefficient(i, j);
 				bernsteinCoeffs[i][j] = b_ij;
 			}
-		}
-	}
-
-	private void debugBernsteinCoeffs() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i <= degree; i++) {
-			sb.append("(");
-			String fs = "";
-			for (int j = 0; j <= i; j++) {
-				sb.append(fs);
-				fs=", ";
-				sb.append(bernsteinCoeffs[i][j]);
-			}
-			sb.append(")\n");
-		}
-		Log.debug(sb);
-	}
-
-	private void createBernsteinPolynomial() {
-		for (int i = 0; i <= degree; i++) {
 		}
 	}
 
@@ -141,39 +108,16 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = degree; i >= 0; i--) {
-			double c = bernsteinCoeffs[degree][i];
-			String fs = i == degree ? ""
-					: c > 0 ? "+ " : " - ";
-			sb.append(fs);
-			if (c != 1 && c != -1) {
-				sb.append((int) Math.abs(c));
-			}
-			String powerX = powerString(variableName + "", i);
-			String powerOneMinusX = powerString("(1 - " + variableName + ")", degree - i);
-			sb.append(powerX);
-			if (!powerX.isEmpty()) {
-				sb.append(" ");
-			}
-			sb.append(powerOneMinusX);
-		}
-
-		return sb.toString();
+		return formatter.toString();
 	}
 
-	private String powerString(String base, int i) {
-		if (i == 0) {
-			return "";
-		}
-		if (i == 1) {
-			return base;
-		}
-		return base + StringUtil.numberToIndex(i);
-	}
 
 	@Override
-	public ExpressionNode derivative() {
+	public BernsteinPolynomial derivative() {
 		return null;
+	}
+
+	public double getBernsteinCoefficient(int i, int j) {
+		return bernsteinCoeffs[degree][i];
 	}
 }
