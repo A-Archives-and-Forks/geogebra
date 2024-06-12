@@ -81,7 +81,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		FunctionNVar functionNVar = new FunctionNVar(node, variables);
 		functionNVar.initFunction();
 		Polynomial poly = functionNVar.getPolynomial();
-		return new BernsteinPolynomial1Var(kernel, poly, fvY, xmin, xmax,
+		return new BernsteinPolynomial1Var(poly, 'y', xmin, xmax,
 				degreeY);
 	}
 
@@ -187,7 +187,20 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
+	public ExpressionNode derivative() {
+		return null;
+	}
+
+	@Override
 	public String toString() {
 		return output.toString(StringTemplate.defaultTemplate);
+	}
+
+	public BernsteinPolynomial2Var derivateX() {
+		return null;
+	}
+
+	public BernsteinPolynomial2Var derivateY() {
+		return null;
 	}
 }

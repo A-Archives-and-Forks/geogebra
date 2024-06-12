@@ -28,10 +28,10 @@ public class BernsteinBasisPolynomialTest extends BaseUnitTest {
 	@Test
 	public void test1VarBasisNIndex1() {
 		basisShouldBe("x", 1, 1);
-		basisShouldBe("x (1 - x)", 2, 1);
-		basisShouldBe("x (1 - x)\u00b2", 3, 1);
-		basisShouldBe("x (1 - x)\u00b3", 4, 1);
-		basisShouldBe("x (1 - x)\u2074", 5, 1);
+		basisShouldBe("2x (1 - x)", 2, 1);
+		basisShouldBe("3x (1 - x)\u00b2", 3, 1);
+		basisShouldBe("4x (1 - x)\u00b3", 4, 1);
+		basisShouldBe("5x (1 - x)\u2074", 5, 1);
 	}
 
 	@Test

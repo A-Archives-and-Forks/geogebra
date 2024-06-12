@@ -5,4 +5,6 @@ public interface BernsteinPolynomial {
 	String coeffsToString();
 
 	ExpressionNode output();
+
+	ExpressionNode derivative();
 }

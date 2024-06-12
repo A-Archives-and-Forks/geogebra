@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,14 +22,13 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	}
 
-	private void newCreateBernsteinPolynomialPolynomialFrom(String definition) {
+	private void newBernsteinPolynomialPolynomialFrom(String definition) {
 		curve = add(definition);
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
 		Polynomial polynomial = functionNVar.getPolynomial();
 
 		bernstein = curve.getDegY() == 0 ?
-				new BernsteinPolynomial1Var(curve.getKernel(), polynomial,
-				functionNVar.getFunctionVariables()[0], view.getXmin(), view.getXmax(),
+				new BernsteinPolynomial1Var(polynomial, 'x', view.getXmin(), view.getXmax(),
 						curve.getDegX())
 		: new BernsteinPolynomial2Var(curve.getKernel(), polynomial,
 				functionNVar.getFunctionVariables(), view.getXmin(), view.getXmax(),
@@ -46,7 +46,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	private void shouldEvaluateTheSame(String definition) {
-		newCreateBernsteinPolynomialPolynomialFrom(definition);
+		newBernsteinPolynomialPolynomialFrom(definition);
 		for (double v = -10.0; v < 10.0; v += 0.01) {
 			assertEquals(curve.evaluate(v, 0), bernstein.evaluate(v), 1E-8);
 		}
@@ -54,7 +54,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testTwoVars() {
-		newCreateBernsteinPolynomialPolynomialFrom("x^3 + 2x*y^2 + 2x + y=0");
+		newBernsteinPolynomialPolynomialFrom("x^3 + 2x*y^2 + 2x + y=0");
 		assertEquals("(6y\u00B2 + 7y (1 - y) + 3(1 - y)\u00B2) x\u00B3 + (11y\u00B2 + "
 						+ "11y (1 - y) + 4(1 - y)\u00B2) x\u00B2 (1 - x) + (7y\u00B2 + 7y (1 - y)"
 						+ " + 2(1 - y)\u00B2) x (1 - x)\u00B2 + (y\u00B2"
@@ -65,9 +65,31 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	@Test
 	public void testOneVariableToBernsteinPolynomial() {
 		Polynomial polynomial = new Polynomial(getKernel(), "y");
-		BernsteinPolynomial1Var bernsteinPolynomial = new BernsteinPolynomial1Var(getKernel(), polynomial,
-				new FunctionVariable(getKernel(), "y"),
-				0, 1, 2);
+		BernsteinPolynomial1Var bernsteinPolynomial = new BernsteinPolynomial1Var(polynomial,
+				'y',	0, 1, 2);
 		assertEquals("y\u00B2 + y (1 - y)", bernsteinPolynomial.toString());
+	}
+
+
+	@Test
+	public void testDerivative() {
+		newBernsteinPolynomialPolynomialFrom("3x^3 + 2x^2 + x - 1=0");
+		assertEquals("5x³ + x² (1 - x) - 2x (1 - x)² - (1 - x)³", bernstein.toString());
+		ExpressionNode derivate = bernstein.derivative();
+		assertEquals("", derivate.toString(StringTemplate.defaultTemplate));
+	}
+
+	@Test
+	public void testDerivatives() {
+		derivativeShouldBe("2 * 2x", 0, 0, 2);
+		derivativeShouldBe("2 * 2x", 0, 2, 0);
+	}
+
+	private void derivativeShouldBe(String expected, double... coeffs) {
+		BernsteinPolynomial1Var bernsteinPolynomial1Var =
+				new BernsteinPolynomial1Var(coeffs, 'x', view.getXmin(), view.getXmax(),
+						coeffs.length - 1);
+		assertEquals(expected,
+				bernsteinPolynomial1Var.derivative().toOutputValueString(StringTemplate.defaultTemplate));
 	}
 }

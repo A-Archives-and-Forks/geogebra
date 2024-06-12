@@ -3,12 +3,14 @@ package org.geogebra.common.kernel.arithmetic;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.plugin.Operation;
+import org.geogebra.common.util.MyMath;
 
 public final class BernsteinBasisPolynomial {
 	private final int index;
 	private final int degree;
 	private final FunctionVariable fv;
 	private final Kernel kernel;
+	private final ExpressionNode partial;
 	private final ExpressionNode node;
 
 	public BernsteinBasisPolynomial(FunctionVariable fv, int degree, int index) {
@@ -17,12 +19,25 @@ public final class BernsteinBasisPolynomial {
 		this.fv = fv;
 		kernel = fv.kernel;
 		node = compute();
+		partial = computePartial();
+	}
+
+	private ExpressionNode computePartial() {
+		return getPowerOfOneMinusX().multiply(getPowerOfX());
 	}
 
 	private ExpressionNode compute() {
-		ExpressionNode powerOfOneMinusX = powerOf(getOneMinusX(fv), degree - index);
-		ExpressionNode powerOfX = powerOf(fv.wrap(), index);
-		return powerOfOneMinusX.multiply(powerOfX);
+		double binomial = MyMath.binomial(degree, index);
+		return getPowerOfOneMinusX().multiply(
+				getPowerOfX().multiply(binomial));
+	}
+
+	private ExpressionNode getPowerOfX() {
+		return powerOf(fv.wrap(), index);
+	}
+
+	private ExpressionNode getPowerOfOneMinusX() {
+		return powerOf(getOneMinusX(fv), degree - index);
 	}
 
 	private ExpressionNode powerOf(ExpressionNode node, int power) {
@@ -68,5 +83,9 @@ public final class BernsteinBasisPolynomial {
 		}
 		fv.set(value);
 		return node.evaluateDouble();
+	}
+
+	public ExpressionNode getPartial() {
+		return partial;
 	}
 }

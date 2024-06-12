@@ -1,51 +1,41 @@
 package org.geogebra.common.kernel.arithmetic;
 
 
-import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.StringTemplate;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double xmin;
 	private final double xmax;
-	private int degree;
-	private ExpressionNode output;
-	private final Kernel kernel;
-	private final FunctionVariable variable;
+	private final int degree;
 	private final char variableName;
-	private double[] coeffs;
+	private final double[] powerBasisCoeffs;
 	private double[][] bernsteinCoeffs;
-	public BernsteinPolynomial1Var(Kernel kernel, Polynomial polynomial,
-			FunctionVariable variable, double xmin, double xmax, int degree) {
-		this.kernel = kernel;
-		this.variable = variable;
-		this.variableName = variable.getSetVarString().charAt(0);
+	private List<BernsteinBasisPolynomial> bases = new ArrayList<>();
+	public BernsteinPolynomial1Var(Polynomial polynomial,
+			char variableName, double xmin, double xmax, int degree) {
+		this.variableName = variableName;
 		this.xmin = xmin;
 		this.xmax = xmax;
 		this.degree = degree;
-		coeffs = getCoeffs(polynomial);
+		powerBasisCoeffs = coeffsFromPolynomial(polynomial);
 		construct();
 	}
 
-	public BernsteinPolynomial1Var(Kernel kernel, double[] coeffs,
-			FunctionVariable variable, double xmin, double xmax, int degree) {
-		this.kernel = kernel;
-		this.variable = variable;
-		this.variableName = variable.getSetVarString().charAt(0);
+	public BernsteinPolynomial1Var(double[] coeffs,
+			char variableName, double xmin, double xmax, int degree) {
+		this.variableName = variableName;
 		this.xmin = xmin;
 		this.xmax = xmax;
 		this.degree = degree;
-		this.coeffs = coeffs;
+		this.powerBasisCoeffs = coeffs;
 		construct();
 	}
 
-	void construct() {
-		createBernsteinCoeffs();
-		createBernsteinPolynomial();
- 	}
-
-	double[] getCoeffs(Polynomial polynomial) {
+	double[] coeffsFromPolynomial(Polynomial polynomial) {
 		double[] coeffs = new double[degree + 1];
 		for (int i = 0; i <= degree; i++) {
 			Term term = i < polynomial.length() ? polynomial.getTerm(i): null;
@@ -55,6 +45,19 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			}
 		}
 		return coeffs;
+	}
+
+	void construct() {
+		createBernsteinCoeffs();
+		debugBernsteinCoeffs();
+		createBernsteinPolynomial();
+		debugBases();
+ 	}
+
+	private void debugBases() {
+		for (BernsteinBasisPolynomial basis: bases) {
+			Log.debug(basis.toString());
+		}
 	}
 
 	private void createBernsteinCoeffs() {
@@ -84,39 +87,22 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	private void createBernsteinPolynomial() {
 		for (int i = 0; i <= degree; i++) {
-			output = createB(i);
-//			Log.debug("B_" + i + " = " + output);
-		}
-
-
-		if (output != null) {
-			output.simplifyLeafs();
 		}
 	}
 
-	ExpressionNode createB(int i) {
-		output = null;
+	void createB(int i) {
 		for (int j = i; j >= 0; j--) {
-			ExpressionNode beta = new MyDouble(kernel, bernsteinCoeffs[i][j]).wrap();
-			BernsteinBasisPolynomial basis = new BernsteinBasisPolynomial(variable, i, j
-			);
-			addToOutput(basis.multiply(beta));
 		}
- 		return output;
-	}
-
-	private void addToOutput(ExpressionNode result) {
-		output = output == null ? result : output.plus(result);
 	}
 
 	double bernsteinCoefficient(int i, int j) {
 		double xl = xmin;
 		double xh = xmax;
 		if (i == 0 && j == 0) {
-			return coeffs[degree];
+			return powerBasisCoeffs[degree];
 		}
 
-		double a_nMinusI = coeffs[degree - i];
+		double a_nMinusI = powerBasisCoeffs[degree - i];
 
 		if (j == 0) {
 			return a_nMinusI + xl * bernsteinCoeffs[i - 1][0];
@@ -135,8 +121,7 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public double evaluate(double value) {
 		double y = (value - xmin) / (xmax - xmin);
-		variable.set(y);
-		return output.evaluateDouble();
+		return 0;
 	}
 
 	@Override
@@ -146,11 +131,16 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public ExpressionNode output() {
-		return output;
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return output.toString(StringTemplate.defaultTemplate);
+		return null;
+	}
+
+	@Override
+	public ExpressionNode derivative() {
+		return null;
 	}
 }
