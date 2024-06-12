@@ -4105,6 +4105,14 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
+	 *
+	 * @return the current language tag
+	 */
+	public String getLanguage() {
+		return getLocalization().getLanguageTag();
+	}
+
+	/**
 	 * Run a callback on each view.
 	 *
 	 * @param c
