@@ -5,7 +5,8 @@ final class CopyPasteCutTabularDataImpl<T>
 	private final TabularData<T> tabularData;
 	private final ClipboardInterface clipboard;
 	private final TabularDataPasteInterface<T> paste;
-	private final TabularContent tabularContent;
+	private final TabularDataFormatter<T> tabularDataFormatter;
+	private final TableLayout layout;
 	private TabularClipboard<T> internalClipboard;
 
 	/**
@@ -13,16 +14,18 @@ final class CopyPasteCutTabularDataImpl<T>
 	 * @param tabularData {@link TabularData}
 	 * @param clipboard {@link ClipboardInterface}
 	 */
-	CopyPasteCutTabularDataImpl(TabularData<T> tabularData, ClipboardInterface clipboard) {
+	CopyPasteCutTabularDataImpl(TabularData<T> tabularData, ClipboardInterface clipboard,
+			TableLayout layout) {
 		this.tabularData = tabularData;
 		this.clipboard = clipboard;
+		this.layout = layout;
 		paste = tabularData.getPaste();
-		tabularContent = new TabularContent(tabularData);
+		tabularDataFormatter = new TabularDataFormatter(tabularData);
 	}
 
 	@Override
 	public void copy(TabularRange range) {
-		clipboard.setContent(tabularContent.toString(range));
+		clipboard.setContent(tabularDataFormatter.toString(range));
 	}
 
 	@Override
@@ -96,6 +99,10 @@ final class CopyPasteCutTabularDataImpl<T>
 	 */
 	private void pasteInternalOnce(TabularRange destination) {
 		tabularData.ensureCapacity(destination.getMaxRow(), destination.getMaxColumn());
+		if (layout != null) {
+			layout.setNumberOfColumns(tabularData.numberOfColumns());
+			layout.setNumberOfRows(tabularData.numberOfRows());
+		}
 		paste.pasteInternal(tabularData, internalClipboard, destination);
 	}
 
