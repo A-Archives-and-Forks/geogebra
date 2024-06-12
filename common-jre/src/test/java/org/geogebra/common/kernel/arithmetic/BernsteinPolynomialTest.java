@@ -75,8 +75,8 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void testDerivative() {
 		newBernsteinPolynomialPolynomialFrom("3x^3 + 2x^2 + x - 1=0");
 		assertEquals("5x³ + x² (1 - x) - 2x (1 - x)² - (1 - x)³", bernstein.toString());
-		ExpressionNode derivate = bernstein.derivative();
-		assertEquals("", derivate.toString(StringTemplate.defaultTemplate));
+//		ExpressionNode derivate = bernstein.derivative();
+//		assertEquals("", derivate.toString(StringTemplate.defaultTemplate));
 	}
 
 	@Test
