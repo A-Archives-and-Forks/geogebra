@@ -119,8 +119,14 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public double evaluate(double value) {
-		double y = (value - xmin) / (xmax - xmin);
-		return 0;
+		double scaledValue = (value - xmin) / (xmax - xmin);
+		double result = 0;
+		for (int i = degree; i >= 0; i--) {
+			result += (bernsteinCoeffs[degree][i]
+					* Math.pow(scaledValue, i)
+					* Math.pow(1 - scaledValue, degree - i));
+		}
+		return result;
 	}
 
 	@Override
