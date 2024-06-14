@@ -29,6 +29,10 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		construct();
 	}
 
+	public BernsteinPolynomial1Var(int degree, char variableName1) {
+		this(new double[degree + 1], variableName1, 0, 1, degree);
+	}
+
 	static double[] coeffsFromPolynomial(Polynomial polynomial, int degree, char variableName) {
 		double[] coeffs = new double[degree + 1];
 		for (int i = 0; i <= degree; i++) {
@@ -53,11 +57,6 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 				double b_ij = bernsteinCoefficient(i, j);
 				bernsteinCoeffs[i][j] = b_ij;
 			}
-		}
-	}
-
-	void createB(int i) {
-		for (int j = i; j >= 0; j--) {
 		}
 	}
 
@@ -86,6 +85,10 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public double evaluate(double value) {
+		if (bernsteinCoeffs == null) {
+			return 0;
+		}
+
 		double scaledValue = (value - xmin) / (xmax - xmin);
 		double result = 0;
 		for (int i = degree; i >= 0; i--) {
@@ -111,13 +114,32 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		return formatter.toString();
 	}
 
-
 	@Override
 	public BernsteinPolynomial derivative() {
-		return null;
+		if (bernsteinCoeffs == null) {
+			return this;
+		}
+
+		double[] derivedCoeffs = new double[degree];
+//		double[] derivedCoeffs = new double[]{2,6};
+		for (int i = 0; i < degree; i++) {
+			double b1 = (degree - i) * bernsteinCoeffs[degree][i];
+			double b2 = (i + 1) * bernsteinCoeffs[degree][i + 1];
+			derivedCoeffs[i] = b2 - b1;
+		}
+
+		BernsteinPolynomial1Var polynomial1Var = new BernsteinPolynomial1Var(derivedCoeffs,
+				variableName, xmin, xmax, degree - 1);
+		polynomial1Var.bernsteinCoeffs[degree - 1] = derivedCoeffs;
+		return polynomial1Var;
+	}
+
+	@Override
+	public void addPowerBasis(int index, double value) {
+		powerBasisCoeffs[index] += value;
 	}
 
 	public double getBernsteinCoefficient(int i, int j) {
-		return bernsteinCoeffs[degree][i];
+		return bernsteinCoeffs[i][j];
 	}
 }

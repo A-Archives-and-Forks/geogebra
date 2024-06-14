@@ -15,7 +15,7 @@ public class BernsteinPolynomialFormatter {
 		StringBuilder sb = new StringBuilder();
 		int degree = bernstein.degree;
 		for (int i = degree; i >= 0; i--) {
-			double c = bernstein.getBernsteinCoefficient(i, degree);
+			double c = bernstein.getBernsteinCoefficient(degree, i);
 			if (c == 0) {
 				continue;
 			}
@@ -33,7 +33,7 @@ public class BernsteinPolynomialFormatter {
 			}
 			sb.append(powerOneMinusX);
 		}
-		return sb.toString();
+		return sb.toString().trim();
 	}
 
 	private String powerString(String base, int i) {

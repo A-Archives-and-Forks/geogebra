@@ -71,14 +71,33 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 
 	@Test
-	public void testDerivative() {
+	public void testToString() {
 		newBernsteinPolynomialPolynomialFrom("3x^3 + 2x^2 + x - 1=0");
 		assertEquals("5x³ + x² (1 - x) - 2x (1 - x)² - (1 - x)³", bernstein.toString());
 	}
 
 	@Test
+	public void testBernsteinFromCoefficients() {
+		bernsteinShouldBe("2x²", 0, 0, 2);
+		bernsteinShouldBe("4x² + 2x (1 - x)", 0, 2, 2);
+		bernsteinShouldBe("6x² + 6x (1 - x)+ 2(1 - x)²", 2, 2, 2);
+		bernsteinShouldBe("14x³ + 22x² (1 - x)+ 17x (1 - x)²+ 5(1 - x)³", 5, 2, 3, 4);
+		bernsteinShouldBe("6x + 2(1 - x)",  2, 4);
+		bernsteinShouldBe("20x² + 10x (1 - x)+ 2(1 - x)²", 2, 6, 12);
+	}
+
+	@Test
 	public void testDerivatives() {
+		derivativeShouldBe("4", 2, 4);
 		derivativeShouldBe("4x", 0, 0, 2);
+		derivativeShouldBe("6x + 2(1 - x)", 0, 2, 2);
+		derivativeShouldBe("6x + 2(1 - x)", 2, 2, 2);
+		derivativeShouldBe("20x² + 10x (1 - x)+ 2(1 - x)²", 5, 2, 3, 4);
+	}
+
+	@Test
+	public void newDerivative() {
+
 	}
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
@@ -87,5 +106,13 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 						coeffs.length - 1);
 		assertEquals(expected,
 				bernsteinPolynomial1Var.derivative().toString());
+	}
+
+	private void bernsteinShouldBe(String expected, double... coeffs) {
+		BernsteinPolynomial1Var bernsteinPolynomial1Var =
+				new BernsteinPolynomial1Var(coeffs, 'x', view.getXmin(), view.getXmax(),
+						coeffs.length - 1);
+		assertEquals(expected,
+				bernsteinPolynomial1Var.toString());
 	}
 }

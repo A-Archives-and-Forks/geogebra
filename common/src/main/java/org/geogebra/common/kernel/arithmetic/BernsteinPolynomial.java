@@ -7,4 +7,6 @@ public interface BernsteinPolynomial {
 	ExpressionNode output();
 
 	BernsteinPolynomial derivative();
+
+	void addPowerBasis(int index, double value);
 }
