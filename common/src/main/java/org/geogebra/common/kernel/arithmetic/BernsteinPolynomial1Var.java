@@ -1,94 +1,44 @@
 package org.geogebra.common.kernel.arithmetic;
 
 
-import org.geogebra.common.util.MyMath;
-
 public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double xmin;
 	private final double xmax;
 	final int degree;
 	final char variableName;
-	private final double[] powerBasisCoeffs;
-	private double[][] bernsteinCoeffs;
+	private final double[][] bernsteinCoeffs;
 	private BernsteinPolynomialFormatter formatter;
 
-	public BernsteinPolynomial1Var(Polynomial polynomial,
-			char variableName, double xmin, double xmax, int degree) {
-		this(coeffsFromPolynomial(polynomial, degree, variableName),
-				variableName, xmin, xmax);
-	}
-
-	public BernsteinPolynomial1Var(double[] coeffs,
+	public BernsteinPolynomial1Var(double[][] bernsteinCoeffs,
 			char variableName, double xmin, double xmax) {
 		this.variableName = variableName;
 		this.xmin = xmin;
 		this.xmax = xmax;
-		this.degree = coeffs.length - 1;
-		this.powerBasisCoeffs = coeffs;
+		this.degree = bernsteinCoeffs.length - 1;
+		this.bernsteinCoeffs = bernsteinCoeffs;
 		formatter = new BernsteinPolynomialFormatter(this);
-		construct();
 	}
 
-	public BernsteinPolynomial1Var(int degree, char variableName1) {
-		this(new double[degree + 1], variableName1, 0, 1);
+	public BernsteinPolynomial1Var(double[] derivedCoeffs, char variableName, double min,
+			double max) {
+		this(toMatrix(derivedCoeffs), variableName, min, max);
+
 	}
 
-	static double[] coeffsFromPolynomial(Polynomial polynomial, int degree, char variableName) {
-		double[] coeffs = new double[degree + 1];
-		for (int i = 0; i <= degree; i++) {
-			Term term = i < polynomial.length() ? polynomial.getTerm(i): null;
-			if (term != null) {
-				int power = term.degree(variableName);
-				coeffs[power] = term.coefficient.evaluateDouble();
+	private static double[][] toMatrix(double[] derivedCoeffs) {
+		int degree = derivedCoeffs.length - 1;
+		double[][] bernsteinCoeffs = new double[degree + 1][degree + 1];
+		bernsteinCoeffs[degree] = derivedCoeffs;
+		for (int i = degree - 1; i > 0; i--) {
+			for (int j = degree; j > i ; j--) {
+				bernsteinCoeffs[i][j] = derivedCoeffs[i];
 			}
 		}
-		return coeffs;
-	}
-
-	void construct() {
-		createBernsteinCoeffs();
-		formatter.debugBernsteinCoeffs();
- 	}
-
-	private void createBernsteinCoeffs() {
-		bernsteinCoeffs = new double[degree + 1][degree + 1];
-		for (int i = 0; i <= degree; i++) {
-			for (int j = 0; j <= i; j++) {
-				double b_ij = bernsteinCoefficient(i, j);
-				bernsteinCoeffs[i][j] = b_ij;
-			}
-		}
-	}
-
-	double bernsteinCoefficient(int i, int j) {
-		double xl = xmin;
-		double xh = xmax;
-		if (i == 0 && j == 0) {
-			return powerBasisCoeffs[degree];
-		}
-
-		double a_nMinusI = powerBasisCoeffs[degree - i];
-
-		if (j == 0) {
-			return a_nMinusI + xl * bernsteinCoeffs[i - 1][0];
-		}
-
-		if (j == i) {
-			return a_nMinusI + xh * bernsteinCoeffs[i - 1][i - 1];
-		}
-
-		double binomial = MyMath.binomial(i, j);
-		return binomial * a_nMinusI
-				+ xl * bernsteinCoeffs[i - 1][j]
-				+ xh * bernsteinCoeffs[i - 1][j - 1];
+		return bernsteinCoeffs;
 	}
 
 	@Override
 	public double evaluate(double value) {
-		if (bernsteinCoeffs == null) {
-			return 0;
-		}
-
 		double scaledValue = (value - xmin) / (xmax - xmin);
 		double result = 0;
 		for (int i = degree; i >= 0; i--) {
@@ -116,10 +66,6 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial derivative() {
-		if (bernsteinCoeffs == null) {
-			return this;
-		}
-
 		double[] derivedCoeffs = new double[degree];
 //		double[] derivedCoeffs = new double[]{2,6};
 		for (int i = 0; i < degree; i++) {
@@ -128,15 +74,13 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			derivedCoeffs[i] = b2 - b1;
 		}
 
-		BernsteinPolynomial1Var polynomial1Var = new BernsteinPolynomial1Var(derivedCoeffs,
+		return new BernsteinPolynomial1Var(derivedCoeffs,
 				variableName, xmin, xmax);
-		polynomial1Var.bernsteinCoeffs[degree - 1] = derivedCoeffs;
-		return polynomial1Var;
 	}
 
 	@Override
 	public void addPowerBasis(int index, double value) {
-		powerBasisCoeffs[index] += value;
+		//powerBasisCoeffs[index] += value;
 	}
 
 	public double getBernsteinCoefficient(int i, int j) {
