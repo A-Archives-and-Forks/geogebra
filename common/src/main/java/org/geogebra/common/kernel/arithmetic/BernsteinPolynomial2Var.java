@@ -2,8 +2,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.StringTemplate;
-import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
@@ -74,8 +72,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 //		}
 	}
 
-
-	@Override
 	public String coeffsToString() {
 		StringBuilder sb = new StringBuilder();
 		String fs = "";
@@ -130,26 +126,27 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	ExpressionNode bernsteinCoefficient(int i, int j) {
-		double xl = xmin;
-		double xh = xmax;
-		if (i == 0 && j == 0) {
-			return coeffs[degree].output();
-		}
-
-		ExpressionNode a_nMinusI = coeffs[degree - i].output();
-
-		if (j == 0) {
-			return a_nMinusI.plus(bernsteinCoeffs[i - 1][0].multiply(xl));
-		}
-
-		if (j == i) {
-			return a_nMinusI.plus(bernsteinCoeffs[i - 1][i - 1].multiply(xh));
-		}
-
-		double binomial = MyMath.binomial(i, j);
-		return a_nMinusI.multiply(binomial)
-				.plus(bernsteinCoeffs[i - 1][j].multiply(xl))
-				.plus(bernsteinCoeffs[i - 1][j - 1].multiply(xh));
+//		double xl = xmin;
+//		double xh = xmax;
+//		if (i == 0 && j == 0) {
+//			return coeffs[degree].output();
+//		}
+//
+//		ExpressionNode a_nMinusI = coeffs[degree - i].output();
+//
+//		if (j == 0) {
+//			return a_nMinusI.plus(bernsteinCoeffs[i - 1][0].multiply(xl));
+//		}
+//
+//		if (j == i) {
+//			return a_nMinusI.plus(bernsteinCoeffs[i - 1][i - 1].multiply(xh));
+//		}
+//
+//		double binomial = MyMath.binomial(i, j);
+//		return a_nMinusI.multiply(binomial)
+//				.plus(bernsteinCoeffs[i - 1][j].multiply(xl))
+//				.plus(bernsteinCoeffs[i - 1][j - 1].multiply(xh));
+		return null;
 	}
 
 	public double evaluate(double value) {
@@ -159,30 +156,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public ExpressionNode output() {
-		return output;
-	}
-
-	@Override
 	public BernsteinPolynomial derivative() {
-		return null;
-	}
-
-	@Override
-	public void addPowerBasis(int index, double value) {
-
-	}
-
-	@Override
-	public String toString() {
-		return output.toString(StringTemplate.defaultTemplate);
-	}
-
-	public BernsteinPolynomial2Var derivateX() {
-		return null;
-	}
-
-	public BernsteinPolynomial2Var derivateY() {
 		return null;
 	}
 }
