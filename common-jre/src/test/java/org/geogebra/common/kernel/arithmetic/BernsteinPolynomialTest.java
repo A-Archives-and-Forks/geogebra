@@ -13,25 +13,20 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private BernsteinPolynomial bernstein;
 	private GeoImplicitCurve curve;
 	private EuclidianView view;
+	private BernsteinPolynomialConverter converter;
 
 	@Before
 	public void setUp() {
 		add("ZoomIn(0,0,1,1)");
 		view = getApp().getEuclidianView1();
+		converter =
+				new BernsteinPolynomialConverter();
 
 	}
 
 	private void newBernsteinPolynomialPolynomialFrom(String definition) {
 		curve = add(definition);
-		FunctionNVar functionNVar = curve.getFunctionDefinition();
-		Polynomial polynomial = functionNVar.getPolynomial();
-
-		bernstein = curve.getDegY() == 0 ?
-				new BernsteinPolynomial1Var(polynomial, 'x', view.getXmin(), view.getXmax(),
-						curve.getDegX())
-		: new BernsteinPolynomial2Var(curve.getKernel(), polynomial,
-				functionNVar.getFunctionVariables(), view.getXmin(), view.getXmax(),
-				curve.getDegX(), curve.getDegY());
+		bernstein = converter.fromImplicitCurve(curve, view.getXmin(), view.getXmax());
 	}
 
 	@Test
@@ -95,23 +90,19 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		derivativeShouldBe("20x² + 10x (1 - x)+ 2(1 - x)²", 5, 2, 3, 4);
 	}
 
-	@Test
-	public void newDerivative() {
-
-	}
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
 		BernsteinPolynomial1Var bernsteinPolynomial1Var =
-				new BernsteinPolynomial1Var(coeffs, 'x', view.getXmin(), view.getXmax(),
-						coeffs.length - 1);
+				new BernsteinPolynomial1Var(coeffs, 'x', view.getXmin(), view.getXmax()
+				);
 		assertEquals(expected,
 				bernsteinPolynomial1Var.derivative().toString());
 	}
 
 	private void bernsteinShouldBe(String expected, double... coeffs) {
 		BernsteinPolynomial1Var bernsteinPolynomial1Var =
-				new BernsteinPolynomial1Var(coeffs, 'x', view.getXmin(), view.getXmax(),
-						coeffs.length - 1);
+				new BernsteinPolynomial1Var(coeffs, 'x', view.getXmin(), view.getXmax()
+				);
 		assertEquals(expected,
 				bernsteinPolynomial1Var.toString());
 	}

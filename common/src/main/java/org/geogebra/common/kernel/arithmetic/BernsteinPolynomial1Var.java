@@ -15,22 +15,22 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	public BernsteinPolynomial1Var(Polynomial polynomial,
 			char variableName, double xmin, double xmax, int degree) {
 		this(coeffsFromPolynomial(polynomial, degree, variableName),
-				variableName, xmin, xmax, degree);
+				variableName, xmin, xmax);
 	}
 
 	public BernsteinPolynomial1Var(double[] coeffs,
-			char variableName, double xmin, double xmax, int degree) {
+			char variableName, double xmin, double xmax) {
 		this.variableName = variableName;
 		this.xmin = xmin;
 		this.xmax = xmax;
-		this.degree = degree;
+		this.degree = coeffs.length - 1;
 		this.powerBasisCoeffs = coeffs;
 		formatter = new BernsteinPolynomialFormatter(this);
 		construct();
 	}
 
 	public BernsteinPolynomial1Var(int degree, char variableName1) {
-		this(new double[degree + 1], variableName1, 0, 1, degree);
+		this(new double[degree + 1], variableName1, 0, 1);
 	}
 
 	static double[] coeffsFromPolynomial(Polynomial polynomial, int degree, char variableName) {
@@ -129,7 +129,7 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		}
 
 		BernsteinPolynomial1Var polynomial1Var = new BernsteinPolynomial1Var(derivedCoeffs,
-				variableName, xmin, xmax, degree - 1);
+				variableName, xmin, xmax);
 		polynomial1Var.bernsteinCoeffs[degree - 1] = derivedCoeffs;
 		return polynomial1Var;
 	}
