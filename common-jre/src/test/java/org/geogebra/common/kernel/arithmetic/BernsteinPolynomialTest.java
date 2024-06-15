@@ -60,10 +60,9 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void testOneVariableToBernsteinPolynomial() {
 		Polynomial polynomial = new Polynomial(getKernel(), "y");
 		BernsteinPolynomial bernsteinPolynomial = converter.fromPolynomial(polynomial,
-				'y',	0, 1, 2);
+				0, 2, 0, 1);
 		assertEquals("y\u00B2 + y (1 - y)", bernsteinPolynomial.toString());
 	}
-
 
 	@Test
 	public void testToString() {
@@ -92,16 +91,16 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
-		bernstein =	converter.fromPowerBasisCoefficients(coeffs, coeffs.length - 1, 0,
-						view.getXmin(), view.getXmax()
+		bernstein =	converter.new1VarFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
+				'x', view.getXmin(), view.getXmax()
 				);
 		assertEquals(expected, bernstein.derivative().toString());
 	}
 
 	private void bernsteinShouldBe(String expected, double... coeffs) {
 		bernstein =
-				converter.fromPowerBasisCoefficients(coeffs, coeffs.length - 1, 0,
-						view.getXmin(), view.getXmax()
+				converter.new1VarFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
+						'x', view.getXmin(), view.getXmax()
 				);
 
 		assertEquals(expected, bernstein.toString());
