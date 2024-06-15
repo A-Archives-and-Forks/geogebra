@@ -6,29 +6,15 @@ import org.geogebra.common.util.debug.Log;
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double min;
 	private final double max;
-	private int degree;
-	private BernsteinPolynomial[] coeffs;
-	private BernsteinPolynomial[][] bernsteinCoeffs;
+	private final int degree;
+	private final BernsteinPolynomial[][] bernsteinCoeffs;
 	public BernsteinPolynomial2Var(BernsteinPolynomial[][] bernsteinCoeffs, double min, double max,
 			int degreeX, int degreeY) {
 		this.min = min;
 		this.max = max;
 		this.degree = Math.max(degreeX, degreeY);
 		this.bernsteinCoeffs = bernsteinCoeffs;
-		Log.debug("bernsteinCoeffs of x:\n" + coeffsToString(bernsteinCoeffs));
-	}
-
-
-	private void createBernsteinCoeffs() {
-//		bernsteinCoeffs = new ExpressionNode[degree + 1][degree + 1];
-//		for (int i = 0; i <= degree; i++) {
-//			for (int j = 0; j <= i; j++) {
-//				ExpressionNode node = bernsteinCoefficient(i, j);
-//				BernsteinPolynomial1Var polynomial =
-//						node2BernsteinPolynomial(node);
-//				bernsteinCoeffs[i][j] = polynomial.output();
-//			}
-//		}
+		debugBernsteinCoeffs();
 	}
 
 	public String coeffsToString(BernsteinPolynomial[][] bernsteinCoeffs) {
@@ -65,6 +51,21 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial derivative() {
+		return null;
+	}
+
+	@Override
+	public BernsteinPolynomial multiply(double value) {
+		return null;
+	}
+
+	@Override
+	public BernsteinPolynomial plus(double value) {
+		return null;
+	}
+
+	@Override
+	public BernsteinPolynomial plus(BernsteinPolynomial value) {
 		return null;
 	}
 }

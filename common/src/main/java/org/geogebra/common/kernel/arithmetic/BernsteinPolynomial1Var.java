@@ -59,8 +59,43 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			derivedCoeffs[i] = b2 - b1;
 		}
 
-		return new BernsteinPolynomial1Var(derivedCoeffs,
-				variableName, min, max);
+		return newInstance(derivedCoeffs);
+	}
+
+	@Override
+	public BernsteinPolynomial multiply(double value) {
+		double[] coeffs = new double[degree + 1];
+
+		for (int i = 0; i < degree + 1; i++) {
+			coeffs[i] = bernsteinCoeffs[degree][i] * value;
+		}
+		return newInstance(coeffs);
+
+	}
+
+	private BernsteinPolynomial1Var newInstance(double[] coeffs) {
+		return new BernsteinPolynomial1Var(coeffs, variableName, min, max);
+	}
+
+	@Override
+	public BernsteinPolynomial plus(double value) {
+		double[] coeffs = new double[degree + 1];
+
+		for (int i = 0; i < degree + 1; i++) {
+			coeffs[i] = bernsteinCoeffs[degree][i] + value;
+		}
+		return newInstance(coeffs);
+	}
+
+	@Override
+	public BernsteinPolynomial plus(BernsteinPolynomial value) {
+		double[] coeffs = new double[degree + 1];
+
+		for (int i = 0; i < degree + 1; i++) {
+			coeffs[i] = bernsteinCoeffs[degree][i]
+					+ ((BernsteinPolynomial1Var) value).bernsteinCoeffs[degree][i];
+		}
+		return newInstance(coeffs);
 	}
 
 	@Override

@@ -20,7 +20,8 @@ public class BernsteinPolynomialConverter {
 	BernsteinPolynomial fromPolynomial(Polynomial polynomial, int degreeX, int degreeY, double min,
 			double max) {
 		if (degreeX !=0 && degreeY != 0) {
-			return new2VarFromPowerBasisCoefficients(coeffsFromTwoVarPolynomial(polynomial, degreeX),
+			double[] powerCoeffs = coeffsFromTwoVarPolynomial(polynomial, degreeX);
+			return new2VarFromPowerBasisCoefficients(powerCoeffs,
 					Math.max(degreeX, degreeY), min, max);
 		}
 
@@ -55,7 +56,7 @@ public class BernsteinPolynomialConverter {
 	BernsteinPolynomial new2VarFromPowerBasisCoefficients(double[] powerCoeffs,
 			int degree, double min, double max) {
 		powerBasisCoeffs2Var = coeffsToBernsteinCoeffs(powerCoeffs, degree, min, max);
-		createBernsteinCoeffs(degree, min, max);
+		createBernsteinCoeffs2Var(degree, min, max);
 		return new BernsteinPolynomial2Var(bernsteinCoeffs2Var, min, max, degree, degree);
 	}
 
@@ -114,4 +115,36 @@ public class BernsteinPolynomialConverter {
 		}
 		return polys;
 	}
+
+	private void createBernsteinCoeffs2Var(int degree, double min, double max) {
+		bernsteinCoeffs2Var = new BernsteinPolynomial[degree + 1][degree + 1];
+		for (int i = 0; i <= degree; i++) {
+			for (int j = 0; j <= i; j++) {
+				BernsteinPolynomial b_ij = bernsteinCoefficient2Var(i, j, degree, min, max);
+				bernsteinCoeffs2Var[i][j] = b_ij;
+			}
+		}
+	}
+
+	private BernsteinPolynomial bernsteinCoefficient2Var(int i, int j, int degree, double min, double max) {
+		if (i == 0 && j == 0) {
+			return powerBasisCoeffs2Var[degree];
+		}
+
+		BernsteinPolynomial a_nMinusI = powerBasisCoeffs2Var[degree - i];
+
+		if (j == 0) {
+			return bernsteinCoeffs2Var[i - 1][0].multiply(min).plus(a_nMinusI);
+		}
+
+		if (j == i) {
+			return bernsteinCoeffs2Var[i - 1][i - 1].multiply(max).plus(a_nMinusI);
+		}
+
+		double binomial = MyMath.binomial(i, j);
+		return a_nMinusI.multiply(binomial)
+				.plus(bernsteinCoeffs2Var[i - 1][j].multiply(min))
+				.plus(bernsteinCoeffs2Var[i - 1][j - 1].multiply(max));
+	}
+
 }
