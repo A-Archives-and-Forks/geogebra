@@ -15,6 +15,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private EuclidianView view;
 	private BernsteinPolynomialConverter converter;
 
+
 	@Before
 	public void setUp() {
 		add("ZoomIn(0,0,1,1)");
@@ -91,15 +92,17 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
-		bernstein =	converter.new1VarFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
+		BernsteinBuilder1Var builder = new BernsteinBuilder1Var();
+		bernstein =	builder.newFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
 				'x', view.getXmin(), view.getXmax()
 				);
 		assertEquals(expected, bernstein.derivative().toString());
 	}
 
 	private void bernsteinShouldBe(String expected, double... coeffs) {
+		BernsteinBuilder1Var builder = new BernsteinBuilder1Var();
 		bernstein =
-				converter.new1VarFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
+				builder.newFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
 						'x', view.getXmin(), view.getXmax()
 				);
 

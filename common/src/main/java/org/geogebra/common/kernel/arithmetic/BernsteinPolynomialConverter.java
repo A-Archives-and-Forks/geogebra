@@ -5,9 +5,7 @@ import org.geogebra.common.util.MyMath;
 
 public class BernsteinPolynomialConverter {
 
-	private double[] powerBasisCoeffs;
-	private double[][] bernsteinCoeffs;
-
+	private final BernsteinBuilder1Var builder1Var = new BernsteinBuilder1Var();
 	private BernsteinPolynomial[] powerBasisCoeffs2Var;
 	private BernsteinPolynomial[][] bernsteinCoeffs2Var;
 
@@ -26,11 +24,11 @@ public class BernsteinPolynomialConverter {
 		}
 
 		if (degreeY == 0) {
-			return new1VarFromPowerBasisCoefficients(coeffsFromPolynomial(polynomial, degreeX, 'x'),
+			return builder1Var.newFromPowerBasisCoefficients(coeffsFromPolynomial(polynomial, degreeX, 'x'),
 					degreeX, 'x', min, max);
 		}
 
-		return new1VarFromPowerBasisCoefficients(coeffsFromPolynomial(polynomial, degreeY, 'y'),
+		return builder1Var.newFromPowerBasisCoefficients(coeffsFromPolynomial(polynomial, degreeY, 'y'),
 				degreeY, 'y', min, max);
 	}
 
@@ -46,12 +44,7 @@ public class BernsteinPolynomialConverter {
 		return coeffs;
 	}
 
-	BernsteinPolynomial new1VarFromPowerBasisCoefficients(double[] powerCoeffs,
-			int degree, char variable, double min, double max) {
-		powerBasisCoeffs = powerCoeffs;
-		createBernsteinCoeffs(degree, min, max);
-		return new BernsteinPolynomial1Var(bernsteinCoeffs, variable, min, max);
-	}
+
 
 	BernsteinPolynomial new2VarFromPowerBasisCoefficients(double[] powerCoeffs,
 			int degree, double min, double max) {
@@ -60,36 +53,6 @@ public class BernsteinPolynomialConverter {
 		return new BernsteinPolynomial2Var(bernsteinCoeffs2Var, min, max, degree, degree);
 	}
 
-	private void createBernsteinCoeffs(int degree, double min, double max) {
-		bernsteinCoeffs = new double[degree + 1][degree + 1];
-		for (int i = 0; i <= degree; i++) {
-			for (int j = 0; j <= i; j++) {
-				double b_ij = bernsteinCoefficient(i, j, degree, min, max);
-				bernsteinCoeffs[i][j] = b_ij;
-			}
-		}
-	}
-
-	private double bernsteinCoefficient(int i, int j, int degree, double min, double max) {
-		if (i == 0 && j == 0) {
-			return powerBasisCoeffs[degree];
-		}
-
-		double a_nMinusI = powerBasisCoeffs[degree - i];
-
-		if (j == 0) {
-			return a_nMinusI + min * bernsteinCoeffs[i - 1][0];
-		}
-
-		if (j == i) {
-			return a_nMinusI + max * bernsteinCoeffs[i - 1][i - 1];
-		}
-
-		double binomial = MyMath.binomial(i, j);
-		return binomial * a_nMinusI
-				+ min * bernsteinCoeffs[i - 1][j]
-				+ max * bernsteinCoeffs[i - 1][j - 1];
-	}
 
 	double[] coeffsFromTwoVarPolynomial(Polynomial polynomial, int degree) {
 		double[] coeffs = new double[degree + 1];
@@ -111,7 +74,7 @@ public class BernsteinPolynomialConverter {
 		for (int i = 0; i <= degree; i++) {
 			double[] yCoeffs = new double[degree + 1];
 			yCoeffs[i] = coeffs[i];
-			polys[i] = new1VarFromPowerBasisCoefficients(yCoeffs, degree, 'y', min, max);
+			polys[i] = builder1Var.newFromPowerBasisCoefficients(yCoeffs, degree, 'y', min, max);
 		}
 		return polys;
 	}
