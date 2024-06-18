@@ -124,6 +124,9 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 				sb.append(" ");
 			}
 			sb.append(powerOneMinusX);
+			if (!powerOneMinusX.isEmpty()) {
+				sb.append(" ");
+			}
 		}
 		String trimmed = sb.toString().trim();
 		return "".equals(trimmed) ? "0": trimmed;
