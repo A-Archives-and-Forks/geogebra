@@ -2,7 +2,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 
 import org.geogebra.common.util.StringUtil;
-import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double min;
@@ -140,20 +139,5 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			return base;
 		}
 		return base + StringUtil.numberToIndex(i);
-	}
-
-	void debugBernsteinCoeffs() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i <= degree; i++) {
-			sb.append("(");
-			String fs = "";
-			for (int j = 0; j <= i; j++) {
-				sb.append(fs);
-				fs=", ";
-				sb.append(bernsteinCoeffs[i][j]);
-			}
-			sb.append(")\n");
-		}
-		Log.debug(sb);
 	}
 }

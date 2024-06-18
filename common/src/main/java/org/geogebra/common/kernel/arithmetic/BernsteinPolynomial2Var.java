@@ -16,7 +16,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.max = max;
 		this.degree = Math.max(degreeX, degreeY);
 		this.bernsteinCoeffs = bernsteinCoeffs;
-		debugBernsteinCoeffs();
+//		debugBernsteinCoeffs();
 	}
 
 	public String coeffsToString(BernsteinPolynomial[][] bernsteinCoeffs) {
