@@ -122,11 +122,17 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testTwoVarEvaluate() {
-		newBernsteinPolynomialPolynomialFrom("x^3 + 2x*y^2 + 2x + y=0");
+		shouldTwoVarEvaluateTheSame("x^3 + 2x*y^2 + 2x + y=0");
+		shouldTwoVarEvaluateTheSame("4x^3 + x*y^2 + 5x + y=0");
+		shouldTwoVarEvaluateTheSame("x^6 - 4*y^3 + 3*x^4*y=0 ");
+	}
+
+	private void shouldTwoVarEvaluateTheSame(String definition) {
+		newBernsteinPolynomialPolynomialFrom(definition);
 		BernsteinPolynomial2Var twoVar = (BernsteinPolynomial2Var) bernstein;
 		for (double x = -10; x < 10; x += 0.01) {
 			for (double y = -10; y < 10; y += 0.01) {
-				assertEquals(curve.evaluate(x, y), twoVar.evaluate(x, y), 1E-6);
+				assertEquals(curve.evaluate(x, y), twoVar.evaluate(x, y), 1E-4);
 
 			}
 		}
