@@ -82,6 +82,11 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	@Test
+	public void name() {
+		bernsteinShouldBe("",2,0);
+	}
+
+	@Test
 	public void testDerivatives() {
 		derivativeShouldBe("4", 2, 4);
 		derivativeShouldBe("4x", 0, 0, 2);
@@ -93,7 +98,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
 		BernsteinBuilder1Var builder = new BernsteinBuilder1Var();
-		bernstein =	builder.newFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
+		bernstein =	builder.build(coeffs, coeffs.length - 1,
 				'x', view.getXmin(), view.getXmax()
 				);
 		assertEquals(expected, bernstein.derivative().toString());
@@ -102,7 +107,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private void bernsteinShouldBe(String expected, double... coeffs) {
 		BernsteinBuilder1Var builder = new BernsteinBuilder1Var();
 		bernstein =
-				builder.newFromPowerBasisCoefficients(coeffs, coeffs.length - 1,
+				builder.build(coeffs, coeffs.length - 1,
 						'x', view.getXmin(), view.getXmax()
 				);
 

@@ -6,7 +6,9 @@ public class BernsteinBuilder1Var {
 
 	private double[] powerBasisCoeffs;
 	private double[][] bernsteinCoeffs;
-	BernsteinPolynomial newFromPowerBasisCoefficients(double[] powerCoeffs,
+
+
+	BernsteinPolynomial build(double[] powerCoeffs,
 			int degree, char variable, double min, double max) {
 		powerBasisCoeffs = powerCoeffs;
 		createBernsteinCoeffs(degree, min, max);
@@ -43,5 +45,4 @@ public class BernsteinBuilder1Var {
 				+ min * bernsteinCoeffs[i - 1][j]
 				+ max * bernsteinCoeffs[i - 1][j - 1];
 	}
-
 }

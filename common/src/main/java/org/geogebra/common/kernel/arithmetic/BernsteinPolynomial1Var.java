@@ -25,7 +25,6 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this(toMatrix(derivedCoeffs), variableName, min, max);
 
 	}
-
 	private static double[][] toMatrix(double[] derivedCoeffs) {
 		int degree = derivedCoeffs.length - 1;
 		double[][] bernsteinCoeffs = new double[degree + 1][degree + 1];
@@ -36,6 +35,12 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			}
 		}
 		return bernsteinCoeffs;
+	}
+
+	public BernsteinPolynomial1Var(int degree, char variableName, double min,
+			double max) {
+		this(new double[degree + 1][degree + 1], variableName, min, max);
+
 	}
 
 	@Override
@@ -120,10 +125,11 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			}
 			sb.append(powerOneMinusX);
 		}
-		return sb.toString().trim();
+		String trimmed = sb.toString().trim();
+		return "".equals(trimmed) ? "0": trimmed;
 	}
 
-	private String powerString(String base, int i) {
+	static String powerString(String base, int i) {
 		if (i == 0) {
 			return "";
 		}

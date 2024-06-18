@@ -1,6 +1,8 @@
 package org.geogebra.common.kernel.arithmetic;
 
 
+import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
+
 import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
@@ -67,5 +69,28 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	@Override
 	public BernsteinPolynomial plus(BernsteinPolynomial value) {
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = degree; i >= 0; i--) {
+			BernsteinPolynomial c = bernsteinCoeffs[degree][i];
+			if (c == null) {
+				continue;
+			}
+			String fs = i == degree ? "" : "+";
+			sb.append(fs);
+			sb.append(c);
+			String powerX = powerString("x", i);
+			String powerOneMinusX = powerString("(1 - x)", degree - i);
+			sb.append(powerX);
+			if (!powerX.isEmpty()) {
+				sb.append(" ");
+			}
+			sb.append(powerOneMinusX);
+		}
+		String trimmed = sb.toString().trim();
+		return "".equals(trimmed) ? "0": trimmed;
 	}
 }
