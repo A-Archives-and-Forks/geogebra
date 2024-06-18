@@ -45,9 +45,21 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		Log.debug(sb);
 	}
 
+	public double evaluate(double valueX, double valueY) {
+		double scaledValue = (valueX - min) / (max - min);
+		double result = 0;
+
+		for (int i = degree; i >= 0; i--) {
+			double coeff = bernsteinCoeffs[degree][i].evaluate(valueY);
+			result += (coeff
+					* Math.pow(scaledValue, i)
+					* Math.pow(1 - scaledValue, degree - i));
+		}
+		return result;
+	}
+
+	@Override
 	public double evaluate(double value) {
-		double y = (value - min) / (max - min);
-//		variable.set(y);
 		return 0;
 	}
 

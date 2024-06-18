@@ -77,13 +77,13 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		bernsteinShouldBe("4x² + 2x (1 - x)", 0, 2, 2);
 		bernsteinShouldBe("6x² + 6x (1 - x)+ 2(1 - x)²", 2, 2, 2);
 		bernsteinShouldBe("14x³ + 22x² (1 - x)+ 17x (1 - x)²+ 5(1 - x)³", 5, 2, 3, 4);
-		bernsteinShouldBe("6x + 2(1 - x)",  2, 4);
+		bernsteinShouldBe("6x + 2(1 - x)", 2, 4);
 		bernsteinShouldBe("20x² + 10x (1 - x)+ 2(1 - x)²", 2, 6, 12);
 	}
 
 	@Test
 	public void name() {
-		bernsteinShouldBe("",2,0);
+		bernsteinShouldBe("", 2, 0);
 	}
 
 	@Test
@@ -98,9 +98,9 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
 		BernsteinBuilder1Var builder = new BernsteinBuilder1Var();
-		bernstein =	builder.build(coeffs, coeffs.length - 1,
+		bernstein = builder.build(coeffs, coeffs.length - 1,
 				'x', view.getXmin(), view.getXmax()
-				);
+		);
 		assertEquals(expected, bernstein.derivative().toString());
 	}
 
@@ -118,5 +118,17 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void secondDerivative() {
 		derivativeShouldBe("6x + 2(1 - x)", 0, 2, 2);
 		assertEquals("4", bernstein.derivative().derivative().toString());
+	}
+
+	@Test
+	public void testTwoVarEvaluate() {
+		newBernsteinPolynomialPolynomialFrom("x^3 + 2x*y^2 + 2x + y=0");
+		BernsteinPolynomial2Var twoVar = (BernsteinPolynomial2Var) bernstein;
+		for (double x = -10; x < 10; x += 0.01) {
+			for (double y = -10; y < 10; y += 0.01) {
+				assertEquals(curve.evaluate(x, y), twoVar.evaluate(x, y), 1E-6);
+
+			}
+		}
 	}
 }
