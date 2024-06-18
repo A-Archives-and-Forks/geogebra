@@ -1,6 +1,7 @@
 package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.util.MyMath;
+import org.geogebra.common.util.debug.Log;
 
 public class BernsteinBuilder2Var {
 	private final BernsteinBuilder1Var builder1Var;
@@ -12,66 +13,49 @@ public class BernsteinBuilder2Var {
 	}
 
 
-	BernsteinPolynomial build(Polynomial polynomial, int degree, double min, double max) {
-		double[][] powerCoeffs = coeffsFromTwoVarPolynomial(polynomial, degree);
-		powerBasisCoeffs = coeffsToBernsteinCoeffs(powerCoeffs, degree, min, max);
-		createBernsteinCoeffs2Var(degree, min, max);
-		return new BernsteinPolynomial2Var(bernsteinCoeffs, min, max, degree, degree);
+	BernsteinPolynomial build(Polynomial polynomial, int degreeX, int degreeY,
+			double min, double max) {
+		double[][] powerCoeffs = coeffsFromTwoVarPolynomial(polynomial, degreeX, degreeY);
+		powerBasisCoeffs = coeffsToBernsteinCoeffs(powerCoeffs, degreeX, degreeY, min, max);
+		createBernsteinCoeffs2Var(degreeX, degreeY, min, max);
+		return new BernsteinPolynomial2Var(bernsteinCoeffs, min, max, degreeX, degreeY);
 	}
 
 
-	double[][] coeffsFromTwoVarPolynomial(Polynomial polynomial, int degree) {
-		double[][] coeffs = new double[degree + 1][2];
-		for (int i = 0; i <= degree; i++) {
-			Term term = i < polynomial.length() ? polynomial.getTerm(i) : null;
+	double[][] coeffsFromTwoVarPolynomial(Polynomial polynomial, int degreeX, int degreeY) {
+		double[][] coeffs = new double[degreeX + 1][degreeY + 1];
+		for (int i = 0; i < polynomial.length(); i++) {
+//			Term term = i < polynomial.length() ? polynomial.getTerm(i) : null;
+			Term term = polynomial.getTerm(i);
 			if (term != null) {
 				int powerX = term.degree('x');
 				int powerY = term.degree('y');
-				if (powerY != 0) {
-					coeffs[powerY][1] += term.coefficient.evaluateDouble();
-				} else if (powerX != 0) {
-					coeffs[powerX][0] += term.coefficient.evaluateDouble();
-
+					coeffs[powerX][powerY] += term.coefficient.evaluateDouble();
 				}
 			}
-		}
+
 		return coeffs;
 	}
 
-	private BernsteinPolynomial[] coeffsToBernsteinCoeffs(double[][] coeffs, int degree, double min,
-			double max) {
-		BernsteinPolynomial[] polys = new BernsteinPolynomial[degree + 1];
-		for (int i = 0; i <= degree; i++) {
-			double[] bCoeffs = new double[degree + 1];
-			double x = coeffs[i][0];
-			double y = coeffs[i][1];
-			if (y == 0) {
-				bCoeffs[i] = x;
-				BernsteinPolynomial constantPoly = builder1Var.build(bCoeffs, degree, 'y', min, max);
-				if (polys[i] == null) {
-					polys[i] = constantPoly;
-				} else {
-					polys[i].plus(constantPoly);
-				}
-			} else {
-				bCoeffs[i] = y;
-				BernsteinPolynomial poly =
-						builder1Var.build(bCoeffs, degree, 'y', min, max).multiply(x);
-				if (polys[i] == null) {
-					polys[i] = poly;
-				} else {
-					polys[i].plus(poly);
-				}
+	private BernsteinPolynomial[] coeffsToBernsteinCoeffs(double[][] coeffs, int degreeX,
+			int degreeY, double min, double max) {
+		BernsteinPolynomial[] polys = new BernsteinPolynomial[degreeX + 1];
+		for (int i = 0; i <= degreeX; i++) {
+			double[] row = new double[degreeY + 1];
+			for (int j = 0; j < degreeY + 1; j++) {
+				row[j] = coeffs[i][j];
 			}
+			polys[i] = builder1Var.build(row, degreeY, 'y', min, max);
+			Log.debug("coeff poly " + i + ": " + polys[i]);
 		}
 		return polys;
 	}
 
-	private void createBernsteinCoeffs2Var(int degree, double min, double max) {
-		bernsteinCoeffs = new BernsteinPolynomial[degree + 1][degree + 1];
-		for (int i = 0; i <= degree; i++) {
+	private void createBernsteinCoeffs2Var(int degreeX, int degreeY, double min, double max) {
+		bernsteinCoeffs = new BernsteinPolynomial[degreeX + 1][degreeX + 1];
+		for (int i = 0; i <= degreeX; i++) {
 			for (int j = 0; j <= i; j++) {
-				BernsteinPolynomial b_ij = bernsteinCoefficient(i, j, degree, min, max);
+				BernsteinPolynomial b_ij = bernsteinCoefficient(i, j, degreeX, min, max);
 				bernsteinCoeffs[i][j] = b_ij;
 			}
 		}

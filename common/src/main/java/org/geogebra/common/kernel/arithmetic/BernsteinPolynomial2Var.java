@@ -81,7 +81,9 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			}
 			String fs = i == degree ? "" : "+";
 			sb.append(fs);
+			sb.append("(");
 			sb.append(c);
+			sb.append(")");
 			String powerX = powerString("x", i);
 			String powerOneMinusX = powerString("(1 - x)", degree - i);
 			sb.append(powerX);
@@ -92,5 +94,20 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		}
 		String trimmed = sb.toString().trim();
 		return "".equals(trimmed) ? "0": trimmed;
+	}
+
+	public static String debugArray(double... array) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < array.length; i++) {
+			sb.append("(");
+			String fs = "";
+			for (int j = 0; j <= i; j++) {
+				sb.append(fs);
+				fs=", ";
+				sb.append(array[i]);
+			}
+			sb.append(")\n");
+		}
+		return sb.toString();
 	}
 }
