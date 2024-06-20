@@ -13,8 +13,14 @@ public class BernsteinPolynomialConverter {
 
 	BernsteinPolynomial fromImplicitCurve(GeoImplicitCurve curve, double min, double max) {
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
+		return fromFunctionNVar(functionNVar, min, max);
+	}
+
+	BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar,
+			double min, double max) {
 		Polynomial polynomial = functionNVar.getPolynomial();
-		return fromPolynomial(polynomial, curve.getDegX(), curve.getDegY(), min, max);
+		return fromPolynomial(polynomial, polynomial.degree('x'),
+				polynomial.degree('y'), min, max);
 	}
 
 	BernsteinPolynomial fromPolynomial(Polynomial polynomial, int degreeX, int degreeY, double min,

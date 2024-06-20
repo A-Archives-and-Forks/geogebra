@@ -8,15 +8,18 @@ import org.geogebra.common.util.debug.Log;
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double min;
 	private final double max;
+	private final int degreeX;
+	private final int degreeY;
 	private final int degree;
 	private final BernsteinPolynomial[][] bernsteinCoeffs;
 	public BernsteinPolynomial2Var(BernsteinPolynomial[][] bernsteinCoeffs, double min, double max,
 			int degreeX, int degreeY) {
 		this.min = min;
 		this.max = max;
+		this.degreeX = degreeX;
+		this.degreeY = degreeY;
 		this.degree = Math.max(degreeX, degreeY);
 		this.bernsteinCoeffs = bernsteinCoeffs;
-//		debugBernsteinCoeffs();
 	}
 
 	public String coeffsToString(BernsteinPolynomial[][] bernsteinCoeffs) {
@@ -79,25 +82,67 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial plus(BernsteinPolynomial value) {
+	public BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial) {
+		return null;
+	}
+
+	@Override
+	public BernsteinPolynomial derivative(String variable) {
+		if ("x".equals(variable)) {
+			return derivativeX();
+		}
+		return derivativeY();
+	}
+
+	@Override
+	public BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial) {
+		return null;
+	}
+
+	private BernsteinPolynomial derivativeX() {
+		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degree];
+		for (int i = 0; i < degree; i++) {
+			BernsteinPolynomial b1 = bernsteinCoeffs[degree][i].multiply(degree - i);
+			BernsteinPolynomial b2 = bernsteinCoeffs[degree][i + 1].multiply(i + 1);
+			derivedCoeffs[i] = b2.minus(b1);
+		}
+		return new BernsteinPolynomial2Var(toMatrix(derivedCoeffs),
+				min, max, degreeX -1, degreeY);
+	}
+
+
+	private static BernsteinPolynomial[][] toMatrix(BernsteinPolynomial[] derivedCoeffs) {
+		int degree = derivedCoeffs.length - 1;
+		BernsteinPolynomial[][] bernsteinCoeffs = new BernsteinPolynomial[degree + 1][degree + 1];
+		bernsteinCoeffs[degree] = derivedCoeffs;
+		for (int i = degree - 1; i > 0; i--) {
+			for (int j = degree; j > i ; j--) {
+				bernsteinCoeffs[i][j] = derivedCoeffs[i];
+			}
+		}
+		return bernsteinCoeffs;
+	}
+
+
+	private BernsteinPolynomial derivativeY() {
 		return null;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (int i = degree; i >= 0; i--) {
-			BernsteinPolynomial c = bernsteinCoeffs[degree][i];
+		for (int i = degreeX; i >= 0; i--) {
+			BernsteinPolynomial c = bernsteinCoeffs[degreeX][i];
 			if (c == null) {
 				continue;
 			}
-			String fs = i == degree ? "" : "+";
+			String fs = i == degreeX ? "" : "+";
 			sb.append(fs);
 			sb.append(" (");
 			sb.append(c);
 			sb.append(") ");
 			String powerX = powerString("x", i);
-			String powerOneMinusX = powerString("(1 - x)", degree - i);
+			String powerOneMinusX = powerString("(1 - x)", degreeX - i);
 			sb.append(powerX);
 			if (!powerX.isEmpty()) {
 				sb.append(" ");

@@ -6,5 +6,9 @@ public interface BernsteinPolynomial {
 
 	BernsteinPolynomial multiply(double value);
 	BernsteinPolynomial plus(double value);
-	BernsteinPolynomial plus(BernsteinPolynomial value);
+	BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial);
+
+	BernsteinPolynomial derivative(String variable);
+
+	BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial);
 }

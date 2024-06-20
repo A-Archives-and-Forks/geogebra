@@ -92,14 +92,24 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial plus(BernsteinPolynomial value) {
+	public BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial) {
 		double[] coeffs = new double[degree + 1];
 
 		for (int i = 0; i < degree + 1; i++) {
 			coeffs[i] = bernsteinCoeffs[degree][i]
-					+ ((BernsteinPolynomial1Var) value).bernsteinCoeffs[degree][i];
+					+ ((BernsteinPolynomial1Var) bernsteinPolynomial).bernsteinCoeffs[degree][i];
 		}
 		return newInstance(coeffs);
+	}
+
+	@Override
+	public BernsteinPolynomial derivative(String variable) {
+		return derivative();
+	}
+
+	@Override
+	public BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial) {
+		return plus(bernsteinPolynomial.multiply(-1));
 	}
 
 	@Override
@@ -111,7 +121,7 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 				continue;
 			}
 			String fs = i == degree ? ""
-					: c > 0 ? "+ " : " - ";
+					: c > 0 ? "+ " : "- ";
 			sb.append(fs);
 			if (c != 1 && c != -1) {
 				sb.append((int) Math.abs(c));
