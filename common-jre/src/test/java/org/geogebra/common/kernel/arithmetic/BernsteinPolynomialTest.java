@@ -154,7 +154,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void testTwoVarPartialXDerivatives() {
 		shouldPartialDerivativeBe("(18y³ + 42y² (1 - y) + 30y (1 - y)² + 6(1 - y)³) x⁵ "
 				+ "+ (24y³ + 48y² (1 - y) + 24y (1 - y)²) x⁴ (1 - x) + (12y³ + 24y² (1 - y)"
-				+ " + 12y (1 - y)²) x³ (1 - x)² + (0) x² (1 - x)³ + (0) x (1 - x)⁴ + (0) (1 - x)⁵",
+				+ " + 12y (1 - y)²) x³ (1 - x)²",
 				"x⁶ - 4y³ + 3x⁴ y=0", "x");
 
 		shouldPartialDerivativeBe("(7y² + 10y (1 - y) + 5(1 - y)²) x² + (8y² + 8y (1 - y) "
@@ -162,7 +162,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 				"x^3 +2x*y^2 +2x + y = 0", "x");
 
 
-		shouldPartialDerivativeBe("(2y + (1 - y))", "x + x*y + y", "x");
+		shouldPartialDerivativeBe("2y + (1 - y)", "x + x*y + y", "x");
 	}
 
 	private void shouldPartialDerivativeBe(String expected, String definition, String variable) {

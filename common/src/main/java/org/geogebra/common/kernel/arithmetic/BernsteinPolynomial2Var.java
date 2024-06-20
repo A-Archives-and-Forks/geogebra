@@ -133,14 +133,19 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		StringBuilder sb = new StringBuilder();
 		for (int i = degreeX; i >= 0; i--) {
 			BernsteinPolynomial c = bernsteinCoeffs[degreeX][i];
-			if (c == null) {
+			if ("0".equals(c.toString())) {
 				continue;
 			}
 			String fs = i == degreeX ? "" : "+";
 			sb.append(fs);
-			sb.append(" (");
-			sb.append(c);
-			sb.append(") ");
+			if (degreeX > 1) {
+				sb.append(" (");
+				sb.append(c);
+				sb.append(") ");
+			} else {
+				sb.append(c);
+			}
+
 			String powerX = powerString("x", i);
 			String powerOneMinusX = powerString("(1 - x)", degreeX - i);
 			sb.append(powerX);
