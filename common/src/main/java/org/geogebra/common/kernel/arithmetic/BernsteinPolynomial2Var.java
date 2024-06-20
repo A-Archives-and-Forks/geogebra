@@ -3,7 +3,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
 
-import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double min;
@@ -20,32 +19,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.degreeY = degreeY;
 		this.degree = Math.max(degreeX, degreeY);
 		this.bernsteinCoeffs = bernsteinCoeffs;
-	}
-
-	public String coeffsToString(BernsteinPolynomial[][] bernsteinCoeffs) {
-		StringBuilder sb = new StringBuilder();
-		String fs = "";
-		for (BernsteinPolynomial coeff : bernsteinCoeffs[degree]) {
-			sb.append(fs);
-			fs = ", ";
-			sb.append(coeff);
-		}
-		return sb.toString();
-	}
-
-	private void debugBernsteinCoeffs() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i <= degree; i++) {
-			sb.append("(");
-			String fs = "";
-			for (int j = 0; j <= i; j++) {
-				sb.append(fs);
-				fs=", ";
-				sb.append(bernsteinCoeffs[i][j]);
-			}
-			sb.append(")\n");
-		}
-		Log.debug(sb);
 	}
 
 	public double evaluate(double valueX, double valueY) {
@@ -100,10 +73,10 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	private BernsteinPolynomial derivativeX() {
-		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degree];
-		for (int i = 0; i < degree; i++) {
-			BernsteinPolynomial b1 = bernsteinCoeffs[degree][i].multiply(degree - i);
-			BernsteinPolynomial b2 = bernsteinCoeffs[degree][i + 1].multiply(i + 1);
+		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX];
+		for (int i = 0; i < degreeX; i++) {
+			BernsteinPolynomial b1 = bernsteinCoeffs[degreeX][i].multiply(degreeX - i);
+			BernsteinPolynomial b2 = bernsteinCoeffs[degreeX][i + 1].multiply(i + 1);
 			derivedCoeffs[i] = b2.minus(b1);
 		}
 		return new BernsteinPolynomial2Var(toMatrix(derivedCoeffs),
@@ -138,7 +111,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			}
 			String fs = i == degreeX ? "" : "+";
 			sb.append(fs);
-			if (degreeX > 1) {
+			if (degreeX > 0) {
 				sb.append(" (");
 				sb.append(c);
 				sb.append(") ");
@@ -159,20 +132,5 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		}
 		String trimmed = sb.toString().trim();
 		return "".equals(trimmed) ? "0": trimmed;
-	}
-
-	public static String debugArray(double... array) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < array.length; i++) {
-			sb.append("(");
-			String fs = "";
-			for (int j = 0; j <= i; j++) {
-				sb.append(fs);
-				fs=", ";
-				sb.append(array[i]);
-			}
-			sb.append(")\n");
-		}
-		return sb.toString();
 	}
 }

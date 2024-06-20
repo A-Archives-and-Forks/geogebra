@@ -49,5 +49,4 @@ public class BernsteinPolynomialConverter {
 		}
 		return coeffs;
 	}
-
 }

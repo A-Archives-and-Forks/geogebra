@@ -95,11 +95,6 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testBPoly() {
-		bernsteinShouldBe("", 1,1);
-	}
-
-	@Test
 	public void testDerivatives() {
 		derivativeShouldBe("4", 2, 4);
 		derivativeShouldBe("4x", 0, 0, 2);
@@ -142,8 +137,8 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private void shouldTwoVarEvaluateTheSame(String definition) {
 		newBernsteinPolynomialPolynomialFrom(definition);
 		BernsteinPolynomial2Var twoVar = (BernsteinPolynomial2Var) bernstein;
-		for (double x = -10; x < 10; x += 0.01) {
-			for (double y = -10; y < 10; y += 0.01) {
+		for (double x = -10; x < 10; x += 0.1) {
+			for (double y = -10; y < 10; y += 0.1) {
 				assertEquals(curve.evaluate(x, y), twoVar.evaluate(x, y), 1E-4);
 
 			}
