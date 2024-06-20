@@ -163,5 +163,18 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private void shouldPartialDerivativeBe(String expected, String definition, String variable) {
 		newBernsteinPolynomialPolynomialFrom(definition);
 		assertEquals(expected, bernstein.derivative(variable).toString());
-		}
+	}
+
+	@Test
+	public void testTwoVarPartialYDerivatives() {
+//		shouldPartialDerivativeBe("",
+//				"x⁶ - 4y³ + 3x⁴ y=0", "y");
+//
+//		shouldPartialDerivativeBe("",
+//				"x^3 +2x*y^2 +2x + y = 0", "y");
+//
+
+		shouldPartialDerivativeBe("2x + (1 - x)", "x + x*y + y", "y");
+	}
+
 }

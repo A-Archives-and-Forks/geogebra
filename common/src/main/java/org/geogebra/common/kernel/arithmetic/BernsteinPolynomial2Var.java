@@ -98,7 +98,13 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 
 	private BernsteinPolynomial derivativeY() {
-		return null;
+		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX + 1];
+		for (int i = 0; i <= degreeX; i++) {
+			BernsteinPolynomial b2 = bernsteinCoeffs[degreeX][i];
+			derivedCoeffs[degreeX - i] = b2.derivative();
+		}
+		return new BernsteinPolynomial2Var(toMatrix(derivedCoeffs),
+				min, max, degreeX, degreeY);
 	}
 
 	@Override
