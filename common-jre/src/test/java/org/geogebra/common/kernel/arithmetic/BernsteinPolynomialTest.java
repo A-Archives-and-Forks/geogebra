@@ -34,7 +34,8 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 			curve = ((GeoImplicitCurve) geo);
 			bernstein = converter.fromImplicitCurve(curve, view.getXmin(), view.getXmax());
 		} else if (geo instanceof GeoFunctionNVar){
-			bernstein = converter.fromFunctionNVar(((GeoFunctionNVar) geo).getFunction(), view.getXmin(), view.getXmax());
+			bernstein = converter.fromFunctionNVar(((GeoFunctionNVar) geo).getFunction(),
+					view.getXmin(), view.getXmax());
 		}
 	}
 
@@ -82,17 +83,19 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	@Test
 	public void testToString() {
 		newBernsteinPolynomialPolynomialFrom("3x^3 + 2x^2 + x - 1=0");
-		assertEquals("5x³ + x² (1 - x) - 2x (1 - x)² - (1 - x)³", bernstein.toString());
+		assertEquals("5x\u00B3 + x\u00B2 (1 - x) - 2x (1 - x)\u00B2 - (1 - x)\u00B3",
+				bernstein.toString());
 	}
 
 	@Test
 	public void testBernsteinFromCoefficients() {
-		bernsteinShouldBe("2x²", 0, 0, 2);
-		bernsteinShouldBe("4x² + 2x (1 - x)", 0, 2, 2);
-		bernsteinShouldBe("6x² + 6x (1 - x) + 2(1 - x)²", 2, 2, 2);
-		bernsteinShouldBe("14x³ + 22x² (1 - x) + 17x (1 - x)² + 5(1 - x)³", 5, 2, 3, 4);
+		bernsteinShouldBe("2x\u00B2", 0, 0, 2);
+		bernsteinShouldBe("4x\u00B2 + 2x (1 - x)", 0, 2, 2);
+		bernsteinShouldBe("6x\u00B2 + 6x (1 - x) + 2(1 - x)\u00B2", 2, 2, 2);
+		bernsteinShouldBe("14x\u00B3 + 22x\u00B2 (1 - x) + 17x (1 - x)\u00B2"
+				+ " + 5(1 - x)\u00B3", 5, 2, 3, 4);
 		bernsteinShouldBe("6x + 2(1 - x)", 2, 4);
-		bernsteinShouldBe("20x² + 10x (1 - x) + 2(1 - x)²", 2, 6, 12);
+		bernsteinShouldBe("20x\u00B2 + 10x (1 - x) + 2(1 - x)\u00B2", 2, 6, 12);
 	}
 
 	@Test
@@ -101,7 +104,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		derivativeShouldBe("4x", 0, 0, 2);
 		derivativeShouldBe("6x + 2(1 - x)", 0, 2, 2);
 		derivativeShouldBe("6x + 2(1 - x)", 2, 2, 2);
-		derivativeShouldBe("20x² + 10x (1 - x) + 2(1 - x)²", 5, 2, 3, 4);
+		derivativeShouldBe("20x\u00B2 + 10x (1 - x) + 2(1 - x)\u00B2", 5, 2, 3, 4);
 	}
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
@@ -148,13 +151,15 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testTwoVarPartialXDerivatives() {
-		shouldPartialDerivativeBe("(18y³ + 42y² (1 - y) + 30y (1 - y)² + 6(1 - y)³) x⁵ "
-				+ "+ (24y³ + 48y² (1 - y) + 24y (1 - y)²) x⁴ (1 - x) + (12y³ + 24y² (1 - y)"
-				+ " + 12y (1 - y)²) x³ (1 - x)²",
-				"x⁶ - 4y³ + 3x⁴*y=0", "x");
+		shouldPartialDerivativeBe("(18y\u00B3 + 42y\u00B2 (1 - y) + 30y (1 - y)\u00B2"
+						+ " + 6(1 - y)\u00B3) x\u2075 + (24y\u00B3 + 48y\u00B2 (1 - y)"
+						+ " + 24y (1 - y)\u00B2) x\u2074 (1 - x) + (12y\u00B3 + 24y\u00B2 (1 - y)"
+				+ " + 12y (1 - y)\u00B2) x\u00B3 (1 - x)\u00B2",
+				"x^6 - 4y^3 + 3x^4*y=0", "x");
 
-		shouldPartialDerivativeBe("(7y² + 10y (1 - y) + 5(1 - y)²) x² + (8y² + 8y (1 - y) "
-				+ "+ 4(1 - y)²) x (1 - x) + (4y² + 4y (1 - y) + 2(1 - y)²) (1 - x)²",
+		shouldPartialDerivativeBe("(7y\u00B2 + 10y (1 - y) + 5(1 - y)\u00B2) x\u00B2"
+						+ " + (8y\u00B2 + 8y (1 - y) + 4(1 - y)\u00B2) x (1 - x) + (4y\u00B2"
+						+ " + 4y (1 - y) + 2(1 - y)\u00B2) (1 - x)\u00B2",
 				"x^3 +2x*y^2 +2x + y = 0", "x");
 
 
@@ -168,7 +173,9 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testTwoVarPartialYDerivatives() {
-		shouldPartialDerivativeBe("(5y + (1 - y)) x³ + (11y + 3(1 - y)) x² (1 - x) + (7y + 3(1 - y)) x (1 - x)² + (y + (1 - y)) (1 - x)³",
+		shouldPartialDerivativeBe("(5y + (1 - y)) x\u00B3 + (11y + 3(1 - y)) x\u00B2"
+						+ " (1 - x) + (7y + 3(1 - y)) x (1 - x)\u00B2 "
+						+ "+ (y + (1 - y)) (1 - x)\u00B3",
 				"x^3 +2x*y^2 +2x + y = 0", "y");
 
 
@@ -179,6 +186,6 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	@Test
 	public void testTwoVarPartialYDerivativesBad() {
 		shouldPartialDerivativeBe("",
-				"x⁶ - 4y³ + 3x⁴*y=0", "y");
+				"x^6 - 4y^3 + 3x^4*y=0", "y");
 	}
 }
