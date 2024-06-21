@@ -7,8 +7,8 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
+import org.geogebra.common.util.debug.Log;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BernsteinPolynomialTest extends BaseUnitTest {
@@ -54,6 +54,16 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		for (double v = -10.0; v < 10.0; v += 0.01) {
 			assertEquals(curve.evaluate(v, 0), bernstein.evaluate(v), 1E-8);
 		}
+	}
+
+	@Test
+	public void testEvaluate() {
+		shouldEvaluate("3x^3 + 2x^2 + x - 1=0", 0.5);
+	}
+
+	private void shouldEvaluate(String definition, double v) {
+		newBernsteinPolynomialPolynomialFrom(definition);
+		assertEquals(curve.evaluate(v, 0), bernstein.evaluate(v), 1E-8);
 	}
 
 	@Test
@@ -108,21 +118,22 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	private void derivativeShouldBe(String expected, double... coeffs) {
-		BernsteinBuilder1Var builder = new BernsteinBuilder1Var();
-		bernstein = builder.build(coeffs, coeffs.length - 1,
-				'x', view.getXmin(), view.getXmax()
-		);
+		new1varFromCoeffs(coeffs);
 		assertEquals(expected, bernstein.derivative().toString());
 	}
 
 	private void bernsteinShouldBe(String expected, double... coeffs) {
+		new1varFromCoeffs(coeffs);
+
+		assertEquals(expected, bernstein.toString());
+	}
+
+	private void new1varFromCoeffs(double... coeffs) {
 		BernsteinBuilder1Var builder = new BernsteinBuilder1Var();
 		bernstein =
 				builder.build(coeffs, coeffs.length - 1,
 						'x', view.getXmin(), view.getXmax()
 				);
-
-		assertEquals(expected, bernstein.toString());
 	}
 
 	@Test
@@ -182,10 +193,24 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		shouldPartialDerivativeBe("2x + (1 - x)", "x + x*y + y", "y");
 	}
 
-	@Ignore
 	@Test
-	public void testTwoVarPartialYDerivativesBad() {
-		shouldPartialDerivativeBe("",
-				"x^6 - 4y^3 + 3x^4*y=0", "y");
+	public void testTwoVarToString() {
+		newBernsteinPolynomialPolynomialFrom("x^6 - 4y^3 + 3x^4*y=0");
+		assertEquals("(9y\u00B2 (1 - y) + 6y (1 - y)\u00B2 + (1 - y)\u00B3) x\u2076 "
+				+ "+ (- 18y\u00B3 + 12y\u00B2 (1 - y) + 6y (1 - y)\u00B2) x\u2075 (1 - x) "
+				+ "+ (- 57y\u00B3 + 6y\u00B2 (1 - y) + 3y (1 - y)\u00B2) x\u2074 (1 - x)\u00B2 + "
+				+ "(- 80y\u00B3) x\u00B3 (1 - x)\u00B3 + (- 60y\u00B3) x\u00B2 (1 - x)\u2074 + "
+				+ "(- 24y\u00B3) x (1 - x)\u2075 + (- 4y\u00B3) (1 - x)\u2076",
+				bernstein.toString());
+		assertEquals(323084, ((BernsteinPolynomial2Var)bernstein).evaluate(8, 5),0);
+	}
+
+	@Test
+	public void testSimpleEvaluate() {
+		new1varFromCoeffs(0, 0 ,2);
+		Log.debug(bernstein.toString());
+		assertEquals(0, bernstein.evaluate(0), 0);
+		assertEquals(1, bernstein.evaluate(1), 0);
+		assertEquals(1, bernstein.evaluate(0.5), 0);
 	}
 }
