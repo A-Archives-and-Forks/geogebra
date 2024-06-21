@@ -113,7 +113,15 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return bernsteinCoeffs[degree].length == 1;
+	}
+
+	@Override
 	public String toString() {
+		if (isConstant()) {
+			return "" + (int) bernsteinCoeffs[degree][0];
+		}
 		StringBuilder sb = new StringBuilder();
 		for (int i = degree; i >= 0; i--) {
 			double c = bernsteinCoeffs[degree][i];

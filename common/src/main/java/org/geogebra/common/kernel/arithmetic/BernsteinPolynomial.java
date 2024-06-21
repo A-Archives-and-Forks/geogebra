@@ -11,4 +11,6 @@ public interface BernsteinPolynomial {
 	BernsteinPolynomial derivative(String variable);
 
 	BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial);
+
+	boolean isConstant();
 }

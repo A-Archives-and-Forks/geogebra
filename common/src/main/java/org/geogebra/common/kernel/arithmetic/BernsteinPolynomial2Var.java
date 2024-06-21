@@ -3,6 +3,8 @@ package org.geogebra.common.kernel.arithmetic;
 
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
 
+import java.util.Arrays;
+
 
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double min;
@@ -88,10 +90,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		int degree = derivedCoeffs.length - 1;
 		BernsteinPolynomial[][] bernsteinCoeffs = new BernsteinPolynomial[degree + 1][degree + 1];
 		bernsteinCoeffs[degree] = derivedCoeffs;
-		for (int i = degree - 1; i > 0; i--) {
-			for (int j = degree; j > i ; j--) {
-				bernsteinCoeffs[i][j] = derivedCoeffs[i];
-			}
+		for (int i = degree; i > 0; i--) {
+			bernsteinCoeffs[i - 1] = Arrays.copyOfRange(bernsteinCoeffs[i], 1, i + 1);
 		}
 		return bernsteinCoeffs;
 	}
@@ -101,7 +101,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX + 1];
 		for (int i = 0; i <= degreeX; i++) {
 			BernsteinPolynomial b2 = bernsteinCoeffs[degreeX][i];
-			derivedCoeffs[degreeX - i] = b2.derivative();
+			derivedCoeffs[i] = b2.derivative();
 		}
 		return new BernsteinPolynomial2Var(toMatrix(derivedCoeffs),
 				min, max, degreeX, degreeY);
@@ -117,12 +117,14 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			}
 			String fs = i == degreeX ? "" : "+";
 			sb.append(fs);
-			if (degreeX > 0) {
+			if (degreeX > 0 && !c.isConstant()) {
 				sb.append(" (");
 				sb.append(c);
 				sb.append(") ");
-			} else {
+			} else if (!"1".equals(c.toString())){
 				sb.append(c);
+			} else {
+				sb.append(" ");
 			}
 
 			String powerX = powerString("x", i);
@@ -138,5 +140,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		}
 		String trimmed = sb.toString().trim();
 		return "".equals(trimmed) ? "0": trimmed;
+	}
+
+
+	@Override
+	public boolean isConstant() {
+		return bernsteinCoeffs[degree].length == 1;
 	}
 }

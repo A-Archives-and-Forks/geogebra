@@ -8,6 +8,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BernsteinPolynomialTest extends BaseUnitTest {
@@ -150,7 +151,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		shouldPartialDerivativeBe("(18y³ + 42y² (1 - y) + 30y (1 - y)² + 6(1 - y)³) x⁵ "
 				+ "+ (24y³ + 48y² (1 - y) + 24y (1 - y)²) x⁴ (1 - x) + (12y³ + 24y² (1 - y)"
 				+ " + 12y (1 - y)²) x³ (1 - x)²",
-				"x⁶ - 4y³ + 3x⁴ y=0", "x");
+				"x⁶ - 4y³ + 3x⁴*y=0", "x");
 
 		shouldPartialDerivativeBe("(7y² + 10y (1 - y) + 5(1 - y)²) x² + (8y² + 8y (1 - y) "
 				+ "+ 4(1 - y)²) x (1 - x) + (4y² + 4y (1 - y) + 2(1 - y)²) (1 - x)²",
@@ -167,14 +168,17 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testTwoVarPartialYDerivatives() {
-//		shouldPartialDerivativeBe("",
-//				"x⁶ - 4y³ + 3x⁴ y=0", "y");
-//
-//		shouldPartialDerivativeBe("",
-//				"x^3 +2x*y^2 +2x + y = 0", "y");
-//
+		shouldPartialDerivativeBe("(5y + (1 - y)) x³ + (11y + 3(1 - y)) x² (1 - x) + (7y + 3(1 - y)) x (1 - x)² + (y + (1 - y)) (1 - x)³",
+				"x^3 +2x*y^2 +2x + y = 0", "y");
+
 
 		shouldPartialDerivativeBe("2x + (1 - x)", "x + x*y + y", "y");
 	}
 
+	@Ignore
+	@Test
+	public void testTwoVarPartialYDerivativesBad() {
+		shouldPartialDerivativeBe("",
+				"x⁶ - 4y³ + 3x⁴*y=0", "y");
+	}
 }
