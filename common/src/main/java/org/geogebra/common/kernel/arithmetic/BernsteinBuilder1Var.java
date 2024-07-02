@@ -5,27 +5,31 @@ import org.geogebra.common.util.MyMath;
 public class BernsteinBuilder1Var {
 
 	private double[] powerBasisCoeffs;
-	private double[][] bernsteinCoeffs;
 
 
 	BernsteinPolynomial build(double[] powerCoeffs,
 			int degree, char variable, double min, double max) {
 		powerBasisCoeffs = powerCoeffs;
-		createBernsteinCoeffs(degree, min, max);
+		double[] bernsteinCoeffs = createBernsteinCoeffs(degree, min, max);
 		return new BernsteinPolynomial1Var(bernsteinCoeffs, variable, min, max);
 	}
 
-	private void createBernsteinCoeffs(int degree, double min, double max) {
-		bernsteinCoeffs = new double[degree + 1][degree + 1];
+	private double[] createBernsteinCoeffs(int degree, double min, double max) {
+		double[] partialBersteinCoeffs = new double[degree + 1];
+		double[] lastValues = new double[degree + 1];
 		for (int i = 0; i <= degree; i++) {
 			for (int j = 0; j <= i; j++) {
-				double b_ij = bernsteinCoefficient(i, j, degree, min, max);
-				bernsteinCoeffs[i][j] = b_ij;
+				double b_ij = bernsteinCoefficient(i, j, degree, min, max, lastValues);
+				partialBersteinCoeffs[j] = b_ij;
 			}
+			System.arraycopy(partialBersteinCoeffs, 0, lastValues, 0,
+					degree + 1);
 		}
+		return partialBersteinCoeffs;
 	}
 
-	private double bernsteinCoefficient(int i, int j, int degree, double min, double max) {
+	private double bernsteinCoefficient(int i, int j, int degree, double min, double max,
+			double[] lastValues) {
 		if (i == 0 && j == 0) {
 			return powerBasisCoeffs[degree];
 		}
@@ -33,16 +37,16 @@ public class BernsteinBuilder1Var {
 		double a_nMinusI = powerBasisCoeffs[degree - i];
 
 		if (j == 0) {
-			return a_nMinusI + min * bernsteinCoeffs[i - 1][0];
+			return a_nMinusI + min * lastValues[0];
 		}
 
 		if (j == i) {
-			return a_nMinusI + max * bernsteinCoeffs[i - 1][i - 1];
+			return a_nMinusI + max * lastValues[i - 1];
 		}
 
 		double binomial = MyMath.binomial(i, j);
 		return binomial * a_nMinusI
-				+ min * bernsteinCoeffs[i - 1][j]
-				+ max * bernsteinCoeffs[i - 1][j - 1];
+				+ min * lastValues[j]
+				+ max * lastValues[j - 1];
 	}
 }

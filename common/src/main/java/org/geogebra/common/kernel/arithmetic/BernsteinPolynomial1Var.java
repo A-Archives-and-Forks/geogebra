@@ -1,18 +1,17 @@
 package org.geogebra.common.kernel.arithmetic;
 
 
-import java.util.Arrays;
-
+import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.StringUtil;
 
-public class BernsteinPolynomial1Var implements BernsteinPolynomial {
+public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double min;
 	private final double max;
 	final int degree;
 	final char variableName;
-	private final double[][] bernsteinCoeffs;
+	private final double[] bernsteinCoeffs;
 
-	public BernsteinPolynomial1Var(double[][] bernsteinCoeffs,
+	public BernsteinPolynomial1Var(double[] bernsteinCoeffs,
 			char variableName, double min, double max) {
 		this.variableName = variableName;
 		this.min = min;
@@ -21,60 +20,39 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this.bernsteinCoeffs = bernsteinCoeffs;
 	}
 
-	public BernsteinPolynomial1Var(double[] lastRowOfCoeffs, char variableName, double min,
-			double max) {
-		this(toMatrix(lastRowOfCoeffs), variableName, min, max);
-
-	}
-
-	private static double[][] toMatrix(double[] lastRowOfCoeffs) {
-		int degree = lastRowOfCoeffs.length - 1;
-		double[][] bernsteinCoeffs = new double[degree + 1][degree + 1];
-		bernsteinCoeffs[degree] = lastRowOfCoeffs;
-		for (int i = degree; i > 0; i--) {
-			bernsteinCoeffs[i - 1] = Arrays.copyOfRange(bernsteinCoeffs[i], 1, i + 1);
-		}
-		return bernsteinCoeffs;
-	}
 	public BernsteinPolynomial1Var(int degree, char variableName, double min,
 			double max) {
-		this(new double[degree + 1][degree + 1], variableName, min, max);
-
+		this(new double[degree + 1], variableName, min, max);
 	}
 
 	@Override
 	public double evaluate(double value) {
-		double[][] coeffs = new double[degree + 1][degree + 1];
+		double[] partialEval = new double[degree + 1];
+		double[] lastPartialEval = new double[degree + 1];
 		double scaledValue = (value - min) / (max - min);
 		double oneMinusScaledValue = 1 - scaledValue;
 
-		coeffs[0] = bernsteinCoeffs[degree];
+		System.arraycopy(bernsteinCoeffs, 0, lastPartialEval, 0, degree + 1);
+		for (int i = 0; i < lastPartialEval.length; i++) {
+			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree, i);
+		}
+
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
-				coeffs[i][j] = oneMinusScaledValue * coeffs[i - 1][j]
-						+ scaledValue * coeffs[i - 1][j + 1];
+				partialEval[j] = oneMinusScaledValue * lastPartialEval[j]
+						+ scaledValue * lastPartialEval[j + 1];
 			}
+			System.arraycopy(partialEval,0, lastPartialEval, 0, degree + 1);
 		}
-		return coeffs[degree][0];
-	}
-
-	public double evaluate2(double value) {
-		double scaledValue = (value - min) / (max - min);
-		double result = 0;
-		for (int i = degree; i >= 0; i--) {
-			result += (bernsteinCoeffs[degree][i]
-					* Math.pow(scaledValue, i)
-					* Math.pow(1 - scaledValue, degree - i));
-		}
-		return result;
+		return partialEval[0];
 	}
 
 	@Override
 	public BernsteinPolynomial derivative() {
 		double[] derivedCoeffs = new double[degree];
 		for (int i = 0; i < degree; i++) {
-			double b1 = (degree - i) * bernsteinCoeffs[degree][i];
-			double b2 = (i + 1) * bernsteinCoeffs[degree][i + 1];
+			double b1 = (degree - i) * bernsteinCoeffs[i];
+			double b2 = (i + 1) * bernsteinCoeffs[i + 1];
 			derivedCoeffs[i] = b2 - b1;
 		}
 
@@ -86,7 +64,7 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double[] coeffs = new double[degree + 1];
 
 		for (int i = 0; i < degree + 1; i++) {
-			coeffs[i] = bernsteinCoeffs[degree][i] * value;
+			coeffs[i] = bernsteinCoeffs[i] * value;
 		}
 		return newInstance(coeffs);
 
@@ -101,7 +79,7 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double[] coeffs = new double[degree + 1];
 
 		for (int i = 0; i < degree + 1; i++) {
-			coeffs[i] = bernsteinCoeffs[degree][i] + value;
+			coeffs[i] = bernsteinCoeffs[i] + value;
 		}
 		return newInstance(coeffs);
 	}
@@ -111,8 +89,8 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double[] coeffs = new double[degree + 1];
 
 		for (int i = 0; i < degree + 1; i++) {
-			coeffs[i] = bernsteinCoeffs[degree][i]
-					+ ((BernsteinPolynomial1Var) bernsteinPolynomial).bernsteinCoeffs[degree][i];
+			coeffs[i] = bernsteinCoeffs[i]
+					+ ((BernsteinPolynomial1Var) bernsteinPolynomial).bernsteinCoeffs[i];
 		}
 		return newInstance(coeffs);
 	}
@@ -129,17 +107,17 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public boolean isConstant() {
-		return bernsteinCoeffs[degree].length == 1;
+		return bernsteinCoeffs.length == 1;
 	}
 
 	@Override
 	public String toString() {
 		if (isConstant()) {
-			return "" + (int) bernsteinCoeffs[degree][0];
+			return "" + (int) bernsteinCoeffs[0];
 		}
 		StringBuilder sb = new StringBuilder();
 		for (int i = degree; i >= 0; i--) {
-			double c = bernsteinCoeffs[degree][i];
+			double c = bernsteinCoeffs[i];
 			if (c == 0) {
 				continue;
 			}
@@ -161,7 +139,7 @@ public class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			}
 		}
 		String trimmed = sb.toString().trim();
-		return "".equals(trimmed) ? "0": trimmed;
+		return trimmed.isEmpty() ? "0": trimmed;
 	}
 
 	static String powerString(String base, int i) {
