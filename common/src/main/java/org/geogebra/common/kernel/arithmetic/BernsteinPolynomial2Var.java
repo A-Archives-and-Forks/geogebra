@@ -3,17 +3,14 @@ package org.geogebra.common.kernel.arithmetic;
 
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
 
-import java.util.Arrays;
-
-
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double min;
 	private final double max;
 	private final int degreeX;
 	private final int degreeY;
 	private final int degree;
-	private final BernsteinPolynomial[][] bernsteinCoeffs;
-	public BernsteinPolynomial2Var(BernsteinPolynomial[][] bernsteinCoeffs, double min, double max,
+	private final BernsteinPolynomial[] bernsteinCoeffs;
+	public BernsteinPolynomial2Var(BernsteinPolynomial[] bernsteinCoeffs, double min, double max,
 			int degreeX, int degreeY) {
 		this.min = min;
 		this.max = max;
@@ -28,7 +25,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		double result = 0;
 
 		for (int i = degree; i >= 0; i--) {
-			double coeff = bernsteinCoeffs[degree][i].evaluate(valueY);
+			double coeff = bernsteinCoeffs[i].evaluate(valueY);
 			result += (coeff
 					* Math.pow(scaledValue, i)
 					* Math.pow(1 - scaledValue, degree - i));
@@ -77,41 +74,28 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private BernsteinPolynomial derivativeX() {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX];
 		for (int i = 0; i < degreeX; i++) {
-			BernsteinPolynomial b1 = bernsteinCoeffs[degreeX][i].multiply(degreeX - i);
-			BernsteinPolynomial b2 = bernsteinCoeffs[degreeX][i + 1].multiply(i + 1);
+			BernsteinPolynomial b1 = bernsteinCoeffs[i].multiply(degreeX - i);
+			BernsteinPolynomial b2 = bernsteinCoeffs[i + 1].multiply(i + 1);
 			derivedCoeffs[i] = b2.minus(b1);
 		}
-		return new BernsteinPolynomial2Var(toMatrix(derivedCoeffs),
-				min, max, degreeX -1, degreeY);
-	}
-
-
-	private static BernsteinPolynomial[][] toMatrix(BernsteinPolynomial[] derivedCoeffs) {
-		int degree = derivedCoeffs.length - 1;
-		BernsteinPolynomial[][] bernsteinCoeffs = new BernsteinPolynomial[degree + 1][degree + 1];
-		bernsteinCoeffs[degree] = derivedCoeffs;
-		for (int i = degree; i > 0; i--) {
-			bernsteinCoeffs[i - 1] = Arrays.copyOfRange(bernsteinCoeffs[i], 1, i + 1);
-		}
-		return bernsteinCoeffs;
+		return new BernsteinPolynomial2Var(derivedCoeffs, min, max, degreeX -1, degreeY);
 	}
 
 
 	private BernsteinPolynomial derivativeY() {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX + 1];
 		for (int i = 0; i <= degreeX; i++) {
-			BernsteinPolynomial b2 = bernsteinCoeffs[degreeX][i];
+			BernsteinPolynomial b2 = bernsteinCoeffs[i];
 			derivedCoeffs[i] = b2.derivative();
 		}
-		return new BernsteinPolynomial2Var(toMatrix(derivedCoeffs),
-				min, max, degreeX, degreeY);
+		return new BernsteinPolynomial2Var(derivedCoeffs, min, max, degreeX, degreeY);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = degreeX; i >= 0; i--) {
-			BernsteinPolynomial c = bernsteinCoeffs[degreeX][i];
+			BernsteinPolynomial c = bernsteinCoeffs[i];
 			if ("0".equals(c.toString())) {
 				continue;
 			}
@@ -139,12 +123,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			}
 		}
 		String trimmed = sb.toString().trim();
-		return "".equals(trimmed) ? "0": trimmed;
+		return trimmed.isEmpty() ? "0": trimmed;
 	}
-
 
 	@Override
 	public boolean isConstant() {
-		return bernsteinCoeffs[degree].length == 1;
+		return bernsteinCoeffs.length == 1;
 	}
 }
