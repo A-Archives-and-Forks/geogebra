@@ -22,14 +22,15 @@ public class KeyListenerAdapter implements View.OnKeyListener {
         switch (event.getAction()) {
             case KeyEvent.ACTION_DOWN:
                 com.himamis.retex.editor.share.event.KeyEvent wrappedEvent = wrapEvent(event);
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    mFormulaEditor.onEnter();
-                    return true;
-                }
                 boolean handled = mKeyListener.onKeyPressed(wrappedEvent);
                 return handled;
             case KeyEvent.ACTION_UP:
             case KeyEvent.ACTION_MULTIPLE:
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    mFormulaEditor.onEnter();
+                    return true;
+                }
+
                 wrappedEvent = wrapEvent(event);
                 boolean ret = mKeyListener.onKeyReleased(wrappedEvent);
                 char unicodeChar = wrappedEvent.getUnicodeKeyChar();
