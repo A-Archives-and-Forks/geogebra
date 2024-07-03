@@ -61,7 +61,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
 				bPlus[j] = lastBPlus[j].plus(
-						lastBPlus[j].plus(lastBPlus[j + 1]).multiply(0.5));
+						lastBPlus[j].plus(lastBPlus[j + 1]).shiftRight());
 			}
 			System.arraycopy(bPlus, 0, lastBPlus, 0, lastBPlus.length);
 		}
@@ -129,6 +129,16 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial) {
 		return plus(bernsteinPolynomial.multiply(-1));
+	}
+
+	@Override
+	public BernsteinPolynomial shiftLeft() {
+		return null;
+	}
+
+	@Override
+	public BernsteinPolynomial shiftRight() {
+		return null;
 	}
 
 	@Override

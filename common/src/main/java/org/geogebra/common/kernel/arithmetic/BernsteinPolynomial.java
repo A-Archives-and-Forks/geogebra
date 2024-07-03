@@ -12,6 +12,7 @@ public interface BernsteinPolynomial {
 	BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial);
 
 	BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial);
-
+	BernsteinPolynomial shiftLeft();
+	BernsteinPolynomial shiftRight();
 	boolean isConstant();
 }
