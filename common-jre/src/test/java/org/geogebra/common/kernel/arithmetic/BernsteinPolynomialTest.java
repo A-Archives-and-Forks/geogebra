@@ -7,6 +7,7 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
+import org.geogebra.common.util.debug.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -202,5 +203,15 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 				+ "(- 24y\u00B3) x (1 - x)\u2075 + (- 4y\u00B3) (1 - x)\u2076",
 				bernstein.toString());
 		assertEquals(323084, ((BernsteinPolynomial2Var)bernstein).evaluate(8, 5),0);
+	}
+
+	@Test
+	public void testSpit() {
+		double[] bcoeffs = new double[]{1, 2 ,3,4};
+		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x' ,0,1);
+		Log.debug("Original Bernstein polynomial: " + bernstein);
+		BernsteinPolynomial[] splits = bernstein.split();
+		assertEquals(bernstein.evaluate(0), splits[0].evaluate(0), 0);
+		assertEquals(bernstein.evaluate(0.5), splits[0].evaluate(1), 0);
 	}
 }

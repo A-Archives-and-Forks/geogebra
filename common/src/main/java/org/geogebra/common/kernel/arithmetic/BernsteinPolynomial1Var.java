@@ -3,6 +3,7 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.StringUtil;
+import org.geogebra.common.util.debug.Log;
 
 public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double min;
@@ -45,6 +46,27 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			copyArrayTo(partialEval, lastPartialEval);
 		}
 		return partialEval[0];
+	}
+
+	@Override
+	public BernsteinPolynomial[] split() {
+		BernsteinPolynomial[] bPlus = new BernsteinPolynomial[degree + 1];
+		BernsteinPolynomial[] lastBPlus = new BernsteinPolynomial[degree + 1];
+		for (int i = 0; i < degree + 1; i++) {
+			double[] coeffs = new double[degree + 1];
+			coeffs[i] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
+			lastBPlus[i] = new BernsteinPolynomial1Var(coeffs, variableName, min, max);
+			Log.debug("B+_" + i + ": " + lastBPlus[i]);
+		}
+		for (int i = 1; i <= degree + 1; i++) {
+			for (int j = degree - i; j >= 0; j--) {
+				bPlus[j] = lastBPlus[j].plus(
+						lastBPlus[j].plus(lastBPlus[j + 1]).multiply(0.5));
+			}
+			System.arraycopy(bPlus, 0, lastBPlus, 0, lastBPlus.length);
+		}
+
+		return new BernsteinPolynomial[]{bPlus[0], null};
 	}
 
 	static void copyArrayTo(double[] src, double[] dest) {
@@ -102,11 +124,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public BernsteinPolynomial derivative(String variable) {
 		return derivative();
-	}
-
-	@Override
-	public BernsteinPolynomial[] split() {
-		return new BernsteinPolynomial[0];
 	}
 
 	@Override
