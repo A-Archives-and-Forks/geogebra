@@ -1,5 +1,7 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.copyArrayTo;
+
 import org.geogebra.common.util.MyMath;
 
 public class BernsteinBuilder1Var {
@@ -22,8 +24,8 @@ public class BernsteinBuilder1Var {
 				double b_ij = bernsteinCoefficient(i, j, degree, min, max, lastValues);
 				partialBersteinCoeffs[j] = b_ij;
 			}
-			System.arraycopy(partialBersteinCoeffs, 0, lastValues, 0,
-					degree + 1);
+
+			copyArrayTo(partialBersteinCoeffs, lastValues);
 		}
 		return partialBersteinCoeffs;
 	}

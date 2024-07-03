@@ -67,6 +67,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
+	public BernsteinPolynomial[] split() {
+		return new BernsteinPolynomial[0];
+	}
+
+	@Override
 	public BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial) {
 		return null;
 	}

@@ -32,7 +32,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double scaledValue = (value - min) / (max - min);
 		double oneMinusScaledValue = 1 - scaledValue;
 
-		System.arraycopy(bernsteinCoeffs, 0, lastPartialEval, 0, degree + 1);
+		copyArrayTo(bernsteinCoeffs, lastPartialEval);
 		for (int i = 0; i < lastPartialEval.length; i++) {
 			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree, i);
 		}
@@ -42,9 +42,13 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 				partialEval[j] = oneMinusScaledValue * lastPartialEval[j]
 						+ scaledValue * lastPartialEval[j + 1];
 			}
-			System.arraycopy(partialEval,0, lastPartialEval, 0, degree + 1);
+			copyArrayTo(partialEval, lastPartialEval);
 		}
 		return partialEval[0];
+	}
+
+	static void copyArrayTo(double[] src, double[] dest) {
+		System.arraycopy(src, 0, dest, 0, dest.length);
 	}
 
 	@Override
@@ -98,6 +102,11 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public BernsteinPolynomial derivative(String variable) {
 		return derivative();
+	}
+
+	@Override
+	public BernsteinPolynomial[] split() {
+		return new BernsteinPolynomial[0];
 	}
 
 	@Override
