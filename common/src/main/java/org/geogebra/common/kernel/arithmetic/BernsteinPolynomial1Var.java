@@ -3,7 +3,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.StringUtil;
-import org.geogebra.common.util.debug.Log;
 
 public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double min;
@@ -34,9 +33,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double oneMinusScaledValue = 1 - scaledValue;
 
 		copyArrayTo(bernsteinCoeffs, lastPartialEval);
-		for (int i = 0; i < lastPartialEval.length; i++) {
-			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree, i);
-		}
+		divWithBinomials(lastPartialEval);
 
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
@@ -48,25 +45,40 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		return partialEval[0];
 	}
 
+	private void divWithBinomials(double[] lastPartialEval) {
+		for (int i = 0; i < lastPartialEval.length; i++) {
+			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree, i);
+		}
+	}
+
 	@Override
 	public BernsteinPolynomial[] split() {
 		BernsteinPolynomial[] bPlus = new BernsteinPolynomial[degree + 1];
 		BernsteinPolynomial[] lastBPlus = new BernsteinPolynomial[degree + 1];
+		BernsteinPolynomial[] bMinus = new BernsteinPolynomial[degree + 1];
+		BernsteinPolynomial[] lastBMinus = new BernsteinPolynomial[degree + 1];
+
 		for (int i = 0; i < degree + 1; i++) {
 			double[] coeffs = new double[degree + 1];
-			coeffs[i] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
+			coeffs[i] = bernsteinCoeffs[i];// / MyMath.binomial(degree, i);
 			lastBPlus[i] = new BernsteinPolynomial1Var(coeffs, variableName, min, max);
-			Log.debug("B+_" + i + ": " + lastBPlus[i]);
+			lastBMinus[i] = new BernsteinPolynomial1Var(coeffs, variableName, min, max);
 		}
+
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
-				bPlus[j] = lastBPlus[j].plus(
-						lastBPlus[j].plus(lastBPlus[j + 1]).shiftRight());
+				BernsteinPolynomial lastPlus = lastBPlus[j];
+				BernsteinPolynomial lastMinus = lastBMinus[j];
+				bPlus[j] = lastPlus.multiplyByOneMinusX()
+						.plus(lastPlus.plus(lastBPlus[j + 1]).multiplyByX().multiply(0.5));
+
+				bMinus[j] = lastMinus.plus(lastBMinus[j + 1]).multiplyByOneMinusX()
+						.multiply(0.5).plus(lastBMinus[j + 1].multiplyByX());
 			}
 			System.arraycopy(bPlus, 0, lastBPlus, 0, lastBPlus.length);
 		}
 
-		return new BernsteinPolynomial[]{bPlus[0], null};
+		return new BernsteinPolynomial[]{bPlus[0], bMinus[0]};
 	}
 
 	static void copyArrayTo(double[] src, double[] dest) {
@@ -132,13 +144,19 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial shiftLeft() {
-		return null;
+	public BernsteinPolynomial multiplyByOneMinusX() {
+		return shiftFrom(0);
 	}
 
 	@Override
-	public BernsteinPolynomial shiftRight() {
-		return null;
+	public BernsteinPolynomial multiplyByX(){
+		return shiftFrom(1);
+	}
+
+	private BernsteinPolynomial shiftFrom(int destPos) {
+		double[] shifted = new double[degree + 2];
+		System.arraycopy(bernsteinCoeffs, 0, shifted, destPos, bernsteinCoeffs.length);
+		return new BernsteinPolynomial1Var(shifted, variableName, min, max);
 	}
 
 	@Override

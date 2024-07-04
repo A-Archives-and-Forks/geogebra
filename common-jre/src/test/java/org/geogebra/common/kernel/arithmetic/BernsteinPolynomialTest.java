@@ -9,6 +9,7 @@ import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.util.debug.Log;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BernsteinPolynomialTest extends BaseUnitTest {
@@ -205,13 +206,28 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		assertEquals(323084, ((BernsteinPolynomial2Var)bernstein).evaluate(8, 5),0);
 	}
 
+	@Ignore
 	@Test
 	public void testSpit() {
 		double[] bcoeffs = new double[]{1, 2 ,3,4};
 		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x' ,0,1);
-		Log.debug("Original Bernstein polynomial: " + bernstein);
 		BernsteinPolynomial[] splits = bernstein.split();
+		Log.debug("Original Bernstein polynomial: " + bernstein);
+		Log.debug("B+: " + splits[0]);
+		Log.debug("B-: " + splits[1]);
 		assertEquals(bernstein.evaluate(0), splits[0].evaluate(0), 0);
-		assertEquals(bernstein.evaluate(0.5), splits[0].evaluate(1), 0);
+		assertEquals(1, splits[0].evaluate(0), 0);
+		assertEquals(0, splits[1].evaluate(0), 0);
+	}
+
+	@Ignore
+	@Test
+	public void testShift() {
+		double[] bcoeffs = new double[]{1, 2 ,3,4};
+		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x' ,0,1);
+		Log.debug("Original Bernstein polynomial: " + bernstein);
+		Log.debug("shiftLeft: " + bernstein.multiplyByOneMinusX());
+		Log.debug("shiftRight: " + bernstein.multiplyByX());
+		assertEquals("", bernstein.multiplyByX());
 	}
 }

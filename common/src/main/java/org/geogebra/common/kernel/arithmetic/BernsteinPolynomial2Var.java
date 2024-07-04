@@ -76,6 +76,16 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		return null;
 	}
 
+	@Override
+	public BernsteinPolynomial multiplyByOneMinusX() {
+		return null;
+	}
+
+	@Override
+	public BernsteinPolynomial multiplyByX() {
+		return null;
+	}
+
 	private BernsteinPolynomial derivativeX() {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX];
 		for (int i = 0; i < degreeX; i++) {
