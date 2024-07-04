@@ -59,8 +59,8 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		BernsteinPolynomial[] lastBMinus = new BernsteinPolynomial[degree + 1];
 
 		for (int i = 0; i < degree + 1; i++) {
-			double[] coeffs = new double[degree + 1];
-			coeffs[i] = bernsteinCoeffs[i];// / MyMath.binomial(degree, i);
+			double[] coeffs = new double[1];
+			coeffs[0] = bernsteinCoeffs[i];// / MyMath.binomial(degree, i);
 			lastBPlus[i] = new BernsteinPolynomial1Var(coeffs, variableName, min, max);
 			lastBMinus[i] = new BernsteinPolynomial1Var(coeffs, variableName, min, max);
 		}
@@ -76,6 +76,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 						.multiply(0.5).plus(lastBMinus[j + 1].multiplyByX());
 			}
 			System.arraycopy(bPlus, 0, lastBPlus, 0, lastBPlus.length);
+			System.arraycopy(bMinus, 0, lastBMinus, 0, lastBMinus.length);
 		}
 
 		return new BernsteinPolynomial[]{bPlus[0], bMinus[0]};
@@ -179,7 +180,8 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 					: c > 0 ? "+ " : "- ";
 			sb.append(fs);
 			if (c != 1 && c != -1) {
-				sb.append((int) Math.abs(c));
+				double abs = Math.abs(c);
+				sb.append((abs - (int) abs) > 1E-6 ? abs : (int) abs);
 			}
 			String powerX = powerString(variableName + "", i);
 			String powerOneMinusX = powerString("(1 - " + variableName + ")", degree - i);
