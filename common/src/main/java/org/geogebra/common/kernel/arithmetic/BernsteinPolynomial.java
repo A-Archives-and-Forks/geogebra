@@ -33,6 +33,13 @@ public interface BernsteinPolynomial {
 	 * @return the two polynomials in array.
 	 */
 	BernsteinPolynomial[] split();
+/**
+	 * Splits the 2 variable polynomial into four, two by each variable
+	 * Todo describe more
+	 *
+	 * @return the two polynomials in array.
+	 */
+	BernsteinPolynomial[][] split2D();
 
 	/**
 	 * Multiply the Bernstein polynomial with a given value.

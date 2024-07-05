@@ -72,6 +72,20 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
+	public BernsteinPolynomial[][] split2D() {
+		BernsteinPolynomial[] bPlusCoeffs = new BernsteinPolynomial[degree + 1];
+		BernsteinPolynomial[] bMinusCoeffs = new BernsteinPolynomial[degree + 1];
+
+		for (int i = 0; i < bernsteinCoeffs.length; i++) {
+			BernsteinPolynomial[] splitCoeffs = bernsteinCoeffs[i].split();
+			bPlusCoeffs[i] = splitCoeffs[0];
+			bMinusCoeffs[i] = splitCoeffs[1];
+		}
+
+		return new BernsteinPolynomial[0][0];
+	}
+
+	@Override
 	public BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial) {
 		return null;
 	}

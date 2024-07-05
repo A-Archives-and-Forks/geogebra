@@ -11,6 +11,28 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	final char variableName;
 	private final double[] bernsteinCoeffs;
 
+	private static final class BernsteinPolynomialCache {
+		BernsteinPolynomial[] current;
+		BernsteinPolynomial[] last;
+
+		public BernsteinPolynomialCache(int size) {
+			current = new BernsteinPolynomial[size];
+			last = new BernsteinPolynomial[size];
+		}
+
+		public void update() {
+			System.arraycopy(current, 0, last, 0, last.length);
+		}
+
+		public void set(int i, BernsteinPolynomial bernsteinPolynomial) {
+			current[i] = bernsteinPolynomial;
+		}
+
+		public void setLast(int i, BernsteinPolynomial bernsteinPolynomial) {
+			last[i] = bernsteinPolynomial;
+		}
+	}
+
 	public BernsteinPolynomial1Var(double[] bernsteinCoeffs,
 			char variableName, double min, double max) {
 		this.variableName = variableName;
@@ -53,33 +75,40 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial[] split() {
-		BernsteinPolynomial[] bPlus = new BernsteinPolynomial[degree + 1];
-		BernsteinPolynomial[] lastBPlus = new BernsteinPolynomial[degree + 1];
-		BernsteinPolynomial[] bMinus = new BernsteinPolynomial[degree + 1];
-		BernsteinPolynomial[] lastBMinus = new BernsteinPolynomial[degree + 1];
+		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degree + 1);
+		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degree + 1);
 
 		for (int i = 0; i < degree + 1; i++) {
 			double[] coeffs = new double[1];
 			coeffs[0] = bernsteinCoeffs[i];// / MyMath.binomial(degree, i);
-			lastBPlus[i] = new BernsteinPolynomial1Var(coeffs, variableName, min, max);
-			lastBMinus[i] = new BernsteinPolynomial1Var(coeffs, variableName, min, max);
+			bPlus.setLast(i, cloneFrom(coeffs));
+			bMinus.setLast(i, cloneFrom(coeffs));
 		}
 
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
-				BernsteinPolynomial lastPlus = lastBPlus[j];
-				BernsteinPolynomial lastMinus = lastBMinus[j];
-				bPlus[j] = lastPlus.multiplyByOneMinusX()
-						.plus(lastPlus.plus(lastBPlus[j + 1]).multiplyByX().multiply(0.5));
+				bPlus.set(j,
+						bPlus.last[j].multiplyByOneMinusX()
+						.plus(bPlus.last[j].plus(bPlus.last[j + 1]).multiplyByX().multiply(0.5)));
 
-				bMinus[j] = lastMinus.plus(lastBMinus[j + 1]).multiplyByOneMinusX()
-						.multiply(0.5).plus(lastBMinus[j + 1].multiplyByX());
+				bMinus.set(j,
+						bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
+						.multiply(0.5).plus(bMinus.last[j + 1].multiplyByX()));
 			}
-			System.arraycopy(bPlus, 0, lastBPlus, 0, lastBPlus.length);
-			System.arraycopy(bMinus, 0, lastBMinus, 0, lastBMinus.length);
+			bPlus.update();
+			bMinus.update();
 		}
 
-		return new BernsteinPolynomial[]{bPlus[0], bMinus[0]};
+		return new BernsteinPolynomial[]{bPlus.last[0], bMinus.last[0]};
+	}
+
+	private BernsteinPolynomial1Var cloneFrom(double[] coeffs) {
+		return new BernsteinPolynomial1Var(coeffs, variableName, min, max);
+	}
+
+	@Override
+	public BernsteinPolynomial[][] split2D() {
+		return null;
 	}
 
 	static void copyArrayTo(double[] src, double[] dest) {
@@ -110,7 +139,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	private BernsteinPolynomial1Var newInstance(double[] coeffs) {
-		return new BernsteinPolynomial1Var(coeffs, variableName, min, max);
+		return cloneFrom(coeffs);
 	}
 
 	@Override
@@ -157,7 +186,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private BernsteinPolynomial shiftFrom(int destPos) {
 		double[] shifted = new double[degree + 2];
 		System.arraycopy(bernsteinCoeffs, 0, shifted, destPos, bernsteinCoeffs.length);
-		return new BernsteinPolynomial1Var(shifted, variableName, min, max);
+		return cloneFrom(shifted);
 	}
 
 	@Override
@@ -181,7 +210,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			sb.append(fs);
 			if (c != 1 && c != -1) {
 				double abs = Math.abs(c);
-				sb.append((abs - (int) abs) > 1E-6 ? abs : (int) abs);
+				sb.append((abs - (int) abs) > 1E-6 ? abs : String.valueOf((int) abs));
 			}
 			String powerX = powerString(variableName + "", i);
 			String powerOneMinusX = powerString("(1 - " + variableName + ")", degree - i);
