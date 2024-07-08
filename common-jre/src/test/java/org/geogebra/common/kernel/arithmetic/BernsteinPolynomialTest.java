@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.util.debug.Log;
@@ -34,6 +35,9 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 			bernstein = converter.fromImplicitCurve(curve, view.getXmin(), view.getXmax());
 		} else if (geo instanceof GeoFunctionNVar) {
 			bernstein = converter.fromFunctionNVar(((GeoFunctionNVar) geo).getFunction(),
+					view.getXmin(), view.getXmax());
+		} else if (geo instanceof GeoFunction) {
+			bernstein = converter.fromFunctionNVar(((GeoFunction) geo).getFunction(),
 					view.getXmin(), view.getXmax());
 		}
 	}
@@ -221,7 +225,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testSpit2Var() {
-		newBernsteinPolynomialPolynomialFrom("x^3 +2x*y^2 +2x + y = 0");
+		newBernsteinPolynomialPolynomialFrom("x^3 + y^3 = 0");
 		Log.debug("Original: " + bernstein);
 		BernsteinPolynomial[] splits = bernstein.split();
 		Log.debug("splits[0]: " + splits[0]);
@@ -240,12 +244,14 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testSpit2D() {
-		newBernsteinPolynomialPolynomialFrom("x^3 +x*y + y^3 = 0");
+		newBernsteinPolynomialPolynomialFrom("x^2 + y^2");
 		Log.debug("Original: " + bernstein);
 		BernsteinPolynomial[][] splits = bernstein.split2D();
 		Log.debug("splits[0][0]: " + splits[0][0]);
 		Log.debug("splits[0][1]: " + splits[0][1]);
-		Log.debug("splits[0][0]: " + splits[1][0]);
-		Log.debug("splits[0][1]: " + splits[1][1]);
+		Log.debug("splits[1][0]: " + splits[1][0]);
+		Log.debug("splits[1][1]: " + splits[1][1]);
+		assertEquals("(1.25y² + 2y (1 - y) + (1 - y)²) x² + (1.5y² + 2y (1 - y) + (1 - y)²) x (1 - x) + (0.5y² + 0.5y (1 - y) + 0.25(1 - y)²) (1 - x)²",
+				splits[1][0].toString());
 	}
 }

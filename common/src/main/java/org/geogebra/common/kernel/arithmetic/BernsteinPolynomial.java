@@ -49,6 +49,13 @@ public interface BernsteinPolynomial {
 	BernsteinPolynomial multiply(double value);
 
 	/**
+	 * Divide the Bernstein polynomial with a given value.
+	 * @param value to divide with.
+	 * @return the new, divided polynomial.
+	 */
+	BernsteinPolynomial divide(double value);
+
+	/**
 	 * Adds a given value to the Bernstein polynomial
 	 * @param value to add.
 	 * @return the result polynomial.

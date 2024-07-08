@@ -3,6 +3,8 @@ package org.geogebra.common.kernel.arithmetic;
 
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
 
+import org.geogebra.common.util.MyMath;
+
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double min;
 	private final double max;
@@ -50,6 +52,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			coeffs[i] = bernsteinCoeffs[i] != null ? bernsteinCoeffs[i].multiply(value) : null;
 		}
 		return newInstance(coeffs);
+	}
+
+	@Override
+	public BernsteinPolynomial divide(double value) {
+		return multiply(1.0 / value);
 	}
 
 	@Override
@@ -108,12 +115,12 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial[] split() {
-		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degree + 1);
-		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degree + 1);
+		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degreeX + 1);
+		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degreeX + 1);
 
 		for (int i = 0; i < degreeX + 1; i++) {
 			BernsteinPolynomial[] coeffs = new BernsteinPolynomial[1];
-			coeffs[0] = bernsteinCoeffs[i];
+			coeffs[0] = bernsteinCoeffs[i].divide(MyMath.binomial(degreeX, i));
 			bPlus.setLast(i, newInstance(coeffs));
 			bMinus.setLast(i, newInstance(coeffs));
 		}
@@ -123,13 +130,13 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 				bPlus.set(j, bPlus.last[j].multiplyByOneMinusX()
 						.plus(
 								bPlus.last[j].plus(bPlus.last[j + 1])
-										.multiplyByX().multiply(0.5)
+										.multiplyByX().divide(2)
 						)
 				);
 
 				bMinus.set(j,
 						bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
-								.multiply(0.5).plus(bMinus.last[j + 1].multiplyByX()));
+								.divide(2).plus(bMinus.last[j + 1].multiplyByX()));
 			}
 			bPlus.update();
 			bMinus.update();
@@ -150,13 +157,16 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	private BernsteinPolynomial[] splitCoefficients() {
-		BernsteinPolynomial[] bPlusCoeffs = new BernsteinPolynomial[degree + 1];
-		BernsteinPolynomial[] bMinusCoeffs = new BernsteinPolynomial[degree + 1];
+		BernsteinPolynomial[] bPlusCoeffs = new BernsteinPolynomial[degreeX + 1];
+		BernsteinPolynomial[] bMinusCoeffs = new BernsteinPolynomial[degreeX + 1];
 
 		for (int i = 0; i < bernsteinCoeffs.length; i++) {
-			BernsteinPolynomial[] splitCoeffs = bernsteinCoeffs[i].split();
-			bPlusCoeffs[i] = splitCoeffs[0];
-			bMinusCoeffs[i] = splitCoeffs[1];
+			BernsteinPolynomial coeff = bernsteinCoeffs[i];
+			if (coeff != null) {
+				BernsteinPolynomial[] splitCoeffs = coeff.split();
+				bPlusCoeffs[i] = splitCoeffs[0];
+				bMinusCoeffs[i] = splitCoeffs[1];
+			}
 		}
 
 		BernsteinPolynomial bPlusInY =
@@ -218,7 +228,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			if (c == null || "0".equals(c.toString())) {
 				continue;
 			}
-			String fs = i == degreeX ? "" : "+";
+			String fs = sb.length() == 0 ? "" : "+";
 			sb.append(fs);
 			if (degreeX > 0 && !c.isConstant()) {
 				sb.append(" (");

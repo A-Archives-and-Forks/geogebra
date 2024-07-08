@@ -68,11 +68,11 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			for (int j = degree - i; j >= 0; j--) {
 				bPlus.set(j,
 						bPlus.last[j].multiplyByOneMinusX()
-						.plus(bPlus.last[j].plus(bPlus.last[j + 1]).multiplyByX().multiply(0.5)));
+						.plus(bPlus.last[j].plus(bPlus.last[j + 1]).multiplyByX().divide(2)));
 
 				bMinus.set(j,
 						bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
-						.multiply(0.5).plus(bMinus.last[j + 1].multiplyByX()));
+						.divide(2).plus(bMinus.last[j + 1].multiplyByX()));
 			}
 			bPlus.update();
 			bMinus.update();
@@ -115,6 +115,11 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		}
 		return newInstance(coeffs);
 
+	}
+
+	@Override
+	public BernsteinPolynomial divide(double value) {
+		return multiply(1.0 / value);
 	}
 
 	@Override
