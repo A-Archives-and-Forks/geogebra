@@ -90,4 +90,10 @@ public interface BernsteinPolynomial {
 	 * @return if the polynomial is a simple constant number.
 	 */
 	boolean isConstant();
+
+	/**
+	 *
+	 * @return the number of variables of Bernstein polynomial;
+	 */
+	int numberOfVariables();
 }

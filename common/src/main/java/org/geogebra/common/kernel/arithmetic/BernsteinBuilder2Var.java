@@ -15,7 +15,7 @@ public class BernsteinBuilder2Var {
 		double[][] powerCoeffs = coeffsFromTwoVarPolynomial(polynomial, degreeX, degreeY);
 		powerBasisCoeffs = coeffsToBernsteinCoeffs(powerCoeffs, degreeX, degreeY, min, max);
 		BernsteinPolynomial[] bernsteinCoeffs =
-				createBernsteinCoeffs2Var(degreeX, degreeY, min, max);
+				createBernsteinCoeffs2Var(degreeX, min, max);
 		return new BernsteinPolynomial2Var(bernsteinCoeffs, min, max, degreeX, degreeY);
 	}
 
@@ -43,17 +43,17 @@ public class BernsteinBuilder2Var {
 		return polys;
 	}
 
-	private BernsteinPolynomial[] createBernsteinCoeffs2Var(int degreeX, int degreeY, double min, double max) {
-		BernsteinPolynomial[] partialBernsteinCoeffs = new BernsteinPolynomial[degreeX + 1];
-		BernsteinPolynomial[] lastValues = new BernsteinPolynomial[degreeX + 1];
+	private BernsteinPolynomial[] createBernsteinCoeffs2Var(int degreeX, double min, double max) {
+		BernsteinPolynomialCache partialBernsteinCoeffs = new BernsteinPolynomialCache(degreeX + 1);
 		for (int i = 0; i <= degreeX; i++) {
 			for (int j = 0; j <= i; j++) {
-				BernsteinPolynomial b_ij = bernsteinCoefficient(i, j, degreeX, min, max, lastValues);
-				partialBernsteinCoeffs[j] = b_ij;
+				BernsteinPolynomial b_ij = bernsteinCoefficient(i, j, degreeX, min, max,
+						partialBernsteinCoeffs.last);
+				partialBernsteinCoeffs.set(j, b_ij);
 			}
-			System.arraycopy(partialBernsteinCoeffs, 0, lastValues, 0, degreeX + 1);
+			partialBernsteinCoeffs.update();
 		}
-		return partialBernsteinCoeffs;
+		return partialBernsteinCoeffs.current;
 	}
 
 	private BernsteinPolynomial bernsteinCoefficient(int i, int j, int degree, double min, double max,

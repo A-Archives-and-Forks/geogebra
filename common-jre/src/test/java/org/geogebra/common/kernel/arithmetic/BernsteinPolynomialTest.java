@@ -7,6 +7,7 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
+import org.geogebra.common.util.debug.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -217,5 +218,37 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		assertEquals(4/16d, splits[1].evaluate(0), 0);
 		assertEquals(9/16d, splits[1].evaluate(0.5), 0);
 		assertEquals(1, splits[1].evaluate(1), 0);
+	}
+
+	@Test
+	public void testSpit2Var() {
+		newBernsteinPolynomialPolynomialFrom("x^3 +2x*y^2 +2x + y = 0");
+		Log.debug("Original: " + bernstein);
+		BernsteinPolynomial[] splits = bernstein.split();
+		Log.debug("splits[0]: " + splits[0]);
+		Log.debug("splits[1]: " + splits[1]);
+	}
+
+	@Test
+	public void test2VarToString() {
+		double[] bcoeffs = new double[]{0, 1, 1};
+		BernsteinPolynomial b2var = new BernsteinPolynomial1Var(bcoeffs, 'y' ,0,1);
+		BernsteinPolynomial[] coeffs = new BernsteinPolynomial[]{b2var, null, null, null};
+		BernsteinPolynomial2Var bernsteinPolynomial2Var =
+				new BernsteinPolynomial2Var(coeffs, 0, 1, 3, 2);
+		assertEquals("(y² + y (1 - y)) x²", bernsteinPolynomial2Var.toString());
+
+	}
+
+	@Test
+	public void testSpit2D() {
+		newBernsteinPolynomialPolynomialFrom("x^3 +x*y + y^3 = 0");
+		Log.debug("Original: " + bernstein);
+		BernsteinPolynomial[][] splits = bernstein.split2D();
+		Log.debug("splits[0][0]: " + splits[0][0]);
+    	Log.debug("splits[0][1]: " + splits[0][1]);
+		Log.debug("splits[0][0]: " + splits[1][0]);
+    	Log.debug("splits[0][1]: " + splits[1][1]);
+
 	}
 }

@@ -45,17 +45,57 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial multiply(double value) {
-		return null;
+		BernsteinPolynomial[] coeffs = new BernsteinPolynomial[bernsteinCoeffs.length];
+		for (int i = 0; i < bernsteinCoeffs.length; i++) {
+			coeffs[i] = bernsteinCoeffs[i] != null ? bernsteinCoeffs[i].multiply(value) : null;
+		}
+		return newInstance(coeffs);
 	}
 
 	@Override
 	public BernsteinPolynomial plus(double value) {
-		return null;
+		BernsteinPolynomial[] coeffs = new BernsteinPolynomial[degree + 1];
+		for (int i = 0; i < degree + 1; i++) {
+			coeffs[i] = bernsteinCoeffs[i].plus(value);
+		}
+
+		return newInstance(coeffs);
 	}
 
 	@Override
 	public BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial) {
-		return null;
+		if (bernsteinPolynomial == null) {
+			return this;
+		}
+		BernsteinPolynomial[] coeffs = new BernsteinPolynomial[bernsteinCoeffs.length];
+		if (bernsteinPolynomial.numberOfVariables() == 2) {
+			BernsteinPolynomial2Var bpoly2Var =
+					(BernsteinPolynomial2Var) bernsteinPolynomial;
+			for (int i = 0; i < bernsteinCoeffs.length; i++) {
+				BernsteinPolynomial coeff = bernsteinCoeffs[i];
+				BernsteinPolynomial otherCoeff = bpoly2Var.bernsteinCoeffs[i];
+				if (coeff != null && otherCoeff != null) {
+					coeffs[i] = coeff.plus(otherCoeff);
+				} else if (coeff == null) {
+					coeffs[i] = otherCoeff;
+				} else {
+					coeffs[i] = coeff;
+
+				}
+			}
+		} else {
+			for (int i = 0; i < degree + 1; i++) {
+				coeffs[i] = bernsteinCoeffs[i].plus(bernsteinPolynomial);
+			}
+		}
+
+		return newInstance(coeffs);
+	}
+
+
+	@Override
+	public int numberOfVariables() {
+		return 2;
 	}
 
 	@Override
@@ -68,11 +108,48 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial[] split() {
-		return new BernsteinPolynomial[0];
+		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degree + 1);
+		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degree + 1);
+
+		for (int i = 0; i < degreeX + 1; i++) {
+			BernsteinPolynomial[] coeffs = new BernsteinPolynomial[1];
+			coeffs[0] = bernsteinCoeffs[i];
+			bPlus.setLast(i, newInstance(coeffs));
+			bMinus.setLast(i, newInstance(coeffs));
+		}
+
+		for (int i = 1; i <= degreeX + 1; i++) {
+			for (int j = degree - i; j >= 0; j--) {
+				bPlus.set(j, bPlus.last[j].multiplyByOneMinusX()
+						.plus(
+								bPlus.last[j].plus(bPlus.last[j + 1])
+										.multiplyByX().multiply(0.5)
+						)
+				);
+
+				bMinus.set(j,
+						bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
+								.multiply(0.5).plus(bMinus.last[j + 1].multiplyByX()));
+			}
+			bPlus.update();
+			bMinus.update();
+		}
+		return new BernsteinPolynomial[]{bPlus.last[0], bMinus.last[0]};
+	}
+
+	private BernsteinPolynomial newInstance(BernsteinPolynomial[] coeffs) {
+		return new BernsteinPolynomial2Var(coeffs, min, max, degreeX, degreeY);
 	}
 
 	@Override
 	public BernsteinPolynomial[][] split2D() {
+		BernsteinPolynomial[] mainSplit = split();
+		BernsteinPolynomial2Var bPlus = (BernsteinPolynomial2Var) mainSplit[0];
+		BernsteinPolynomial2Var bMinus = (BernsteinPolynomial2Var) mainSplit[1];
+		return new BernsteinPolynomial[][] {bPlus.splitCoefficients(), bMinus.splitCoefficients()};
+	}
+
+	private BernsteinPolynomial[] splitCoefficients() {
 		BernsteinPolynomial[] bPlusCoeffs = new BernsteinPolynomial[degree + 1];
 		BernsteinPolynomial[] bMinusCoeffs = new BernsteinPolynomial[degree + 1];
 
@@ -82,7 +159,13 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			bMinusCoeffs[i] = splitCoeffs[1];
 		}
 
-		return new BernsteinPolynomial[0][0];
+		BernsteinPolynomial bPlusInY =
+				new BernsteinPolynomial2Var(bPlusCoeffs, min, max, degreeX, degreeY);
+
+		BernsteinPolynomial bMinusInY =
+				new BernsteinPolynomial2Var(bMinusCoeffs, min, max, degreeX, degreeY);
+
+		return new BernsteinPolynomial[] {bPlusInY, bMinusInY};
 	}
 
 	@Override
@@ -92,13 +175,20 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial multiplyByOneMinusX() {
-		return null;
+		return shiftFrom(0);
 	}
 
 	@Override
 	public BernsteinPolynomial multiplyByX() {
-		return null;
+		return shiftFrom(1);
 	}
+
+	private BernsteinPolynomial shiftFrom(int destPos) {
+		BernsteinPolynomial[] shifted = new BernsteinPolynomial[bernsteinCoeffs.length + 1];
+		System.arraycopy(bernsteinCoeffs, 0, shifted, destPos, bernsteinCoeffs.length);
+		return newInstance(shifted);
+	}
+
 
 	private BernsteinPolynomial derivativeX() {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX];
@@ -124,8 +214,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = degreeX; i >= 0; i--) {
-			BernsteinPolynomial c = bernsteinCoeffs[i];
-			if ("0".equals(c.toString())) {
+			BernsteinPolynomial c = i < bernsteinCoeffs.length ? bernsteinCoeffs[i] : null;
+			if (c == null || "0".equals(c.toString())) {
 				continue;
 			}
 			String fs = i == degreeX ? "" : "+";

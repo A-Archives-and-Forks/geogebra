@@ -11,28 +11,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	final char variableName;
 	private final double[] bernsteinCoeffs;
 
-	private static final class BernsteinPolynomialCache {
-		BernsteinPolynomial[] current;
-		BernsteinPolynomial[] last;
-
-		public BernsteinPolynomialCache(int size) {
-			current = new BernsteinPolynomial[size];
-			last = new BernsteinPolynomial[size];
-		}
-
-		public void update() {
-			System.arraycopy(current, 0, last, 0, last.length);
-		}
-
-		public void set(int i, BernsteinPolynomial bernsteinPolynomial) {
-			current[i] = bernsteinPolynomial;
-		}
-
-		public void setLast(int i, BernsteinPolynomial bernsteinPolynomial) {
-			last[i] = bernsteinPolynomial;
-		}
-	}
-
 	public BernsteinPolynomial1Var(double[] bernsteinCoeffs,
 			char variableName, double min, double max) {
 		this.variableName = variableName;
@@ -46,6 +24,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			double max) {
 		this(new double[degree + 1], variableName, min, max);
 	}
+
 
 	@Override
 	public double evaluate(double value) {
@@ -80,9 +59,9 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 		for (int i = 0; i < degree + 1; i++) {
 			double[] coeffs = new double[1];
-			coeffs[0] = bernsteinCoeffs[i];// / MyMath.binomial(degree, i);
-			bPlus.setLast(i, cloneFrom(coeffs));
-			bMinus.setLast(i, cloneFrom(coeffs));
+			coeffs[0] = bernsteinCoeffs[i];
+			bPlus.setLast(i, newInstance(coeffs));
+			bMinus.setLast(i, newInstance(coeffs));
 		}
 
 		for (int i = 1; i <= degree + 1; i++) {
@@ -102,7 +81,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		return new BernsteinPolynomial[]{bPlus.last[0], bMinus.last[0]};
 	}
 
-	private BernsteinPolynomial1Var cloneFrom(double[] coeffs) {
+	private BernsteinPolynomial newInstance(double[] coeffs) {
 		return new BernsteinPolynomial1Var(coeffs, variableName, min, max);
 	}
 
@@ -138,10 +117,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	}
 
-	private BernsteinPolynomial1Var newInstance(double[] coeffs) {
-		return cloneFrom(coeffs);
-	}
-
 	@Override
 	public BernsteinPolynomial plus(double value) {
 		double[] coeffs = new double[degree + 1];
@@ -154,6 +129,9 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial) {
+		if (bernsteinPolynomial == null) {
+			return this;
+		}
 		double[] coeffs = new double[degree + 1];
 
 		for (int i = 0; i < degree + 1; i++) {
@@ -186,12 +164,17 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private BernsteinPolynomial shiftFrom(int destPos) {
 		double[] shifted = new double[degree + 2];
 		System.arraycopy(bernsteinCoeffs, 0, shifted, destPos, bernsteinCoeffs.length);
-		return cloneFrom(shifted);
+		return newInstance(shifted);
 	}
 
 	@Override
 	public boolean isConstant() {
 		return bernsteinCoeffs.length == 1;
+	}
+
+	@Override
+	public int numberOfVariables() {
+		return 1;
 	}
 
 	@Override
