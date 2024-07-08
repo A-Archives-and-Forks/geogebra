@@ -59,7 +59,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 		for (int i = 0; i < degree + 1; i++) {
 			double[] coeffs = new double[1];
-			coeffs[0] = bernsteinCoeffs[i];
+			coeffs[0] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
 			bPlus.setLast(i, newInstance(coeffs));
 			bMinus.setLast(i, newInstance(coeffs));
 		}

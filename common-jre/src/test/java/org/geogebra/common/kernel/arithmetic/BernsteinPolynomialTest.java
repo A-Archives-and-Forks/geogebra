@@ -18,7 +18,6 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private EuclidianView view;
 	private BernsteinPolynomialConverter converter;
 
-
 	@Before
 	public void setUp() {
 		add("ZoomIn(0,0,1,1)");
@@ -33,7 +32,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		if (geo.isGeoImplicitCurve()) {
 			curve = ((GeoImplicitCurve) geo);
 			bernstein = converter.fromImplicitCurve(curve, view.getXmin(), view.getXmax());
-		} else if (geo instanceof GeoFunctionNVar){
+		} else if (geo instanceof GeoFunctionNVar) {
 			bernstein = converter.fromFunctionNVar(((GeoFunctionNVar) geo).getFunction(),
 					view.getXmin(), view.getXmax());
 		}
@@ -172,8 +171,6 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 						+ " + (8y\u00B2 + 8y (1 - y) + 4(1 - y)\u00B2) x (1 - x) + (4y\u00B2"
 						+ " + 4y (1 - y) + 2(1 - y)\u00B2) (1 - x)\u00B2",
 				"x^3 +2x*y^2 +2x + y = 0", "x");
-
-
 		shouldPartialDerivativeBe("2y + (1 - y)", "x + x*y + y", "x");
 	}
 
@@ -189,7 +186,6 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 						+ "+ (y + (1 - y)) (1 - x)\u00B3",
 				"x^3 +2x*y^2 +2x + y = 0", "y");
 
-
 		shouldPartialDerivativeBe("2x + (1 - x)", "x + x*y + y", "y");
 	}
 
@@ -202,22 +198,25 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 				+ "(- 80y\u00B3) x\u00B3 (1 - x)\u00B3 + (- 60y\u00B3) x\u00B2 (1 - x)\u2074 + "
 				+ "(- 24y\u00B3) x (1 - x)\u2075 + (- 4y\u00B3) (1 - x)\u2076",
 				bernstein.toString());
-		assertEquals(323084, ((BernsteinPolynomial2Var)bernstein).evaluate(8, 5),0);
+		assertEquals(323084, ((BernsteinPolynomial2Var) bernstein).evaluate(8, 5), 0);
 	}
 
 	@Test
 	public void testSpit() {
-		double[] bcoeffs = new double[]{0, 0, 1};
-		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x' ,0,1);
+		double[] bcoeffs = new double[]{2, 8, 12, 7};
+		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x' , 0, 1);
+		Log.debug("Original: " + bernstein);
 		BernsteinPolynomial[] splits = bernstein.split();
+		Log.debug("splits[0]: " + splits[0]);
+		Log.debug("splits[1]: " + splits[1]);
 
-		assertEquals(0, splits[0].evaluate(0), 0);
-		assertEquals(1/16d, splits[0].evaluate(0.5), 0);
-		assertEquals(4/16d, splits[0].evaluate(1), 0);
+		assertEquals(bernstein.evaluate(0), splits[0].evaluate(0), 0);
+		assertEquals(bernstein.evaluate(.25), splits[0].evaluate(0.5), 0);
+		assertEquals(bernstein.evaluate(.5), splits[0].evaluate(1), 0);
 
-		assertEquals(4/16d, splits[1].evaluate(0), 0);
-		assertEquals(9/16d, splits[1].evaluate(0.5), 0);
-		assertEquals(1, splits[1].evaluate(1), 0);
+		assertEquals(bernstein.evaluate(.5), splits[1].evaluate(0), 0);
+		assertEquals(bernstein.evaluate(.75), splits[1].evaluate(0.5), 0);
+		assertEquals(bernstein.evaluate(1), splits[1].evaluate(1), 0);
 	}
 
 	@Test
@@ -232,12 +231,11 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	@Test
 	public void test2VarToString() {
 		double[] bcoeffs = new double[]{0, 1, 1};
-		BernsteinPolynomial b2var = new BernsteinPolynomial1Var(bcoeffs, 'y' ,0,1);
+		BernsteinPolynomial b2var = new BernsteinPolynomial1Var(bcoeffs, 'y' , 0, 1);
 		BernsteinPolynomial[] coeffs = new BernsteinPolynomial[]{b2var, null, null, null};
 		BernsteinPolynomial2Var bernsteinPolynomial2Var =
 				new BernsteinPolynomial2Var(coeffs, 0, 1, 3, 2);
 		assertEquals("(y² + y (1 - y)) x²", bernsteinPolynomial2Var.toString());
-
 	}
 
 	@Test
@@ -246,9 +244,8 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		Log.debug("Original: " + bernstein);
 		BernsteinPolynomial[][] splits = bernstein.split2D();
 		Log.debug("splits[0][0]: " + splits[0][0]);
-    	Log.debug("splits[0][1]: " + splits[0][1]);
+		Log.debug("splits[0][1]: " + splits[0][1]);
 		Log.debug("splits[0][0]: " + splits[1][0]);
-    	Log.debug("splits[0][1]: " + splits[1][1]);
-
+		Log.debug("splits[0][1]: " + splits[1][1]);
 	}
 }
