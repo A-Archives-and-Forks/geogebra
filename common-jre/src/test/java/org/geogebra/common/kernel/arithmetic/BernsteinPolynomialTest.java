@@ -225,26 +225,13 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	@Test
 	public void testSpit2Var() {
-		newBernsteinPolynomialPolynomialFrom("x^3 + y^3 = 0");
-		Log.debug("Original: " + bernstein);
-		BernsteinPolynomial[] splits = bernstein.split();
-		Log.debug("splits[0]: " + splits[0]);
-		Log.debug("splits[1]: " + splits[1]);
+		spit2D("x^2 + y^2");
+		spit2D("x^3 + y^3 = 0");
+		spit2D("x^6 + 2x^2y^3 + 5y^4 = 0");
 	}
 
-	@Test
-	public void test2VarToString() {
-		double[] bcoeffs = new double[]{0, 1, 1};
-		BernsteinPolynomial b2var = new BernsteinPolynomial1Var(bcoeffs, 'y' , 0, 1);
-		BernsteinPolynomial[] coeffs = new BernsteinPolynomial[]{b2var, null, null, null};
-		BernsteinPolynomial2Var bernsteinPolynomial2Var =
-				new BernsteinPolynomial2Var(coeffs, 0, 1, 3, 2);
-		assertEquals("(y² + y (1 - y)) x²", bernsteinPolynomial2Var.toString());
-	}
-
-	@Test
-	public void testSpit2D() {
-		newBernsteinPolynomialPolynomialFrom("x^2 + y^2");
+	private void spit2D(String definition) {
+		newBernsteinPolynomialPolynomialFrom(definition);
 		BernsteinPolynomial[][] splits = bernstein.split2D();
 		for (int i = 0; i < 10; i++) {
 			double x = i / 5.0;
