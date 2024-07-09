@@ -129,16 +129,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial plus(double value) {
-		double[] coeffs = new double[degree + 1];
-
-		for (int i = 0; i < degree + 1; i++) {
-			coeffs[i] = bernsteinCoeffs[i] + value;
-		}
-		return newInstance(coeffs);
-	}
-
-	@Override
 	public BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial) {
 		if (bernsteinPolynomial == null) {
 			return this;
@@ -155,11 +145,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public BernsteinPolynomial derivative(String variable) {
 		return derivative();
-	}
-
-	@Override
-	public BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial) {
-		return plus(bernsteinPolynomial.multiply(-1));
 	}
 
 	@Override

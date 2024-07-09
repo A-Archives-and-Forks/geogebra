@@ -65,25 +65,11 @@ public interface BernsteinPolynomial {
 	BernsteinPolynomial divide(double value);
 
 	/**
-	 * Adds a given value to the Bernstein polynomial
-	 * @param value to add.
-	 * @return the result polynomial.
-	 */
-	BernsteinPolynomial plus(double value);
-
-	/**
 	 * Adds a Bernstein polynomial to this one.
 	 * @param bernsteinPolynomial to add.
 	 * @return the result polynomial.
 	 */
 	BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial);
-
-	/**
-	 * Subtracts a Bernstein polynomial from this one.
-	 * @param bernsteinPolynomial to subtract.
-	 * @return the result polynomial.
-	 */
-	BernsteinPolynomial minus(BernsteinPolynomial bernsteinPolynomial);
 
 	/**
 	 * Multiplies the Bernstein polynomial with (1 - x)
