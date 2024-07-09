@@ -34,7 +34,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double oneMinusScaledValue = 1 - scaledValue;
 
 		copyArrayTo(bernsteinCoeffs, lastPartialEval);
-		divWithBinomials(lastPartialEval);
+		divWithBinomials(lastPartialEval, degree);
 
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
@@ -52,9 +52,9 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		return evaluate(x);
 	}
 
-	private void divWithBinomials(double[] lastPartialEval) {
+	static void divWithBinomials(double[] lastPartialEval, int degree1) {
 		for (int i = 0; i < lastPartialEval.length; i++) {
-			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree, i);
+			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree1, i);
 		}
 	}
 

@@ -1,6 +1,8 @@
 package org.geogebra.common.kernel.arithmetic;
 
 
+import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.copyArrayTo;
+import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.divWithBinomials;
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
 
 import org.geogebra.common.util.MyMath;
@@ -22,17 +24,26 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.bernsteinCoeffs = bernsteinCoeffs;
 	}
 
+	@Override
 	public double evaluate(double valueX, double valueY) {
-		double scaledValue = (valueX - min) / (max - min);
-		double result = 0;
+		double[] partialEval = new double[degreeX + 1];
+		double[] lastPartialEval = new double[degreeX + 1];
+		double scaledX = (valueX - min) / (max - min);
+		double scaledOneMinusX = 1 - scaledX;
 
-		for (int i = degree; i >= 0; i--) {
-			double coeff = bernsteinCoeffs[i].evaluate(valueY);
-			result += (coeff
-					* Math.pow(scaledValue, i)
-					* Math.pow(1 - scaledValue, degree - i));
+		for (int i = 0; i < degreeX + 1; i++) {
+			lastPartialEval[i] = bernsteinCoeffs[i].evaluate(valueY);
 		}
-		return result;
+		divWithBinomials(lastPartialEval, degreeX);
+
+		for (int i = 1; i <= degreeX + 1; i++) {
+			for (int j = degreeX - i; j >= 0; j--) {
+				partialEval[j] = scaledOneMinusX * lastPartialEval[j]
+						+ scaledX * lastPartialEval[j + 1];
+			}
+			copyArrayTo(partialEval, lastPartialEval);
+		}
+		return partialEval[0];
 	}
 
 	@Override

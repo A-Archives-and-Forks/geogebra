@@ -202,7 +202,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 				+ "(- 80y\u00B3) x\u00B3 (1 - x)\u00B3 + (- 60y\u00B3) x\u00B2 (1 - x)\u2074 + "
 				+ "(- 24y\u00B3) x (1 - x)\u2075 + (- 4y\u00B3) (1 - x)\u2076",
 				bernstein.toString());
-		assertEquals(323084, ((BernsteinPolynomial2Var) bernstein).evaluate(8, 5), 0);
+		assertEquals(323084, bernstein.evaluate(8, 5), 0);
 	}
 
 	@Test
