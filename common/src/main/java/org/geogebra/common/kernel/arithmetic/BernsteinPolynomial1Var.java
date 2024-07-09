@@ -46,6 +46,12 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		return partialEval[0];
 	}
 
+	@Override
+	public double evaluate(double x, double y) {
+		// y is ignored in 1var case.
+		return evaluate(x);
+	}
+
 	private void divWithBinomials(double[] lastPartialEval) {
 		for (int i = 0; i < lastPartialEval.length; i++) {
 			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree, i);

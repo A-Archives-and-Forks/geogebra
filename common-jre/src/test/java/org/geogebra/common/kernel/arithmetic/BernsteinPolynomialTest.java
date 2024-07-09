@@ -245,13 +245,20 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	@Test
 	public void testSpit2D() {
 		newBernsteinPolynomialPolynomialFrom("x^2 + y^2");
-		Log.debug("Original: " + bernstein);
 		BernsteinPolynomial[][] splits = bernstein.split2D();
-		Log.debug("splits[0][0]: " + splits[0][0]);
-		Log.debug("splits[0][1]: " + splits[0][1]);
-		Log.debug("splits[1][0]: " + splits[1][0]);
-		Log.debug("splits[1][1]: " + splits[1][1]);
-		assertEquals("(1.25y² + 2y (1 - y) + (1 - y)²) x² + (1.5y² + 2y (1 - y) + (1 - y)²) x (1 - x) + (0.5y² + 0.5y (1 - y) + 0.25(1 - y)²) (1 - x)²",
-				splits[1][0].toString());
+		for (int i = 0; i < 10; i++) {
+			double x = i / 5.0;
+			for (int j = 0; j < 10; j++) {
+				double y = j / 5.0;
+				splitShouldBeSame(splits[0][0].evaluate(x, y), x / 2, y / 2);
+				splitShouldBeSame(splits[0][1].evaluate(x, y), x / 2, (y + 1) / 2);
+				splitShouldBeSame(splits[0][0].evaluate(x, y), x / 2, y / 2);
+				splitShouldBeSame(splits[0][1].evaluate(x, y), x / 2, (y + 1) / 2);
+			}
+		}
+	}
+
+	private void splitShouldBeSame(double actual, double x, double y) {
+		assertEquals(bernstein.evaluate(x, y), actual, 1E-6);
 	}
 }

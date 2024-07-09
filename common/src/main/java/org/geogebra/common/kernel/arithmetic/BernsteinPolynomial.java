@@ -15,6 +15,15 @@ public interface BernsteinPolynomial {
 	double evaluate(double value);
 
 	/**
+	 * Evaluates the polynomial in two variables.
+	 *
+	 * @param x to evaluate at.
+	 * @param y to evaluate at.
+	 * @return the value at (x, y)
+	 */
+	double evaluate(double x, double y);
+
+	/**
 	 * @return the derivative of the polynomial.
 	 */
 	BernsteinPolynomial derivative();
@@ -25,7 +34,6 @@ public interface BernsteinPolynomial {
 	 * @return the partial derivative of the polynomial with respect to the given variable.
 	 */
 	BernsteinPolynomial derivative(String variable);
-
 	/**
 	 * Splits the polynomial into two.
 	 * Todo describe more
@@ -33,6 +41,7 @@ public interface BernsteinPolynomial {
 	 * @return the two polynomials in array.
 	 */
 	BernsteinPolynomial[] split();
+
 /**
 	 * Splits the 2 variable polynomial into four, two by each variable
 	 * Todo describe more
