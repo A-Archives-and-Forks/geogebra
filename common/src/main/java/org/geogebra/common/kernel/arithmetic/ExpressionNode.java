@@ -21,8 +21,11 @@ the Free Software Foundation.
 package org.geogebra.common.kernel.arithmetic;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
+
+import javax.annotation.CheckForNull;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
@@ -960,7 +963,7 @@ public class ExpressionNode extends ValidExpression
 				if (right instanceof MyList) {
 					MyList list = (MyList) right;
 					for (int i = 0; i < list.size(); i++) {
-						ExpressionValue ev = list.getListElement(i);
+						ExpressionValue ev = list.get(i);
 						if (ev instanceof ExpressionNode) {
 							((ExpressionNode) ev).makePolynomialTree(equ,
 									keepFraction);
@@ -981,7 +984,7 @@ public class ExpressionNode extends ValidExpression
 		ExpressionNode expr = func.getExpression().getCopy(kernel);
 		if (func.getFunctionVariables().length == list.size()) {
 			for (int i = 0; i < list.size(); i++) {
-				ExpressionValue ev = list.getListElement(i);
+				ExpressionValue ev = list.get(i);
 				if (ev instanceof ExpressionNode) {
 					ExpressionNode en = ((ExpressionNode) ev).getCopy(kernel);
 					if (!equ.isFunctionDependent()) {
@@ -991,7 +994,7 @@ public class ExpressionNode extends ValidExpression
 					// replacement
 					// en.makePolynomialTree(equ);
 					ev = en;
-				} else if (list.getListElement(i) instanceof FunctionVariable) {
+				} else if (list.get(i) instanceof FunctionVariable) {
 					equ.setFunctionDependent(true);
 				}
 				expr = expr.replace(func.getFunctionVariables()[i], ev).wrap();
@@ -1177,21 +1180,13 @@ public class ExpressionNode extends ValidExpression
 	 * Returns all GeoElement objects in the subtree
 	 */
 	@Override
-	final public HashSet<GeoElement> getVariables(SymbolicMode mode) {
+	final public void getVariables(Set<GeoElement> variables, SymbolicMode mode) {
 		if (leaf) {
-			return left.getVariables(mode);
+			left.getVariables(variables, mode);
+			return;
 		}
-
-		HashSet<GeoElement> leftVars = left.getVariables(mode);
-		HashSet<GeoElement> rightVars = right.getVariables(mode);
-		if (leftVars == null) {
-			return rightVars;
-		} else if (rightVars == null) {
-			return leftVars;
-		} else {
-			leftVars.addAll(rightVars);
-			return leftVars;
-		}
+		left.getVariables(variables, mode);
+		right.getVariables(variables, mode);
 	}
 
 	/**
@@ -1200,8 +1195,8 @@ public class ExpressionNode extends ValidExpression
 	 * @return GeoElement variables
 	 */
 	final public GeoElement[] getGeoElementVariables(SymbolicMode mode) {
-		HashSet<GeoElement> varset = getVariables(mode);
-		if (varset == null) {
+		Set<GeoElement> varset = getVariables(mode);
+		if (varset.isEmpty()) {
 			return null;
 		}
 		Iterator<GeoElement> i = varset.iterator();
@@ -3229,29 +3224,25 @@ public class ExpressionNode extends ValidExpression
 	 *
 	 *
 	 */
-	public HashSet<GeoElement> getUnconditionalVars() {
-		// TODO Auto-generated method stub
-		if (!this.isConditionalDeep()) {
-			return null;
-		}
+	public @CheckForNull Set<GeoElement> getUnconditionalVars(Set<GeoElement> variables) {
 		if (leaf) {
-			return left.getVariables(SymbolicMode.NONE);
+			left.getVariables(variables, SymbolicMode.NONE);
+			return variables;
 		}
 		if (isConditional()) {
-			return new HashSet<>();
+			return Collections.emptySet();
 		}
-		HashSet<GeoElement> leftVars = left
-				.getVariables(SymbolicMode.NONE);
-		HashSet<GeoElement> rightVars = right
-				.getVariables(SymbolicMode.NONE);
-		if (leftVars == null) {
-			return rightVars;
-		} else if (rightVars == null) {
-			return leftVars;
+		if (left instanceof ExpressionNode) {
+			((ExpressionNode) left).getUnconditionalVars(variables);
 		} else {
-			leftVars.addAll(rightVars);
-			return leftVars;
+			left.getVariables(variables, SymbolicMode.NONE);
 		}
+		if (right instanceof ExpressionNode) {
+			((ExpressionNode) right).getUnconditionalVars(variables);
+		} else if (right != null) {
+			right.getVariables(variables, SymbolicMode.NONE);
+		}
+		return variables;
 	}
 
 	/**
@@ -3351,7 +3342,7 @@ public class ExpressionNode extends ValidExpression
 		if (f.isOperation(Operation.MULTIPLY)) {
 			ExpressionNode en = f.wrap();
 			if (en.getRight() instanceof MySpecialDouble
-				&& en.getRight().evaluateDouble() == Kernel.PI_180) {
+				&& MyDouble.exactEqual(en.getRight().evaluateDouble(), Kernel.PI_180)) {
 				return new ExpressionNode(kernel2, unaryMinus(kernel2, en.getLeft()),
 						Operation.MULTIPLY, en.getRight());
 			}

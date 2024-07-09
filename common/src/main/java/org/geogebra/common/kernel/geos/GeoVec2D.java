@@ -18,7 +18,7 @@ the Free Software Foundation.
 
 package org.geogebra.common.kernel.geos;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.math3.complex.Complex;
 import org.geogebra.common.kernel.Kernel;
@@ -414,8 +414,8 @@ final public class GeoVec2D extends ValidExpression
 			return;
 		}
 
-		double enX = list.getListElement(0).evaluateDouble();
-		double enY = list.getListElement(1).evaluateDouble();
+		double enX = list.get(0).evaluateDouble();
+		double enY = list.get(1).evaluateDouble();
 
 		if (Double.isNaN(enX) || Double.isNaN(enY)) {
 			c.x = Double.NaN;
@@ -450,8 +450,8 @@ final public class GeoVec2D extends ValidExpression
 			return;
 		}
 
-		double enX = list.getListElement(0).evaluateDouble();
-		double enY = list.getListElement(1).evaluateDouble();
+		double enX = list.get(0).evaluateDouble();
+		double enY = list.get(1).evaluateDouble();
 
 		if (reverse) {
 			c.x = a.x - enX;
@@ -1114,8 +1114,8 @@ final public class GeoVec2D extends ValidExpression
 	}
 
 	@Override
-	public HashSet<GeoElement> getVariables(SymbolicMode symbolicMode) {
-		return null;
+	public void getVariables(Set<GeoElement> variables, SymbolicMode symbolicMode) {
+		// constant
 	}
 
 	@Override

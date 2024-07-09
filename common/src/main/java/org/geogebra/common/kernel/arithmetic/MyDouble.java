@@ -20,7 +20,7 @@ package org.geogebra.common.kernel.arithmetic;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.math3.util.Precision;
 import org.geogebra.common.kernel.Construction;
@@ -113,6 +113,10 @@ public class MyDouble extends ValidExpression
 	 */
 	public void set(double val) {
 		this.val = val;
+	}
+
+	public void set(BigDecimal val) {
+		set(val.doubleValue());
 	}
 
 	@Override
@@ -321,18 +325,20 @@ public class MyDouble extends ValidExpression
 			return;
 		}
 
-		BigDecimal numerator = a.toBigDecimal();
-		BigDecimal denominator = b.toBigDecimal();
-		c.set(numerator.divide(denominator, MathContext.DECIMAL128).doubleValue());
+		BigDecimal numerator = a.toDecimal();
+		if (numerator != null) {
+			BigDecimal denominator = b.toDecimal();
+			if (denominator != null) {
+				c.set(numerator.divide(denominator, MathContext.DECIMAL128));
+				return;
+			}
+		}
+		c.set(a.val / b.val);
 	}
 
 	private static boolean isImpreciseDiv(MyDouble a, MyDouble b) {
 		return isNumberImprecise(a) || isNumberImprecise(b) || b.val == 0
 				|| !Double.isFinite(a.val) || !Double.isFinite(b.val) || !a.isDefined();
-	}
-
-	private BigDecimal toBigDecimal() {
-		return new BigDecimal(val + "");
 	}
 
 	/**
@@ -936,8 +942,8 @@ public class MyDouble extends ValidExpression
 	}
 
 	@Override
-	public HashSet<GeoElement> getVariables(SymbolicMode mode) {
-		return null;
+	public void getVariables(Set<GeoElement> variables, SymbolicMode symbolicMode) {
+		// constant
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import org.geogebra.common.euclidian.EmbedManager;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianController;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.exam.ExamController;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
 import org.geogebra.common.export.pstricks.GeoGebraToAsymptote;
 import org.geogebra.common.export.pstricks.GeoGebraToPgf;
@@ -31,7 +32,6 @@ import org.geogebra.common.factories.CASFactory;
 import org.geogebra.common.factories.Factory;
 import org.geogebra.common.factories.FormatFactory;
 import org.geogebra.common.factories.UtilFactory;
-import org.geogebra.common.geogebra3D.kernel3D.commands.CommandDispatcher3D;
 import org.geogebra.common.gui.AccessibilityManagerInterface;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.inputfield.HasLastItem;
@@ -72,6 +72,7 @@ import org.geogebra.common.move.ggtapi.models.Material;
 import org.geogebra.common.move.ggtapi.models.Pagination;
 import org.geogebra.common.move.ggtapi.requests.MaterialCallbackI;
 import org.geogebra.common.move.operations.NetworkOperation;
+import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventDispatcher;
 import org.geogebra.common.plugin.EventType;
@@ -255,6 +256,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	private Widget lastFocusableWidget;
 	private FullScreenState fullscreenState;
 	private ToolTipManagerW toolTipManager;
+	private final ExamController examController = GlobalScope.examController;
 
 	/**
 	 * @param geoGebraElement
@@ -755,8 +757,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		if (archiveContent.containsKey(GgbFile.STRUCTURE_JSON)) {
 			getAppletParameters().setAttribute("appName", "notes");
 			getAppletFrame().initPageControlPanel(this);
-			getKernel().getConstruction().setProtractor(null);
-			getKernel().getConstruction().setRuler(null);
+			euclidianController.clearMeasurementTools();
 			getAppletFrame().setNotesMode(getMode());
 			if (getPageController() != null) {
 				getPageController().loadSlides(archiveContent);
@@ -1023,9 +1024,8 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		resetFileHandle();
 		resetUI();
 		resetUrl();
-		if (isExam()) {
-			Material material = getExam().getTempStorage().newMaterial();
-			setActiveMaterial(material);
+		if (examController.isExamActive()) {
+			examController.createNewTempMaterial();
 		}
 		setSaved();
 	}
@@ -1419,11 +1419,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	@Override
 	public CommandDispatcherW newCommandDispatcher(Kernel cmdKernel) {
 		return new CommandDispatcherW(cmdKernel);
-	}
-
-	@Override
-	public CommandDispatcher3D newCommand3DDispatcher(Kernel cmdKernel) {
-		return null;
 	}
 
 	/**
@@ -3583,5 +3578,14 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 	public boolean isLockedExam() {
 		return !StringUtil.empty(getAppletParameters().getParamExamMode());
+	}
+
+	/**
+	 * @param category - category name
+	 * @return check if category should be enabled based on customToolbox parameter
+	 */
+	public boolean isToolboxCategoryEnabled(String category) {
+		List tools = getAppletParameters().getDataParamCustomToolbox();
+		return tools.contains(category) || tools.isEmpty();
 	}
 }

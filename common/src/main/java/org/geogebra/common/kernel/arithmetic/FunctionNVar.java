@@ -15,8 +15,8 @@ package org.geogebra.common.kernel.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -542,8 +542,8 @@ public class FunctionNVar extends ValidExpression
 	}
 
 	@Override
-	public HashSet<GeoElement> getVariables(SymbolicMode mode) {
-		return expression.getVariables(mode);
+	public void getVariables(Set<GeoElement> variables, SymbolicMode mode) {
+		expression.getVariables(variables, mode);
 	}
 
 	/**
@@ -837,7 +837,7 @@ public class FunctionNVar extends ValidExpression
 					.getFunctionVariables();
 			for (int i = 0; i < subVars.length; i++) {
 				subExpr.replace(subVars[i],
-						((MyList) rightTree.getLeft()).getListElement(i));
+						((MyList) rightTree.getLeft()).get(i));
 			}
 			return initIneqs(subExpr,  tree, negate);
 		} else {
@@ -1036,7 +1036,7 @@ public class FunctionNVar extends ValidExpression
 			translateX((ExpressionNode) right, vx, varNo);
 		} else if (right instanceof MyList) {
 			for (int i = 0; i < ((MyList) right).size(); i++) {
-				translateX(((MyList) right).getListElement(i).wrap(), vx,
+				translateX(((MyList) right).get(i).wrap(), vx,
 						varNo);
 			}
 		} else if (right instanceof MyVecNode) {
@@ -1132,7 +1132,7 @@ public class FunctionNVar extends ValidExpression
 			dilateX((ExpressionNode) right, vx, varNo);
 		} else if (right instanceof MyList) {
 			for (int i = 0; i < ((MyList) right).size(); i++) {
-				dilateX(((MyList) right).getListElement(i).wrap(), vx, varNo);
+				dilateX(((MyList) right).get(i).wrap(), vx, varNo);
 			}
 		} else if (right instanceof MyVecNode) {
 			dilateX(((MyVecNode) right).getX().wrap(), vx, varNo);
