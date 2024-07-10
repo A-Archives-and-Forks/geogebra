@@ -16,7 +16,7 @@ public class BernsteinBuilder2Var {
 		powerBasisCoeffs = coeffsToBernsteinCoeffs(powerCoeffs, degreeX, degreeY, min, max);
 		BernsteinPolynomial[] bernsteinCoeffs =
 				createBernsteinCoeffs2Var(degreeX, min, max);
-		return new BernsteinPolynomial2Var(bernsteinCoeffs, min, max, degreeX, degreeY);
+		return new BernsteinPolynomial2Var(bernsteinCoeffs, min, max, degreeX);
 	}
 
 	double[][] coeffsFromTwoVarPolynomial(Polynomial polynomial, int degreeX, int degreeY) {
