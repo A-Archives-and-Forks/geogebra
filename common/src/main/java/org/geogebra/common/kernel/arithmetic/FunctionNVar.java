@@ -1564,6 +1564,9 @@ public class FunctionNVar extends ValidExpression
 		}
 	}
 
+	/**
+	 * @return Polynomial representation of this function, null if this is not a polynomial
+	 */
 	public Polynomial getPolynomial() {
 		ExpressionNode lhs = replaceFunctionVarsIn(getExpression());
 		Equation equ = new Equation(kernel, lhs, new MyDouble(kernel, 0));

@@ -34,6 +34,7 @@ public interface BernsteinPolynomial {
 	 * @return the partial derivative of the polynomial with respect to the given variable.
 	 */
 	BernsteinPolynomial derivative(String variable);
+
 	/**
 	 * Splits the polynomial into two.
 	 * Todo describe more
@@ -42,7 +43,7 @@ public interface BernsteinPolynomial {
 	 */
 	BernsteinPolynomial[] split();
 
-/**
+	/**
 	 * Splits the 2 variable polynomial into four, two by each variable
 	 * Todo describe more
 	 *

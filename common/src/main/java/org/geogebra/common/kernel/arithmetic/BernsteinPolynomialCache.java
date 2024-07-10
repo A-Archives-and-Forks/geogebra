@@ -4,6 +4,10 @@ public final class BernsteinPolynomialCache {
 	BernsteinPolynomial[] current;
 	BernsteinPolynomial[] last;
 
+	/**
+	 * Cache with 2 rows
+	 * @param size number of cached polynomials per row
+	 */
 	public BernsteinPolynomialCache(int size) {
 		current = new BernsteinPolynomial[size];
 		last = new BernsteinPolynomial[size];

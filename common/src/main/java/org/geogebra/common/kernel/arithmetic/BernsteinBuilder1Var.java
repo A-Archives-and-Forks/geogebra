@@ -8,7 +8,6 @@ public class BernsteinBuilder1Var {
 
 	private double[] powerBasisCoeffs;
 
-
 	BernsteinPolynomial build(double[] powerCoeffs,
 			int degree, char variable, double min, double max) {
 		powerBasisCoeffs = powerCoeffs;

@@ -485,6 +485,7 @@ public class Polynomial implements HasDebugString {
 		}
 		return deg;
 	}
+
 	/**
 	 * @param varName the variable name.
 	 * @return the degree of the variable,

@@ -1,6 +1,5 @@
 package org.geogebra.common.kernel.arithmetic;
 
-
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.copyArrayTo;
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.divWithBinomials;
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
@@ -14,6 +13,14 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final int degreeY;
 	private final int degree;
 	private final BernsteinPolynomial[] bernsteinCoeffs;
+
+	/**
+	 * @param bernsteinCoeffs coefficients in x
+	 * @param min min value for original x
+	 * @param max max value for original x
+	 * @param degreeX degree in x
+	 * @param degreeY degree in y
+	 */
 	public BernsteinPolynomial2Var(BernsteinPolynomial[] bernsteinCoeffs, double min, double max,
 			int degreeX, int degreeY) {
 		this.min = min;
@@ -96,10 +103,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 				coeffs[i] = bernsteinCoeffs[i].plus(bernsteinPolynomial);
 			}
 		}
-
 		return newInstance(coeffs);
 	}
-
 
 	@Override
 	public int numberOfVariables() {
@@ -195,7 +200,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		return newInstance(shifted);
 	}
 
-
 	private BernsteinPolynomial derivativeX() {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX];
 		for (int i = 0; i < degreeX; i++) {
@@ -203,9 +207,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			BernsteinPolynomial b2 = bernsteinCoeffs[i + 1].multiply(i + 1);
 			derivedCoeffs[i] = b2.plus(b1);
 		}
-		return new BernsteinPolynomial2Var(derivedCoeffs, min, max, degreeX -1, degreeY);
+		return new BernsteinPolynomial2Var(derivedCoeffs, min, max, degreeX - 1, degreeY);
 	}
-
 
 	private BernsteinPolynomial derivativeY() {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX + 1];
@@ -230,7 +233,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 				sb.append(" (");
 				sb.append(c);
 				sb.append(") ");
-			} else if (!"1".equals(c.toString())){
+			} else if (!"1".equals(c.toString())) {
 				sb.append(c);
 			} else {
 				sb.append(" ");
@@ -248,7 +251,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			}
 		}
 		String trimmed = sb.toString().trim();
-		return trimmed.isEmpty() ? "0": trimmed;
+		return trimmed.isEmpty() ? "0" : trimmed;
 	}
 
 	@Override

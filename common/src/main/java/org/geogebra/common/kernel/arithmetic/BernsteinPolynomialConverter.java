@@ -25,7 +25,7 @@ public class BernsteinPolynomialConverter {
 
 	BernsteinPolynomial fromPolynomial(Polynomial polynomial, int degreeX, int degreeY, double min,
 			double max) {
-		if (degreeX !=0 && degreeY != 0) {
+		if (degreeX != 0 && degreeY != 0) {
 			return builder2Var.build(polynomial, degreeX, degreeY, min, max);
 		}
 

@@ -1,4 +1,5 @@
 package org.geogebra.common.kernel.arithmetic;
+
 import org.geogebra.common.util.MyMath;
 
 public class BernsteinBuilder2Var {
@@ -9,8 +10,7 @@ public class BernsteinBuilder2Var {
 		this.builder1Var = builder1Var;
 	}
 
-
-	BernsteinPolynomial build(Polynomial polynomial, int degreeX, int degreeY,
+	BernsteinPolynomial2Var build(Polynomial polynomial, int degreeX, int degreeY,
 			double min, double max) {
 		double[][] powerCoeffs = coeffsFromTwoVarPolynomial(polynomial, degreeX, degreeY);
 		powerBasisCoeffs = coeffsToBernsteinCoeffs(powerCoeffs, degreeX, degreeY, min, max);
@@ -18,7 +18,6 @@ public class BernsteinBuilder2Var {
 				createBernsteinCoeffs2Var(degreeX, min, max);
 		return new BernsteinPolynomial2Var(bernsteinCoeffs, min, max, degreeX, degreeY);
 	}
-
 
 	double[][] coeffsFromTwoVarPolynomial(Polynomial polynomial, int degreeX, int degreeY) {
 		double[][] coeffs = new double[degreeX + 1][degreeY + 1];
@@ -56,8 +55,8 @@ public class BernsteinBuilder2Var {
 		return partialBernsteinCoeffs.current;
 	}
 
-	private BernsteinPolynomial bernsteinCoefficient(int i, int j, int degree, double min, double max,
-			BernsteinPolynomial[] lastValues) {
+	private BernsteinPolynomial bernsteinCoefficient(int i, int j, int degree,
+			double min, double max, BernsteinPolynomial[] lastValues) {
 		if (i == 0 && j == 0) {
 			return powerBasisCoeffs[degree];
 		}

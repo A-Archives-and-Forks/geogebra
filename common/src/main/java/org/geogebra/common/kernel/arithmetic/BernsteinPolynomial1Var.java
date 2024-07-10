@@ -1,6 +1,5 @@
 package org.geogebra.common.kernel.arithmetic;
 
-
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.StringUtil;
 
@@ -11,6 +10,12 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	final char variableName;
 	private final double[] bernsteinCoeffs;
 
+	/**
+	 * @param bernsteinCoeffs coeffs for x^k (1-x)^(degree - k), NOT divided by binomial coeffs
+	 * @param variableName variable name
+	 * @param min min value for original variable
+	 * @param max max value for original variable
+	 */
 	public BernsteinPolynomial1Var(double[] bernsteinCoeffs,
 			char variableName, double min, double max) {
 		this.variableName = variableName;
@@ -19,12 +24,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this.degree = bernsteinCoeffs.length - 1;
 		this.bernsteinCoeffs = bernsteinCoeffs;
 	}
-
-	public BernsteinPolynomial1Var(int degree, char variableName, double min,
-			double max) {
-		this(new double[degree + 1], variableName, min, max);
-	}
-
 
 	@Override
 	public double evaluate(double value) {
@@ -153,7 +152,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial multiplyByX(){
+	public BernsteinPolynomial multiplyByX() {
 		return shiftFrom(1);
 	}
 
@@ -203,7 +202,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			}
 		}
 		String trimmed = sb.toString().trim();
-		return trimmed.isEmpty() ? "0": trimmed;
+		return trimmed.isEmpty() ? "0" : trimmed;
 	}
 
 	static String powerString(String base, int i) {
