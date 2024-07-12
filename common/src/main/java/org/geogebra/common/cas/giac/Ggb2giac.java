@@ -1275,7 +1275,7 @@ public class Ggb2giac {
 		p("Solutions.2", "ggbsort(normal(solve(%0,%1,'!=')))");
 
 		// Root.1 and Solve.1 should be the same
-		String root1 = "ggbsort(normal([op(solve(%0))]))";
+		String root1 = "ggbsort(regroup([op(solve(%0))]))";
 		p("Root.1", root1);
 		p("Solve.1", root1);
 
@@ -1288,8 +1288,8 @@ public class Ggb2giac {
 						// if input equation was only x,interpret as x=0
 						+ "when(type(%0)==DOM_IDENT&&type(%1)==DOM_SYMBOLIC&&%0=='x',(assume(%1),solve(%0=0,x))[size(assume(%1),solve(%0=0,x))-1],"
 						+ "when(size(%1)==1,"
-						+ "flatten1(ggbsort(normal([op(solve(%0,%1))]))),"
-						+ "ggbsort(normal([op(solve(%0,%1))])))))");
+						+ "flatten1(ggbsort(regroup([op(solve(%0,%1))]))),"
+						+ "ggbsort(regroup([op(solve(%0,%1))])))))");
 		// solve with assumptions
 		p("Solve.3",
 				// accepted input
