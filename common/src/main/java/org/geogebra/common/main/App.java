@@ -3762,7 +3762,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		case ADJUST_WIDGETS:
 			return false;
 
-		/** GGB-2255 */
+		/* GGB-2255 */
 		case GEOMETRIC_DISCOVERY:
 			return prerelease;
 
@@ -3772,7 +3772,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
        // *********************************************************
        // **********************************************************************
 
-		/** G3D-343 */
+		/* G3D-343 */
 		case G3D_SELECT_META:
 			return false;
 
