@@ -229,6 +229,14 @@ public final class Spreadsheet implements TabularDataChangeListener {
 		controller.moveRight(false);
 	}
 
+	/**
+	 * Clears the selection, committing any pending cell edits beforehand.
+	 */
+	public void clearSelection() {
+		controller.saveContentAndHideCellEditor();
+		controller.clearSelection();
+	}
+
 	void selectRow(int row, boolean extend, boolean add) {
 		controller.selectRow(row, extend, add);
 	}
@@ -245,11 +253,18 @@ public final class Spreadsheet implements TabularDataChangeListener {
 		controller.setViewportAdjustmentHandler(mockForScrollable);
 	}
 
-	public void onEnter() {
-		controller.onEnter();
-	}
-
 	public void scrollForPasteSelectionIfNeeded() {
 		controller.scrollForPasteSelectionIfNeeded();
+	}
+
+	/**
+	 * Scroll editor into view if visible
+	 */
+	public void scrollEditorIntoView() {
+		controller.scrollEditorIntoView();
+	}
+
+	public void saveContentAndHideCellEditor() {
+		controller.saveContentAndHideCellEditor();
 	}
 }
