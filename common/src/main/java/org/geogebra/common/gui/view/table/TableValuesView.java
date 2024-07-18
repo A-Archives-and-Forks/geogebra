@@ -292,7 +292,7 @@ public class TableValuesView implements TableValues, SettingListener {
 			} else {
 				model.removeEvaluatable(evaluatable, false);
 			}
-		} else if (Algos.isUsedFor(Commands.ParseToNumber, geo)
+		} else if ((geo.isIndependent() || Algos.isUsedFor(Commands.ParseToNumber, geo))
 				&& (geo instanceof GeoNumeric || geo instanceof GeoText)) {
 			model.maybeUpdateListElement(geo);
 		}
