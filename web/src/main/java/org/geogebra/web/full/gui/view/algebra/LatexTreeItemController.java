@@ -67,6 +67,17 @@ public class LatexTreeItemController extends RadioTreeItemController
 				item.updateGUIfocus(true);
 			}
 		});
+		if (event == null) {
+			keepFocusInApp();
+		}
+	}
+
+	private void keepFocusInApp() {
+		if (item.geo != null) {
+			app.getAccessibilityManager().focusGeo(item.geo);
+		} else {
+			app.getActiveEuclidianView().requestFocus();
+		}
 	}
 
 	@Override
@@ -249,7 +260,7 @@ public class LatexTreeItemController extends RadioTreeItemController
 		}
 		if (item.geo != null || StringUtil.empty(item.getText())) {
 			onBlur(null);
-			app.getAccessibilityManager().focusGeo(item.geo);
+
 			return true;
 		}
 		return false;
