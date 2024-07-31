@@ -486,6 +486,32 @@ public class Polynomial implements HasDebugString {
 		return deg;
 	}
 
+	/**
+	 * @param varName the variable name.
+	 * @return the degree of the variable,
+	 * For example degree('y') is 2 for x^3 y^2
+	 */
+	int degree(char varName) {
+		// a quadratic Polynomial may only have terms with one or two variables
+		// or constant terms
+		int deg = 0;
+		int varLen;
+
+		if (terms.size() == 0) {
+			return -1;
+		}
+
+		Iterator<Term> i = terms.iterator();
+		while (i.hasNext()) {
+			Term t = i.next();
+			varLen = t.degree(varName);
+			if (varLen > deg) {
+				deg = varLen;
+			}
+		}
+		return deg;
+	}
+
 	@Override
 	public String toString() {
 		return "POLY" + toString(StringTemplate.defaultTemplate);
