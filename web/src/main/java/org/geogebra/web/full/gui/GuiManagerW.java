@@ -2254,6 +2254,15 @@ public class GuiManagerW extends GuiManager
 	}
 
 	@Override
+	public boolean isTableViewShowing() {
+		if (!app.getConfig().hasTableView() || !app.isUnbundled() || !showView(App.VIEW_ALGEBRA)) {
+			return false;
+		}
+		ToolbarPanel toolbar = getUnbundledToolbar();
+		return toolbar.getSelectedTabId() == DockPanelData.TabIds.TABLE;
+	}
+
+	@Override
 	public boolean toolbarHasImageMode() {
 		if (!app.showToolBar()) {
 			return false;
