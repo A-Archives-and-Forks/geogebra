@@ -63,6 +63,28 @@ public enum ExamType {
 		}
 	},
 
+	REALSCHULE() {
+		@Override
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "Bayern Realschulrechner";
+		}
+
+		@Override
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "Realschule";
+		}
+
+		@Override
+		public void applyRestrictions(ExamRestrictionModel model) {
+			// deprecated, will be removed
+		}
+
+		@Override
+		public void setDefaultSubAppCode(ExamRestrictionModel model) {
+			// deprecated, will be removed
+		}
+	},
+
 	MMS() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
