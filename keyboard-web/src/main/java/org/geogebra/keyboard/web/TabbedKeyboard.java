@@ -39,10 +39,6 @@ public class TabbedKeyboard extends FlowPanel
 		implements ButtonHandler, RequiresResize {
 
 	/**
-	 * small height
-	 */
-	public static final int SMALL_HEIGHT = 131;
-	/**
 	 * big height
 	 */
 	public static final int BIG_HEIGHT = 186;
@@ -61,7 +57,7 @@ public class TabbedKeyboard extends FlowPanel
 	 * localization
 	 */
 	LocalizationI locale;
-	private boolean isSmallKeyboard;
+
 	/**
 	 * application
 	 */
@@ -564,14 +560,6 @@ public class TabbedKeyboard extends FlowPanel
 		}
 		// -2 for applet border
 		setWidth(hasKeyboard.getInnerWidth() + "px");
-		boolean shouldBeSmall = hasKeyboard.needsSmallKeyboard();
-		if (shouldBeSmall && !isSmallKeyboard) {
-			addStyleName("lowerHeight");
-			this.isSmallKeyboard = true;
-		} else if (!shouldBeSmall && isSmallKeyboard) {
-			removeStyleName("lowerHeight");
-			this.isSmallKeyboard = false;
-		}
 		updateHeight();
 		for (int i = 0; tabs != null && i < tabs.getWidgetCount(); i++) {
 			Widget wdgt = tabs.getWidget(i);

@@ -146,9 +146,7 @@ public final class KeyboardManager
 
 	@Override
 	public int estimateHiddenKeyboardHeight() {
-		int keyboardContentHeight = app.needsSmallKeyboard() ? TabbedKeyboard.SMALL_HEIGHT
-				: TabbedKeyboard.BIG_HEIGHT;
-		return keyboardContentHeight + SWITCHER_HEIGHT;
+		return TabbedKeyboard.BIG_HEIGHT + SWITCHER_HEIGHT;
 	}
 
 	/**
