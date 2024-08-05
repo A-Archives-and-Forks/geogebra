@@ -217,6 +217,11 @@ public final class SpreadsheetController {
 		}
 	}
 
+	private boolean isValidPointerLocation(int x, int y) {
+		return x >= 0 && x + viewport.getMinX() < layout.getTotalWidth()
+				&& y >= 0 && y + viewport.getMinY() < layout.getTotalHeight();
+	}
+
 	/**
 	 * @param x x-coordinate relative to viewport
 	 * @param y y-coordinate relative to viewport
@@ -225,6 +230,9 @@ public final class SpreadsheetController {
 	// TODO change to double (APPS-5637)
 	// TODO group all handleXxx methods together
 	public void handlePointerDown(int x, int y, Modifiers modifiers) {
+		if (!isValidPointerLocation(x, y)) {
+			return;
+		}
 		if (isEditorActive()) {
 			saveContentAndHideCellEditor();
 		}
@@ -332,6 +340,9 @@ public final class SpreadsheetController {
 	 * @param modifiers event modifiers
 	 */
 	public void handlePointerUp(int x, int y, Modifiers modifiers) {
+		if (!isValidPointerLocation(x, y)) {
+			return;
+		}
 		switch (dragState.cursor) {
 		case RESIZE_X:
 			if (isSelected(-1, dragState.startColumn)) {
@@ -595,6 +606,9 @@ public final class SpreadsheetController {
 	 * @param modifiers alt/ctrl/shift
 	 */
 	public void handlePointerMove(int x, int y, Modifiers modifiers) {
+		if (!isValidPointerLocation(x, y)) {
+			return;
+		}
 		lastPointerPositionX = x;
 		lastPointerPositionY = y;
 		switch (dragState.cursor) {
