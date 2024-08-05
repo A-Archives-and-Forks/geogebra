@@ -1,5 +1,8 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoFunction;
+import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 
 public class BernsteinPolynomialConverter {
@@ -11,19 +14,34 @@ public class BernsteinPolynomialConverter {
 		builder2Var = new BernsteinBuilder2Var(builder1Var);
 	}
 
+
 	/**
 	 *
-	 * @param curve to convert
+	 * @param geo to convert
 	 * @param min of the limit
 	 * @param max of the limit
-	 * @return a Bernstein polynomial equivalent to curve.
+	 * @return the equivalent Bernstein polynomial of geo if possible, null otherwise.
 	 */
-	public BernsteinPolynomial fromImplicitCurve(GeoImplicitCurve curve, double min, double max) {
+	public BernsteinPolynomial from(GeoElement geo, double min, double max) {
+		if (geo.isGeoImplicitCurve()) {
+			GeoImplicitCurve curve = ((GeoImplicitCurve) geo);
+			return fromImplicitCurve(curve, min, max);
+		} else if (geo instanceof GeoFunctionNVar) {
+			FunctionNVar function = ((GeoFunctionNVar) geo).getFunction();
+			return function != null ? fromFunctionNVar(function, min, max) : null;
+		} else if (geo instanceof GeoFunction) {
+			Function function = ((GeoFunction) geo).getFunction();
+			return function != null ? fromFunctionNVar(function, min, max) : null;
+		}
+		return null;
+	}
+
+	private BernsteinPolynomial fromImplicitCurve(GeoImplicitCurve curve, double min, double max) {
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
 		return fromFunctionNVar(functionNVar, min, max);
 	}
 
-	BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar,
+	private BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar,
 			double min, double max) {
 		Polynomial polynomial = functionNVar.getPolynomial();
 		return fromPolynomial(polynomial, polynomial.degree('x'),

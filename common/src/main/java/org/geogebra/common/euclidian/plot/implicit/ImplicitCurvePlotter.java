@@ -13,7 +13,7 @@ public class ImplicitCurvePlotter {
 	private BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
 
 	public ImplicitCurvePlotter(GeoImplicitCurve curve, EuclidianViewBounds bounds) {
-		polynomial = converter.fromImplicitCurve(curve, bounds.getXmin(), bounds.getXmax());
+		polynomial = converter.from(curve, bounds.getXmin(), bounds.getXmax());
 		context = new CurvePlotContext(new CurvePlotBoundingBox(
 				bounds.getXmin(), bounds.getYmin(),
 				bounds.getXmax(), bounds.getYmax()),

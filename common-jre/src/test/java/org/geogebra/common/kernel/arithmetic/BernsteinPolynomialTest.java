@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoFunction;
-import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.util.debug.Log;
 import org.junit.Before;
@@ -32,14 +30,8 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		GeoElement geo = add(definition);
 		if (geo.isGeoImplicitCurve()) {
 			curve = ((GeoImplicitCurve) geo);
-			bernstein = converter.fromImplicitCurve(curve, view.getXmin(), view.getXmax());
-		} else if (geo instanceof GeoFunctionNVar) {
-			bernstein = converter.fromFunctionNVar(((GeoFunctionNVar) geo).getFunction(),
-					view.getXmin(), view.getXmax());
-		} else if (geo instanceof GeoFunction) {
-			bernstein = converter.fromFunctionNVar(((GeoFunction) geo).getFunction(),
-					view.getXmin(), view.getXmax());
 		}
+		bernstein = converter.from(geo, view.getXmin(), view.getXmax());
 	}
 
 	@Test

@@ -15,12 +15,13 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 	@Override
 	public CurvePlotContext[] split() {
-		BernsteinPolynomial[] polynomials = polynomial.split();
+		BernsteinPolynomial[][] polynomials = polynomial.split2D();
 		CurvePlotBoundingBox[] boxes = boundingBox.split();
 		CurvePlotContext[] contexts = new CurvePlotContext[4];
-		for (int i = 0; i < polynomials.length; i++) {
-			contexts[i] = new CurvePlotContext(boxes[i], polynomials[i]);
-		}
+		contexts[0] = new CurvePlotContext(boxes[0], polynomials[0][0]);
+		contexts[1] = new CurvePlotContext(boxes[1], polynomials[0][1]);
+		contexts[2] = new CurvePlotContext(boxes[2], polynomials[1][0]);
+		contexts[3] = new CurvePlotContext(boxes[3], polynomials[1][1]);
 		return contexts;
 	}
 
@@ -45,5 +46,9 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 	private void linkSolutions() {
 
+	}
+
+	double evaluatePolynomAt(int x, double y) {
+		return polynomial.evaluate(x, y);
 	}
 }
