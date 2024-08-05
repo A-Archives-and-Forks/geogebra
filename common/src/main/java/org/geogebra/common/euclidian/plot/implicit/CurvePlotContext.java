@@ -24,19 +24,26 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 		return contexts;
 	}
 
-	public void classifyCells() {
+	public void process() {
+		classifyCells();
+		findSolutionsInEdges();
+		findSolutionsInBox();
+		linkSolutions();
+	}
+
+	private void classifyCells() {
 
 	}
 
-	public void findSolutionsInEdges() {
+	private void findSolutionsInEdges() {
 
 	}
 
-	public void findSolutionsInBox() {
+	private void findSolutionsInBox() {
 
 	}
 
-	public void linkSolutions() {
+	private void linkSolutions() {
 
 	}
 }

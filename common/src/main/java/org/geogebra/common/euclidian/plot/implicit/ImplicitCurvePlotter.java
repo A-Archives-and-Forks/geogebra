@@ -1,5 +1,6 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
+import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
@@ -19,18 +20,17 @@ public class ImplicitCurvePlotter {
 				polynomial);
 	}
 
-	public void plot() {
-		for (int i = 0; i < MAX_RECURSION; i++) {
-			update();
-		}
+	public void draw(GGraphics2D g2) {
+		update();
+		drawResults(g2);
 	}
 
-	private void update() {
+	private void drawResults(GGraphics2D g2) {
+	}
+
+	public void update() {
 		for (CurvePlotContext ctx: context.split()) {
-			ctx.classifyCells();
-			ctx.findSolutionsInEdges();
-			ctx.findSolutionsInBox();
-			ctx.linkSolutions();
+			ctx.process();
 		}
 	}
 }
