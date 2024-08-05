@@ -4,7 +4,7 @@ package org.geogebra.common.kernel.arithmetic;
  * Interface representing Bernstein polynomials and its operations.
  *
  */
-public interface BernsteinPolynomial {
+public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 
 	/**
 	 * Evaluates the polynomial.
@@ -41,6 +41,7 @@ public interface BernsteinPolynomial {
 	 *
 	 * @return the two polynomials in array.
 	 */
+	@Override
 	BernsteinPolynomial[] split();
 
 	/**

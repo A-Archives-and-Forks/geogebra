@@ -11,7 +11,14 @@ public class BernsteinPolynomialConverter {
 		builder2Var = new BernsteinBuilder2Var(builder1Var);
 	}
 
-	BernsteinPolynomial fromImplicitCurve(GeoImplicitCurve curve, double min, double max) {
+	/**
+	 *
+	 * @param curve to convert
+	 * @param min of the limit
+	 * @param max of the limit
+	 * @return a Bernstein polynomial equivalent to curve.
+	 */
+	public BernsteinPolynomial fromImplicitCurve(GeoImplicitCurve curve, double min, double max) {
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
 		return fromFunctionNVar(functionNVar, min, max);
 	}
