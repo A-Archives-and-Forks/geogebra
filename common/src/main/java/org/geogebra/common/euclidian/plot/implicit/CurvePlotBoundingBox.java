@@ -56,4 +56,28 @@ public class CurvePlotBoundingBox implements Splittable<CurvePlotBoundingBox> {
 				", ymax=" + ymax +
 				'}';
 	}
+
+	public double getXmin() {
+		return xmin;
+	}
+
+	public double getYmin() {
+		return ymin;
+	}
+
+	public double getXmax() {
+		return xmax;
+	}
+
+	public double getYmax() {
+		return ymax;
+	}
+
+	public double getXHalf() {
+		return xHalf;
+	}
+
+	public double getYHalf() {
+		return yHalf;
+	}
 }

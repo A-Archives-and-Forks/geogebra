@@ -19,8 +19,8 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 		CurvePlotBoundingBox[] boxes = boundingBox.split();
 		CurvePlotContext[] contexts = new CurvePlotContext[4];
 		contexts[0] = new CurvePlotContext(boxes[0], polynomials[0][0]);
-		contexts[1] = new CurvePlotContext(boxes[1], polynomials[0][1]);
-		contexts[2] = new CurvePlotContext(boxes[2], polynomials[1][0]);
+		contexts[1] = new CurvePlotContext(boxes[1], polynomials[1][0]);
+		contexts[2] = new CurvePlotContext(boxes[2], polynomials[0][1]);
 		contexts[3] = new CurvePlotContext(boxes[3], polynomials[1][1]);
 		return contexts;
 	}
@@ -46,9 +46,5 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 	private void linkSolutions() {
 
-	}
-
-	double evaluatePolynomAt(int x, double y) {
-		return polynomial.evaluate(x, y);
 	}
 }
