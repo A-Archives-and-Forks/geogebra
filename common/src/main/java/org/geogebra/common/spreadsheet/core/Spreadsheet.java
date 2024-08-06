@@ -32,7 +32,7 @@ public final class Spreadsheet implements TabularDataChangeListener {
 			@Nonnull CellRenderableFactory rendererFactory, @CheckForNull UndoProvider undoProvider) {
 		controller = new SpreadsheetController(tabularData);
 		renderer = new SpreadsheetRenderer(controller.getLayout(), rendererFactory,
-				controller.getStyle());
+				controller.getStyle(), tabularData);
 		setViewport(new Rectangle(0, 0, 0, 0));
 		tabularData.addChangeListener(this);
 		if (undoProvider != null) {
@@ -80,6 +80,11 @@ public final class Spreadsheet implements TabularDataChangeListener {
 			renderer.drawSelectionBorder(dragPasteSelection, graphics, viewport,
 					controller.getLayout(), false, true);
 		}
+
+		Rectangle editorBounds = controller.getEditorBounds();
+		if (editorBounds != null) {
+			renderer.drawEditorBorder(editorBounds, graphics);
+		}
 	}
 
 	void drawCells(GGraphics2D graphics, Rectangle viewport) {
@@ -118,6 +123,19 @@ public final class Spreadsheet implements TabularDataChangeListener {
 		graphics.setColor(controller.getStyle().getHeaderBackgroundColor());
 		graphics.fillRect(0, 0, (int) layout.getRowHeaderWidth(),
 				(int) layout.getColumnHeaderHeight());
+
+		drawErrorCells(graphics, portion, offsetX, offsetY);
+	}
+
+	private void drawErrorCells(GGraphics2D graphics, TableLayout.Portion portion,
+			double offsetX, double offsetY) {
+		for (int column = portion.fromColumn; column <= portion.toColumn; column++) {
+			for (int row = portion.fromRow; row <= portion.toRow; row++) {
+				if (controller.hasError(row, column)) {
+					renderer.drawErrorCell(row, column, graphics, offsetX, offsetY);
+				}
+			}
+		}
 	}
 
 	private void drawContentCells(GGraphics2D graphics, TableLayout.Portion portion,
@@ -126,7 +144,7 @@ public final class Spreadsheet implements TabularDataChangeListener {
 		for (int column = portion.fromColumn; column <= portion.toColumn; column++) {
 			for (int row = portion.fromRow; row <= portion.toRow; row++) {
 				renderer.drawCell(row, column, graphics,
-						controller.contentAt(row, column));
+						controller.contentAt(row, column), controller.hasError(row, column));
 			}
 		}
 		graphics.translate(offsetX, offsetY);
@@ -236,6 +254,13 @@ public final class Spreadsheet implements TabularDataChangeListener {
 		controller.clearSelection();
 	}
 
+	/**
+	 * Clears the selection only.
+	 */
+	public void clearSelectionOnly() {
+		controller.clearSelection();
+	}
+
 	void selectRow(int row, boolean extend, boolean add) {
 		controller.selectRow(row, extend, add);
 	}
@@ -265,5 +290,13 @@ public final class Spreadsheet implements TabularDataChangeListener {
 
 	public void saveContentAndHideCellEditor() {
 		controller.saveContentAndHideCellEditor();
+	}
+
+	public SpreadsheetController getController() {
+		return controller;
+	}
+
+	public Rectangle getViewport() {
+		return controller.getViewport();
 	}
 }

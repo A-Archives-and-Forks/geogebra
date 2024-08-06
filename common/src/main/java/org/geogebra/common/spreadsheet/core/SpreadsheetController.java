@@ -101,6 +101,10 @@ public final class SpreadsheetController {
 		return style;
 	}
 
+	@CheckForNull Rectangle getEditorBounds() {
+		return editor != null ? editor.bounds : null;
+	}
+
 	/**
 	 * Visible for tests
 	 * @return {@link ContextMenuItems}
@@ -207,11 +211,11 @@ public final class SpreadsheetController {
 	 * @return true if the cell editor is currently visible.
 	 */
 	public boolean isEditorActive() {
-		return editor != null && editor.isVisible;
+		return editor != null && editor.isVisible();
 	}
 
 	void saveContentAndHideCellEditor() {
-		if (editor != null && editor.isVisible) {
+		if (editor != null && editor.isVisible()) {
 			editor.commit();
 			editor.hide();
 		}
@@ -291,7 +295,7 @@ public final class SpreadsheetController {
 	}
 
 	void scrollEditorIntoView() {
-		if (viewportAdjuster != null && editor != null && editor.isVisible) {
+		if (viewportAdjuster != null && editor != null && editor.isVisible()) {
 			viewport = viewportAdjuster.adjustViewportIfNeeded(editor.row, editor.column, viewport);
 			editor.updatePosition();
 		}
@@ -656,12 +660,19 @@ public final class SpreadsheetController {
 
 	private void extendSelectionByDrag(int x, int y, boolean addSelection) {
 		if (dragState.startColumn >= 0 || dragState.startRow >= 0) {
-			int row = findRowOrHeader(y);
-			int column = findColumnOrHeader(x);
-
+			int row = Math.min(findRowOrHeader(y), tabularData.numberOfRows() - 1);
+			int column = Math.min(findColumnOrHeader(x), tabularData.numberOfColumns() - 1);
+			if ((row == -1 && dragState.startRow != -1)
+					|| (column == -1 && dragState.startColumn != -1)) {
+				// TODO autoscroll
+				return;
+			}
 			TabularRange range =
 					new TabularRange(dragState.startRow, dragState.startColumn, row, column);
 			selectionController.select(new Selection(range), false, addSelection);
+			if (viewportAdjuster != null) {
+				viewport = viewportAdjuster.adjustViewportIfNeeded(row, column, viewport);
+			}
 		}
 	}
 
@@ -891,7 +902,7 @@ public final class SpreadsheetController {
 	private final class Editor {
 		private final @Nonnull SpreadsheetCellEditor cellEditor;
 		private @CheckForNull SpreadsheetMathFieldAdapter mathFieldAdapter;
-		boolean isVisible;
+		@CheckForNull Rectangle bounds;
 		int row;
 		int column;
 
@@ -911,27 +922,23 @@ public final class SpreadsheetController {
 			mathField.addMathFieldListener(mathFieldAdapter);
 			mathField.setUnhandledArrowListener(mathFieldAdapter);
 
-			cellEditor.show(getEditorBounds(), viewport, tabularData.getAlignment(row, column));
-			isVisible = true;
+			bounds = layout.getBounds(new TabularRange(row, column), viewport);
+			cellEditor.show(bounds.insetBy(1, 1), viewport, tabularData.getAlignment(row, column));
 		}
 
 		void updatePosition() {
-			cellEditor.updatePosition(getEditorBounds(), viewport);
-		}
-
-		private Rectangle getEditorBounds() {
-			return layout.getBounds(row, column)
-					.insetBy(1, 1) // don't overdraw thick selection border
-					.translatedBy(-viewport.getMinX() + layout.getRowHeaderWidth(),
-							-viewport.getMinY() + layout.getColumnHeaderHeight());
+			bounds = layout.getBounds(new TabularRange(row, column), viewport);
+			cellEditor.updatePosition(bounds.insetBy(1, 1), viewport);
 		}
 
 		void hide() {
 			cellEditor.getMathField().removeMathFieldListener(mathFieldAdapter);
-			// flag needs to be set *before* hiding since hiding may change layout (keyboard closed)
-			// and during layout update we may need to query this flag
-			isVisible = false;
 			cellEditor.hide();
+			bounds = null;
+		}
+
+		boolean isVisible() {
+			return bounds != null;
 		}
 
 		void clearInput() {
@@ -947,5 +954,9 @@ public final class SpreadsheetController {
 				mathFieldAdapter.commitInput();
 			}
 		}
+	}
+
+	public boolean hasError(int row, int column) {
+		return tabularData.hasError(row, column);
 	}
 }
