@@ -562,12 +562,6 @@ public class EuclidianStyleBarW extends StyleBarW2
 		add(btnDelete);
 	}
 
-	protected void closeLabelPopup() {
-		if (btnLabel != null && btnLabel.getMyPopup().isShowing()) {
-			btnLabel.getMyPopup().hide();
-		}
-	}
-
 	// For unbundled apps: three dot button instead of view dropdown
 	private void addContextMenuButton() {
 		if (btnContextMenu == null) {
@@ -587,10 +581,6 @@ public class EuclidianStyleBarW extends StyleBarW2
 
 	private boolean isFocusedGroupElement() {
 		return app.getSelectionManager().getFocusedGroupElement() != null;
-	}
-
-	protected int getContextMenuButtonWidth() {
-		return btnContextMenu == null ? 0 : btnContextMenu.getOffsetWidth();
 	}
 
 	/*
