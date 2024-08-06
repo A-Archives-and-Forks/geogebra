@@ -105,6 +105,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
+	public boolean hasSolution() {
+		return false;
+	}
+
+	@Override
 	public BernsteinPolynomial derivative(String variable) {
 		if ("x".equals(variable)) {
 			return derivativeX();

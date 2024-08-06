@@ -173,6 +173,15 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
+	public boolean hasSolution() {
+		double count = 0;
+		for (int i = 0; i < degree + 1; i++) {
+			count += Math.signum(bernsteinCoeffs[i]);
+		}
+		return Math.abs(count) != degree + 1;
+	}
+
+	@Override
 	public String toString() {
 		if (isConstant()) {
 			return "" + (int) bernsteinCoeffs[0];

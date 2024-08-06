@@ -100,4 +100,10 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 	 * @return the number of variables of Bernstein polynomial;
 	 */
 	int numberOfVariables();
+
+	/**
+	 *
+	 * @return if the polynomial has solution at all.
+	 */
+	boolean hasSolution();
 }

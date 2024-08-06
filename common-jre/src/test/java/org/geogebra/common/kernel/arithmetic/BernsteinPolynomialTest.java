@@ -240,4 +240,26 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	private void splitShouldBeSame(double actual, double x, double y) {
 		assertEquals(bernstein.evaluate(x, y), actual, 1E-6);
 	}
+
+	@Test
+	public void testHasSolution() {
+		shouldHaveNoSolution(2, 8, 12, 7);
+		shouldHaveNoSolution(-2, -3, -0.75, -7);
+		shouldHaveSolution(2, -8, 12, 7);
+		shouldHaveSolution(-1, 8, 12, 7);
+		shouldHaveSolution(-0.2, -8, -12, 7);
+	}
+
+	private void shouldHaveSolution(double... bcoeffs) {
+		testSolution(true, bcoeffs);
+	}
+
+	private void shouldHaveNoSolution(double... bcoeffs) {
+		testSolution(false, bcoeffs);
+	}
+
+	private void testSolution(boolean shouldHave, double... bcoeffs) {
+		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x', 0, 1);
+		assertEquals(shouldHave, bernstein.hasSolution());
+	}
 }
