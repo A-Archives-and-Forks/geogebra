@@ -22,7 +22,6 @@ import org.geogebra.common.kernel.geos.GeoEmbed;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.SelectionManager;
-import org.w3c.dom.Element;
 
 import com.google.j2objc.annotations.Weak;
 
@@ -360,13 +359,15 @@ public class StylebarPositioner {
 		return null;
 	}
 
-
-
-
-
-
+	/**
+	 * posiotion quickstylebar
+	 * @param styleBar - stylebar
+	 * @param offsetWidth - offset width of parent
+	 * @param offsetHeight - offset height of stylebar
+	 * @param positioner - callback to update position of stylebar
+	 */
 	public void positionDynStylebar(EuclidianStyleBar styleBar, int offsetWidth,
-			int offsetHeight, BiConsumer positionSetter) {
+			int offsetHeight, BiConsumer positioner) {
 		List<GeoElement> activeGeoList = createActiveGeoList();
 		if (activeGeoList == null || activeGeoList.size() == 0) {
 			styleBar.setVisible(false);
@@ -374,16 +375,8 @@ public class StylebarPositioner {
 		}
 
 		if (app.getMode() == EuclidianConstants.MODE_SELECT) {
-			GRectangle selectionRectangle = app.getActiveEuclidianView()
-					.getSelectionRectangle();
-			if (selectionRectangle != null) {
-				GPoint newPos = calculatePosition(selectionRectangle, false, false,
-						offsetWidth, offsetHeight);
-				if (newPos != null) {
-					positionSetter.accept(newPos.x, newPos.y);
-				}
-				return;
-			}
+			setStylebarPositionBasedSelectionRectangle(offsetWidth, offsetHeight, positioner);
+			return;
 		}
 
 		GPoint newPos = null, nextPos;
@@ -395,17 +388,7 @@ public class StylebarPositioner {
 			// duplicate a geo, which has descendant.
 			if (geo.isEuclidianVisible()) {
 				hasVisibleGeo = true;
-				if (geo instanceof GeoFunction || (geo.isGeoLine()
-						&& !geo.isGeoSegment())) {
-					if (euclidianView.getHits().contains(geo)) {
-						nextPos = calculatePosition(null, false, true, offsetWidth, offsetHeight);
-						oldPos = nextPos;
-					} else {
-						nextPos = null;
-					}
-				} else {
-					nextPos = fromDrawable(geo, offsetWidth, offsetHeight);
-				}
+				nextPos = getPostionFromGeo(geo, offsetWidth, offsetHeight);
 
 				if (newPos == null) {
 					newPos = nextPos;
@@ -424,7 +407,38 @@ public class StylebarPositioner {
 		}
 
 		if (newPos != null) {
-			positionSetter.accept(newPos.x, newPos.y);
+			positioner.accept(newPos.x, newPos.y);
+		}
+	}
+
+	private GPoint getPostionFromGeo(GeoElement geo, int offsetWidth, int offsetHeight) {
+		GPoint nextPos = null;
+
+		if (geo instanceof GeoFunction || (geo.isGeoLine()
+				&& !geo.isGeoSegment())) {
+			if (euclidianView.getHits().contains(geo)) {
+				nextPos = calculatePosition(null, false, true, offsetWidth, offsetHeight);
+				oldPos = nextPos;
+			} else {
+				nextPos = null;
+			}
+		} else {
+			nextPos = fromDrawable(geo, offsetWidth, offsetHeight);
+		}
+
+		return nextPos;
+	}
+
+	private void setStylebarPositionBasedSelectionRectangle(int offsetWidth, int offsetHeight,
+			BiConsumer positioner) {
+		GRectangle selectionRectangle = app.getActiveEuclidianView()
+				.getSelectionRectangle();
+		if (selectionRectangle != null) {
+			GPoint newPos = calculatePosition(selectionRectangle, false, false,
+					offsetWidth, offsetHeight);
+			if (newPos != null) {
+				positioner.accept(newPos.x, newPos.y);
+			}
 		}
 	}
 
