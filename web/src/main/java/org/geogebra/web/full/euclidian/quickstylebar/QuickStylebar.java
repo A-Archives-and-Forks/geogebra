@@ -70,7 +70,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		styleAndRegisterButton(contextMenuBtn);
 	}
 
-	private ContextMenuGeoElementW createContextMenu(IconButton	contextMenuBtn) {
+	private ContextMenuGeoElementW createContextMenu(IconButton contextMenuBtn) {
 		ContextMenuGeoElementW contextMenu = ((GuiManagerW) getApp().getGuiManager())
 				.getPopupMenu(ev.getEuclidianController().getAppSelectedGeos());
 		GPopupPanel popupPanel = contextMenu.getWrappedPopup().getPopupPanel();
