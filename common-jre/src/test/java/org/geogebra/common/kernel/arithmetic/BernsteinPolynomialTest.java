@@ -242,24 +242,28 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testHasSolution() {
+	public void testHasNoSolution() {
 		shouldHaveNoSolution(2, 8, 12, 7);
 		shouldHaveNoSolution(-2, -3, -0.75, -7);
-		shouldHaveSolution(2, -8, 12, 7);
-		shouldHaveSolution(-1, 8, 12, 7);
-		shouldHaveSolution(-0.2, -8, -12, 7);
 	}
 
-	private void shouldHaveSolution(double... bcoeffs) {
-		testSolution(true, bcoeffs);
+	@Test
+	public void testMightHaveSolution() {
+		mightHaveSolution(2, -8, 12, 7);
+		mightHaveSolution(-1, 8, 12, 7);
+		mightHaveSolution(-0.2, -8, -12, 7);
+	}
+
+	private void mightHaveSolution(double... bcoeffs) {
+		testSolution(false, bcoeffs);
 	}
 
 	private void shouldHaveNoSolution(double... bcoeffs) {
-		testSolution(false, bcoeffs);
+		testSolution(true, bcoeffs);
 	}
 
 	private void testSolution(boolean shouldHave, double... bcoeffs) {
 		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x', 0, 1);
-		assertEquals(shouldHave, bernstein.hasSolution());
+		assertEquals(shouldHave, bernstein.hasNoSolution());
 	}
 }

@@ -103,7 +103,7 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 
 	/**
 	 *
-	 * @return if the polynomial has solution at all.
+	 * @return true if the polynomial has no solution.
 	 */
-	boolean hasSolution();
+	boolean hasNoSolution();
 }

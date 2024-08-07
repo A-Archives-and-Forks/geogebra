@@ -6,11 +6,23 @@ import org.geogebra.common.kernel.arithmetic.Splittable;
 public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	CurvePlotBoundingBox boundingBox;
 	BernsteinPolynomial polynomial;
+	private BernsteinPolynomial dx;
+	private BernsteinPolynomial dy;
+	private ContextCass contextCass = ContextCass.NONE;
+
+	enum ContextCass {
+		NONE,
+		CELL0,
+		CELL1,
+		CELL2
+	}
 
 	public CurvePlotContext(CurvePlotBoundingBox box, BernsteinPolynomial polynomial) {
-
 		boundingBox = box;
 		this.polynomial = polynomial;
+		dx = polynomial.derivative("x");
+		dy = polynomial.derivative("y");
+		contextCass = classify();
 	}
 
 	@Override
@@ -26,14 +38,21 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	}
 
 	public void process() {
-		classifyCells();
 		findSolutionsInEdges();
 		findSolutionsInBox();
 		linkSolutions();
 	}
 
-	private void classifyCells() {
+	private ContextCass classify() {
+		if (!polynomial.hasNoSolution()) {
+			return ContextCass.CELL2;
+		}
 
+		if (dx.hasNoSolution() != dy.hasNoSolution()) {
+			return ContextCass.CELL1;
+		}
+
+		return contextCass = ContextCass.CELL0;
 	}
 
 	private void findSolutionsInEdges() {
@@ -46,5 +65,17 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 	private void linkSolutions() {
 
+	}
+
+	@Override
+	public String toString() {
+		return "CurvePlotContext{" +
+				"boundingBox=" + boundingBox +
+				", polynomial=" + polynomial +
+//				", dx=" + dx +
+//				", dy=" + dy +
+				", hasSolution: " + polynomial.hasNoSolution() +
+				", contextCass=" + contextCass +
+				'}';
 	}
 }

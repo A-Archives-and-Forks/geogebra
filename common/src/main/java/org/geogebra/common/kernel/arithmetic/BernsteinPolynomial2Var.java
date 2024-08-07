@@ -105,8 +105,13 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public boolean hasSolution() {
-		return false;
+	public boolean hasNoSolution() {
+		int count = 0;
+		for (BernsteinPolynomial bcoeff : bernsteinCoeffs) {
+			count = count + (bcoeff.hasNoSolution() ? 1 : -1);
+		}
+
+		return Math.abs(count) == bernsteinCoeffs.length;
 	}
 
 	@Override
