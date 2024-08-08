@@ -49,7 +49,17 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	private BernsteinPolynomial substituteX(double value) {
-		return null;
+		BernsteinPolynomial result = bernsteinCoeffs[0].multiply(Math.pow(1 - value, degreeX));
+
+		double powX = value;
+		double powOneMinusX = Math.pow(1 - value, degreeX - 1);
+		double d = value == 1 ? 1 :  1 - value;
+		for (int i = 1; i < degreeX + 1; i++) {
+			result = result.plus(bernsteinCoeffs[i].multiply(powX).multiply(powOneMinusX));
+			powX *= value;
+			powOneMinusX /= d;
+		}
+		return result;
 	}
 
 	private BernsteinPolynomial substituteY(double value) {
