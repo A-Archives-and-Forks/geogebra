@@ -20,7 +20,7 @@ public class CurvePlotContextTest extends BaseUnitTest {
 		CurvePlotContext[] contexts = context.split();
 
 		for (CurvePlotContext ctx: contexts)  {
-	//		checkEvalOnContext(bernstein, ctx);
+			//		checkEvalOnContext(bernstein, ctx);
 			Log.debug(ctx);
 		}
 	}
@@ -45,5 +45,13 @@ public class CurvePlotContextTest extends BaseUnitTest {
 
 	private CurvePlotBoundingBox getDefaultBoundingBox() {
 		return new CurvePlotBoundingBox(0, 1, 0, 1);
+	}
+
+	@Test
+	public void testEdges() {
+		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), 0, 1);
+		context = new CurvePlotContext(getDefaultBoundingBox(),
+				bernstein);
+		context.process();
 	}
 }

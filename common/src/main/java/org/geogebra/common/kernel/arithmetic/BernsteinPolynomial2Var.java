@@ -3,6 +3,9 @@ package org.geogebra.common.kernel.arithmetic;
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.copyArrayTo;
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.divWithBinomials;
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllNegative;
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllPositive;
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.Mixed;
 
 import org.geogebra.common.util.MyMath;
 
@@ -11,6 +14,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double max;
 	private final int degreeX;
 	private final BernsteinPolynomial[] bernsteinCoeffs;
+	private BinomialCoefficientsSign sign;
 
 	/**
 	 * @param bernsteinCoeffs coefficients in x
@@ -24,6 +28,24 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.max = max;
 		this.degreeX = degreeX;
 		this.bernsteinCoeffs = bernsteinCoeffs;
+		sign = computeSign();
+
+	}
+
+	private BinomialCoefficientsSign computeSign() {
+		int count = 0;
+		for (BernsteinPolynomial bcoeff : bernsteinCoeffs) {
+			if (bcoeff != null) {
+				count = count + (bcoeff.hasNoSolution() ? 1 : -1);
+			}
+		}
+
+		if (Math.abs(count) == bernsteinCoeffs.length) {
+			return count < 0 ? AllNegative : AllPositive;
+		}
+
+		return Mixed;
+
 	}
 
 	@Override
@@ -130,12 +152,12 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public boolean hasNoSolution() {
-		int count = 0;
-		for (BernsteinPolynomial bcoeff : bernsteinCoeffs) {
-			count = count + (bcoeff.hasNoSolution() ? 1 : -1);
-		}
+		return sign.monotonic();
+	}
 
-		return Math.abs(count) == bernsteinCoeffs.length;
+	@Override
+	public BinomialCoefficientsSign getSign() {
+		return sign;
 	}
 
 	@Override

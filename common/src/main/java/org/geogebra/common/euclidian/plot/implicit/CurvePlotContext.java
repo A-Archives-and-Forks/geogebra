@@ -1,7 +1,12 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.Splittable;
+import org.geogebra.common.util.debug.Log;
 
 public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	CurvePlotBoundingBox boundingBox;
@@ -56,13 +61,24 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	}
 
 	private void findSolutionsInEdges() {
-		BernsteinPolynomial[] edges = createEdgePolynomials();
+		List<BernsteinPolynomial> edges = createEdgePolynomials();
+		for (BernsteinPolynomial edge: edges) {
+			Log.debug(edge);
+		}
 	}
 
-	private BernsteinPolynomial[] createEdgePolynomials() {
-		BernsteinPolynomial top = polynomial.substitute("y", boundingBox.getYmin());
-		return null;
+	private List<BernsteinPolynomial> createEdgePolynomials() {
+		List<BernsteinPolynomial> list = Arrays.asList(
+			polynomial.substitute("y", boundingBox.getYmin()),
+			polynomial.substitute("y", boundingBox.getYmax()),
+			polynomial.substitute("x", boundingBox.getXmin()),
+			polynomial.substitute("x", boundingBox.getXmax())
+		);
+
+		return list.stream().filter(polynomial -> !polynomial.hasNoSolution())
+				.collect(Collectors.toList());
 	}
+
 
 	private void findSolutionsInBox() {
 

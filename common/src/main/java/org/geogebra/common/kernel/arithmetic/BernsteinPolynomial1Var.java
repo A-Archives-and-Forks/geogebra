@@ -1,5 +1,10 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllNegative;
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllPositive;
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.Mixed;
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.None;
+
 import org.geogebra.common.util.MyMath;
 import org.geogebra.common.util.StringUtil;
 
@@ -9,6 +14,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	final int degree;
 	final char variableName;
 	private final double[] bernsteinCoeffs;
+	private BinomialCoefficientsSign sign = None;
 
 	/**
 	 * @param bernsteinCoeffs coeffs for x^k (1-x)^(degree - k), NOT divided by binomial coeffs
@@ -23,6 +29,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this.max = max;
 		this.degree = bernsteinCoeffs.length - 1;
 		this.bernsteinCoeffs = bernsteinCoeffs;
+		sign = computeSign();
 	}
 
 	@Override
@@ -174,11 +181,20 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public boolean hasNoSolution() {
+		return sign.monotonic();
+	}
+
+	private BinomialCoefficientsSign computeSign() {
 		double count = 0;
 		for (int i = 0; i < degree + 1; i++) {
 			count += Math.signum(bernsteinCoeffs[i]);
 		}
-		return Math.abs(count) == degree + 1;
+
+		if (Math.abs(count) == degree + 1) {
+			return count < 0 ? AllNegative : AllPositive;
+		}
+
+		return Mixed;
 	}
 
 	@Override
@@ -227,5 +243,10 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			return base;
 		}
 		return base + StringUtil.numberToIndex(i);
+	}
+
+	@Override
+	public BinomialCoefficientsSign getSign() {
+		return sign;
 	}
 }

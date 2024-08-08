@@ -107,5 +107,11 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 	 */
 	boolean hasNoSolution();
 
+	/**
+	 *
+	 * @return sign of the coefficients {+, - or mixed}.
+	 */
+	BinomialCoefficientsSign getSign();
+
 	BernsteinPolynomial substitute(String variable, double value);
 }
