@@ -274,4 +274,12 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 						+ " + 8(1 - x)\u00B3",
 				bernstein.substitute("y", 2).toString());
 	}
+
+	@Test
+	public void testSubstituteX() {
+		newBernsteinPolynomialPolynomialFrom("x^3 + y^3 = 0");
+		assertEquals("9y\u00B3 + 24y\u00B2 (1 - y) + 24y (1 - y)\u00B2"
+						+ " + 8(1 - y)\u00B3",
+				bernstein.substitute("x", 2).toString());
+	}
 }
