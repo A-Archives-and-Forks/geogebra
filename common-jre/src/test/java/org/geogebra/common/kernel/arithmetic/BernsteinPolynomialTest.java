@@ -266,4 +266,12 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x', 0, 1);
 		assertEquals(shouldHave, bernstein.hasNoSolution());
 	}
+
+	@Test
+	public void testSubstituteY() {
+		newBernsteinPolynomialPolynomialFrom("x^3 + y^3 = 0");
+		assertEquals("9x\u00B3 + 24x\u00B2 (1 - x) + 24x (1 - x)\u00B2"
+						+ " + 8(1 - x)\u00B3",
+				bernstein.substitute("y", 2).toString());
+	}
 }

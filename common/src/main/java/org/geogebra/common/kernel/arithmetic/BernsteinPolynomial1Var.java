@@ -182,6 +182,11 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
+	public BernsteinPolynomial substitute(String variable, double value) {
+		return null;
+	}
+
+	@Override
 	public String toString() {
 		if (isConstant()) {
 			return "" + (int) bernsteinCoeffs[0];

@@ -106,4 +106,6 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 	 * @return true if the polynomial has no solution.
 	 */
 	boolean hasNoSolution();
+
+	BernsteinPolynomial substitute(String variable, double value);
 }

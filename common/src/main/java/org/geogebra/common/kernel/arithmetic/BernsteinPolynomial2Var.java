@@ -48,6 +48,20 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		return partialEval[0];
 	}
 
+	private BernsteinPolynomial substituteX(double value) {
+		return null;
+	}
+
+	private BernsteinPolynomial substituteY(double value) {
+		double[] coeffs = new double[degreeX + 1];
+
+		for (int i = 0; i < degreeX + 1; i++) {
+			coeffs[i] = bernsteinCoeffs[i].evaluate(value);
+		}
+
+		return new BernsteinPolynomial1Var(coeffs, 'x', min, max);
+	}
+
 	@Override
 	public double evaluate(double value) {
 		return 0;
@@ -260,5 +274,13 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	@Override
 	public boolean isConstant() {
 		return bernsteinCoeffs.length == 1;
+	}
+
+	@Override
+	public BernsteinPolynomial substitute(String variable, double value) {
+		if ("x".equals(variable)) {
+			return substituteX(value);
+		}
+		return substituteY(value);
 	}
 }
