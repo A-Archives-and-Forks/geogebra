@@ -14,17 +14,24 @@ import org.geogebra.common.kernel.geos.GeoElement;
 public class ImplicitCurvePlotter {
 	public static final int MAX_SPLIT_RECURSION = 4;
 	private final List<CurvePlotContext> subContexts = new ArrayList<>();
+	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
-	private final CurvePlotContext intitialContext;
+	private final BernsteinPolynomialConverter converter;
 
 	public ImplicitCurvePlotter(GeoElement curve, EuclidianViewBounds bounds) {
+		this.curve = curve;
 		this.bounds = bounds;
-		BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
+		converter = new BernsteinPolynomialConverter();
+		initContext();
+	}
+
+	public void initContext() {
 		BernsteinPolynomial polynomial = converter.from(curve, bounds.getXmin(), bounds.getXmax());
-		intitialContext = new CurvePlotContext(new CurvePlotBoundingBox(
+		CurvePlotContext intitialContext = new CurvePlotContext(new CurvePlotBoundingBox(
 				bounds.getXmin(), bounds.getXmax(),
 				bounds.getYmin(), bounds.getYmax()),
 				polynomial);
+		subContexts.clear();
 		subContexts.add(intitialContext);
 	}
 
@@ -35,7 +42,6 @@ public class ImplicitCurvePlotter {
 	}
 
 	private void drawDebug(GGraphics2D g2) {
-		drawDebug(intitialContext, g2);
 		for (CurvePlotContext ctx : subContexts) {
 			drawDebug(ctx, g2);
 		}
@@ -62,9 +68,9 @@ public class ImplicitCurvePlotter {
 		}
 
 		int x = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getXmin()));
-		int y = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getYmin()));
+		int y = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getYmax()));
 		int width = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getXmax()) - x);
-		int height = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getYmax()) - y);
+		int height = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getYmin()) - y);
 		g2.setColor(color.deriveWithAlpha(40));
 
 		g2.fillRect(x, y, width, height);
@@ -79,9 +85,9 @@ public class ImplicitCurvePlotter {
 		for (int i = 0; i < MAX_SPLIT_RECURSION; i++) {
 			split();
 		}
-		for (CurvePlotContext subContext : subContexts) {
-			subContext.process();
-		}
+//		for (CurvePlotContext subContext : subContexts) {
+//			subContext.process();
+//		}
 
 	}
 

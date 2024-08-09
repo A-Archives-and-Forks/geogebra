@@ -72,7 +72,7 @@ public class DrawLocus extends Drawable {
 	}
 
 	@Override
-	final public void update() {
+	public void update() {
 		isVisible = geo.isEuclidianVisible();
 		bitmap = null;
 		if (!isVisible) {
