@@ -140,7 +140,7 @@ public class DrawLocus extends Drawable {
 		drawLocus(g2);
 	}
 
-	private void drawLocus(GGraphics2D g2) {
+	protected void drawLocus(GGraphics2D g2) {
 		if (isVisible) {
 			if (geo.isPenStroke() && !geo.getKernel().getApplication().isExporting()) {
 				GRectangle bounds = getBounds();

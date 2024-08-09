@@ -50,10 +50,10 @@ public class CurvePlotBoundingBox implements Splittable<CurvePlotBoundingBox> {
 	@Override
 	public String toString() {
 		return "CurvePlotBoundingBox{" +
-				"xmin=" + xmin +
-				", ymin=" + ymin +
+				"ymax=" + ymax +
 				", xmax=" + xmax +
-				", ymax=" + ymax +
+				", ymin=" + ymin +
+				", xmin=" + xmin +
 				'}';
 	}
 
@@ -80,4 +80,5 @@ public class CurvePlotBoundingBox implements Splittable<CurvePlotBoundingBox> {
 	public double getYHalf() {
 		return yHalf;
 	}
+
 }

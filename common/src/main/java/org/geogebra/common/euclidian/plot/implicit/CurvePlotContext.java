@@ -15,6 +15,7 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	private BernsteinPolynomial dy;
 	private ContextCass contextCass = ContextCass.NONE;
 
+
 	enum ContextCass {
 		NONE,
 		CELL0,
@@ -43,10 +44,12 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	}
 
 	public void process() {
-		findSolutionsInEdges();
+		List<BernsteinPolynomial> edges = createEdgePolynomials();
+		findSolutionsInEdges(edges.toArray(new BernsteinPolynomial[0]));
 		findSolutionsInBox();
 		linkSolutions();
 	}
+
 
 	private ContextCass classify() {
 		if (polynomial.hasNoSolution()) {
@@ -60,12 +63,28 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 		return contextCass = ContextCass.CELL1;
 	}
 
-	private void findSolutionsInEdges() {
-		List<BernsteinPolynomial> edges = createEdgePolynomials();
+	private void findSolutionsInEdges(BernsteinPolynomial[] edges) {
 		for (BernsteinPolynomial edge: edges) {
-			Log.debug(edge);
+			findSolutionsInOneEdge(edge, 0);
 		}
 	}
+
+	private void findSolutionsInOneEdge(BernsteinPolynomial edge, int count) {
+			if (count == 5) {
+				return;
+			}
+
+			BernsteinPolynomial dx = edge.derivative("x");
+			BernsteinPolynomial dy = edge.derivative("y");
+			if (dx.getSign() == dy.getSign()) {
+				BernsteinPolynomial[] split = edge.split();
+				findSolutionsInOneEdge(split[0], count + 1);
+				findSolutionsInOneEdge(split[1], count + 1);
+	    	} else {
+				Log.debug("Solution found on edge " + edge);
+			}
+	}
+
 
 	private List<BernsteinPolynomial> createEdgePolynomials() {
 		List<BernsteinPolynomial> list = Arrays.asList(
@@ -95,5 +114,9 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 				", polynomial=" + polynomial +
 				", contextCass=" + contextCass +
 				'}';
+	}
+
+	public ContextCass getContextCass() {
+		return contextCass;
 	}
 }
