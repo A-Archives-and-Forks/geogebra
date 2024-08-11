@@ -86,7 +86,15 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	@Override
 	protected void ensureLocusUpdated() {
+		if (BERNSTEIN_BASED_PLOTTER) {
+			return;
+		}
+
 		implicitCurve.getLocus();
 	}
 
+	@Override
+	protected void updateAlgos() {
+		// nothing to do
+	}
 }

@@ -78,20 +78,8 @@ public class DrawLocus extends Drawable {
 		if (!isVisible) {
 			return;
 		}
-		ensureLocusUpdated();
-		AlgoElement algo = geo.getParentAlgorithm();
-		if (algo instanceof AlgoLocusEquation) {
-			AlgoLocusEquation ale = (AlgoLocusEquation) geo.getParentAlgorithm();
-			if (ale.resetFingerprint(geo.getKernel(), false)) {
-				ale.update();
-			}
-		}
-		if (algo instanceof AlgoEnvelope) {
-			AlgoEnvelope ae = (AlgoEnvelope) geo.getParentAlgorithm();
-			if (ae.resetFingerprint(geo.getKernel(), false)) {
-				ae.update();
-			}
-		}
+
+		updateAlgos();
 
 		buildGeneralPath(locus.getPoints());
 
@@ -128,6 +116,23 @@ public class DrawLocus extends Drawable {
 		if (geo.isInverseFill()) {
 			setShape(AwtFactory.getPrototype().newArea(view.getBoundingPath()));
 			getShape().subtract(AwtFactory.getPrototype().newArea(gp));
+		}
+	}
+
+	protected void updateAlgos() {
+		ensureLocusUpdated();
+		AlgoElement algo = geo.getParentAlgorithm();
+		if (algo instanceof AlgoLocusEquation) {
+			AlgoLocusEquation ale = (AlgoLocusEquation) geo.getParentAlgorithm();
+			if (ale.resetFingerprint(geo.getKernel(), false)) {
+				ale.update();
+			}
+		}
+		if (algo instanceof AlgoEnvelope) {
+			AlgoEnvelope ae = (AlgoEnvelope) geo.getParentAlgorithm();
+			if (ae.resetFingerprint(geo.getKernel(), false)) {
+				ae.update();
+			}
 		}
 	}
 

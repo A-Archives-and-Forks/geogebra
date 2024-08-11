@@ -15,14 +15,17 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	private BernsteinPolynomial dy;
 	private ContextCass contextCass = ContextCass.NONE;
 
+	public ContextCass getContextCass() {
+		return contextCass;
+	}
+
 
 	enum ContextCass {
 		NONE,
 		CELL0,
 		CELL1,
-		CELL2
+		CELL2;
 	}
-
 	public CurvePlotContext(CurvePlotBoundingBox box, BernsteinPolynomial polynomial) {
 		boundingBox = box;
 		this.polynomial = polynomial;
@@ -45,7 +48,7 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 	public void process() {
 		List<BernsteinPolynomial> edges = createEdgePolynomials();
-		findSolutionsInEdges(edges.toArray(new BernsteinPolynomial[0]));
+		//findSolutionsInEdges(edges.toArray(new BernsteinPolynomial[0]));
 		findSolutionsInBox();
 		linkSolutions();
 	}
@@ -65,24 +68,38 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 	private void findSolutionsInEdges(BernsteinPolynomial[] edges) {
 		for (BernsteinPolynomial edge: edges) {
-			findSolutionsInOneEdge(edge, 0);
+			findSolutionsInOneEdge(edge);
 		}
 	}
 
-	private void findSolutionsInOneEdge(BernsteinPolynomial edge, int count) {
-			if (count == 5) {
-				return;
-			}
-
+	private void findSolutionsInOneEdge(BernsteinPolynomial edge) {
 			BernsteinPolynomial dx = edge.derivative("x");
 			BernsteinPolynomial dy = edge.derivative("y");
-			if (dx.getSign() == dy.getSign()) {
+			if (dx.getSign() != dy.getSign()) {
 				BernsteinPolynomial[] split = edge.split();
-				findSolutionsInOneEdge(split[0], count + 1);
-				findSolutionsInOneEdge(split[1], count + 1);
+				findSolutionsInOneEdge(split[0]);
+				findSolutionsInOneEdge(split[1]);
 	    	} else {
-				Log.debug("Solution found on edge " + edge);
+				findSignChangeInEdge(edge);
 			}
+	}
+
+	private void findSignChangeInEdge(BernsteinPolynomial edge) {
+		BernsteinPolynomial[] split = edge.split();
+		if (split[0].hasNoSolution()) {
+			splitIfNeeded(split[1]);
+		} else {
+			splitIfNeeded(split[0]);
+		}
+
+		Log.debug("findSignChangeInEdge");
+	}
+
+	private void splitIfNeeded(BernsteinPolynomial edge) {
+		if (true) {
+			findSignChangeInEdge(edge);
+		}
+
 	}
 
 
@@ -116,7 +133,7 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 				'}';
 	}
 
-	public ContextCass getContextCass() {
-		return contextCass;
+	public boolean mightHaveSolution() {
+		return contextCass != ContextCass.CELL2;
 	}
 }
