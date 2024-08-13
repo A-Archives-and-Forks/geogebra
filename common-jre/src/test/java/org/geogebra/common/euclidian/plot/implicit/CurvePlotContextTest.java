@@ -26,8 +26,8 @@ public class CurvePlotContextTest extends BaseUnitTest {
 	}
 
 	private void checkEvalOnContext(BernsteinPolynomial bernstein, CurvePlotContext context) {
-		double offsetX = context.boundingBox.getXmin();
-		double offsetY = context.boundingBox.getYmin();
+		double offsetX = context.boundingBox.getX1();
+		double offsetY = context.boundingBox.getY1();
 		assertSameValue(bernstein, offsetX + 0, offsetY + 0, context, 0, 0);
 		assertSameValue(bernstein, offsetX + 0.25, offsetY + 0, context, 0.5, 0);
 		assertSameValue(bernstein, offsetX + 0.5, offsetY + 0, context, 1, 0);
@@ -44,7 +44,7 @@ public class CurvePlotContextTest extends BaseUnitTest {
 	}
 
 	private CurvePlotBoundingBox getDefaultBoundingBox() {
-		return new CurvePlotBoundingBox(0, 1, 0, 1);
+		return new CurvePlotBoundingBox(0, 0, 1, 1);
 	}
 
 	@Test

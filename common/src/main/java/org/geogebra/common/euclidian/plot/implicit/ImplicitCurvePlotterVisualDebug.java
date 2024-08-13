@@ -5,6 +5,7 @@ import java.util.List;
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
+import org.geogebra.common.util.debug.Log;
 
 final class ImplicitCurvePlotterVisualDebug {
 	private final EuclidianViewBounds bounds;
@@ -42,15 +43,16 @@ final class ImplicitCurvePlotterVisualDebug {
 			color = GColor.BLACK;
 		}
 
-		int x = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getXmin()));
-		int y = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getYmax()));
-		int width = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getXmax()) - x);
-		int height = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getYmin()) - y);
+		int x = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getX1()));
+		int y = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getY1()));
+		int width = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getX2()) - x);
+		int height = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getY2()) - y);
 		g2.setColor(color.deriveWithAlpha(40));
 
 		g2.fillRect(x, y, width, height);
 		g2.setColor(GColor.BLACK.deriveWithAlpha(60));
 		g2.drawRect(x, y, width, height);
+		Log.debug(ctx.boundingBox.toString());
 	}
 
 }

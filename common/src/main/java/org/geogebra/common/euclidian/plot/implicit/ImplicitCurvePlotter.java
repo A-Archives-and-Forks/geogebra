@@ -31,15 +31,13 @@ public class ImplicitCurvePlotter {
 	}
 
 	public void initContext() {
-		BernsteinPolynomial polynomial = converter.from(curve, bounds.getXmin(), bounds.getXmax());
-		CurvePlotBoundingBox box = new CurvePlotBoundingBox(
-				bounds.getXmin(), bounds.getXmax(),
-				bounds.getYmin(), bounds.getYmax());
+		BoundsRectangle limits = new BoundsRectangle(bounds);
+		BernsteinPolynomial polynomial = converter.from(curve, limits);
+		CurvePlotBoundingBox box = new CurvePlotBoundingBox(limits);
 
-		CurvePlotContext intitialContext = new CurvePlotContext(box, polynomial);
-
+		CurvePlotContext rootContext = new CurvePlotContext(box, polynomial);
 		subContexts.clear();
-		subContexts.add(intitialContext);
+		subContexts.add(rootContext);
 	}
 
 	public void draw(GGraphics2D g2) {

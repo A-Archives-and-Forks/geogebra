@@ -20,6 +20,6 @@ public class CurvePlotBoundingBoxTest {
 	}
 
 	private static CurvePlotBoundingBox newBox(double xmin, double xmax, double ymin, double ymax) {
-		return new CurvePlotBoundingBox(xmin, xmax, ymin, ymax);
+		return new CurvePlotBoundingBox(xmin, ymin, xmax, ymax);
 	}
 }

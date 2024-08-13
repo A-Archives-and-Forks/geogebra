@@ -10,22 +10,22 @@ import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.Mix
 import org.geogebra.common.util.MyMath;
 
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
-	private final double min;
-	private final double max;
+	private final double minX;
+	private final double maxX;
 	private final int degreeX;
 	private final BernsteinPolynomial[] bernsteinCoeffs;
 	private BinomialCoefficientsSign sign;
 
 	/**
 	 * @param bernsteinCoeffs coefficients in x
-	 * @param min min value for original x
-	 * @param max max value for original x
+	 * @param minX min value for original x
+	 * @param maxX max value for original x
 	 * @param degreeX degree in x
 	 */
-	public BernsteinPolynomial2Var(BernsteinPolynomial[] bernsteinCoeffs, double min, double max,
+	public BernsteinPolynomial2Var(BernsteinPolynomial[] bernsteinCoeffs, double minX, double maxX,
 			int degreeX) {
-		this.min = min;
-		this.max = max;
+		this.minX = minX;
+		this.maxX = maxX;
 		this.degreeX = degreeX;
 		this.bernsteinCoeffs = bernsteinCoeffs;
 		sign = computeSign();
@@ -52,7 +52,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	public double evaluate(double valueX, double valueY) {
 		double[] partialEval = new double[degreeX + 1];
 		double[] lastPartialEval = new double[degreeX + 1];
-		double scaledX = (valueX - min) / (max - min);
+		double scaledX = (valueX - minX) / (maxX - minX);
 		double scaledOneMinusX = 1 - scaledX;
 
 		for (int i = 0; i < degreeX + 1; i++) {
@@ -91,7 +91,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			coeffs[i] = bernsteinCoeffs[i].evaluate(value);
 		}
 
-		return new BernsteinPolynomial1Var(coeffs, 'x', min, max);
+		return new BernsteinPolynomial1Var(coeffs, 'x', minX, maxX);
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	private BernsteinPolynomial newInstance(BernsteinPolynomial[] coeffs) {
-		return new BernsteinPolynomial2Var(coeffs, min, max, degreeX);
+		return new BernsteinPolynomial2Var(coeffs, minX, maxX, degreeX);
 	}
 
 	@Override
@@ -225,10 +225,10 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		}
 
 		BernsteinPolynomial bPlusInY =
-				new BernsteinPolynomial2Var(bPlusCoeffs, min, max, degreeX);
+				new BernsteinPolynomial2Var(bPlusCoeffs, minX, maxX, degreeX);
 
 		BernsteinPolynomial bMinusInY =
-				new BernsteinPolynomial2Var(bMinusCoeffs, min, max, degreeX);
+				new BernsteinPolynomial2Var(bMinusCoeffs, minX, maxX, degreeX);
 
 		return new BernsteinPolynomial[] {bPlusInY, bMinusInY};
 	}
@@ -256,7 +256,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			BernsteinPolynomial b2 = bernsteinCoeffs[i + 1].multiply(i + 1);
 			derivedCoeffs[i] = b2.plus(b1);
 		}
-		return new BernsteinPolynomial2Var(derivedCoeffs, min, max, degreeX - 1);
+		return new BernsteinPolynomial2Var(derivedCoeffs, minX, maxX, degreeX - 1);
 	}
 
 	private BernsteinPolynomial derivativeY() {
@@ -265,7 +265,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			BernsteinPolynomial b2 = bernsteinCoeffs[i];
 			derivedCoeffs[i] = b2.derivative();
 		}
-		return new BernsteinPolynomial2Var(derivedCoeffs, min, max, degreeX);
+		return new BernsteinPolynomial2Var(derivedCoeffs, minX, maxX, degreeX);
 	}
 
 	@Override

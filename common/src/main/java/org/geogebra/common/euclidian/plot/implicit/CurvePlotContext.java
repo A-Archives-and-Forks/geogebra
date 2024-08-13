@@ -55,15 +55,15 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 
 	private ContextCass classify() {
-		if (polynomial.hasNoSolution()) {
+		if (dx.hasNoSolution() && dy.hasNoSolution()) {
 			return ContextCass.CELL2;
 		}
 
-		if (!dx.hasNoSolution() && !dy.hasNoSolution()) {
-			return ContextCass.CELL0;
+		if (dx.hasNoSolution() != dy.hasNoSolution()) {
+			return ContextCass.CELL1;
 		}
 
-		return contextCass = ContextCass.CELL1;
+		return ContextCass.CELL0;
 	}
 
 	private void findSolutionsInEdges(BernsteinPolynomial[] edges) {
@@ -105,10 +105,10 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 	private List<BernsteinPolynomial> createEdgePolynomials() {
 		List<BernsteinPolynomial> list = Arrays.asList(
-			polynomial.substitute("y", boundingBox.getYmin()),
-			polynomial.substitute("y", boundingBox.getYmax()),
-			polynomial.substitute("x", boundingBox.getXmin()),
-			polynomial.substitute("x", boundingBox.getXmax())
+			polynomial.substitute("y", boundingBox.getY1()),
+			polynomial.substitute("y", boundingBox.getY2()),
+			polynomial.substitute("x", boundingBox.getX1()),
+			polynomial.substitute("x", boundingBox.getX2())
 		);
 
 		return list.stream().filter(polynomial -> !polynomial.hasNoSolution())

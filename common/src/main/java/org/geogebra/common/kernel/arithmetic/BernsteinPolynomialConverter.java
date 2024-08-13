@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import org.geogebra.common.euclidian.plot.implicit.BoundsRectangle;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
@@ -18,49 +19,47 @@ public class BernsteinPolynomialConverter {
 	/**
 	 *
 	 * @param geo to convert
-	 * @param min of the limit
-	 * @param max of the limit
+	 * @param limits of the result polynomial.
 	 * @return the equivalent Bernstein polynomial of geo if possible, null otherwise.
 	 */
-	public BernsteinPolynomial from(GeoElement geo, double min, double max) {
+	public BernsteinPolynomial from(GeoElement geo, BoundsRectangle limits) {
 		if (geo.isGeoImplicitCurve()) {
 			GeoImplicitCurve curve = ((GeoImplicitCurve) geo);
-			return fromImplicitCurve(curve, min, max);
+			return fromImplicitCurve(curve, limits);
 		} else if (geo instanceof GeoFunctionNVar) {
 			FunctionNVar function = ((GeoFunctionNVar) geo).getFunction();
-			return function != null ? fromFunctionNVar(function, min, max) : null;
+			return function != null ? fromFunctionNVar(function, limits) : null;
 		} else if (geo instanceof GeoFunction) {
 			Function function = ((GeoFunction) geo).getFunction();
-			return function != null ? fromFunctionNVar(function, min, max) : null;
+			return function != null ? fromFunctionNVar(function, limits) : null;
 		}
 		return null;
 	}
 
-	private BernsteinPolynomial fromImplicitCurve(GeoImplicitCurve curve, double min, double max) {
+	private BernsteinPolynomial fromImplicitCurve(GeoImplicitCurve curve, BoundsRectangle limits) {
 		FunctionNVar functionNVar = curve.getFunctionDefinition();
-		return fromFunctionNVar(functionNVar, min, max);
+		return fromFunctionNVar(functionNVar, limits);
 	}
 
-	private BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar,
-			double min, double max) {
+	private BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar, BoundsRectangle limits) {
 		Polynomial polynomial = functionNVar.getPolynomial();
 		return fromPolynomial(polynomial, polynomial.degree('x'),
-				polynomial.degree('y'), min, max);
+				polynomial.degree('y'), limits);
 	}
 
-	BernsteinPolynomial fromPolynomial(Polynomial polynomial, int degreeX, int degreeY, double min,
-			double max) {
+	BernsteinPolynomial fromPolynomial(Polynomial polynomial, int degreeX, int degreeY,
+			BoundsRectangle limits) {
 		if (degreeX != 0 && degreeY != 0) {
-			return builder2Var.build(polynomial, degreeX, degreeY, min, max);
+			return builder2Var.build(polynomial, degreeX, degreeY, limits);
 		}
 
 		if (degreeY == 0) {
 			return builder1Var.build(coeffsFromPolynomial(polynomial, degreeX, 'x'),
-					degreeX, 'x', min, max);
+					degreeX, 'x', limits.getXmin(), limits.getXmax());
 		}
 
 		return builder1Var.build(coeffsFromPolynomial(polynomial, degreeY, 'y'),
-				degreeY, 'y', min, max);
+				degreeY, 'y', limits.getYmin(), limits.getYmax());
 	}
 
 	private double[] coeffsFromPolynomial(Polynomial polynomial, int degree, char variableName) {
