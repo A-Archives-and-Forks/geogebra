@@ -12,7 +12,7 @@ import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
 
 public class ImplicitCurvePlotter {
-	public static final int MAX_SPLIT_RECURSION = 4;
+	public static final int MAX_SPLIT_RECURSION = 5;
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
 	private final List<CurvePlotContext> subContexts = new ArrayList<>();
 	private final GeoElement curve;

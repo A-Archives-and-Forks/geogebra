@@ -55,7 +55,7 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 
 	private ContextCass classify() {
-		if (dx.hasNoSolution() && dy.hasNoSolution()) {
+		if (polynomial.hasNoSolution()) {
 			return ContextCass.CELL2;
 		}
 
