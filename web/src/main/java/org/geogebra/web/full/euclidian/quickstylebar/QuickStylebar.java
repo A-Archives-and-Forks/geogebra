@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 
 import org.geogebra.common.euclidian.EuclidianStyleBar;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.web.full.css.MaterialDesignResources;
@@ -13,6 +14,7 @@ import org.geogebra.web.full.gui.ContextMenuGeoElementW;
 import org.geogebra.web.full.gui.GuiManagerW;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
+import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.main.AppW;
@@ -24,14 +26,15 @@ import org.gwtproject.user.client.ui.FlowPanel;
  * Quick stylebar containing IconButtons with dynamic position
  */
 public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
-	private EuclidianView ev;
-	private StylebarPositioner stylebarPositioner;
-	private BiConsumer<Integer, Integer> positionSetter = (posX, posY) -> {
+	private final EuclidianView ev;
+	private final StylebarPositioner stylebarPositioner;
+	private final BiConsumer<Integer, Integer> positionSetter = (posX, posY) -> {
 		getElement().getStyle().setLeft(posX, Unit.PX);
 		getElement().getStyle().setTop(posY, Unit.PX);
 	};
-	private List<IconButton> quickButtons = new ArrayList<>();
+	private final List<IconButton> quickButtons = new ArrayList<>();
 	private final static int CONTEXT_MENU_DISTANCE = 8;
+	private ContextMenuGeoElementW contextMenu;
 
 	/**
 	 * @param ev
@@ -47,14 +50,27 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void buildGUI() {
+		addDivider();
+		addDeleteButton();
 		addContextMenuButton();
+	}
+
+	private void addDivider() {
+		add(BaseWidgetFactory.INSTANCE.newDivider(true));
+	}
+
+	private void addDeleteButton() {
+		IconButton deleteButton = new IconButton(getApp(),
+				() -> getApp().splitAndDeleteSelectedObjects(),
+				MaterialDesignResources.INSTANCE.delete_black(), "Delete");
+		styleAndRegisterButton(deleteButton);
 	}
 
 	private void addContextMenuButton() {
 		IconButton contextMenuBtn = new IconButton(getApp(), null,
 				MaterialDesignResources.INSTANCE.more_vert_black(), "More");
 
-		ContextMenuGeoElementW contextMenu = createContextMenu(contextMenuBtn);
+		contextMenu = createContextMenu(contextMenuBtn);
 		contextMenuBtn.addFastClickHandler((event) -> {
 			GPopupMenuW popupMenu = contextMenu.getWrappedPopup();
 			if (popupMenu.isMenuShown()) {
@@ -114,7 +130,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 	@Override
 	public void setLabels() {
-		// nothing for now
+		quickButtons.forEach(SetLabels::setLabels);
+		if (contextMenu != null) {
+			contextMenu.update();
+		}
 	}
 
 	@Override
