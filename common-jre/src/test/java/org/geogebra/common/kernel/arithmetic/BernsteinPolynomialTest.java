@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.euclidian.plot.implicit.BoundsRectangle;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.util.debug.Log;
@@ -31,7 +32,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 		if (geo.isGeoImplicitCurve()) {
 			curve = ((GeoImplicitCurve) geo);
 		}
-		bernstein = converter.from(geo, view.getXmin(), view.getXmax());
+		bernstein = converter.from(geo, new BoundsRectangle(0, 1, 0, 1));
 	}
 
 	@Test
@@ -81,7 +82,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void testOneVariableToBernsteinPolynomial() {
 		Polynomial polynomial = new Polynomial(getKernel(), "y");
 		BernsteinPolynomial bernsteinPolynomial = converter.fromPolynomial(polynomial,
-				0, 2, 0, 1);
+				0, 2, new BoundsRectangle(0, 1, 0, 1));
 		assertEquals("y\u00B2 + y (1 - y)", bernsteinPolynomial.toString());
 	}
 

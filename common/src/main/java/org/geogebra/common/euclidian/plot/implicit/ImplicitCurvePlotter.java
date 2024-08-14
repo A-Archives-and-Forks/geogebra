@@ -10,6 +10,7 @@ import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.util.debug.Log;
 
 public class ImplicitCurvePlotter {
 	public static final int MAX_SPLIT_RECURSION = 5;
@@ -33,6 +34,10 @@ public class ImplicitCurvePlotter {
 	public void initContext() {
 		BoundsRectangle limits = new BoundsRectangle(bounds);
 		BernsteinPolynomial polynomial = converter.from(curve, limits);
+		if (polynomial == null) {
+			return;
+		}
+
 		CurvePlotBoundingBox box = new CurvePlotBoundingBox(limits);
 
 		CurvePlotContext rootContext = new CurvePlotContext(box, polynomial);
@@ -55,8 +60,54 @@ public class ImplicitCurvePlotter {
 		for (int i = 0; i < MAX_SPLIT_RECURSION; i++) {
 			split();
 		}
-//		subContexts.forEach(CurvePlotContext::process);
+		subContexts.forEach(this::process);
 
+	}
+
+	private void process(CurvePlotContext context) {
+		findSolutionsInEdges(context.createEdges());
+	}
+
+	private void findSolutionsInEdges(List<BoxEdge> edges) {
+		for (BoxEdge edge: edges) {
+			if (edge.mightHaveSolutions()) {
+				findSolutionsInOneEdge(edge);
+			}
+		}
+	}
+
+	private void findSolutionsInOneEdge(BoxEdge edge) {
+		if (edge.isDerivativeSignDiffer() && hasSize(edge)) {
+			BoxEdge[] split = edge.split();
+			findSolutionsInOneEdge(split[0]);
+			findSolutionsInOneEdge(split[1]);
+		} else {
+			findSignChangeInEdge(edge);
+		}
+	}
+
+	private void findSignChangeInEdge(BoxEdge edge) {
+		BoxEdge[] split = edge.split();
+		if (split[0].mightHaveSolutions()) {
+			splitIfNeeded(split[0]);
+		} else {
+			splitIfNeeded(split[1]);
+		}
+
+		Log.debug("findSignChangeInEdge");
+	}
+
+	private void splitIfNeeded(BoxEdge edge) {
+		if (hasSize(edge)) {
+			findSignChangeInEdge(edge);
+		} else {
+			Log.debug("Edge intersects");
+		}
+
+	}
+
+	private boolean hasSize(BoxEdge edge) {
+		return bounds.toScreenCoordXd(edge.size) > 1;
 	}
 
 	private void split() {

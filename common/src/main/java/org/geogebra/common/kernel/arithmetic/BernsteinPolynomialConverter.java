@@ -43,6 +43,9 @@ public class BernsteinPolynomialConverter {
 
 	private BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar, BoundsRectangle limits) {
 		Polynomial polynomial = functionNVar.getPolynomial();
+		if (polynomial == null) {
+			return null;
+		}
 		return fromPolynomial(polynomial, polynomial.degree('x'),
 				polynomial.degree('y'), limits);
 	}

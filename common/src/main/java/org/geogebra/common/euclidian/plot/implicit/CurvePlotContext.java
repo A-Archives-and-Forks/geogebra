@@ -2,11 +2,9 @@ package org.geogebra.common.euclidian.plot.implicit;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.Splittable;
-import org.geogebra.common.util.debug.Log;
 
 public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	CurvePlotBoundingBox boundingBox;
@@ -46,14 +44,6 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 		return contexts;
 	}
 
-	public void process() {
-		List<BernsteinPolynomial> edges = createEdgePolynomials();
-		//findSolutionsInEdges(edges.toArray(new BernsteinPolynomial[0]));
-		findSolutionsInBox();
-		linkSolutions();
-	}
-
-
 	private ContextCass classify() {
 		if (polynomial.hasNoSolution()) {
 			return ContextCass.CELL2;
@@ -66,53 +56,19 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 		return ContextCass.CELL0;
 	}
 
-	private void findSolutionsInEdges(BernsteinPolynomial[] edges) {
-		for (BernsteinPolynomial edge: edges) {
-			findSolutionsInOneEdge(edge);
-		}
-	}
-
-	private void findSolutionsInOneEdge(BernsteinPolynomial edge) {
-			BernsteinPolynomial dx = edge.derivative("x");
-			BernsteinPolynomial dy = edge.derivative("y");
-			if (dx.getSign() != dy.getSign()) {
-				BernsteinPolynomial[] split = edge.split();
-				findSolutionsInOneEdge(split[0]);
-				findSolutionsInOneEdge(split[1]);
-	    	} else {
-				findSignChangeInEdge(edge);
-			}
-	}
-
-	private void findSignChangeInEdge(BernsteinPolynomial edge) {
-		BernsteinPolynomial[] split = edge.split();
-		if (split[0].hasNoSolution()) {
-			splitIfNeeded(split[1]);
-		} else {
-			splitIfNeeded(split[0]);
-		}
-
-		Log.debug("findSignChangeInEdge");
-	}
-
-	private void splitIfNeeded(BernsteinPolynomial edge) {
-		if (true) {
-			findSignChangeInEdge(edge);
-		}
-
-	}
 
 
-	private List<BernsteinPolynomial> createEdgePolynomials() {
-		List<BernsteinPolynomial> list = Arrays.asList(
-			polynomial.substitute("y", boundingBox.getY1()),
-			polynomial.substitute("y", boundingBox.getY2()),
-			polynomial.substitute("x", boundingBox.getX1()),
-			polynomial.substitute("x", boundingBox.getX2())
-		);
+	List<BoxEdge> createEdges() {
+		BoxEdge left  = new BoxEdge(polynomial.substitute("x", boundingBox.getX1()),
+				boundingBox.getWidth(), true);
+		BoxEdge top = new BoxEdge(polynomial.substitute("y", boundingBox.getY1()),
+				boundingBox.getHeight(), false);
+		BoxEdge right  = new BoxEdge(polynomial.substitute("x", boundingBox.getX2()),
+				boundingBox.getWidth(), true);
+		BoxEdge bottom  = new BoxEdge(polynomial.substitute("y", boundingBox.getY2()),
+				boundingBox.getHeight(), false);
 
-		return list.stream().filter(polynomial -> !polynomial.hasNoSolution())
-				.collect(Collectors.toList());
+		return Arrays.asList(left, top, right, bottom);
 	}
 
 

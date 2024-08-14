@@ -9,11 +9,15 @@ public class BoundsRectangle {
 	private final double ymin;
 	private final double ymax;
 
+	public BoundsRectangle(double xmin, double xmax, double ymin, double ymax) {
+		this.xmin = xmin;
+		this.ymin = ymin;
+		this.xmax = xmax;
+		this.ymax = ymax;
+	}
+
 	public BoundsRectangle(EuclidianViewBounds bounds) {
-		xmin = bounds.getXmin();
-		xmax = bounds.getXmax();
-		ymin = bounds.getYmin();
-		ymax = bounds.getYmax();
+		this(bounds.getXmin(), bounds.getYmin(), bounds.getXmax(), bounds.getYmax());
 	}
 
 	public double getXmin() {

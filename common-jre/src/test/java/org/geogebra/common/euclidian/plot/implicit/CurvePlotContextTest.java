@@ -14,7 +14,7 @@ public class CurvePlotContextTest extends BaseUnitTest {
 
 	@Test
 	public void testSpitContext() {
-		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), 0, 1);
+		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), defaultLimits());
 		context = new CurvePlotContext(getDefaultBoundingBox(),
 				bernstein);
 		CurvePlotContext[] contexts = context.split();
@@ -23,6 +23,10 @@ public class CurvePlotContextTest extends BaseUnitTest {
 			//		checkEvalOnContext(bernstein, ctx);
 			Log.debug(ctx);
 		}
+	}
+
+	private BoundsRectangle defaultLimits() {
+		return new BoundsRectangle(0, 1, 0, 1);
 	}
 
 	private void checkEvalOnContext(BernsteinPolynomial bernstein, CurvePlotContext context) {
@@ -49,9 +53,8 @@ public class CurvePlotContextTest extends BaseUnitTest {
 
 	@Test
 	public void testEdges() {
-		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), 0, 1);
+		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), defaultLimits());
 		context = new CurvePlotContext(getDefaultBoundingBox(),
 				bernstein);
-		context.process();
 	}
 }

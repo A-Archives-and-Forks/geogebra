@@ -84,4 +84,11 @@ public class CurvePlotBoundingBox implements Splittable<CurvePlotBoundingBox> {
 		return yHalf;
 	}
 
+	public double getWidth() {
+		return x2 - x1;
+	}
+
+	public double getHeight() {
+		return y2 - y1;
+	}
 }
