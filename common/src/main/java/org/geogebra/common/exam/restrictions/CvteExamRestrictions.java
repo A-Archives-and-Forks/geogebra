@@ -37,8 +37,8 @@ final class CvteExamRestrictions extends ExamRestrictions {
 						SuiteSubApp.PROBABILITY, SuiteSubApp.SCIENTIFIC),
 				SuiteSubApp.GRAPHING,
 				CvteExamRestrictions.createFeatureRestrictions(),
-				CvteExamRestrictions.createExpressionFilter(),
-				CvteExamRestrictions.createExpressionFilter(),
+				CvteExamRestrictions.createExpressionFilters(),
+				CvteExamRestrictions.createExpressionFilters(),
 				CvteExamRestrictions.createCommandFilters(),
 				CvteExamRestrictions.createCommandArgumentFilters(),
 				CvteExamRestrictions.createSyntaxFilter(),
@@ -205,7 +205,7 @@ final class CvteExamRestrictions extends ExamRestrictions {
 		);
 	}
 
-	private static Set<ExpressionFilter> createExpressionFilter() {
+	private static Set<ExpressionFilter> createExpressionFilters() {
 		return Set.of(new MatrixExpressionFilter());
 	}
 }
