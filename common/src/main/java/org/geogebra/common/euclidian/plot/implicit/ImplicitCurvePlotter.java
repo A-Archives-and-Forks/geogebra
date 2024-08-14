@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GGraphics2D;
+import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
@@ -19,7 +20,9 @@ public class ImplicitCurvePlotter {
 	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
 	private final BernsteinPolynomialConverter converter;
+	private GPoint2D pixelInRW;
 	private ImplicitCurvePlotterVisualDebug visualDebug;
+	private final List<GPoint2D> output = new ArrayList<>();
 
 	public ImplicitCurvePlotter(GeoElement curve, EuclidianViewBounds bounds) {
 		this.curve = curve;
@@ -34,33 +37,33 @@ public class ImplicitCurvePlotter {
 	public void initContext() {
 		BoundsRectangle limits = new BoundsRectangle(bounds);
 		BernsteinPolynomial polynomial = converter.from(curve, limits);
-		if (polynomial == null) {
-			return;
-		}
-
 		CurvePlotBoundingBox box = new CurvePlotBoundingBox(limits);
-
 		CurvePlotContext rootContext = new CurvePlotContext(box, polynomial);
 		subContexts.clear();
 		subContexts.add(rootContext);
+		pixelInRW = new GPoint2D(bounds.toRealWorldCoordX(1) - bounds.toRealWorldCoordX(0),
+				bounds.toRealWorldCoordY(0) - bounds.toRealWorldCoordY(1));
+		Log.debug("PixelInRW: " + pixelInRW);
 	}
 
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
-			visualDebug.draw(g2);
+			visualDebug.draw(g2, output);
 		}
 		drawResults(g2);
 
 	}
 
 	private void drawResults(GGraphics2D g2) {
+
 	}
 
 	public void update() {
 		for (int i = 0; i < MAX_SPLIT_RECURSION; i++) {
 			split();
 		}
-//		subContexts.forEach(this::process);
+		output.clear();
+		subContexts.forEach(this::process);
 
 	}
 
@@ -84,6 +87,7 @@ public class ImplicitCurvePlotter {
 		} else {
 			findSignChangeInEdge(edge);
 		}
+
 	}
 
 	private void findSignChangeInEdge(BoxEdge edge) {
@@ -93,21 +97,19 @@ public class ImplicitCurvePlotter {
 		} else {
 			splitIfNeeded(split[1]);
 		}
-
-		Log.debug("findSignChangeInEdge");
 	}
 
 	private void splitIfNeeded(BoxEdge edge) {
 		if (hasSize(edge)) {
 			findSignChangeInEdge(edge);
 		} else {
-			Log.debug("Edge intersects");
+			output.add(edge.startPoint());
 		}
 
 	}
 
 	private boolean hasSize(BoxEdge edge) {
-		return bounds.toScreenCoordXd(edge.size) > 1;
+		return edge.length() > Math.min(pixelInRW.x, pixelInRW.y);
 	}
 
 	private void split() {

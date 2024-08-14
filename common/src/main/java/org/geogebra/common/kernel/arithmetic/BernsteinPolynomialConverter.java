@@ -43,9 +43,6 @@ public class BernsteinPolynomialConverter {
 
 	private BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar, BoundsRectangle limits) {
 		Polynomial polynomial = functionNVar.getPolynomial();
-		if (polynomial == null) {
-			return null;
-		}
 		return fromPolynomial(polynomial, polynomial.degree('x'),
 				polynomial.degree('y'), limits);
 	}
@@ -76,4 +73,19 @@ public class BernsteinPolynomialConverter {
 		}
 		return coeffs;
 	}
+
+	public static boolean iSupported(GeoElement geo) {
+		if (geo.isGeoImplicitCurve()) {
+			GeoImplicitCurve curve = ((GeoImplicitCurve) geo);
+			return curve.isDefined() && curve.getFunctionDefinition().getPolynomial() != null;
+		} else if (geo instanceof GeoFunctionNVar) {
+			FunctionNVar function = ((GeoFunctionNVar) geo).getFunction();
+			return function != null && function.getPolynomial() != null;
+		} else if (geo instanceof GeoFunction) {
+			Function function = ((GeoFunction) geo).getFunction();
+			return function != null && function.getPolynomial() != null;
+		}
+		return false;
+	}
+
 }

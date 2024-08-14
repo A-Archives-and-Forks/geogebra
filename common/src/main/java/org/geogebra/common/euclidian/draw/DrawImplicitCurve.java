@@ -16,6 +16,7 @@ import org.geogebra.common.awt.GArea;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.factories.AwtFactory;
+import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
 
 /**
@@ -26,6 +27,7 @@ public class DrawImplicitCurve extends DrawLocus {
 	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
 	private ImplicitCurveController controller;
 	private GeoImplicit implicitCurve;
+	private boolean isBernsteinBasedPlotter;
 
 	// private int fillSign; //0=>no filling, only curve -1=>fill the negativ
 	// part, 1=>fill positiv part
@@ -44,7 +46,10 @@ public class DrawImplicitCurve extends DrawLocus {
 		this.view = view;
 		this.implicitCurve = implicitCurve;
 		this.geo = implicitCurve.toGeoElement();
-		if (BERNSTEIN_BASED_PLOTTER) {
+		isBernsteinBasedPlotter = BERNSTEIN_BASED_PLOTTER
+				&& BernsteinPolynomialConverter.iSupported(geo);
+
+		if (isBernsteinBasedPlotter) {
 			controller = new ImplicitCurveController(view, geo);
 		} else {
 			update();
@@ -53,7 +58,7 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	@Override
 	protected void drawLocus(GGraphics2D g2) {
-		if (BERNSTEIN_BASED_PLOTTER) {
+		if (isBernsteinBasedPlotter) {
 			controller.drawPlotter(g2);
 		} else {
 			super.drawLocus(g2);
@@ -86,7 +91,7 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	@Override
 	protected void ensureLocusUpdated() {
-		if (BERNSTEIN_BASED_PLOTTER) {
+		if (isBernsteinBasedPlotter) {
 			return;
 		}
 

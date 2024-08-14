@@ -59,16 +59,15 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 
 	List<BoxEdge> createEdges() {
-		BoxEdge left  = new BoxEdge(polynomial.substitute("x", boundingBox.getX1()),
-				boundingBox.getWidth(), true);
-		BoxEdge top = new BoxEdge(polynomial.substitute("y", boundingBox.getY1()),
-				boundingBox.getHeight(), false);
-		BoxEdge right  = new BoxEdge(polynomial.substitute("x", boundingBox.getX2()),
-				boundingBox.getWidth(), true);
-		BoxEdge bottom  = new BoxEdge(polynomial.substitute("y", boundingBox.getY2()),
-				boundingBox.getHeight(), false);
+		BoxEdge top  = BoxEdgeImpl.createHorizontal(polynomial, boundingBox.getX1(),
+				boundingBox.getX2(),
+				boundingBox.getY1());
 
-		return Arrays.asList(left, top, right, bottom);
+		BoxEdge bottom  = BoxEdgeImpl.createHorizontal(polynomial, boundingBox.getX1(),
+				boundingBox.getX2(),
+				boundingBox.getY2());
+
+		return Arrays.asList(top);
 	}
 
 
