@@ -22,8 +22,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void setUp() {
 		add("ZoomIn(0,0,1,1)");
 		view = getApp().getEuclidianView1();
-		converter =
-				new BernsteinPolynomialConverter();
+		converter =	new BernsteinPolynomialConverter();
 
 	}
 

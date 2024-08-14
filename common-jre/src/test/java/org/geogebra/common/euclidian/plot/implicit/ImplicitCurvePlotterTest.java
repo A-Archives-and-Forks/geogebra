@@ -25,7 +25,7 @@ public class ImplicitCurvePlotterTest extends BaseUnitTest {
 		GeoElement curve = add("x^3 - y^3 - 0.6 = 0");
 		plotter = new ImplicitCurvePlotter(curve, bounds);
 		plotter.update();
-		assertEquals(64, plotter.subContentCount());
+		assertEquals(1024, plotter.subContentCount());
 	}
 
 }

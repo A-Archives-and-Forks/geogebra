@@ -5,7 +5,6 @@ import java.util.List;
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
-import org.geogebra.common.util.debug.Log;
 
 final class ImplicitCurvePlotterVisualDebug {
 	private final EuclidianViewBounds bounds;
@@ -52,7 +51,6 @@ final class ImplicitCurvePlotterVisualDebug {
 		g2.fillRect(x, y, width, height);
 		g2.setColor(GColor.BLACK.deriveWithAlpha(60));
 		g2.drawRect(x, y, width, height);
-		Log.debug(ctx.boundingBox.toString());
 	}
 
 }

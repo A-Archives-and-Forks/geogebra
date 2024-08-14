@@ -19,7 +19,7 @@ public class ImplicitCurvePlotter {
 	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
 	private final BernsteinPolynomialConverter converter;
-	private final ImplicitCurvePlotterVisualDebug visualDebug;
+	private ImplicitCurvePlotterVisualDebug visualDebug;
 
 	public ImplicitCurvePlotter(GeoElement curve, EuclidianViewBounds bounds) {
 		this.curve = curve;
@@ -60,7 +60,7 @@ public class ImplicitCurvePlotter {
 		for (int i = 0; i < MAX_SPLIT_RECURSION; i++) {
 			split();
 		}
-		subContexts.forEach(this::process);
+//		subContexts.forEach(this::process);
 
 	}
 

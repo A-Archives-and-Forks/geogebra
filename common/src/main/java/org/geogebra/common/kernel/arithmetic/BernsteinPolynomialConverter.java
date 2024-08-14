@@ -25,7 +25,7 @@ public class BernsteinPolynomialConverter {
 	public BernsteinPolynomial from(GeoElement geo, BoundsRectangle limits) {
 		if (geo.isGeoImplicitCurve()) {
 			GeoImplicitCurve curve = ((GeoImplicitCurve) geo);
-			return fromImplicitCurve(curve, limits);
+			return curve.isDefined() ? fromImplicitCurve(curve, limits) : null;
 		} else if (geo instanceof GeoFunctionNVar) {
 			FunctionNVar function = ((GeoFunctionNVar) geo).getFunction();
 			return function != null ? fromFunctionNVar(function, limits) : null;

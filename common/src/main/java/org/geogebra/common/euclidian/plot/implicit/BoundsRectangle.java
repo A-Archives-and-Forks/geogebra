@@ -17,7 +17,7 @@ public class BoundsRectangle {
 	}
 
 	public BoundsRectangle(EuclidianViewBounds bounds) {
-		this(bounds.getXmin(), bounds.getYmin(), bounds.getXmax(), bounds.getYmax());
+		this(bounds.getXmin(), bounds.getXmax(), bounds.getYmin(), bounds.getYmax());
 	}
 
 	public double getXmin() {

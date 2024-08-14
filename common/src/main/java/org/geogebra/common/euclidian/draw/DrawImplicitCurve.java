@@ -24,7 +24,7 @@ import org.geogebra.common.kernel.implicit.GeoImplicit;
 public class DrawImplicitCurve extends DrawLocus {
 
 	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
-	private final ImplicitCurveController controller;
+	private ImplicitCurveController controller;
 	private GeoImplicit implicitCurve;
 
 	// private int fillSign; //0=>no filling, only curve -1=>fill the negativ
