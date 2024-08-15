@@ -14,7 +14,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.util.debug.Log;
 
 public class ImplicitCurvePlotter {
-	public static final int MAX_SPLIT_RECURSION = 5;
+	public static final int MAX_SPLIT_RECURSION = 4;
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
 	private final List<CurvePlotContext> subContexts = new ArrayList<>();
 	private final GeoElement curve;
@@ -80,7 +80,7 @@ public class ImplicitCurvePlotter {
 	}
 
 	private void findSolutionsInOneEdge(BoxEdge edge) {
-		if (edge.isDerivativeSignDiffer() && hasSize(edge)) {
+		if (edge.isDerivativeSignDiffer()) {
 			BoxEdge[] split = edge.split();
 			findSolutionsInOneEdge(split[0]);
 			findSolutionsInOneEdge(split[1]);
@@ -91,26 +91,19 @@ public class ImplicitCurvePlotter {
 	}
 
 	private void findSignChangeInEdge(BoxEdge edge) {
+		if (edge.isUnderSize(pixelInRW)) {
+			output.add(edge.startPoint());
+			return;
+		}
+
 		BoxEdge[] split = edge.split();
 		if (split[0].mightHaveSolutions()) {
-			splitIfNeeded(split[0]);
-		} else {
-			splitIfNeeded(split[1]);
+			findSignChangeInEdge(split[0]);
+		} else if (split[1].mightHaveSolutions()){
+			findSignChangeInEdge(split[1]);
 		}
 	}
 
-	private void splitIfNeeded(BoxEdge edge) {
-		if (hasSize(edge)) {
-			findSignChangeInEdge(edge);
-		} else {
-			output.add(edge.startPoint());
-		}
-
-	}
-
-	private boolean hasSize(BoxEdge edge) {
-		return edge.length() > Math.min(pixelInRW.x, pixelInRW.y);
-	}
 
 	private void split() {
 		List<CurvePlotContext> list = new ArrayList<>();

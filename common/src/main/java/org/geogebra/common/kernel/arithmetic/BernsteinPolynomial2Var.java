@@ -36,7 +36,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		int count = 0;
 		for (BernsteinPolynomial bcoeff : bernsteinCoeffs) {
 			if (bcoeff != null) {
-				count = count + (bcoeff.hasNoSolution() ? 1 : -1);
+				if (bcoeff.getSign() == AllPositive ) {
+					count++;
+				} else {
+					count--;
+				}
 			}
 		}
 
