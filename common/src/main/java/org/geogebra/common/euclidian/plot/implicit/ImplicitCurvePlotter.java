@@ -23,6 +23,7 @@ public class ImplicitCurvePlotter {
 	private GPoint2D pixelInRW;
 	private ImplicitCurvePlotterVisualDebug visualDebug;
 	private final List<GPoint2D> output = new ArrayList<>();
+	private final List<BoxEdge> edges = new ArrayList<>();
 
 	public ImplicitCurvePlotter(GeoElement curve, EuclidianViewBounds bounds) {
 		this.curve = curve;
@@ -49,6 +50,7 @@ public class ImplicitCurvePlotter {
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
 			visualDebug.draw(g2, output);
+			visualDebug.drawEdges(g2, edges);
 		}
 		drawResults(g2);
 
@@ -63,6 +65,7 @@ public class ImplicitCurvePlotter {
 			split();
 		}
 		output.clear();
+		edges.clear();
 		subContexts.forEach(this::process);
 
 	}
@@ -75,6 +78,7 @@ public class ImplicitCurvePlotter {
 		for (BoxEdge edge: edges) {
 			if (edge.mightHaveSolutions()) {
 				findSolutionsInOneEdge(edge);
+				edges.add(edge);
 			}
 		}
 	}
@@ -91,7 +95,7 @@ public class ImplicitCurvePlotter {
 	}
 
 	private void findSignChangeInEdge(BoxEdge edge) {
-		if (edge.isUnderSize(pixelInRW)) {
+		if (edge.mightHaveSolutions() && edge.isUnderSize(pixelInRW)) {
 			output.add(edge.startPoint());
 			return;
 		}

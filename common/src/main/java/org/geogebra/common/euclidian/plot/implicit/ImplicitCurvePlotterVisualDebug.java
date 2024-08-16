@@ -65,4 +65,11 @@ final class ImplicitCurvePlotterVisualDebug {
 		}
 
 	}
+
+	public void drawEdges(GGraphics2D g2, List<BoxEdge> edges) {
+		for (BoxEdge edge : edges) {
+			edge.draw(g2);
+		}
+
+	}
 }

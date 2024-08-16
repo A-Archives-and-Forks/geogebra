@@ -1,5 +1,7 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
+import org.geogebra.common.awt.GColor;
+import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.Splittable;
@@ -31,7 +33,7 @@ public final class BoxEdge implements Splittable<BoxEdge> {
 		this.coordMax = coordMax;
 		this.fixedCoord = fixedCoord;
 		this.horizontal = horizontal;
-		length = coordMax - coordMin;
+		length = Math.abs(coordMax - coordMin);
 	}
 
 	public BoxEdge[] split() {
@@ -64,14 +66,21 @@ public final class BoxEdge implements Splittable<BoxEdge> {
 	}
 
 	public boolean isUnderSize(GPoint2D pixelInRW) {
-		return length < (horizontal ? pixelInRW.x : pixelInRW.y);
+		return length <= (horizontal ? pixelInRW.x : pixelInRW.y);
 	}
 
 	public GPoint2D startPoint() {
-		return horizontal ? new GPoint2D(coordMin, fixedCoord) : new GPoint2D(fixedCoord, coordMin);
+		return horizontal ? new GPoint2D(coordMin, fixedCoord) : new GPoint2D(fixedCoord, coordMax);
 	}
 
 	public double length() {
 		return length;
+	}
+
+	public void draw(GGraphics2D g2) {
+		if (horizontal) {
+			g2.setColor(GColor.ORANGE);
+			g2.fillRect((int) coordMin, (int) coordMax, (int) length, 2);
+		}
 	}
 }
