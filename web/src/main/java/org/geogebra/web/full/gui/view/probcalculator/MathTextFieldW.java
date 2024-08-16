@@ -12,6 +12,7 @@ import org.geogebra.web.html5.util.JsRunnable;
 import org.gwtproject.dom.style.shared.Unit;
 
 import com.himamis.retex.editor.share.event.MathFieldListener;
+import com.himamis.retex.editor.share.meta.MetaModel;
 
 public class MathTextFieldW extends MathFieldEditor implements MathFieldListener, ErrorHandler {
 	private final ArrayList<JsRunnable> inputHandlers = new ArrayList<>();
@@ -22,8 +23,17 @@ public class MathTextFieldW extends MathFieldEditor implements MathFieldListener
 	 * @param app The application.
 	 */
 	public MathTextFieldW(App app) {
+		this(app, getDefaultModel());
+	}
+
+	/**
+	 * Constructor
+	 * @param app The application.
+	 * @param model editor model
+	 */
+	public MathTextFieldW(App app, MetaModel model) {
 		super(app);
-		createMathField(this);
+		createMathField(this, model);
 		addBlurHandler(event -> {
 			this.asWidget().getParent().removeStyleName("focusState");
 			scrollHorizontally();
@@ -35,7 +45,7 @@ public class MathTextFieldW extends MathFieldEditor implements MathFieldListener
 
 	@Override
 	public void onEnter() {
-		scrollHorizontally();
+		scrollCursorVisibleHorizontally();
 		notifyListeners(true);
 	}
 
@@ -47,7 +57,7 @@ public class MathTextFieldW extends MathFieldEditor implements MathFieldListener
 
 	@Override
 	public void onKeyTyped(String key) {
-		scrollHorizontally();
+		scrollCursorVisibleHorizontally();
 		for (JsRunnable listener: inputHandlers) {
 			listener.run();
 		}
@@ -55,7 +65,7 @@ public class MathTextFieldW extends MathFieldEditor implements MathFieldListener
 
 	@Override
 	public boolean onArrowKeyPressed(int keyCode) {
-		scrollHorizontally();
+		scrollCursorVisibleHorizontally();
 		return false;
 	}
 
