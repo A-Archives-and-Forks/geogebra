@@ -99,8 +99,9 @@ public class SpreadsheetToolbarManagerW {
 		}
 	}
 
-	private void openDialog(int type, String title) {
-		createObjectDialog = new CreateObjectDialogW(app, view, type, title);
+	private void openDialog(int type) {
+		createObjectDialog = new CreateObjectDialogW(app, view, type,
+				CreateObjectModel.getTitle(type));
 		createObjectDialog.show();
 	}
 }
