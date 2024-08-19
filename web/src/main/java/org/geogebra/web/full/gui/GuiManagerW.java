@@ -2084,8 +2084,9 @@ public class GuiManagerW extends GuiManager
 	 */
 	@Override
 	public void openMenuInAVFor(GeoElement geo) {
-		if (getApp().isUnbundled() && hasAlgebraView()) {
+		if (hasAlgebraView()) {
 			getAlgebraView().openMenuFor(geo);
+			getAlgebraView().getNode(geo).focusFirstMoreMenuElement();
 		}
 	}
 
