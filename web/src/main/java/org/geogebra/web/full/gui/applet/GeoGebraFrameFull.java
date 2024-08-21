@@ -253,7 +253,7 @@ public class GeoGebraFrameFull
 	 * @param textField
 	 *            {@link MathKeyboardListener}
 	 */
-	public void doShowKeyBoard(final boolean show,
+	public void doShowKeyboard(final boolean show,
 			MathKeyboardListener textField) {
 		if (keyboardState == KeyboardState.ANIMATING_IN
 				|| keyboardState == KeyboardState.ANIMATING_OUT) {
@@ -305,7 +305,7 @@ public class GeoGebraFrameFull
 	}
 
 	private void removeKeyboard() {
-		final VirtualKeyboardGUI keyBoard = getKeyboardManager().getOnScreenKeyboard();
+		final VirtualKeyboardGUI keyboard = getKeyboardManager().getOnScreenKeyboard();
 		this.setKeyboardShowing(false);
 
 		ToolbarPanel toolbarPanel = getGuiManager()
@@ -318,8 +318,8 @@ public class GeoGebraFrameFull
 			keyboardHeight = 0;
 			app.updateViewSizes();
 		}
-		keyBoard.remove(() -> {
-			keyBoard.resetKeyboardState();
+		keyboard.remove(() -> {
+			keyboard.resetKeyboardState();
 			getApp().centerAndResizeViews();
 		});
 	}
@@ -390,10 +390,10 @@ public class GeoGebraFrameFull
 	/**
 	 * Callback for keyboard; takes care of resizing
 	 *
-	 * @param keyBoard
+	 * @param keyboard
 	 *            keyboard
 	 */
-	private void onKeyboardAdded(final VirtualKeyboardGUI keyBoard) {
+	private void onKeyboardAdded(final VirtualKeyboardGUI keyboard) {
 		KeyboardManager keyboardManager = getApp().getKeyboardManager();
 		if (keyboardManager.isKeyboardOutsideFrame()) {
 			keyboardHeight = 0;
@@ -405,7 +405,7 @@ public class GeoGebraFrameFull
 			app.updateViewSizes();
 		}
 		keyboardManager.addKeyboard(this);
-		keyBoard.setVisible(true);
+		keyboard.setVisible(true);
 		app.centerAndResizeViews();
 		keyboardState = KeyboardState.SHOWN;
 	}
@@ -439,22 +439,22 @@ public class GeoGebraFrameFull
 	}
 
 	@Override
-	public boolean showKeyBoard(boolean show, MathKeyboardListener textField,
+	public boolean showKeyboard(boolean show, MathKeyboardListener textField,
 			boolean forceShow) {
 		if (forceShow && (isKeyboardWantedFromStorage() || NavigatorUtil.isMobile())) {
-			doShowKeyBoard(show, textField);
+			doShowKeyboard(show, textField);
 			return true;
 		}
 
-		return keyBoardNeeded(show, textField);
+		return keyboardNeeded(show, textField);
 	}
 
 	@Override
 	public void closeKeyboard() {
-		keyBoardNeeded(false, null);
+		keyboardNeeded(false, null);
 	}
 
-	private boolean keyBoardNeeded(boolean show,
+	private boolean keyboardNeeded(boolean show,
 			MathKeyboardListener textField) {
 		if (this.keyboardState == KeyboardState.ANIMATING_IN) {
 			return true;
@@ -474,7 +474,7 @@ public class GeoGebraFrameFull
 									// to handle the showKeyboardButton
 				|| (!getKeyboardManager().isKeyboardClosedByUser() && isKeyboardWantedFromStorage())
 				|| keyboardNeededForGraphicsTools()) {
-			doShowKeyBoard(show, textField);
+			doShowKeyboard(show, textField);
 			refreshKeyboardButton(textField);
 			return true;
 		}
@@ -553,10 +553,10 @@ public class GeoGebraFrameFull
 	@Override
 	public void refreshKeyboard() {
 		if (isKeyboardShowing()) {
-			final VirtualKeyboardW keyBoard = getOnScreenKeyboard(null);
+			final VirtualKeyboardW keyboard = getOnScreenKeyboard(null);
 			if (appNeedsKeyboard() && isKeyboardAutofocus()) {
 				ensureKeyboardDeferred();
-				add(keyBoard);
+				add(keyboard);
 			} else {
 				removeKeyboard();
 			}
