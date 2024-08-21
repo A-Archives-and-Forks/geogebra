@@ -18,7 +18,7 @@ public class BoxEdgeTest extends BaseUnitTest {
 		GeoImplicitCurve curve 	= add("(x + 1)^3 - y^3 = 0");
 		BernsteinPolynomial polynomial =
 				converter.from(curve, new BoundsRectangle(0, 1, 0, 1));
-		BoxEdge edge = BoxEdge.createHorizontal(polynomial, 0, 1, 0);
+		BoxEdge edge = BoxEdge.create(polynomial, 0, 1, 0, EdgeKind.BOTTOM);
 		startPointShouldBe(edge, 0, 0);
 		BoxEdge[] split = edge.split();
 		startPointShouldBe(split[0], -10, 0);

@@ -33,19 +33,29 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	private BinomialCoefficientsSign computeSign() {
-		int count = 0;
+		int positive = 0;
+		int negative = 0;
 		for (BernsteinPolynomial bcoeff : bernsteinCoeffs) {
 			if (bcoeff != null) {
-				if (bcoeff.getSign() == AllPositive ) {
-					count++;
-				} else {
-					count--;
+				switch (bcoeff.getSign()) {
+				case AllPositive:
+					positive++;
+					break;
+				case AllNegative:
+					negative++;
+					break;
+				case None:
+				case Mixed:
 				}
 			}
 		}
 
-		if (Math.abs(count) == bernsteinCoeffs.length) {
-			return count < 0 ? AllNegative : AllPositive;
+		if (positive == bernsteinCoeffs.length) {
+			return AllPositive;
+		}
+
+		if (negative == bernsteinCoeffs.length) {
+			return AllNegative;
 		}
 
 		return Mixed;

@@ -13,8 +13,12 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 	private BernsteinPolynomial dy;
 	private ContextCass contextCass = ContextCass.NONE;
 
-	public ContextCass getContextCass() {
+	ContextCass getContextCass() {
 		return contextCass;
+	}
+
+	public void markCellUnused() {
+		contextCass = ContextCass.NONE;
 	}
 
 
@@ -23,6 +27,7 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 		CELL0,
 		CELL1,
 		CELL2;
+
 	}
 	public CurvePlotContext(CurvePlotBoundingBox box, BernsteinPolynomial polynomial) {
 		boundingBox = box;
@@ -59,27 +64,22 @@ public class CurvePlotContext implements Splittable<CurvePlotContext> {
 
 
 	List<BoxEdge> createEdges() {
-		BoxEdge top  = BoxEdge.createHorizontal(polynomial, boundingBox.getX1(),
+		BoxEdge top  = BoxEdge.create(polynomial, boundingBox.getX1(),
 				boundingBox.getX2(),
-				boundingBox.getY1());
+				boundingBox.getY1(), EdgeKind.TOP);
 
-		BoxEdge left = BoxEdge.createVertical(polynomial, boundingBox.getY1(), boundingBox.getY2(),
-				boundingBox.getX1());
+		BoxEdge left = BoxEdge.create(polynomial, boundingBox.getY1(), boundingBox.getY2(),
+				boundingBox.getX1(), EdgeKind.LEFT);
 
-		BoxEdge bottom  = BoxEdge.createHorizontal(polynomial, boundingBox.getX1(),
+		BoxEdge bottom  = BoxEdge.create(polynomial, boundingBox.getX1(),
 				boundingBox.getX2(),
-				boundingBox.getY2());
+				boundingBox.getY2(), EdgeKind.BOTTOM);
 
-		return Arrays.asList(bottom, left);
-	}
+		BoxEdge right = BoxEdge.create(polynomial, boundingBox.getY1(), boundingBox.getY2(),
+				boundingBox.getX2(), EdgeKind.RIGHT);
 
-
-	private void findSolutionsInBox() {
-
-	}
-
-	private void linkSolutions() {
-
+		return Arrays.asList(top, left, bottom, right);
+//		return Arrays.asList(bottom, right);
 	}
 
 	@Override

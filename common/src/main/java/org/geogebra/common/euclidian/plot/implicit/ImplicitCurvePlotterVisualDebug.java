@@ -6,7 +6,6 @@ import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
-import org.geogebra.common.util.debug.Log;
 
 final class ImplicitCurvePlotterVisualDebug {
 	private final EuclidianViewBounds bounds;
@@ -19,12 +18,12 @@ final class ImplicitCurvePlotterVisualDebug {
 	}
 
 
-	void draw(GGraphics2D g2, List<GPoint2D> output) {
+	void draw(GGraphics2D g2, List<BoxEdge> output) {
+		drawOutput(g2, output);
 		for (CurvePlotContext ctx : subContexts) {
 			drawDebug(g2, ctx);
 		}
 
-		drawOutput(g2, output);
 	}
 
 	private void drawDebug(GGraphics2D g2, CurvePlotContext ctx) {
@@ -37,9 +36,9 @@ final class ImplicitCurvePlotterVisualDebug {
 			color = GColor.BLUE;
 			break;
 		case CELL2:
-		case NONE:
 			color = GColor.GRAY;
 			break;
+		case NONE:
 		default:
 			color = GColor.BLACK;
 		}
@@ -48,18 +47,17 @@ final class ImplicitCurvePlotterVisualDebug {
 		int y = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getY1()));
 		int width = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getX2()) - x);
 		int height = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getY2()) - y);
-		g2.setColor(color.deriveWithAlpha(40));
+		g2.setColor(color);
 
 		g2.fillRect(x, y, width, height);
-		g2.setColor(GColor.BLACK.deriveWithAlpha(45));
+		g2.setColor(GColor.BLACK.deriveWithAlpha(25));
 		g2.drawRect(x, y, width, height);
 	}
 
-	private void drawOutput(GGraphics2D g2, List<GPoint2D> output) {
-		g2.setPaint(GColor.RED);
-		g2.setColor(GColor.RED);
-		for (GPoint2D p : output) {
-			Log.debug(p);
+	private void drawOutput(GGraphics2D g2, List<BoxEdge> output) {
+		for (BoxEdge edge : output) {
+			g2.setColor(edge.getKind().getColor());
+			GPoint2D p = edge.startPoint();
 			g2.fillRect((int) bounds.toScreenCoordXd(p.x),
 					(int) bounds.toScreenCoordYd(p.y), 5, 5);
 		}
@@ -68,7 +66,7 @@ final class ImplicitCurvePlotterVisualDebug {
 
 	public void drawEdges(GGraphics2D g2, List<BoxEdge> edges) {
 		for (BoxEdge edge : edges) {
-			edge.draw(g2);
+			edge.draw(g2, bounds);
 		}
 
 	}

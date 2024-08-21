@@ -1,8 +1,8 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.awt.GPoint2D;
+import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.Splittable;
 
@@ -11,37 +11,34 @@ public final class BoxEdge implements Splittable<BoxEdge> {
 	private final double coordMin;
 	private final double coordMax;
 	private final double fixedCoord;
-	private final boolean horizontal;
 	private final double length;
+	private final EdgeKind kind;
 
-	public static BoxEdge createHorizontal(BernsteinPolynomial polynomial, double x1, double x2,
-			double y) {
 
-		return new BoxEdge(polynomial.substitute("y", y),
-				x1, x2, y, true);
-	}
+	public static BoxEdge create(BernsteinPolynomial polynomial, double coordMin, double coordMax,
+			double fixedCoord, EdgeKind kind) {
 
-	public static BoxEdge createVertical(BernsteinPolynomial polynomial, double y1, double y2,
-			double x) {
-		return new BoxEdge(polynomial.substitute("x", x), y1, y2, x, false);
+		String varName = kind.isHorizontal() ? "y" : "x";
+		return new BoxEdge(polynomial.substitute(varName, fixedCoord), coordMin, coordMax,
+				fixedCoord, kind);
 	}
 
 	private BoxEdge(BernsteinPolynomial polynomial, double coordMin, double coordMax, double fixedCoord,
-			boolean horizontal) {
+			EdgeKind kind) {
 		this.polynomial = polynomial;
 		this.coordMin = coordMin;
 		this.coordMax = coordMax;
 		this.fixedCoord = fixedCoord;
-		this.horizontal = horizontal;
-		length = Math.abs(coordMax - coordMin);
+		this.kind = kind;
+		length = coordMax - coordMin;
 	}
 
 	public BoxEdge[] split() {
 		BernsteinPolynomial[] polynomials = polynomial.split();
 		BoxEdge[] edges = new BoxEdge[2];
 		double half = length / 2;
-		edges[0] = new BoxEdge(polynomials[0], coordMin, coordMin + half, fixedCoord, horizontal);
-		edges[1] = new BoxEdge(polynomials[1], coordMin + half, coordMax, fixedCoord, horizontal);
+		edges[0] = new BoxEdge(polynomials[0], coordMin, coordMin + half, fixedCoord, kind);
+		edges[1] = new BoxEdge(polynomials[1], coordMin + half, coordMax, fixedCoord, kind);
 		return edges;
 	}
 
@@ -66,21 +63,39 @@ public final class BoxEdge implements Splittable<BoxEdge> {
 	}
 
 	public boolean isUnderSize(GPoint2D pixelInRW) {
-		return length <= (horizontal ? pixelInRW.x : pixelInRW.y);
+		return length <= (kind.isHorizontal() ? pixelInRW.x : pixelInRW.y);
 	}
 
 	public GPoint2D startPoint() {
-		return horizontal ? new GPoint2D(coordMin, fixedCoord) : new GPoint2D(fixedCoord, coordMax);
+		return kind.isHorizontal()
+				? new GPoint2D(coordMin, fixedCoord)
+				: new GPoint2D(fixedCoord, coordMax);
 	}
 
 	public double length() {
 		return length;
 	}
 
-	public void draw(GGraphics2D g2) {
-		if (horizontal) {
-			g2.setColor(GColor.ORANGE);
-			g2.fillRect((int) coordMin, (int) coordMax, (int) length, 2);
+	public EdgeKind getKind() {
+		return kind;
+	}
+
+	public void draw(GGraphics2D g2, EuclidianViewBounds bounds) {
+		g2.setColor(kind.getColor());
+		if (kind.isHorizontal()) {
+			g2.fillRect((int) bounds.toScreenCoordXd(coordMin) + 4,
+					(int) bounds.toScreenCoordYd(fixedCoord) + (kind == EdgeKind.TOP ? -2 : 2),
+					(int) (bounds.toScreenCoordXd(coordMax)
+							- bounds.toScreenCoordXd(coordMin)) - 4, 2);
+		} else {
+			double height = bounds.toScreenCoordYd(coordMax)
+					- bounds.toScreenCoordYd(coordMin);
+
+			g2.fillRect((int) bounds.toScreenCoordXd(fixedCoord)
+							+ (kind == EdgeKind.LEFT ? 2 : -2),
+					(int) bounds.toScreenCoordYd(coordMax),
+					2, (int) height);
+
 		}
 	}
 }
