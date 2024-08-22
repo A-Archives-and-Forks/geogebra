@@ -74,6 +74,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			return new CvteExamRestrictions();
 		case BAYERN_CAS:
 			return new BayernCasExamRestrictions();
+		case IB:
+			return new IBExamRestrictions();
 		case NIEDERSACHSEN:
 			return new NiedersachsenExamRestrictions();
 		case VLAANDEREN:
