@@ -3,23 +3,26 @@ package org.geogebra.common.euclidian.plot.implicit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.awt.GPoint2D;
+import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
 
 public class ImplicitCurvePlotter {
-	public static final int MAX_SPLIT_RECURSION = 1;
+	public static final int MAX_SPLIT_RECURSION = 3;
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
-	public static final int SMALLEST_BOX_IN_PIXELS = 10;
+	public static final int SMALLEST_BOX_IN_PIXELS = 15;
 	private final List<CurvePlotContext> subContexts = new ArrayList<>();
 	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
+	private final GeneralPathClippedForCurvePlotter gp;
 	private final BernsteinPolynomialConverter converter;
 	private GPoint2D pixelInRW;
 	private final ImplicitCurvePlotterVisualDebug visualDebug;
@@ -27,9 +30,10 @@ public class ImplicitCurvePlotter {
 	private final List<BoxEdge> edges = new ArrayList<>();
 	private final List<BoxEdge> intersects = new ArrayList<>();
 
-	public ImplicitCurvePlotter(GeoElement curve, EuclidianViewBounds bounds) {
+	public ImplicitCurvePlotter(GeoElement curve, EuclidianViewBounds bounds, GeneralPathClippedForCurvePlotter gp) {
 		this.curve = curve;
 		this.bounds = bounds;
+		this.gp = gp;
 		converter = new BernsteinPolynomialConverter();
 		initContext();
 		if (VISUAL_DEBUG_ENABLED) {
@@ -50,7 +54,7 @@ public class ImplicitCurvePlotter {
 
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
-			visualDebug.draw(g2, intersects);
+//			visualDebug.draw(g2, intersects);
 //			visualDebug.drawEdges(g2, edges);
 		}
 		drawResults(g2);
@@ -58,12 +62,21 @@ public class ImplicitCurvePlotter {
 	}
 
 	private void drawResults(GGraphics2D g2) {
+		gp.reset();
+
 		g2.setColor(GColor.DARK_RED);
-		for (GPoint2D p : output) {
-			g2.fillRect((int) bounds.toScreenCoordXd(p.x), (int) bounds.toScreenCoordYd(p.y),
-					5, 5);
+		for (int i=0; i < output.size(); i++) {
+			GPoint2D p0 = output.get(i);
+			gp.moveTo((int) bounds.toScreenCoordXd(p0.x), (int) bounds.toScreenCoordYd(p0.y));
+			gp.lineTo((int) bounds.toScreenCoordXd(p0.x),
+					(int) bounds.toScreenCoordYd(p0.y));
+//			gp.drawTo((int) bounds.toScreenCoordXd(p.x), (int) bounds.toScreenCoordYd(p.y),
+//					SegmentType.CURVE_TO);
+
 
 		}
+		gp.endPlot();
+		g2.draw(gp);
 
 	}
 
@@ -86,20 +99,50 @@ public class ImplicitCurvePlotter {
 		findSolutionsInFaces(context, list);
 	}
 
+	//	private void findSolutionsInFaces(CurvePlotContext context, List<CurvePlotContext> list) {
+//		list.add(context);
+//		if (!context.mightHaveSolution()) {
+//			return;
+//		}
+//
+//		CurvePlotBoundingBox box = context.boundingBox;
+//		if (isBoxSmallEnough(box)) {
+//			output.add(new GPoint2D(box.getX1() + box.getWidth() / 2,
+//					box.getY1() + box.getHeight() / 2));
+//			return;
+//		}
+//
+//		for (CurvePlotContext c : context.split()) {
+//			findSolutionsInFaces(c, list);
+//		}
+//	}
 	private void findSolutionsInFaces(CurvePlotContext context, List<CurvePlotContext> list) {
-		list.add(context);
-		if (!context.mightHaveSolution()) {
-			return;
-		}
+		// Stack to replace recursion
+		Stack<CurvePlotContext> stack = new Stack<>();
+		stack.push(context);
 
-		CurvePlotBoundingBox box = context.boundingBox;
-		if (isBoxSmallEnough(box)) {
-			output.add(new GPoint2D(box.getX1(), box.getY1()));
-			return;
-		}
+		while (!stack.isEmpty()) {
+			// Get the current context from the top of the stack
+			CurvePlotContext currentContext = stack.pop();
+			list.add(currentContext);
 
-		for (CurvePlotContext c : context.split()) {
-			findSolutionsInFaces(c, list);
+			// If the current context doesn't have a solution, skip to the next
+			if (!currentContext.mightHaveSolution()) {
+				continue;
+			}
+
+			CurvePlotBoundingBox box = currentContext.boundingBox;
+
+			// If the bounding box is small enough, add the center point to the output
+			if (isBoxSmallEnough(box)) {
+				output.add(new GPoint2D(box.getX1() + box.getWidth() / 2,
+						box.getY1() + box.getHeight() / 2));
+			} else {
+				// Otherwise, split the context and push each part onto the stack
+				for (CurvePlotContext c : currentContext.split()) {
+					stack.push(c);
+				}
+			}
 		}
 	}
 
@@ -117,29 +160,40 @@ public class ImplicitCurvePlotter {
 		}
 	}
 
-	private void findSolutionsInOneEdge(BoxEdge edge) {
-		if (edge.isDerivativeSignDiffer()) {
-			BoxEdge[] split = edge.split();
-			findSolutionsInOneEdge(split[0]);
-			findSolutionsInOneEdge(split[1]);
-		} else {
-			findSignChangeInEdge(edge);
+	private void findSolutionsInOneEdge(BoxEdge startEdge) {
+		Stack<BoxEdge> stack = new Stack<>();
+		stack.push(startEdge);
+
+		while (!stack.isEmpty()) {
+			BoxEdge edge = stack.pop();
+			if (edge.isDerivativeSignDiffer()) {
+				BoxEdge[] split = edge.split();
+				stack.push(split[0]);
+				stack.push(split[1]);
+			} else {
+				findSignChangeInEdge(edge);
+			}
 		}
 
 	}
 
-	private void findSignChangeInEdge(BoxEdge edge) {
-		if (edge.mightHaveSolutions() && edge.isUnderSize(pixelInRW)) {
-			intersects.add(edge);
-			return;
-		}
+	private void findSignChangeInEdge(BoxEdge startEdge) {
+		Stack<BoxEdge> stack = new Stack<>();
+		stack.push(startEdge);
+		while (!stack.isEmpty())   {
+			BoxEdge edge = stack.pop();
+			if (edge.mightHaveSolutions() && edge.isUnderSize(pixelInRW)) {
+				intersects.add(edge);
+				return;
+			}
 
-		this.edges.add(edge);
-		BoxEdge[] split = edge.split();
-		if (split[0].mightHaveSolutions()) {
-			findSignChangeInEdge(split[0]);
-		} else if (split[1].mightHaveSolutions()){
-			findSignChangeInEdge(split[1]);
+			this.edges.add(edge);
+			BoxEdge[] split = edge.split();
+			if (split[0].mightHaveSolutions()) {
+				stack.push(split[0]);
+			} else if (split[1].mightHaveSolutions()){
+				stack.push(split[1]);
+			}
 		}
 	}
 
@@ -150,8 +204,8 @@ public class ImplicitCurvePlotter {
 			Collections.addAll(list, ctx.split());
 		}
 		subContexts.clear();
-		subContexts.addAll(list);
-//		subContexts.addAll(filterByCell(list));
+//		subContexts.addAll(list);
+		subContexts.addAll(filterByCell(list));
 	}
 
 	private static List<CurvePlotContext> filterByCell(List<CurvePlotContext> list) {

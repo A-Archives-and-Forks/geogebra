@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.euclidian.EuclidianViewBoundsImp;
+import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,8 @@ public class ImplicitCurvePlotterTest extends BaseUnitTest {
 	@Test
 	public void testUpdate() {
 		GeoElement curve = add("");
-		plotter = new ImplicitCurvePlotter(curve, bounds);
+		plotter = new ImplicitCurvePlotter(curve, bounds,
+				new GeneralPathClippedForCurvePlotter(view));
 		plotter.update();
 		assertEquals(1024, plotter.subContentCount());
 	}
