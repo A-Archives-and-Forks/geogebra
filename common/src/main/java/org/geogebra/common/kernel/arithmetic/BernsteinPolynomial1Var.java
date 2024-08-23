@@ -14,6 +14,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	final int degree;
 	final char variableName;
 	private final double[] bernsteinCoeffs;
+	private final double[] dividedCoeffs;
 	private BinomialCoefficientsSign sign = None;
 
 	/**
@@ -29,7 +30,16 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this.max = max;
 		this.degree = bernsteinCoeffs.length - 1;
 		this.bernsteinCoeffs = bernsteinCoeffs;
+		this.dividedCoeffs = createDividedCoeffs();
 		sign = computeSign();
+	}
+
+	private double[] createDividedCoeffs() {
+		double[] coeffs = new double[degree + 1];
+		for (int i = 0; i < degree + 1; i++) {
+			coeffs[i] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
+		}
+		return coeffs;
 	}
 
 	@Override
@@ -71,7 +81,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 		for (int i = 0; i < degree + 1; i++) {
 			double[] coeffs = new double[1];
-			coeffs[0] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
+			coeffs[0] = dividedCoeffs[i];
 			bPlus.setLast(i, newInstance(coeffs));
 			bMinus.setLast(i, newInstance(coeffs));
 		}
