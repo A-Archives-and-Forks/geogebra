@@ -11,6 +11,7 @@ import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.TestHarness;
 import org.geogebra.web.resources.SVGResource;
+import org.gwtproject.resources.client.ResourcePrototype;
 
 public class IconButton extends StandardButton implements SetLabels {
 	private static final int DEFAULT_BUTTON_WIDTH = 24;
@@ -138,7 +139,7 @@ public class IconButton extends StandardButton implements SetLabels {
 	}
 
 	/**
-	 * Small press icon buttons, used in notes topbar
+	 * Small press icon buttons, used in notes top bar
 	 * @param appW - application
 	 * @param image - svg
 	 * @param ariaLabel - aria label
@@ -231,5 +232,11 @@ public class IconButton extends StandardButton implements SetLabels {
 
 	private String getSelectionColor(AppW appW) {
 		return appW.getGeoGebraElement().getDarkColor(appW.getFrameElement());
+	}
+
+	@Override
+	public void setIcon(ResourcePrototype icon) {
+		super.setIcon(icon);
+		image = (SVGResource) icon;
 	}
 }

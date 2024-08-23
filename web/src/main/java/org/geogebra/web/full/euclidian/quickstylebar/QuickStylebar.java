@@ -11,6 +11,7 @@ import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.impl.AbstractEnumeratedProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 import org.geogebra.web.full.css.MaterialDesignResources;
@@ -40,6 +41,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	private final List<IconButton> quickButtons = new ArrayList<>();
 	private final static int CONTEXT_MENU_DISTANCE = 8;
 	private ContextMenuGeoElementW contextMenu;
+	private IconsEnumeratedProperty<?> lineStyleProperty;
 
 	/**
 	 * @param ev - parent view
@@ -61,23 +63,21 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void addLineStyleButton() {
-		IconsEnumeratedProperty<?> lineStyleProperty;
 		try {
-			lineStyleProperty = new LineStyleProperty(getApp().getLocalization(), getApp().getSelectionManager()
-							.getSelectedGeos().get(0));
+			lineStyleProperty = new LineStyleProperty(getApp().getLocalization(),
+					stylebarPositioner.createActiveGeoList().get(0));
 		} catch (NotApplicablePropertyException e) {
 			throw new RuntimeException(e);
 		}
-		IconButton button = new IconButton(getApp().getLocalization(), getIcon(lineStyleProperty), "button", () -> {
-
-		});
+		IconButton button = new IconButtonWithProperties(getApp(), getIcon(lineStyleProperty),
+				(AbstractEnumeratedProperty<?>) lineStyleProperty);
+		styleAndRegisterButton(button);
 	}
 
 	private SVGResource getIcon(IconsEnumeratedProperty<?> property) {
 		PropertyResource[] propertyIcons = property.getValueIcons();
 		return PropertiesIconAdapter.getIcon(propertyIcons[property.getIndex()]);
 	}
-
 
 	private void addDivider() {
 		add(BaseWidgetFactory.INSTANCE.newDivider(true));
