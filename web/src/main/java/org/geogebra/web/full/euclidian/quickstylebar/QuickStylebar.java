@@ -9,6 +9,10 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.properties.IconsEnumeratedProperty;
+import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.impl.objects.LineStyleProperty;
+import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
 import org.geogebra.web.full.gui.GuiManagerW;
@@ -19,11 +23,12 @@ import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.EventUtil;
+import org.geogebra.web.resources.SVGResource;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.ui.FlowPanel;
 
 /**
- * Quick stylebar containing IconButtons with dynamic position
+ * Quick style bar containing IconButtons with dynamic position
  */
 public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	private final EuclidianView ev;
@@ -37,8 +42,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	private ContextMenuGeoElementW contextMenu;
 
 	/**
-	 * @param ev
-	 *            parent view
+	 * @param ev - parent view
 	 */
 	public QuickStylebar(EuclidianView ev) {
 		this.ev = ev;
@@ -50,10 +54,30 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void buildGUI() {
+		addLineStyleButton();
 		addDivider();
 		addDeleteButton();
 		addContextMenuButton();
 	}
+
+	private void addLineStyleButton() {
+		IconsEnumeratedProperty<?> lineStyleProperty = null;
+		try {
+			lineStyleProperty = new LineStyleProperty(getApp().getLocalization(), getApp().getSelectionManager()
+							.getSelectedGeos().get(0));
+		} catch (NotApplicablePropertyException e) {
+			throw new RuntimeException(e);
+		}
+		IconButton button = new IconButton(getApp().getLocalization(), getIcon(lineStyleProperty), "button", () -> {
+
+		});
+	}
+
+	private SVGResource getIcon(IconsEnumeratedProperty<?> property) {
+		PropertyResource[] propertyIcons = property.getValueIcons();
+		return PropertiesIconAdapter.getIcon(propertyIcons[property.getIndex()]);
+	}
+
 
 	private void addDivider() {
 		add(BaseWidgetFactory.INSTANCE.newDivider(true));
