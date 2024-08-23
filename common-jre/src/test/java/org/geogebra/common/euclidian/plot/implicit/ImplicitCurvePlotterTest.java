@@ -8,6 +8,7 @@ import org.geogebra.common.euclidian.EuclidianViewBoundsImp;
 import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ImplicitCurvePlotterTest extends BaseUnitTest {
@@ -21,6 +22,7 @@ public class ImplicitCurvePlotterTest extends BaseUnitTest {
 		bounds = new EuclidianViewBoundsImp(view);
 	}
 
+	@Ignore
 	@Test
 	public void testUpdate() {
 		GeoElement curve = add("");

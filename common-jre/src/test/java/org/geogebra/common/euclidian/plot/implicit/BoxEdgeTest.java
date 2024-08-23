@@ -13,19 +13,20 @@ import org.junit.Test;
 
 public class BoxEdgeTest extends BaseUnitTest {
 	@Test
-	public void name() {
+	public void testSplit() {
 		BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
-		GeoImplicitCurve curve 	= add("(x + 1)^3 - y^3 = 0");
+		GeoImplicitCurve curve 	= add("x^3 - y^3 = 0");
 		BernsteinPolynomial polynomial =
 				converter.from(curve, new BoundsRectangle(0, 1, 0, 1));
 		BoxEdge edge = BoxEdge.create(polynomial, 0, 1, 0, EdgeKind.BOTTOM);
 		startPointShouldBe(edge, 0, 0);
 		BoxEdge[] split = edge.split();
-		startPointShouldBe(split[0], -10, 0);
-		assertEquals(5.0, split[0].length(), 0);
+		startPointShouldBe(split[0], 0, 0);
+		startPointShouldBe(split[1], 0.5, 0);
+		assertEquals(0.5, split[0].length(), 0);
 		assertFalse(polynomial.hasNoSolution());
 		assertTrue(split[0].mightHaveSolutions());
-		assertTrue(split[1].mightHaveSolutions());
+		assertFalse(split[1].mightHaveSolutions());
 	}
 
 	private void startPointShouldBe(BoxEdge edge, double x, double y) {

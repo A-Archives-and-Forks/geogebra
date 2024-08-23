@@ -114,4 +114,6 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 	BinomialCoefficientsSign getSign();
 
 	BernsteinPolynomial substitute(String variable, double value);
+
+//	BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs, )
 }

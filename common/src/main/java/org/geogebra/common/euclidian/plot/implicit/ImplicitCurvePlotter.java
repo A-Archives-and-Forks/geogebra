@@ -3,7 +3,6 @@ package org.geogebra.common.euclidian.plot.implicit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GColor;
@@ -25,16 +24,15 @@ public class ImplicitCurvePlotter {
 	private final EuclidianViewBounds bounds;
 	private final GeneralPathClippedForCurvePlotter gp;
 	private final BernsteinPolynomialConverter converter;
-	private GPoint2D pixelInRW;
 	private final ImplicitCurvePlotterVisualDebug visualDebug;
-	private final List<GPoint2D> output = new ArrayList<>();
-	private final List<BoxEdge> edges = new ArrayList<>();
-	private final List<BoxEdge> intersects = new ArrayList<>();
+	private final ImplicitCurvePointsAlgo algo;
+	private final ImplicitCurveData data = new ImplicitCurveData();
 
 	public ImplicitCurvePlotter(GeoElement curve, EuclidianViewBounds bounds, GeneralPathClippedForCurvePlotter gp) {
 		this.curve = curve;
 		this.bounds = bounds;
 		this.gp = gp;
+		algo = new StackImplicitCurvePointsAlgo(data, bounds);
 		converter = new BernsteinPolynomialConverter();
 		initContext();
 		if (VISUAL_DEBUG_ENABLED) {
@@ -50,13 +48,13 @@ public class ImplicitCurvePlotter {
 		CurvePlotContext rootContext = new CurvePlotContext(box, polynomial);
 		subContexts.clear();
 		subContexts.add(rootContext);
-		pixelInRW = new GPoint2D(bounds.toRealWorldCoordX(1) - bounds.toRealWorldCoordX(0),
+		data.setPixelInRW(bounds.toRealWorldCoordX(1) - bounds.toRealWorldCoordX(0),
 				bounds.toRealWorldCoordY(0) - bounds.toRealWorldCoordY(1));
 	}
 
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
-			visualDebug.draw(g2, intersects);
+			visualDebug.draw(g2, data.intersects());
 //			visualDebug.drawEdges(g2, edges);
 		}
 		drawResults(g2);
@@ -67,7 +65,7 @@ public class ImplicitCurvePlotter {
 		gp.reset();
 
 		g2.setColor(GColor.DARK_RED);
-		for (GPoint2D p : output) {
+		for (GPoint2D p : data.output()) {
 			gp.moveTo((int) bounds.toScreenCoordXd(p.x), (int) bounds.toScreenCoordYd(p.y));
 			gp.lineTo((int) bounds.toScreenCoordXd(p.x),
 					(int) bounds.toScreenCoordYd(p.y));
@@ -82,9 +80,7 @@ public class ImplicitCurvePlotter {
 		for (int i = 0; i < MAX_SPLIT_RECURSION; i++) {
 			split();
 		}
-		output.clear();
-		edges.clear();
-		intersects.clear();
+		data.clear();
 		List<CurvePlotContext> list = new ArrayList<>();
 		subContexts.forEach(c -> process(c, list));
 		subContexts.clear();
@@ -93,108 +89,7 @@ public class ImplicitCurvePlotter {
 	}
 
 	private void process(CurvePlotContext context, List<CurvePlotContext> list) {
-		findSolutionsInEdges(context.createEdges());
-		findSolutionsInFaces(context, list);
-	}
-
-	//	private void findSolutionsInFaces(CurvePlotContext context, List<CurvePlotContext> list) {
-//		list.add(context);
-//		if (!context.mightHaveSolution()) {
-//			return;
-//		}
-//
-//		CurvePlotBoundingBox box = context.boundingBox;
-//		if (isBoxSmallEnough(box)) {
-//			output.add(new GPoint2D(box.getX1() + box.getWidth() / 2,
-//					box.getY1() + box.getHeight() / 2));
-//			return;
-//		}
-//
-//		for (CurvePlotContext c : context.split()) {
-//			findSolutionsInFaces(c, list);
-//		}
-//	}
-	private void findSolutionsInFaces(CurvePlotContext context, List<CurvePlotContext> list) {
-		// Stack to replace recursion
-		Stack<CurvePlotContext> stack = new Stack<>();
-		stack.push(context);
-
-		while (!stack.isEmpty()) {
-			// Get the current context from the top of the stack
-			CurvePlotContext currentContext = stack.pop();
-			list.add(currentContext);
-
-			// If the current context doesn't have a solution, skip to the next
-			if (!currentContext.mightHaveSolution()) {
-				continue;
-			}
-
-			CurvePlotBoundingBox box = currentContext.boundingBox;
-
-			// If the bounding box is small enough, add the center point to the output
-			if (isBoxSmallEnough(box)) {
-				output.add(new GPoint2D(box.getX1() + box.getWidth() / 2,
-						box.getY1() + box.getHeight() / 2));
-			} else {
-				// Otherwise, split the context and push each part onto the stack
-				for (CurvePlotContext c : currentContext.split()) {
-					stack.push(c);
-				}
-			}
-		}
-	}
-
-	private boolean isBoxSmallEnough(CurvePlotBoundingBox box) {
-		double width = bounds.toScreenCoordXd(box.getX2()) - bounds.toScreenCoordXd(box.getX1());
-		double height = bounds.toScreenCoordYd(box.getY1()) - bounds.toScreenCoordYd(box.getY2());
-		return width < SMALLEST_BOX_IN_PIXELS || height < SMALLEST_BOX_IN_PIXELS;
-	}
-
-	private void findSolutionsInEdges(List<BoxEdge> edges) {
-		for (BoxEdge edge: edges) {
-			if (edge.mightHaveSolutions()) {
-				findSolutionsInOneEdge(edge);
-			}
-		}
-	}
-
-	private void findSolutionsInOneEdge(BoxEdge startEdge) {
-		Stack<BoxEdge> stack = new Stack<>();
-		stack.push(startEdge);
-
-		while (!stack.isEmpty()) {
-			BoxEdge edge = stack.pop();
-			if (edge.isDerivativeSignDiffer()) {
-				BoxEdge[] split = edge.split();
-				stack.push(split[0]);
-				stack.push(split[1]);
-			} else {
-				findSignChangeInEdge(edge);
-			}
-		}
-
-	}
-
-	private void findSignChangeInEdge(BoxEdge startEdge) {
-		Stack<BoxEdge> stack = new Stack<>();
-		stack.push(startEdge);
-		while (!stack.isEmpty())   {
-			BoxEdge edge = stack.pop();
-			if (edge.mightHaveSolutions() && edge.isUnderSize(pixelInRW)) {
-				intersects.add(edge);
-				continue;
-			}
-
-			BoxEdge[] split = edge.split();
-			if (split[0].mightHaveSolutions()) {
-				this.edges.add(edge);
-				stack.push(split[0]);
-			}
-			if (split[1].mightHaveSolutions()){
-				this.edges.add(edge);
-				stack.push(split[1]);
-			}
-		}
+		algo.compute(context, list);
 	}
 
 

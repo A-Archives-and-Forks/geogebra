@@ -77,15 +77,32 @@ public class BernsteinPolynomialConverter {
 	public static boolean iSupported(GeoElement geo) {
 		if (geo.isGeoImplicitCurve()) {
 			GeoImplicitCurve curve = ((GeoImplicitCurve) geo);
-			return curve.isDefined() && curve.getFunctionDefinition().getPolynomial() != null;
+			return isCurveSupported(curve);
 		} else if (geo instanceof GeoFunctionNVar) {
 			FunctionNVar function = ((GeoFunctionNVar) geo).getFunction();
-			return function != null && function.getPolynomial() != null;
+			return isMultiVarPolynomial(function);
 		} else if (geo instanceof GeoFunction) {
 			Function function = ((GeoFunction) geo).getFunction();
-			return function != null && function.getPolynomial() != null;
+			return isMultiVarPolynomial(function);
 		}
 		return false;
+	}
+
+	private static boolean isCurveSupported(GeoImplicitCurve curve) {
+		if (!curve.isDefined()) {
+			return false;
+		}
+		FunctionNVar functionNVar = curve.getFunctionDefinition();
+		return isMultiVarPolynomial(functionNVar);
+	}
+
+	private static boolean isMultiVarPolynomial(FunctionNVar function) {
+		if (function == null) {
+			return false;
+		}
+
+		Polynomial polynomial = function.getPolynomial();
+		return polynomial != null && polynomial.degree('y') > 0;
 	}
 
 }
