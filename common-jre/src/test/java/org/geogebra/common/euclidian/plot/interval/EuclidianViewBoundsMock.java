@@ -106,12 +106,12 @@ public class EuclidianViewBoundsMock implements EuclidianViewBounds {
 	}
 
 	@Override
-	public int toScreenCoordXd(double x) {
+	public double toScreenCoordXd(double x) {
 		return x;
 	}
 
 	@Override
-	public int toScreenCoordYd(double y) {
+	public double toScreenCoordYd(double y) {
 		return y;
 	}
 

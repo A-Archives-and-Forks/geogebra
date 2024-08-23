@@ -14,11 +14,12 @@ import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.util.debug.Log;
 
 public class ImplicitCurvePlotter {
 	public static final int MAX_SPLIT_RECURSION = 3;
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
-	public static final int SMALLEST_BOX_IN_PIXELS = 15;
+	public static final int SMALLEST_BOX_IN_PIXELS = 35;
 	private final List<CurvePlotContext> subContexts = new ArrayList<>();
 	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
@@ -42,6 +43,7 @@ public class ImplicitCurvePlotter {
 	}
 
 	public void initContext() {
+		Log.debug("initContext()");
 		BoundsRectangle limits = new BoundsRectangle(bounds);
 		BernsteinPolynomial polynomial = converter.from(curve, limits);
 		CurvePlotBoundingBox box = new CurvePlotBoundingBox(limits);
@@ -54,7 +56,7 @@ public class ImplicitCurvePlotter {
 
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
-//			visualDebug.draw(g2, intersects);
+			visualDebug.draw(g2, intersects);
 //			visualDebug.drawEdges(g2, edges);
 		}
 		drawResults(g2);
@@ -65,16 +67,12 @@ public class ImplicitCurvePlotter {
 		gp.reset();
 
 		g2.setColor(GColor.DARK_RED);
-		for (int i=0; i < output.size(); i++) {
-			GPoint2D p0 = output.get(i);
-			gp.moveTo((int) bounds.toScreenCoordXd(p0.x), (int) bounds.toScreenCoordYd(p0.y));
-			gp.lineTo((int) bounds.toScreenCoordXd(p0.x),
-					(int) bounds.toScreenCoordYd(p0.y));
-//			gp.drawTo((int) bounds.toScreenCoordXd(p.x), (int) bounds.toScreenCoordYd(p.y),
-//					SegmentType.CURVE_TO);
-
-
+		for (GPoint2D p : output) {
+			gp.moveTo((int) bounds.toScreenCoordXd(p.x), (int) bounds.toScreenCoordYd(p.y));
+			gp.lineTo((int) bounds.toScreenCoordXd(p.x),
+					(int) bounds.toScreenCoordYd(p.y));
 		}
+
 		gp.endPlot();
 		g2.draw(gp);
 
@@ -184,14 +182,16 @@ public class ImplicitCurvePlotter {
 			BoxEdge edge = stack.pop();
 			if (edge.mightHaveSolutions() && edge.isUnderSize(pixelInRW)) {
 				intersects.add(edge);
-				return;
+				continue;
 			}
 
-			this.edges.add(edge);
 			BoxEdge[] split = edge.split();
 			if (split[0].mightHaveSolutions()) {
+				this.edges.add(edge);
 				stack.push(split[0]);
-			} else if (split[1].mightHaveSolutions()){
+			}
+			if (split[1].mightHaveSolutions()){
+				this.edges.add(edge);
 				stack.push(split[1]);
 			}
 		}
@@ -204,8 +204,8 @@ public class ImplicitCurvePlotter {
 			Collections.addAll(list, ctx.split());
 		}
 		subContexts.clear();
-//		subContexts.addAll(list);
-		subContexts.addAll(filterByCell(list));
+		subContexts.addAll(list);
+//		subContexts.addAll(filterByCell(list));
 	}
 
 	private static List<CurvePlotContext> filterByCell(List<CurvePlotContext> list) {
