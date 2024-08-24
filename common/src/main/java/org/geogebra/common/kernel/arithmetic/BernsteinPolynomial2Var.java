@@ -24,7 +24,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.maxX = maxX;
 		this.degreeX = degreeX;
 		this.bernsteinCoeffs = bernsteinCoeffs;
-		sign = BinomialCoefficientsSign.from2VarCoeffs(bernsteinCoeffs);
+		sign = BinomialCoefficientsSign.from2Var(bernsteinCoeffs);
 	}
 
 
@@ -57,7 +57,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		double powOneMinusX = Math.pow(1 - value, degreeX - 1);
 		double d = value == 1 ? 1 :  1 - value;
 		for (int i = 1; i < degreeX + 1; i++) {
-			result = result.plus(bernsteinCoeffs[i].multiply(powX).multiply(powOneMinusX));
+			result = result.plus(bernsteinCoeffs[i].multiply(powX * powOneMinusX));
 			powX *= value;
 			powOneMinusX /= d;
 		}

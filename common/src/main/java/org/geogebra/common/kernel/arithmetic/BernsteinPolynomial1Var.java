@@ -1,9 +1,6 @@
 package org.geogebra.common.kernel.arithmetic;
 
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllNegative;
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllPositive;
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.Mixed;
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.None;
+import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.from1Var;
 
 import org.geogebra.common.util.MyMath;
 
@@ -14,7 +11,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	final char variableName;
 	final double[] bernsteinCoeffs;
 	double[] dividedCoeffs;
-	private BinomialCoefficientsSign sign = None;
+	private final BinomialCoefficientsSign sign;
 
 	/**
 	 * @param bernsteinCoeffs coeffs for x^k (1-x)^(degree - k), NOT divided by binomial coeffs
@@ -30,9 +27,13 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this.degree = bernsteinCoeffs.length - 1;
 		this.bernsteinCoeffs = bernsteinCoeffs;
 		this.dividedCoeffs = null;
-		sign = computeSign();
+		sign = from1Var(bernsteinCoeffs, degree);
 	}
 
+	/**
+	 * Divided coefficients are needed only for evaluation and splitting.
+	 *
+	 */
 	private void createLazyDivideCoeffs() {
 		if (dividedCoeffs != null) {
 			return;
@@ -194,19 +195,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public boolean hasNoSolution() {
 		return sign.monotonic();
-	}
-
-	private BinomialCoefficientsSign computeSign() {
-		double count = 0;
-		for (int i = 0; i < degree + 1; i++) {
-			count += Math.signum(bernsteinCoeffs[i]);
-		}
-
-		if (Math.abs(count) == degree + 1) {
-			return count < 0 ? AllNegative : AllPositive;
-		}
-
-		return Mixed;
 	}
 
 	@Override

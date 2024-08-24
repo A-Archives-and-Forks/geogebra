@@ -6,7 +6,21 @@ public enum BinomialCoefficientsSign {
 	AllNegative,
 	Mixed;
 
-	public static BinomialCoefficientsSign from2VarCoeffs(BernsteinPolynomial[] bernsteinCoeffs) {
+
+	public static BinomialCoefficientsSign from1Var(double[] bernsteinCoeffs, int degree) {
+		double count = 0;
+		for (int i = 0; i < degree + 1; i++) {
+			count += Math.signum(bernsteinCoeffs[i]);
+		}
+
+		if (Math.abs(count) == degree + 1) {
+			return count < 0 ? AllNegative : AllPositive;
+		}
+
+		return Mixed;
+	}
+
+	public static BinomialCoefficientsSign from2Var(BernsteinPolynomial[] bernsteinCoeffs) {
 		int positive = 0;
 		int negative = 0;
 		for (BernsteinPolynomial bcoeff : bernsteinCoeffs) {
