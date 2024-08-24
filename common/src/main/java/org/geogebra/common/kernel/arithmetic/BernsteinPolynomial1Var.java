@@ -13,6 +13,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	final int degree;
 	final char variableName;
 	final double[] bernsteinCoeffs;
+	double[] dividedCoeffs;
 	private BinomialCoefficientsSign sign = None;
 
 	/**
@@ -28,7 +29,18 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		this.max = max;
 		this.degree = bernsteinCoeffs.length - 1;
 		this.bernsteinCoeffs = bernsteinCoeffs;
+		this.dividedCoeffs = null;
 		sign = computeSign();
+	}
+
+	private void createLazyDivideCoeffs() {
+		if (dividedCoeffs != null) {
+			return;
+		}
+		dividedCoeffs = new double[degree + 1];
+		for (int i = 0; i < degree + 1; i++) {
+			dividedCoeffs[i] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
+		}
 	}
 
 	@Override
@@ -38,8 +50,8 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double scaledValue = (value - min) / (max - min);
 		double oneMinusScaledValue = 1 - scaledValue;
 
-		copyArrayTo(bernsteinCoeffs, lastPartialEval);
-		divWithBinomials(lastPartialEval, degree);
+		createLazyDivideCoeffs();
+		copyArrayTo(dividedCoeffs, lastPartialEval);
 
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
@@ -68,9 +80,10 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degree + 1);
 		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degree + 1);
 
+		createLazyDivideCoeffs();
 		for (int i = 0; i < degree + 1; i++) {
 			double[] coeffs = new double[1];
-			coeffs[0] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
+			coeffs[0] = dividedCoeffs[i];
 			bPlus.setLast(i, newInstance(coeffs));
 			bMinus.setLast(i, newInstance(coeffs));
 		}
