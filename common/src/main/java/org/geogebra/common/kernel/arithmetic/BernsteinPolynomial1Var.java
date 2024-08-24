@@ -147,10 +147,12 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 			return this;
 		}
 		double[] coeffs = new double[degree + 1];
+		BernsteinPolynomial1Var polynomial1Var =
+				(BernsteinPolynomial1Var) bernsteinPolynomial;
 
 		for (int i = 0; i < degree + 1; i++) {
 			coeffs[i] = bernsteinCoeffs[i]
-					+ ((BernsteinPolynomial1Var) bernsteinPolynomial).bernsteinCoeffs[i];
+					+ polynomial1Var.bernsteinCoeffs[i];
 		}
 		return newInstance(coeffs);
 	}
