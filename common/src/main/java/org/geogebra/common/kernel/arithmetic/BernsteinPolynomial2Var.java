@@ -1,7 +1,6 @@
 package org.geogebra.common.kernel.arithmetic;
 
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.copyArrayTo;
-import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.divWithBinomials;
 
 import org.geogebra.common.util.MyMath;
 
@@ -10,6 +9,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double maxX;
 	final int degreeX;
 	final BernsteinPolynomial[] bernsteinCoeffs;
+	BernsteinPolynomial[] dividedCoeffs;
 	private BinomialCoefficientsSign sign;
 
 	/**
@@ -24,7 +24,22 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.maxX = maxX;
 		this.degreeX = degreeX;
 		this.bernsteinCoeffs = bernsteinCoeffs;
+		this.dividedCoeffs = null;
 		sign = BinomialCoefficientsSign.from2Var(bernsteinCoeffs);
+	}
+
+	/**
+	 * Divided coefficients are needed only for evaluation and splitting.
+	 *
+	 */
+	private void createLazyDivideCoeffs() {
+		if (dividedCoeffs != null) {
+			return;
+		}
+		dividedCoeffs = new BernsteinPolynomial[degreeX + 1];
+		for (int i = 0; i < degreeX + 1; i++) {
+			dividedCoeffs[i] = bernsteinCoeffs[i].divide(MyMath.binomial(degreeX, i));
+		}
 	}
 
 
@@ -35,11 +50,10 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		double scaledX = (valueX - minX) / (maxX - minX);
 		double scaledOneMinusX = 1 - scaledX;
 
+		createLazyDivideCoeffs();
 		for (int i = 0; i < degreeX + 1; i++) {
-			lastPartialEval[i] = bernsteinCoeffs[i].evaluate(valueY);
+			lastPartialEval[i] = dividedCoeffs[i].evaluate(valueY);
 		}
-		divWithBinomials(lastPartialEval, degreeX);
-
 		for (int i = 1; i <= degreeX + 1; i++) {
 			for (int j = degreeX - i; j >= 0; j--) {
 				partialEval[j] = scaledOneMinusX * lastPartialEval[j]
@@ -152,10 +166,10 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	public BernsteinPolynomial[] split() {
 		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degreeX + 1);
 		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degreeX + 1);
-
+		createLazyDivideCoeffs();
 		for (int i = 0; i < degreeX + 1; i++) {
 			BernsteinPolynomial[] coeffs = new BernsteinPolynomial[1];
-			coeffs[0] = bernsteinCoeffs[i].divide(MyMath.binomial(degreeX, i));
+			coeffs[0] = dividedCoeffs[i];
 			bPlus.setLast(i, newInstance(coeffs));
 			bMinus.setLast(i, newInstance(coeffs));
 		}
@@ -232,9 +246,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private BernsteinPolynomial derivativeX() {
 		BernsteinPolynomial[] derivedCoeffs = new BernsteinPolynomial[degreeX];
 		for (int i = 0; i < degreeX; i++) {
-			BernsteinPolynomial b1 = bernsteinCoeffs[i].multiply(-(degreeX - i));
-			BernsteinPolynomial b2 = bernsteinCoeffs[i + 1].multiply(i + 1);
-			derivedCoeffs[i] = b2.plus(b1);
+			derivedCoeffs[i] = bernsteinCoeffs[i].linearCombination(-degreeX + i,
+					bernsteinCoeffs[i + 1], i + 1);
 		}
 		return new BernsteinPolynomial2Var(derivedCoeffs, minX, maxX, degreeX - 1);
 	}
@@ -271,6 +284,12 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		for (int i = 0; i < degreeX + 1; i++) {
 
 		}
+		return null;
+	}
+
+	@Override
+	public BernsteinPolynomial linearCombination(int coeff, BernsteinPolynomial otherPoly,
+			int otherCoeff) {
 		return null;
 	}
 }

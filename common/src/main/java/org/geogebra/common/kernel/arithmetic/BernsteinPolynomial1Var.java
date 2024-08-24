@@ -70,12 +70,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		return evaluate(x);
 	}
 
-	static void divWithBinomials(double[] lastPartialEval, int degree1) {
-		for (int i = 0; i < lastPartialEval.length; i++) {
-			lastPartialEval[i] = lastPartialEval[i] / MyMath.binomial(degree1, i);
-		}
-	}
-
 	@Override
 	public BernsteinPolynomial[] split() {
 		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degree + 1);
@@ -216,5 +210,21 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public BinomialCoefficientsSign getSign() {
 		return sign;
+	}
+
+	@Override
+	public BernsteinPolynomial linearCombination(int coeff, BernsteinPolynomial otherPoly,
+			int otherCoeff) {
+		if (otherPoly == null) {
+			return this;
+		}
+		double[] coeffs = new double[degree + 1];
+
+		BernsteinPolynomial1Var otherPoly1 = (BernsteinPolynomial1Var) otherPoly;
+		for (int i = 0; i < degree + 1; i++) {
+			coeffs[i] = bernsteinCoeffs[i] * coeff
+					+ otherPoly1.bernsteinCoeffs[i] * otherCoeff;
+		}
+		return newInstance(coeffs);
 	}
 }
