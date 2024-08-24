@@ -2,18 +2,14 @@ package org.geogebra.common.kernel.arithmetic;
 
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.copyArrayTo;
 import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.divWithBinomials;
-import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.powerString;
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllNegative;
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.AllPositive;
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.Mixed;
 
 import org.geogebra.common.util.MyMath;
 
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double minX;
 	private final double maxX;
-	private final int degreeX;
-	private final BernsteinPolynomial[] bernsteinCoeffs;
+	final int degreeX;
+	final BernsteinPolynomial[] bernsteinCoeffs;
 	private BinomialCoefficientsSign sign;
 
 	/**
@@ -28,39 +24,9 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.maxX = maxX;
 		this.degreeX = degreeX;
 		this.bernsteinCoeffs = bernsteinCoeffs;
-		sign = computeSign();
-
+		sign = BinomialCoefficientsSign.from2VarCoeffs(bernsteinCoeffs);
 	}
 
-	private BinomialCoefficientsSign computeSign() {
-		int positive = 0;
-		int negative = 0;
-		for (BernsteinPolynomial bcoeff : bernsteinCoeffs) {
-			if (bcoeff != null) {
-				switch (bcoeff.getSign()) {
-				case AllPositive:
-					positive++;
-					break;
-				case AllNegative:
-					negative++;
-					break;
-				case None:
-				case Mixed:
-				}
-			}
-		}
-
-		if (positive == bernsteinCoeffs.length) {
-			return AllPositive;
-		}
-
-		if (negative == bernsteinCoeffs.length) {
-			return AllNegative;
-		}
-
-		return Mixed;
-
-	}
 
 	@Override
 	public double evaluate(double valueX, double valueY) {
@@ -282,39 +248,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		return new BernsteinPolynomial2Var(derivedCoeffs, minX, maxX, degreeX);
 	}
 
-	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = degreeX; i >= 0; i--) {
-			BernsteinPolynomial c = i < bernsteinCoeffs.length ? bernsteinCoeffs[i] : null;
-			if (c == null || "0".equals(c.toString())) {
-				continue;
-			}
-			String fs = sb.length() == 0 ? "" : "+";
-			sb.append(fs);
-			if (degreeX > 0 && !c.isConstant()) {
-				sb.append(" (");
-				sb.append(c);
-				sb.append(") ");
-			} else if (!"1".equals(c.toString())) {
-				sb.append(c);
-			} else {
-				sb.append(" ");
-			}
-
-			String powerX = powerString("x", i);
-			String powerOneMinusX = powerString("(1 - x)", degreeX - i);
-			sb.append(powerX);
-			if (!powerX.isEmpty()) {
-				sb.append(" ");
-			}
-			sb.append(powerOneMinusX);
-			if (!powerOneMinusX.isEmpty()) {
-				sb.append(" ");
-			}
-		}
-		String trimmed = sb.toString().trim();
-		return trimmed.isEmpty() ? "0" : trimmed;
+		return BernsteinToString.toString2Var(this);
 	}
 
 	@Override
@@ -328,5 +263,14 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			return substituteX(value);
 		}
 		return substituteY(value);
+	}
+
+	@Override
+	public BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs,
+			BernsteinPolynomial otherPoly, BernsteinPolynomial otherCoeffs) {
+		for (int i = 0; i < degreeX + 1; i++) {
+
+		}
+		return null;
 	}
 }

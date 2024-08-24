@@ -115,5 +115,6 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 
 	BernsteinPolynomial substitute(String variable, double value);
 
-//	BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs, )
+	BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs, BernsteinPolynomial otherPoly,
+			BernsteinPolynomial otherCoeffs);
 }

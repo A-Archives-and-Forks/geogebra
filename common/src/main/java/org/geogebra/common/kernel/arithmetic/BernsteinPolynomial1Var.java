@@ -6,14 +6,13 @@ import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.Mix
 import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.None;
 
 import org.geogebra.common.util.MyMath;
-import org.geogebra.common.util.StringUtil;
 
 public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double min;
 	private final double max;
 	final int degree;
 	final char variableName;
-	private final double[] bernsteinCoeffs;
+	final double[] bernsteinCoeffs;
 	private BinomialCoefficientsSign sign = None;
 
 	/**
@@ -203,46 +202,14 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public String toString() {
-		if (isConstant()) {
-			return "" + (int) bernsteinCoeffs[0];
-		}
-		StringBuilder sb = new StringBuilder();
-		for (int i = degree; i >= 0; i--) {
-			double c = bernsteinCoeffs[i];
-			if (c == 0) {
-				continue;
-			}
-			String fs = sb.length() == 0 && c > 0 ? ""
-					: c > 0 ? "+ " : "- ";
-			sb.append(fs);
-			if (c != 1 && c != -1) {
-				double abs = Math.abs(c);
-				sb.append((abs - (int) abs) > 1E-6 ? abs : String.valueOf((int) abs));
-			}
-			String powerX = powerString(variableName + "", i);
-			String powerOneMinusX = powerString("(1 - " + variableName + ")", degree - i);
-			sb.append(powerX);
-			if (!powerX.isEmpty()) {
-				sb.append(" ");
-			}
-			sb.append(powerOneMinusX);
-			if (!powerOneMinusX.isEmpty()) {
-				sb.append(" ");
-			}
-		}
-		String trimmed = sb.toString().trim();
-		return trimmed.isEmpty() ? "0" : trimmed;
+	public BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs,
+			BernsteinPolynomial otherPoly, BernsteinPolynomial otherCoeffs) {
+		return null;
 	}
 
-	static String powerString(String base, int i) {
-		if (i == 0) {
-			return "";
-		}
-		if (i == 1) {
-			return base;
-		}
-		return base + StringUtil.numberToIndex(i);
+	@Override
+	public String toString() {
+		return BernsteinToString.toString1Var(this);
 	}
 
 	@Override
