@@ -292,4 +292,19 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			int otherCoeff) {
 		return null;
 	}
+
+	@Override
+	public double[] get1VarCoeffs() {
+		return null;
+	}
+
+	@Override
+	public int degreeX() {
+		return degreeX;
+	}
+
+	@Override
+	public int degreeY() {
+		return bernsteinCoeffs[0].degreeX();
+	}
 }

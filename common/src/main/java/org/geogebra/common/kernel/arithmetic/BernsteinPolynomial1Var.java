@@ -85,13 +85,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
-				bPlus.set(j,
-						bPlus.last[j].multiplyByOneMinusX()
-						.plus(bPlus.last[j].plus(bPlus.last[j + 1]).multiplyByX().divide(2)));
-
-				bMinus.set(j,
-						bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
-						.divide(2).plus(bMinus.last[j + 1].multiplyByX()));
+				splitBernstein(bPlus, j, bMinus);
 			}
 			bPlus.update();
 			bMinus.update();
@@ -99,6 +93,44 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 		return new BernsteinPolynomial[]{bPlus.last[0], bMinus.last[0]};
 	}
+
+	private void splitBernstein(BernsteinPolynomialCache bPlus, int j,
+			BernsteinPolynomialCache bMinus) {
+		bPlus.set(j, newInstance(getBPlusAt(bPlus, j)));
+		bMinus.set(j, getBMinusAt(bMinus, j));
+	}
+
+	private BernsteinPolynomial getBMinusAt(BernsteinPolynomialCache bMinus, int j) {
+		double[] coeffs = bMinus.last[j].get1VarCoeffs();
+		double[] otherCoeffs = bMinus.last[j + 1].get1VarCoeffs();
+		int degreeX = coeffs.length;
+		double[] shifted = shiftArrayFrom(otherCoeffs, 1, bMinus.last[j + 1].degreeX());
+		double[] result = new double[degreeX + 1];
+		for (int i = 0; i < degreeX; i++) {;
+			result[i] = ((coeffs[i] + getSafe(otherCoeffs, i)) / 2);
+		}
+		BernsteinPolynomial polynomial = newInstance(result);
+//		return polynomial.plus(bMinus.last[j + 1].multiplyByX());
+		return polynomial.plus(newInstance(shifted));
+	}
+
+	private static double[] getBPlusAt(BernsteinPolynomialCache bPlus, int j) {
+		double[] coeffs = bPlus.last[j].get1VarCoeffs();
+		double[] otherCoeffs = bPlus.last[j + 1].get1VarCoeffs();
+		int degreeX = bPlus.last[j].degreeX() + 2;
+		double[] result = new double[degreeX];
+
+		for (int i = 0; i < degreeX; i++) {
+			double d = i >= 1 ? (coeffs[i - 1] + otherCoeffs[i - 1]) / 2 : 0;
+			result[i] = getSafe(coeffs, i) + d;
+		}
+		return result;
+	}
+
+	private static double getSafe(double[] coeffs, int i) {
+		return i < coeffs.length ? coeffs[i] : 0;
+	}
+
 
 	private BernsteinPolynomial newInstance(double[] coeffs) {
 		return new BernsteinPolynomial1Var(coeffs, variableName, min, max);
@@ -173,9 +205,13 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	private BernsteinPolynomial shiftFrom(int destPos) {
+		return newInstance(shiftArrayFrom(bernsteinCoeffs, destPos, degree));
+	}
+
+	private double[] shiftArrayFrom(double[] array, int destPos, int degree) {
 		double[] shifted = new double[degree + 2];
-		System.arraycopy(bernsteinCoeffs, 0, shifted, destPos, bernsteinCoeffs.length);
-		return newInstance(shifted);
+		System.arraycopy(array, 0, shifted, destPos, array.length);
+		return shifted;
 	}
 
 	@Override
@@ -228,5 +264,20 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 					+ otherPoly1.bernsteinCoeffs[i] * otherCoeff;
 		}
 		return newInstance(coeffs);
+	}
+
+	@Override
+	public double[] get1VarCoeffs() {
+		return bernsteinCoeffs;
+	}
+
+	@Override
+	public int degreeX() {
+		return degree;
+	}
+
+	@Override
+	public int degreeY() {
+		return 0;
 	}
 }
