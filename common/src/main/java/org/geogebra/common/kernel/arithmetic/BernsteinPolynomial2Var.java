@@ -176,21 +176,35 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 		for (int i = 1; i <= degreeX + 1; i++) {
 			for (int j = degreeX - i; j >= 0; j--) {
-				bPlus.set(j, bPlus.last[j].multiplyByOneMinusX()
-						.plus(
-								bPlus.last[j].plus(bPlus.last[j + 1])
-										.multiplyByX().divide(2)
-						)
-				);
-
-				bMinus.set(j,
-						bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
-								.divide(2).plus(bMinus.last[j + 1].multiplyByX()));
+				bPlus.set(j, getPositiveSliceHalf(bPlus, j));
+				bMinus.set(j, getNegativeSliceHalf(bMinus, j));
 			}
 			bPlus.update();
 			bMinus.update();
 		}
 		return new BernsteinPolynomial[]{bPlus.last[0], bMinus.last[0]};
+	}
+
+	private BernsteinPolynomial getPositiveSliceHalf(BernsteinPolynomialCache bPlus, int j) {
+		BernsteinPolynomial[] coeffs = bPlus.last[j].get2VarCoeffs();
+		BernsteinPolynomial[] otherCoeffs = bPlus.last[j + 1].get2VarCoeffs();
+
+		BernsteinPolynomial[] result = new BernsteinPolynomial[coeffs.length + 1];
+		result[0] = coeffs[0];
+		for (int i = 0; i < coeffs.length; i++) {
+			result[i + 1] = coeffs[i].plus(otherCoeffs[i]).divide(2);
+			if (i < coeffs.length - 1) {
+				result[i + 1] = result[i + 1].plus(coeffs[i + 1]);
+			}
+		}
+
+
+		return newInstance(result);
+	}
+
+	private static BernsteinPolynomial getNegativeSliceHalf(BernsteinPolynomialCache bMinus, int j) {
+		return bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
+				.divide(2).plus(bMinus.last[j + 1].multiplyByX());
 	}
 
 	private BernsteinPolynomial newInstance(BernsteinPolynomial[] coeffs) {
@@ -281,9 +295,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	@Override
 	public BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs,
 			BernsteinPolynomial otherPoly, BernsteinPolynomial otherCoeffs) {
-		for (int i = 0; i < degreeX + 1; i++) {
-
-		}
 		return null;
 	}
 
@@ -306,5 +317,10 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	@Override
 	public int degreeY() {
 		return bernsteinCoeffs[0].degreeX();
+	}
+
+	@Override
+	public BernsteinPolynomial[] get2VarCoeffs() {
+		return bernsteinCoeffs;
 	}
 }

@@ -121,6 +121,7 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 	BernsteinPolynomial linearCombination(int coeff, BernsteinPolynomial otherPoly,
 			int otherCoeff);
 	double[] get1VarCoeffs();
+	BernsteinPolynomial[] get2VarCoeffs();
 
 	int degreeX();
 	int degreeY();

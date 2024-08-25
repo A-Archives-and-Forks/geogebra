@@ -72,64 +72,57 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial[] split() {
-		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degree + 1);
-		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degree + 1);
+		BernsteinCoefficientCache bPlus = new BernsteinCoefficientCache(degree + 1);
+		BernsteinCoefficientCache bMinus = new BernsteinCoefficientCache(degree + 1);
 
 		createLazyDivideCoeffs();
 		for (int i = 0; i < degree + 1; i++) {
 			double[] coeffs = new double[1];
 			coeffs[0] = dividedCoeffs[i];
-			bPlus.setLast(i, newInstance(coeffs));
-			bMinus.setLast(i, newInstance(coeffs));
+			bPlus.setLast(i, coeffs);
+			bMinus.setLast(i, coeffs);
 		}
 
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
-				splitBernstein(bPlus, j, bMinus);
+				double[][] slices = getSlices(bPlus.last[j], bPlus.last[j + 1], bMinus.last[j],
+						bMinus.last[j + 1]);
+
+				bPlus.set(j, slices[0]);
+				bMinus.set(j, slices[1]);
 			}
 			bPlus.update();
 			bMinus.update();
 		}
 
-		return new BernsteinPolynomial[]{bPlus.last[0], bMinus.last[0]};
+		return new BernsteinPolynomial[]{newInstance(bPlus.last[0]),
+				newInstance(bMinus.last[0])};
 	}
 
-	private void splitBernstein(BernsteinPolynomialCache bPlus, int j,
-			BernsteinPolynomialCache bMinus) {
-		bPlus.set(j, newInstance(getBPlusAt(bPlus, j)));
-		bMinus.set(j, getBMinusAt(bMinus, j));
-	}
-
-	private BernsteinPolynomial getBMinusAt(BernsteinPolynomialCache bMinus, int j) {
-		double[] coeffs = bMinus.last[j].get1VarCoeffs();
-		double[] otherCoeffs = bMinus.last[j + 1].get1VarCoeffs();
-		int degreeX = coeffs.length;
-		double[] result = new double[degreeX + 1];
-		int length = Math.max(degreeX, otherCoeffs.length);
-		for (int i = 0; i < length + 1; i++) {
-			result[i] = ((getSafe(coeffs, i) + getSafe(otherCoeffs, i)) / 2);
-			if (i < otherCoeffs.length + 1) {
-				result[i] = getSafe(result, i) + getSafe(otherCoeffs, i - 1);
-			}
-		}
-
-		return newInstance(result);
-	}
-
-	private static double[] getBPlusAt(BernsteinPolynomialCache bPlus, int j) {
-		double[] coeffs = bPlus.last[j].get1VarCoeffs();
-		double[] otherCoeffs = bPlus.last[j + 1].get1VarCoeffs();
-		int degreeX = bPlus.last[j].degreeX() + 2;
-		double[] result = new double[degreeX];
+	private double[][] getSlices(double[] pcoeffs, double[] potherCoeffs,
+			double[] mcoeffs, double[] motherCoeffs) {
+		int degreeX = pcoeffs.length + 1;
+		double[] slicePositive = new double[degreeX];
+		double[] sliceNegative = new double[degreeX];
 
 		for (int i = 0; i < degreeX; i++) {
-			double d = i >= 1 ? (coeffs[i - 1] + otherCoeffs[i - 1]) / 2 : 0;
-			result[i] = getSafe(coeffs, i) + d;
+			slicePositive[i] = getBernsteinPositiveHalf(pcoeffs, potherCoeffs, i);
+			sliceNegative[i] = getBernsteinNegativeHalf(mcoeffs, motherCoeffs, i);
 		}
-		return result;
+		return new double[][]{slicePositive, sliceNegative};
 	}
 
-	private static double getSafe(double[] coeffs, int i) {
+	private static double getBernsteinNegativeHalf(double[] mcoeffs, double[] motherCoeffs, int i) {
+		return (getSafe(mcoeffs, i) + getSafe(motherCoeffs, i)) / 2
+				+ getSafe(motherCoeffs, i - 1);
+	}
+
+	private static double getBernsteinPositiveHalf(double[] pcoeffs, double[] potherCoeffs, int i) {
+		return getSafe(pcoeffs, i) + (i >= 1 ? (pcoeffs[i - 1] + potherCoeffs[i - 1]) / 2 : 0);
+	}
+
+
+	static double getSafe(double[] coeffs, int i) {
 		return i < coeffs.length && i >= 0 ? coeffs[i] : 0;
 	}
 
@@ -271,6 +264,11 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public double[] get1VarCoeffs() {
 		return bernsteinCoeffs;
+	}
+
+	@Override
+	public BernsteinPolynomial[] get2VarCoeffs() {
+		return null;
 	}
 
 	@Override
