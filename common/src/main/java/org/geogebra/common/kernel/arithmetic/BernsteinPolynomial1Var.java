@@ -104,14 +104,16 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		double[] coeffs = bMinus.last[j].get1VarCoeffs();
 		double[] otherCoeffs = bMinus.last[j + 1].get1VarCoeffs();
 		int degreeX = coeffs.length;
-		double[] shifted = shiftArrayFrom(otherCoeffs, 1, bMinus.last[j + 1].degreeX());
 		double[] result = new double[degreeX + 1];
-		for (int i = 0; i < degreeX; i++) {;
-			result[i] = ((coeffs[i] + getSafe(otherCoeffs, i)) / 2);
+		int length = Math.max(degreeX, otherCoeffs.length);
+		for (int i = 0; i < length + 1; i++) {
+			result[i] = ((getSafe(coeffs, i) + getSafe(otherCoeffs, i)) / 2);
+			if (i < otherCoeffs.length + 1) {
+				result[i] = getSafe(result, i) + getSafe(otherCoeffs, i - 1);
+			}
 		}
-		BernsteinPolynomial polynomial = newInstance(result);
-//		return polynomial.plus(bMinus.last[j + 1].multiplyByX());
-		return polynomial.plus(newInstance(shifted));
+
+		return newInstance(result);
 	}
 
 	private static double[] getBPlusAt(BernsteinPolynomialCache bPlus, int j) {
@@ -128,7 +130,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	private static double getSafe(double[] coeffs, int i) {
-		return i < coeffs.length ? coeffs[i] : 0;
+		return i < coeffs.length && i >= 0 ? coeffs[i] : 0;
 	}
 
 
