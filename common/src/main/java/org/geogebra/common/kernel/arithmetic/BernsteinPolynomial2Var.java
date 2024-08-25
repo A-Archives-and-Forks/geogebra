@@ -281,9 +281,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	@Override
 	public BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs,
 			BernsteinPolynomial otherPoly, BernsteinPolynomial otherCoeffs) {
-		for (int i = 0; i < degreeX + 1; i++) {
-
-		}
 		return null;
 	}
 

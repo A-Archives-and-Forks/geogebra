@@ -18,7 +18,7 @@ import org.geogebra.common.util.debug.Log;
 public class ImplicitCurvePlotter {
 	public static final int MAX_SPLIT_RECURSION = 1;
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
-	public static final int SMALLEST_BOX_IN_PIXELS = 35;
+	public static final int SMALLEST_BOX_IN_PIXELS = 15;
 	private final List<CurvePlotContext> subContexts = new ArrayList<>();
 	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
