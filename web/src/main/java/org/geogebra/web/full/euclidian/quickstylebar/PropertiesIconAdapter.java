@@ -6,6 +6,11 @@ import org.geogebra.web.resources.SVGResource;
 
 public class PropertiesIconAdapter {
 
+	/**
+	 * Get icon of property
+	 * @param propertyResource - property
+	 * @return icon of property
+	 */
 	public static SVGResource getIcon(PropertyResource propertyResource) {
 		MaterialDesignResources res = MaterialDesignResources.INSTANCE;
 		switch (propertyResource) {
@@ -22,6 +27,5 @@ public class PropertiesIconAdapter {
 		}
 		return res.stylebar_empty();
 	}
-
 
 }

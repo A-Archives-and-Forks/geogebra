@@ -11,9 +11,8 @@ import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
-import org.geogebra.common.properties.impl.AbstractEnumeratedProperty;
-import org.geogebra.common.properties.impl.objects.LineStyleProperty;
-import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
+import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
+import org.geogebra.common.properties.factory.PropertiesArray;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
 import org.geogebra.web.full.gui.GuiManagerW;
@@ -41,7 +40,6 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	private final List<IconButton> quickButtons = new ArrayList<>();
 	private final static int CONTEXT_MENU_DISTANCE = 8;
 	private ContextMenuGeoElementW contextMenu;
-	private IconsEnumeratedProperty<?> lineStyleProperty;
 
 	/**
 	 * @param ev - parent view
@@ -56,21 +54,24 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void buildGUI() {
-		addLineStyleButton();
+		List<GeoElement> activeGeoList = stylebarPositioner.createActiveGeoList();
+		if (activeGeoList.isEmpty()) {
+			return;
+		}
+
+		PropertiesArray lineStyleProperty = GeoElementPropertiesFactory
+				.createLineStyleProperties(getApp().getLocalization(), activeGeoList);
+		addLineStyleButton(lineStyleProperty);
+
 		addDivider();
+
 		addDeleteButton();
 		addContextMenuButton();
 	}
 
-	private void addLineStyleButton() {
-		try {
-			lineStyleProperty = new LineStyleProperty(getApp().getLocalization(),
-					stylebarPositioner.createActiveGeoList().get(0));
-		} catch (NotApplicablePropertyException e) {
-			throw new RuntimeException(e);
-		}
-		IconButton button = new IconButtonWithProperties(getApp(), getIcon(lineStyleProperty),
-				(AbstractEnumeratedProperty<?>) lineStyleProperty);
+	private void addLineStyleButton(PropertiesArray properties) {
+		IconButton button = new IconButtonWithProperties(getApp(), getIcon(
+				(IconsEnumeratedProperty<?>) properties.getProperties()[0]), properties);
 		styleAndRegisterButton(button);
 	}
 
@@ -171,6 +172,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			return;
 		}
 
+		clear();
+		buildGUI();
 		stylebarPositioner.positionDynStylebar(this, getOffsetWidth(), getOffsetHeight(),
 				positionSetter);
 	}

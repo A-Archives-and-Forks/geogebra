@@ -86,6 +86,9 @@ public class StylebarPositioner {
 				&& geo.isEuclidianVisible() && !geo.isAxis();
 	}
 
+	/**
+	 * @return list of active geos
+	 */
 	public List<GeoElement> createActiveGeoList() {
 		List<GeoElement> selectedGeos = selectionManager.getSelectedGeos();
 		List<GeoElement> justCreatedGeos = euclidianView
