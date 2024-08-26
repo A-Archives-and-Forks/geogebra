@@ -30,4 +30,8 @@ public class RangePropertyCollection<T extends RangeProperty<V>, V extends Numbe
 		return getFirstProperty().getMax();
 	}
 
+	public T[] getProperties() {
+		return super.getProperties();
+	}
+
 }

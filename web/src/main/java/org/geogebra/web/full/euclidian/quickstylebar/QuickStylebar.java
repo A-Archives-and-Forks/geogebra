@@ -14,6 +14,7 @@ import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
 import org.geogebra.web.full.css.MaterialDesignResources;
+import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperties;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
 import org.geogebra.web.full.gui.GuiManagerW;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;

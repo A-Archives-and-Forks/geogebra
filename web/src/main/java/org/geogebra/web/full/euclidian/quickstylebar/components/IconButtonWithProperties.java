@@ -1,18 +1,19 @@
-package org.geogebra.web.full.euclidian.quickstylebar;
+package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import java.util.ArrayList;
 
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.factory.PropertiesArray;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
-import org.geogebra.web.shared.components.ComponentSlider;
 import org.gwtproject.user.client.ui.FlowPanel;
 
 public class IconButtonWithProperties extends IconButton {
@@ -50,8 +51,9 @@ public class IconButtonWithProperties extends IconButton {
 				processIconEnumeratedProperty((IconsEnumeratedProperty<?>) property,
 						propertyPanel);
 			}
-			if (property instanceof RangePropertyCollection) {
-				propertyPanel.add(new ComponentSlider(appW));
+			if (property instanceof RangeProperty) {
+				propertyPanel.add(new SliderWithProperty(appW,
+						(RangePropertyCollection<?, ?>) property));
 			}
 		}
 
