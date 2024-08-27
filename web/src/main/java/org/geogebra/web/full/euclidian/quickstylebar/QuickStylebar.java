@@ -10,6 +10,7 @@ import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
+import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
@@ -39,7 +40,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		getElement().getStyle().setTop(posY, Unit.PX);
 	};
 	private final List<IconButton> quickButtons = new ArrayList<>();
-	private final static int CONTEXT_MENU_DISTANCE = 8;
+	public final static int POPUP_MENU_DISTANCE = 8;
 	private ContextMenuGeoElementW contextMenu;
 
 	/**
@@ -71,8 +72,9 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void addLineStyleButton(PropertiesArray properties) {
+		Property firstProperty = properties.getProperties()[0];
 		IconButton button = new IconButtonWithProperties(getApp(), getIcon(
-				(IconsEnumeratedProperty<?>) properties.getProperties()[0]), properties);
+				(IconsEnumeratedProperty<?>) firstProperty), properties, firstProperty.getName());
 		styleAndRegisterButton(button);
 	}
 
@@ -102,7 +104,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			if (popupMenu.isMenuShown()) {
 				popupMenu.hideMenu();
 			} else {
-				popupMenu.show(this, 0, getOffsetHeight() + CONTEXT_MENU_DISTANCE);
+				popupMenu.show(this, 0, getOffsetHeight() + POPUP_MENU_DISTANCE);
+				getApp().registerPopup(popupMenu.getPopupPanel());
 			}
 
 			contextMenuBtn.setActive(popupMenu.isMenuShown());

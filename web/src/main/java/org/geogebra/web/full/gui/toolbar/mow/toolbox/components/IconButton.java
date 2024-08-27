@@ -16,7 +16,7 @@ import org.gwtproject.resources.client.ResourcePrototype;
 public class IconButton extends StandardButton implements SetLabels {
 	private static final int DEFAULT_BUTTON_WIDTH = 24;
 	private SVGResource image;
-	private String ariaLabelTransKey;
+	private final String ariaLabelTransKey;
 	private String dataTitleTransKey;
 	private int mode = -1;
 	private final Localization localization;
@@ -148,8 +148,10 @@ public class IconButton extends StandardButton implements SetLabels {
 	public IconButton(AppW appW, Runnable clickHandler, SVGResource image,
 			String ariaLabel) {
 		this(appW.getLocalization(), image, ariaLabel);
-		dataTitleTransKey = ariaLabel;
-		AriaHelper.setTitle(this, appW.getLocalization().getMenu(dataTitleTransKey));
+		if (ariaLabel != null) {
+			dataTitleTransKey = ariaLabel;
+			AriaHelper.setTitle(this, appW.getLocalization().getMenu(dataTitleTransKey));
+		}
 		addStyleName("small");
 		selectionColor = getSelectionColor(appW);
 		addFastClickHandler((event) -> {

@@ -28,7 +28,7 @@ public class LineStyleProperty extends AbstractEnumeratedProperty<Integer>
 	/***/
 	public LineStyleProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "Properties.Style");
+		super(localization, "LineStyle");
 		delegate = new LineStylePropertyDelegate(element);
 		setValues(EuclidianStyleConstants.LINE_TYPE_FULL,
 				EuclidianStyleConstants.LINE_TYPE_DASHED_DOTTED,

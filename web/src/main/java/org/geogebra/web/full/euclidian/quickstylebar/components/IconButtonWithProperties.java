@@ -1,5 +1,7 @@
 package org.geogebra.web.full.euclidian.quickstylebar.components;
 
+import static org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar.POPUP_MENU_DISTANCE;
+
 import java.util.ArrayList;
 
 import org.geogebra.common.properties.IconsEnumeratedProperty;
@@ -26,18 +28,22 @@ public class IconButtonWithProperties extends IconButton {
 	 * @param appW - application
 	 * @param icon - svg resource of button
 	 * @param properties - array of applicable properties
+	 * @param ariaLabel - aria label
 	 */
-	public IconButtonWithProperties(AppW appW, SVGResource icon,
-			PropertiesArray properties) {
-		super(appW, icon, "stylebar.LineStyle", "stylebar.LineStyle", () -> {}, null);
+	public IconButtonWithProperties(AppW appW, SVGResource icon, PropertiesArray properties,
+			String ariaLabel) {
+		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		AriaHelper.setAriaHasPopup(this);
 
 		buildGUI(properties);
 
 		addFastClickHandler((source) -> {
+			appW.closePopups();
 			propertyPopup.show();
-			propertyPopup.setPopupPosition(getAbsoluteLeft(), getElement().getAbsoluteTop());
+			propertyPopup.setPopupPosition((int) (getAbsoluteLeft() - appW.getAbsLeft()),
+					(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop()) + 2 * POPUP_MENU_DISTANCE);
+
 		});
 		propertyPopup.addCloseHandler((event) -> setActive(false));
 	}
@@ -62,6 +68,9 @@ public class IconButtonWithProperties extends IconButton {
 
 	private void processIconEnumeratedProperty(IconsEnumeratedProperty<?> iconProperty,
 			FlowPanel parent) {
+		FlowPanel buttonListComponent = new FlowPanel();
+		buttonListComponent.addStyleName("buttonList");
+
 		PropertyResource[] icons = iconProperty.getValueIcons();
 		for (int i = 0; i < icons.length; i++) {
 			int finalI = i;
@@ -75,15 +84,17 @@ public class IconButtonWithProperties extends IconButton {
 				appW.storeUndoInfo();
 			});
 			button.setActive(finalI == iconProperty.getIndex());
-			parent.add(button);
+			buttonListComponent.add(button);
 			buttons.add(button);
 		}
+
+		parent.add(buttonListComponent);
 	}
 
 	private void initPropertyPopup() {
 		if (propertyPopup == null) {
 			propertyPopup = new GPopupPanel(true, appW.getAppletFrame(), appW);
-			propertyPopup.setStyleName("quickStylebar");
+			propertyPopup.setStyleName("quickStyleBarPopup");
 		}
 	}
 }
