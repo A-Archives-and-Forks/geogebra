@@ -164,14 +164,14 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public BernsteinPolynomial[] split() {
-		BernsteinPolynomialCache bPlus = new BernsteinPolynomialCache(degreeX + 1);
-		BernsteinPolynomialCache bMinus = new BernsteinPolynomialCache(degreeX + 1);
+		BernsteinCoefficientsCache2Var bPlus = new BernsteinCoefficientsCache2Var(degreeX + 1);
+		BernsteinCoefficientsCache2Var bMinus = new BernsteinCoefficientsCache2Var(degreeX + 1);
 		createLazyDivideCoeffs();
 		for (int i = 0; i < degreeX + 1; i++) {
 			BernsteinPolynomial[] coeffs = new BernsteinPolynomial[1];
 			coeffs[0] = dividedCoeffs[i];
-			bPlus.setLast(i, newInstance(coeffs));
-			bMinus.setLast(i, newInstance(coeffs));
+			bPlus.setLast(i, coeffs);
+			bMinus.setLast(i, coeffs);
 		}
 
 		for (int i = 1; i <= degreeX + 1; i++) {
@@ -182,12 +182,13 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			bPlus.update();
 			bMinus.update();
 		}
-		return new BernsteinPolynomial[]{bPlus.last[0], bMinus.last[0]};
+		return new BernsteinPolynomial[]{newInstance(bPlus.last[0]),
+				newInstance(bMinus.last[0])};
 	}
 
-	private BernsteinPolynomial getPositiveSliceHalf(BernsteinPolynomialCache bPlus, int j) {
-		BernsteinPolynomial[] coeffs = bPlus.last[j].get2VarCoeffs();
-		BernsteinPolynomial[] otherCoeffs = bPlus.last[j + 1].get2VarCoeffs();
+	private BernsteinPolynomial[] getPositiveSliceHalf(BernsteinCoefficientsCache2Var bPlus, int j) {
+		BernsteinPolynomial[] coeffs = bPlus.last[j];
+		BernsteinPolynomial[] otherCoeffs = bPlus.last[j + 1];
 
 		BernsteinPolynomial[] result = new BernsteinPolynomial[coeffs.length + 1];
 		result[0] = coeffs[0];
@@ -199,12 +200,21 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		}
 
 
-		return newInstance(result);
+		return result;
 	}
 
-	private static BernsteinPolynomial getNegativeSliceHalf(BernsteinPolynomialCache bMinus, int j) {
-		return bMinus.last[j].plus(bMinus.last[j + 1]).multiplyByOneMinusX()
-				.divide(2).plus(bMinus.last[j + 1].multiplyByX());
+	private BernsteinPolynomial[] getNegativeSliceHalf(BernsteinCoefficientsCache2Var bMinus, int j) {
+		BernsteinPolynomial[] coeffs = bMinus.last[j];
+		BernsteinPolynomial[] otherCoeffs = bMinus.last[j + 1];
+		BernsteinPolynomial[] result2 = new BernsteinPolynomial[coeffs.length + 1];
+		for (int i = 0; i < coeffs.length; i++) {
+			result2[i] = coeffs[i].plus(otherCoeffs[i]).divide(2);
+			if (i > 0) {
+				result2[i] = result2[i].plus(otherCoeffs[i - 1]);
+			}
+		}
+		result2[coeffs.length] = otherCoeffs[otherCoeffs.length - 1];
+		return result2;
 	}
 
 	private BernsteinPolynomial newInstance(BernsteinPolynomial[] coeffs) {
