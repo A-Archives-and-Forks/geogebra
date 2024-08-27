@@ -74,22 +74,6 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 	BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial);
 
 	/**
-	 * Multiplies the Bernstein polynomial with (1 - x)
-	 * Note: x stands for any name that was previously given to the variable.
-	 *
-	 * @return the result polynomial.
-	 */
-	BernsteinPolynomial multiplyByOneMinusX();
-
-	/**
-	 * Multiplies the Bernstein polynomial with x
-	 * Note: x stands for any name that was previously given to the variable.
-	 *
-	 * @return the result polynomial.
-	 */
-	BernsteinPolynomial multiplyByX();
-
-	/**
 	 *
 	 * @return if the polynomial is a simple constant number.
 	 */
@@ -120,9 +104,9 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 
 	BernsteinPolynomial linearCombination(int coeff, BernsteinPolynomial otherPoly,
 			int otherCoeff);
-	double[] get1VarCoeffs();
-	BernsteinPolynomial[] get2VarCoeffs();
 
 	int degreeX();
 	int degreeY();
+
+	BernsteinPolynomial[] splitCoefficients();
 }

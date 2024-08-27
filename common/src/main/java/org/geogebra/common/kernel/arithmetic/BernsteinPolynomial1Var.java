@@ -190,26 +190,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial multiplyByOneMinusX() {
-		return shiftFrom(0);
-	}
-
-	@Override
-	public BernsteinPolynomial multiplyByX() {
-		return shiftFrom(1);
-	}
-
-	private BernsteinPolynomial shiftFrom(int destPos) {
-		return newInstance(shiftArrayFrom(bernsteinCoeffs, destPos, degree));
-	}
-
-	private double[] shiftArrayFrom(double[] array, int destPos, int degree) {
-		double[] shifted = new double[degree + 2];
-		System.arraycopy(array, 0, shifted, destPos, array.length);
-		return shifted;
-	}
-
-	@Override
 	public boolean isConstant() {
 		return bernsteinCoeffs.length == 1;
 	}
@@ -262,16 +242,6 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public double[] get1VarCoeffs() {
-		return bernsteinCoeffs;
-	}
-
-	@Override
-	public BernsteinPolynomial[] get2VarCoeffs() {
-		return null;
-	}
-
-	@Override
 	public int degreeX() {
 		return degree;
 	}
@@ -279,5 +249,10 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	@Override
 	public int degreeY() {
 		return 0;
+	}
+
+	@Override
+	public BernsteinPolynomial[] splitCoefficients() {
+		return null;
 	}
 }
