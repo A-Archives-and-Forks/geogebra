@@ -20,9 +20,9 @@ final class ImplicitCurvePlotterVisualDebug {
 
 	void draw(GGraphics2D g2, List<BoxEdge> output) {
 		drawOutput(g2, output);
-		for (CurvePlotContext ctx : subContexts) {
-			drawDebug(g2, ctx);
-		}
+//		for (CurvePlotContext ctx : subContexts) {
+//			drawDebug(g2, ctx);
+//		}
 
 	}
 

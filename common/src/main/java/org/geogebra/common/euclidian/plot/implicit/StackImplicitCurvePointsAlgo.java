@@ -46,7 +46,9 @@ public class StackImplicitCurvePointsAlgo implements ImplicitCurvePointsAlgo {
 			} else {
 				// Otherwise, split the context and push each part onto the stack
 				for (CurvePlotContext c : currentContext.split()) {
-					stack.push(c);
+					if (c.mightHaveSolution()) {
+						stack.push(c);
+					}
 				}
 			}
 		}
