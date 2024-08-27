@@ -22,6 +22,7 @@ public class IconButtonWithProperties extends IconButton {
 	private final AppW appW;
 	private GPopupPanel propertyPopup;
 	private final ArrayList<IconButton> buttons = new ArrayList<>();
+	private SliderWithProperty lineThicknessSlider;
 
 	/**
 	 * Constructor
@@ -42,24 +43,32 @@ public class IconButtonWithProperties extends IconButton {
 			appW.closePopups();
 			propertyPopup.show();
 			propertyPopup.setPopupPosition((int) (getAbsoluteLeft() - appW.getAbsLeft()),
-					(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop()) + 2 * POPUP_MENU_DISTANCE);
+					(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop()) +
+							2 * POPUP_MENU_DISTANCE);
+			AriaHelper.setAriaExpanded(this, true);
 
 		});
-		propertyPopup.addCloseHandler((event) -> setActive(false));
+		propertyPopup.addCloseHandler((event) -> {
+			setActive(false);
+			AriaHelper.setAriaExpanded(this, false);
+		});
 	}
 
 	private void buildGUI(PropertiesArray properties) {
 		initPropertyPopup();
 		FlowPanel propertyPanel = new FlowPanel();
+		int lineType = 0;
 
 		for (Property property : properties.getProperties()) {
 			if (property instanceof IconsEnumeratedProperty) {
 				processIconEnumeratedProperty((IconsEnumeratedProperty<?>) property,
 						propertyPanel);
+				lineType = ((IconsEnumeratedProperty<?>) property).getIndex();
 			}
 			if (property instanceof RangeProperty) {
-				propertyPanel.add(new SliderWithProperty(appW,
-						(RangePropertyCollection<?, ?>) property));
+				lineThicknessSlider = new SliderWithProperty(appW,
+						(RangePropertyCollection<?, ?>) property, lineType);
+				propertyPanel.add(lineThicknessSlider);
 			}
 		}
 
@@ -81,6 +90,7 @@ public class IconButtonWithProperties extends IconButton {
 				buttons.forEach(iconButton -> iconButton.setActive(false));
 				button.setActive(true);
 				setIcon(button.getIcon());
+				lineThicknessSlider.setLineType(finalI);
 				appW.storeUndoInfo();
 			});
 			button.setActive(finalI == iconProperty.getIndex());
@@ -96,5 +106,11 @@ public class IconButtonWithProperties extends IconButton {
 			propertyPopup = new GPopupPanel(true, appW.getAppletFrame(), appW);
 			propertyPopup.setStyleName("quickStyleBarPopup");
 		}
+	}
+
+	@Override
+	public void setLabels() {
+		super.setLabels();
+		lineThicknessSlider.setLabels();
 	}
 }

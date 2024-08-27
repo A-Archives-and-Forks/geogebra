@@ -29,7 +29,7 @@ public class GeoElementPropertiesFactoryTest extends BaseUnitTest {
 		assertThat(pointProperties[0].getName(), equalTo("Name"));
 		assertThat(pointProperties[1].getName(), equalTo("Show"));
 		assertThat(pointProperties[2].getName(), equalTo("Set color"));
-		assertThat(pointProperties[3].getName(), equalTo("Style"));
+		assertThat(pointProperties[3].getName(), equalTo("Point Style"));
 		assertThat(pointProperties[4].getName(), equalTo("Size"));
 		assertThat(pointProperties[5].getName(), equalTo("Set caption style"));
 		assertThat(pointProperties[6].getName(), equalTo("Show trace"));

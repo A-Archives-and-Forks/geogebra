@@ -72,6 +72,9 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void addLineStyleButton(PropertiesArray properties) {
+		if (properties.getProperties().length == 0) {
+			return;
+		}
 		Property firstProperty = properties.getProperties()[0];
 		IconButton button = new IconButtonWithProperties(getApp(), getIcon(
 				(IconsEnumeratedProperty<?>) firstProperty), properties, firstProperty.getName());
