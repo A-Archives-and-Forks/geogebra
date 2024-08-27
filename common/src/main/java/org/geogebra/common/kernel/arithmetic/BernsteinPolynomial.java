@@ -102,8 +102,8 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 	BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs, BernsteinPolynomial otherPoly,
 			BernsteinPolynomial otherCoeffs);
 
-	BernsteinPolynomial linearCombination(int coeff, BernsteinPolynomial otherPoly,
-			int otherCoeff);
+	BernsteinPolynomial linearCombination(double coeff, BernsteinPolynomial otherPoly,
+			double otherCoeff);
 
 	int degreeX();
 	int degreeY();

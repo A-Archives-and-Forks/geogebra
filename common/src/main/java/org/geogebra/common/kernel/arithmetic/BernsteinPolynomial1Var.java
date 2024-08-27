@@ -226,8 +226,8 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial linearCombination(int coeff, BernsteinPolynomial otherPoly,
-			int otherCoeff) {
+	public BernsteinPolynomial linearCombination(double coeff, BernsteinPolynomial otherPoly,
+			double otherCoeff) {
 		if (otherPoly == null) {
 			return this;
 		}

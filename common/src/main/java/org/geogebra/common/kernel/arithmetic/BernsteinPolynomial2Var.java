@@ -30,6 +30,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	/**
 	 * Divided coefficients are needed only for evaluation and splitting.
+	 * If there is no solution, none of those is called by the algo.
 	 *
 	 */
 	private void createLazyDivideCoeffs() {
@@ -196,20 +197,40 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 		slicePositive[0] = pcoeffs[0];
 		for (int i = 0; i < pcoeffs.length; i++) {
-			slicePositive[i + 1] = pcoeffs[i].plus(potherCoeffs[i]).divide(2);
-			if (i < pcoeffs.length - 1) {
-				slicePositive[i + 1] = slicePositive[i + 1].plus(pcoeffs[i + 1]);
-			}
-
-			sliceNegative[i] = mcoeffs[i].plus(motherCoeffs[i]).divide(2);
-			if (i > 0) {
-				sliceNegative[i] = sliceNegative[i].plus(motherCoeffs[i - 1]);
-			}
+			slicePositive[i + 1] = getSlicePositive(pcoeffs, potherCoeffs, i);
+			sliceNegative[i] = getSliceNegative(mcoeffs, motherCoeffs, i);
 		}
+
 		sliceNegative[mcoeffs.length] = motherCoeffs[motherCoeffs.length - 1];
 
 
 		return new BernsteinPolynomial[][]{slicePositive, sliceNegative};
+	}
+
+	private static BernsteinPolynomial getSliceNegative(BernsteinPolynomial[] mcoeffs,
+			BernsteinPolynomial[] motherCoeffs, int i) {
+		BernsteinPolynomial slice = plusAndDivideBy2(mcoeffs, motherCoeffs, i);
+		if (i > 0) {
+			slice = slice.plus(motherCoeffs[i - 1]);
+		}
+		
+		return slice;
+	}
+
+	private static BernsteinPolynomial plusAndDivideBy2(BernsteinPolynomial[] mcoeffs,
+			BernsteinPolynomial[] motherCoeffs, int i) {
+		return mcoeffs[i].linearCombination(0.5, motherCoeffs[i], 0.5);
+	}
+
+	private static BernsteinPolynomial getSlicePositive(BernsteinPolynomial[] pcoeffs,
+			BernsteinPolynomial[] potherCoeffs, int i) {
+
+		BernsteinPolynomial slice = plusAndDivideBy2(pcoeffs, potherCoeffs, i);
+
+		if (i < pcoeffs.length - 1) {
+			slice = slice.plus(pcoeffs[i + 1]);
+		}
+		return slice;
 	}
 
 	private BernsteinPolynomial newInstance(BernsteinPolynomial[] coeffs) {
@@ -287,8 +308,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	}
 
 	@Override
-	public BernsteinPolynomial linearCombination(int coeff, BernsteinPolynomial otherPoly,
-			int otherCoeff) {
+	public BernsteinPolynomial linearCombination(double coeff, BernsteinPolynomial otherPoly,
+			double otherCoeff) {
 		return null;
 	}
 	@Override
