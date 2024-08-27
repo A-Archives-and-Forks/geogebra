@@ -15,12 +15,17 @@ import org.geogebra.common.properties.impl.objects.delegate.ThicknessPropertyDel
 public class ThicknessProperty extends AbstractRangeProperty<Integer> {
 
 	private final GeoElementDelegate delegate;
-
 	/***/
 	public ThicknessProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
 		super(localization, "Thickness", null, 9, 1);
 		delegate = new ThicknessPropertyDelegate(element);
+	}
+
+	public ThicknessProperty(Localization localization, GeoElement element, int max,
+			GeoElementDelegate delegate) {
+		super(localization, "Thickness", null, max, 1);
+		this.delegate = delegate;
 	}
 
 	@Override
@@ -40,7 +45,7 @@ public class ThicknessProperty extends AbstractRangeProperty<Integer> {
 		return delegate.getElement().getLineThickness();
 	}
 
-	private void setThickness(GeoElement element, int size) {
+	public void setThickness(GeoElement element, int size) {
 		if (element instanceof GeoList) {
 			GeoList list = (GeoList) element;
 			for (int i = 0; i < list.size(); i++) {

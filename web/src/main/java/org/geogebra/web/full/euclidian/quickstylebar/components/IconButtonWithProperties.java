@@ -4,6 +4,7 @@ import static org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar.POPUP_
 
 import java.util.ArrayList;
 
+import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
@@ -32,19 +33,19 @@ public class IconButtonWithProperties extends IconButton {
 	 * @param ariaLabel - aria label
 	 */
 	public IconButtonWithProperties(AppW appW, SVGResource icon, PropertiesArray properties,
-			String ariaLabel) {
+			String ariaLabel, GeoElement geo) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		AriaHelper.setAriaHasPopup(this);
 
-		buildGUI(properties);
+		buildGUI(properties, geo);
 
 		addFastClickHandler((source) -> {
 			appW.closePopups();
 			propertyPopup.show();
 			propertyPopup.setPopupPosition((int) (getAbsoluteLeft() - appW.getAbsLeft()),
-					(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop()) +
-							2 * POPUP_MENU_DISTANCE);
+					(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop())
+							+ 2 * POPUP_MENU_DISTANCE);
 			AriaHelper.setAriaExpanded(this, true);
 
 		});
@@ -54,20 +55,18 @@ public class IconButtonWithProperties extends IconButton {
 		});
 	}
 
-	private void buildGUI(PropertiesArray properties) {
+	private void buildGUI(PropertiesArray properties, GeoElement geo) {
 		initPropertyPopup();
 		FlowPanel propertyPanel = new FlowPanel();
-		int lineType = 0;
 
 		for (Property property : properties.getProperties()) {
 			if (property instanceof IconsEnumeratedProperty) {
 				processIconEnumeratedProperty((IconsEnumeratedProperty<?>) property,
 						propertyPanel);
-				lineType = ((IconsEnumeratedProperty<?>) property).getIndex();
 			}
 			if (property instanceof RangeProperty) {
 				lineThicknessSlider = new SliderWithProperty(appW,
-						(RangePropertyCollection<?, ?>) property, lineType);
+						(RangePropertyCollection<?, ?>) property, geo);
 				propertyPanel.add(lineThicknessSlider);
 			}
 		}
