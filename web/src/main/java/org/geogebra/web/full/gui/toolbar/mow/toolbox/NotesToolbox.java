@@ -22,6 +22,7 @@ import org.geogebra.web.html5.Browser;
 import org.geogebra.web.html5.css.ZoomPanelResources;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
+import org.geogebra.web.shared.mow.header.NotesTopBar;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.SimplePanel;
 
@@ -35,10 +36,11 @@ public class NotesToolbox extends FlowPanel implements SetLabels, ModeChangeList
 	/**
 	 * MOW toolbox
 	 * @param appW - application
+	 * @param isTopBarAttached - whether it has {@link NotesTopBar} or not
 	 */
-	public NotesToolbox(AppW appW) {
+	public NotesToolbox(AppW appW, boolean isTopBarAttached) {
 		this.appW = appW;
-		decorator = new ToolboxDecorator(this);
+		decorator = new ToolboxDecorator(this, isTopBarAttached);
 		controller = new ToolboxController(appW, this);
 		buildGui();
 	}
@@ -167,7 +169,10 @@ public class NotesToolbox extends FlowPanel implements SetLabels, ModeChangeList
 
 		IconButton selectButton = new IconButton(MODE_SELECT_MOW, appW,
 				MaterialDesignResources.INSTANCE.mouse_cursor(),
-				() -> appW.setMode(MODE_SELECT_MOW));
+				() -> {
+			appW.setMode(MODE_SELECT_MOW);
+			appW.closePopups();
+		});
 		add(selectButton);
 		buttons.add(selectButton);
 	}
