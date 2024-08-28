@@ -63,8 +63,8 @@ public class IconButtonWithProperty extends IconButton {
 				FlowPanel enumeratedPropertyButtonPanel = widgetAdapter.getIconListPanel(
 						(IconsEnumeratedProperty<?>) property, (index) -> {
 							lineThicknessSlider.setLineType(index);
-							PropertiesIconAdapter.getIcon(((IconsEnumeratedProperty<?>) property)
-									.getValueIcons()[index]);
+							setIcon(PropertiesIconAdapter.getIcon(((IconsEnumeratedProperty<?>)
+									property).getValueIcons()[index]));
 						});
 				propertyPanel.add(enumeratedPropertyButtonPanel);
 			}

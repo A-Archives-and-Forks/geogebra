@@ -21,6 +21,11 @@ public class PropertyWidgetAdapter {
 		this.appW = appW;
 	}
 
+	/**
+	 * @param iconProperty - property
+	 * @param uiUpdater - update dependent ui
+	 * @return panel holding list of icon buttons based on property
+	 */
 	public FlowPanel getIconListPanel(IconsEnumeratedProperty<?> iconProperty,
 			Consumer<Integer> uiUpdater) {
 		enumeratedPropertyButtons = new ArrayList<>();
@@ -32,8 +37,14 @@ public class PropertyWidgetAdapter {
 			int finalI = i;
 			IconButton enumeratedPropertyIconButton = new IconButton(appW, null,
 					PropertiesIconAdapter.getIcon(icons[i]), null);
-			enumeratedPropertyIconButton.addFastClickHandler(source -> onPropertyUpdate(
-					iconProperty, finalI, enumeratedPropertyIconButton, uiUpdater));
+			enumeratedPropertyIconButton.addFastClickHandler(source -> {
+				iconProperty.setIndex(finalI);
+				setIconButtonActive(enumeratedPropertyIconButton);
+				if (uiUpdater != null) {
+					uiUpdater.accept(finalI);
+				}
+				appW.storeUndoInfo();
+			});
 
 			enumeratedPropertyIconButton.setActive(finalI == iconProperty.getIndex());
 			buttonListComponent.add(enumeratedPropertyIconButton);
@@ -43,21 +54,16 @@ public class PropertyWidgetAdapter {
 		return buttonListComponent;
 	}
 
-	private void onPropertyUpdate(IconsEnumeratedProperty<?> iconProperty, int finalI, IconButton
-			enumeratedPropertyIconButton, Consumer<Integer> uiUpdater) {
-		iconProperty.setIndex(finalI);
-		setIconButtonActive(enumeratedPropertyIconButton);
-		if (uiUpdater != null) {
-			uiUpdater.accept(finalI);
-		}
-		appW.storeUndoInfo();
-	}
-
 	private void setIconButtonActive(IconButton enumeratedPropertyIconButton) {
 		enumeratedPropertyButtons.forEach(iconButton -> iconButton.setActive(false));
 		enumeratedPropertyIconButton.setActive(true);
 	}
 
+	/**
+	 * @param property - range property
+	 * @param geo - geo element
+	 * @return slider based on range property
+	 */
 	public SliderWithProperty getSliderWidget(RangePropertyCollection<?, ?> property,
 			GeoElement geo) {
 		return new SliderWithProperty(appW, property, geo);
