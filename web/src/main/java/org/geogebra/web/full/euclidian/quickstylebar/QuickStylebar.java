@@ -15,7 +15,7 @@ import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
 import org.geogebra.web.full.css.MaterialDesignResources;
-import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperties;
+import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperty;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
 import org.geogebra.web.full.gui.GuiManagerW;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
@@ -76,7 +76,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			return;
 		}
 		Property firstProperty = properties.getProperties()[0];
-		IconButton button = new IconButtonWithProperties(getApp(), getIcon(
+		IconButton button = new IconButtonWithProperty(getApp(), getIcon(
 				(IconsEnumeratedProperty<?>) firstProperty), properties, firstProperty.getName(),
 				geo);
 		styleAndRegisterButton(button);

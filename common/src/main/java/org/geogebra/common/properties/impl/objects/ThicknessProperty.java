@@ -56,7 +56,7 @@ public class ThicknessProperty extends AbstractRangeProperty<Integer> {
 		return delegate.getElement().getLineThickness();
 	}
 
-	public void setThickness(GeoElement element, int size) {
+	private void setThickness(GeoElement element, int size) {
 		if (element instanceof GeoList) {
 			GeoList list = (GeoList) element;
 			for (int i = 0; i < list.size(); i++) {
