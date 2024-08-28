@@ -16,6 +16,7 @@ public class ImplicitCurveController implements CoordSystemAnimationListener {
 	private final EuclidianController ec;
 	private final GeoElement geo;
 	private final EuclidianView view;
+	private boolean updateEnabled=true;
 
 	public ImplicitCurveController(EuclidianView view, GeoElement geo) {
 		this.view = view;
@@ -33,21 +34,24 @@ public class ImplicitCurveController implements CoordSystemAnimationListener {
 	}
 
 	public void drawPlotter(GGraphics2D g2) {
+		if (updateEnabled) {
+			updatePlotter();
+		}
 		plotter.draw(g2);
 	}
 
 	@Override
 	public void onZoomStop(CoordSystemInfo info) {
-		updatePlotter();
+		updateEnabled = true;
 	}
 
 	@Override
 	public void onMove(CoordSystemInfo info) {
-
+		updateEnabled = false;
 	}
 
 	@Override
 	public void onMoveStop() {
-		updatePlotter();
+		updateEnabled = true;
 	}
 }
