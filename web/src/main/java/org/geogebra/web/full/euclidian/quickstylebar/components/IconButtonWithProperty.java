@@ -43,8 +43,11 @@ public class IconButtonWithProperty extends IconButton {
 
 	private void addHandlers() {
 		addFastClickHandler((source) -> {
-			appW.closePopups();
-			showPropertyPopup();
+			if (propertyPopup.isShowing()) {
+				propertyPopup.hide();
+			} else {
+				showPropertyPopup();
+			}
 			AriaHelper.setAriaExpanded(this, true);
 		});
 
@@ -81,7 +84,7 @@ public class IconButtonWithProperty extends IconButton {
 
 	private void initPropertyPopup() {
 		if (propertyPopup == null) {
-			propertyPopup = new GPopupPanel(true, appW.getAppletFrame(), appW);
+			propertyPopup = new GPopupPanel(false, appW.getAppletFrame(), appW);
 			propertyPopup.setStyleName("quickStyleBarPopup");
 		}
 	}
@@ -91,5 +94,6 @@ public class IconButtonWithProperty extends IconButton {
 		propertyPopup.setPopupPosition((int) (getAbsoluteLeft() - appW.getAbsLeft()),
 				(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop())
 						+ 2 * POPUP_MENU_DISTANCE);
+		appW.registerPopup(propertyPopup);
 	}
 }
