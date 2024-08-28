@@ -86,16 +86,25 @@ public class SliderWithProperty extends FlowPanel implements SetLabels {
 		preview.update(lineThickness, lineType, color);
 	}
 
+	/**
+	 * @param lineThickness - line thickness
+	 */
 	public void setLineThickness(int lineThickness) {
 		this.lineThickness = lineThickness;
 		updatePreview(lineThickness, lineType, color);
 	}
 
+	/**
+	 * @param lineType - line type
+	 */
 	public void setLineType(int lineType) {
 		this.lineType = lineType;
 		updatePreview(geo.getLineThickness(), lineType, geo.getObjectColor());
 	}
 
+	/**
+	 * @param color - line color
+	 */
 	public void setLineColor(GColor color) {
 		this.color = color;
 		updatePreview(lineThickness, lineType, color);

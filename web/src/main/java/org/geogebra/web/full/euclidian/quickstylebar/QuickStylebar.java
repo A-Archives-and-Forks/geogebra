@@ -77,7 +77,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		}
 		Property firstProperty = properties.getProperties()[0];
 		IconButton button = new IconButtonWithProperties(getApp(), getIcon(
-				(IconsEnumeratedProperty<?>) firstProperty), properties, firstProperty.getName(), geo);
+				(IconsEnumeratedProperty<?>) firstProperty), properties, firstProperty.getName(),
+				geo);
 		styleAndRegisterButton(button);
 	}
 

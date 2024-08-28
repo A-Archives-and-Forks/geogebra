@@ -37,7 +37,6 @@ import org.geogebra.common.properties.impl.objects.ShowTraceProperty;
 import org.geogebra.common.properties.impl.objects.SlopeSizeProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
-import org.geogebra.common.properties.impl.objects.delegate.ThicknessPropertyDelegate;
 
 /**
  * Creates the list of properties for a GeoElement or for a list of GeoElements.
@@ -220,7 +219,8 @@ public class GeoElementPropertiesFactory {
 	}
 
 	/**
-	 * Returns an Integer RangeProperty controlling the line thickness in notes null if not applicable.
+	 * Returns an Integer RangeProperty controlling the line thickness in notes,
+	 * null if not applicable.
 	 * @param localization localization
 	 * @param elements elements
 	 * @return property or null
