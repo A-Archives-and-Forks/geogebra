@@ -18,7 +18,7 @@ import org.geogebra.common.util.debug.Log;
 public class ImplicitCurvePlotter {
 	public static final int MAX_SPLIT_RECURSION = 1;
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
-	public static final int SMALLEST_BOX_IN_PIXELS = 10;
+	public static final int SMALLEST_BOX_IN_PIXELS = 2;
 	private final List<CurvePlotContext> subContexts = new ArrayList<>();
 	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
@@ -54,7 +54,7 @@ public class ImplicitCurvePlotter {
 
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
-			visualDebug.draw(g2, data.intersects());
+//			visualDebug.draw(g2, data.intersects());
 //			visualDebug.drawEdges(g2, edges);
 		}
 		drawResults(g2);
@@ -65,6 +65,7 @@ public class ImplicitCurvePlotter {
 		gp.reset();
 
 		g2.setColor(GColor.DARK_RED);
+
 		for (GPoint2D p : data.output()) {
 			gp.moveTo((int) bounds.toScreenCoordXd(p.x), (int) bounds.toScreenCoordYd(p.y));
 			gp.lineTo((int) bounds.toScreenCoordXd(p.x),

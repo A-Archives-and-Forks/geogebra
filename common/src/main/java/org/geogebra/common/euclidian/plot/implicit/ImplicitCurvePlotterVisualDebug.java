@@ -59,7 +59,7 @@ final class ImplicitCurvePlotterVisualDebug {
 			g2.setColor(edge.getKind().getColor());
 			GPoint2D p = edge.startPoint();
 			g2.fillRect((int) bounds.toScreenCoordXd(p.x),
-					(int) bounds.toScreenCoordYd(p.y), 5, 5);
+					(int) bounds.toScreenCoordYd(p.y), 1, 1);
 		}
 
 	}

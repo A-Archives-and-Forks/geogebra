@@ -72,7 +72,8 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		double powOneMinusX = Math.pow(1 - value, degreeX - 1);
 		double d = value == 1 ? 1 :  1 - value;
 		for (int i = 1; i < degreeX + 1; i++) {
-			result = result.plus(bernsteinCoeffs[i].multiply(powX * powOneMinusX));
+			result = result.linearCombination(1, bernsteinCoeffs[i],
+					powX * powOneMinusX);
 			powX *= value;
 			powOneMinusX /= d;
 		}
@@ -213,7 +214,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		if (i > 0) {
 			slice = slice.plus(motherCoeffs[i - 1]);
 		}
-		
+
 		return slice;
 	}
 
