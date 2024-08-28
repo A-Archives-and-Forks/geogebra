@@ -1,8 +1,6 @@
 package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import org.geogebra.common.awt.GColor;
-import org.geogebra.common.gui.SetLabels;
-import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
@@ -14,33 +12,39 @@ import org.geogebra.web.html5.util.sliderPanel.SliderPanelW;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 
-public class SliderWithProperty extends FlowPanel implements SetLabels {
+public class SliderWithProperty extends FlowPanel {
 	private final AppW appW;
 	private final RangePropertyCollection<?, ?> property;
 	private LineStylePreview preview;
 	private SliderPanelW sliderPanel;
-	private Label sliderLabel;
 	private int lineThickness;
 	private int lineType;
-	private GColor color = GColor.BLACK;
-	private GeoElement geo;
+	private GColor color;
 
 	/**
 	 * constructor
 	 * @param appW - application
-	 * @param geo - geo element
+	 * @param property - range property
+	 * @param sliderLabel - label of slider
+	 * @param lineType - line type
+	 * @param lineThickness - line thickness
+	 * @param color - line color
 	 */
-	public SliderWithProperty(AppW appW, RangePropertyCollection<?, ?> property, GeoElement geo) {
+	public SliderWithProperty(AppW appW, RangePropertyCollection<?, ?> property,
+			String sliderLabel, int lineType, int lineThickness, GColor color) {
 		this.appW = appW;
 		this.property = property;
-		this.geo = geo;
+		this.lineThickness = lineThickness;
+		this.lineType = lineType;
+		this.color = color;
+
 		addStyleName("sliderComponent");
-		buildGui();
+		buildGui(sliderLabel);
 	}
 
-	private void buildGui() {
-		sliderLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(
-				appW.getLocalization().getMenu("Thickness"), "sliderLabel");
+	private void buildGui(String sliderText) {
+		Label sliderLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(
+				appW.getLocalization().getMenu(sliderText), "sliderLabel");
 		preview = new LineStylePreview(30, 30);
 		preview.addStyleName("preview");
 
@@ -70,7 +74,7 @@ public class SliderWithProperty extends FlowPanel implements SetLabels {
 	private void setInitialValue() {
 		Integer val = ((NotesThicknessProperty) property.getProperties()[0]).getValue();
 		sliderPanel.setValue(val.doubleValue());
-		preview.update(val, geo.getLineType(), geo.getObjectColor());
+		preview.update(val, lineThickness, color);
 	}
 
 	private void onInputChange(int val) {
@@ -79,7 +83,8 @@ public class SliderWithProperty extends FlowPanel implements SetLabels {
 				((ThicknessProperty) prop).setValue(val);
 			}
 		}
-		preview.update(val, geo.getLineType(), geo.getObjectColor());
+
+		setLineThickness(val);
 	}
 
 	private void updatePreview(int lineThickness, int lineType, GColor color) {
@@ -99,7 +104,7 @@ public class SliderWithProperty extends FlowPanel implements SetLabels {
 	 */
 	public void setLineType(int lineType) {
 		this.lineType = lineType;
-		updatePreview(geo.getLineThickness(), lineType, geo.getObjectColor());
+		updatePreview(lineThickness, lineType, color);
 	}
 
 	/**
@@ -108,10 +113,5 @@ public class SliderWithProperty extends FlowPanel implements SetLabels {
 	public void setLineColor(GColor color) {
 		this.color = color;
 		updatePreview(lineThickness, lineType, color);
-	}
-
-	@Override
-	public void setLabels() {
-		sliderLabel.setText(appW.getLocalization().getMenu("Thickness"));
 	}
 }

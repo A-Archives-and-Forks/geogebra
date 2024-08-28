@@ -63,9 +63,11 @@ public class PropertyWidgetAdapter {
 	 * @param property - range property
 	 * @param geo - geo element
 	 * @return slider based on range property
+	 * @param sliderLabel - trans key of slider
 	 */
 	public SliderWithProperty getSliderWidget(RangePropertyCollection<?, ?> property,
-			GeoElement geo) {
-		return new SliderWithProperty(appW, property, geo);
+			GeoElement geo, String sliderLabel) {
+		return new SliderWithProperty(appW, property, sliderLabel, geo.getLineType(),
+				geo.getLineThickness(), geo.getObjectColor());
 	}
 }
