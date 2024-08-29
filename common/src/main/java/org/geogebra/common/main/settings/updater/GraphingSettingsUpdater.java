@@ -14,6 +14,6 @@ public class GraphingSettingsUpdater extends SettingsUpdater {
 	private void setExplicitEquationModeForDefaultLine() {
 		ConstructionDefaults defaults = getKernel().getConstruction().getConstructionDefaults();
 		GeoLine line = (GeoLine) defaults.getDefaultGeo(ConstructionDefaults.DEFAULT_LINE);
-		line.setMode(GeoLine.EQUATION_EXPLICIT);
+		line.setToStringMode(GeoLine.EQUATION_EXPLICIT);
 	}
 }

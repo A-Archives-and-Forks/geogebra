@@ -33,7 +33,7 @@ public class EquationFormProperty extends AbstractNamedEnumeratedProperty<Intege
 		GeoElement element = delegate.getElement();
 		if (element instanceof GeoVec3D) {
 			GeoVec3D vec3d = (GeoVec3D) element;
-			vec3d.setMode(value);
+			vec3d.setToStringMode(value);
 			vec3d.updateRepaint();
 		}
 	}

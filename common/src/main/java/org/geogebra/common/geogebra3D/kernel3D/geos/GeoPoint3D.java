@@ -952,15 +952,11 @@ public class GeoPoint3D extends GeoVec4D implements GeoPointND, PathOrPoint,
 			setCoords(p);
 			// TODO ? moveMode = p.getMoveMode();
 			updateCoords();
-			setMode(p.getToStringMode()); // complex etc
+			this.setToStringMode(p.getToStringMode()); // complex etc
 			reuseDefinition(geo);
 		} else {
 			setUndefined();
 		}
-		/*
-		 * TODO else if (geo.isGeoVector()) { GeoVector v = (GeoVector) geo;
-		 * setCoords(v.x, v.y, 1d); setMode(v.toStringMode); // complex etc }
-		 */
 
 	}
 
@@ -1473,27 +1469,27 @@ public class GeoPoint3D extends GeoVec4D implements GeoPointND, PathOrPoint,
 
 	@Override
 	public void setCartesian() {
-		setMode(Kernel.COORD_CARTESIAN);
+		this.setToStringMode(Kernel.COORD_CARTESIAN);
 	}
 
 	@Override
 	public void setCartesian3D() {
-		setMode(Kernel.COORD_CARTESIAN_3D);
+		this.setToStringMode(Kernel.COORD_CARTESIAN_3D);
 	}
 
 	@Override
 	public void setSpherical() {
-		setMode(Kernel.COORD_SPHERICAL);
+		this.setToStringMode(Kernel.COORD_SPHERICAL);
 	}
 
 	@Override
 	public void setPolar() {
-		setMode(Kernel.COORD_POLAR);
+		this.setToStringMode(Kernel.COORD_POLAR);
 	}
 
 	@Override
 	public void setComplex() {
-		setMode(Kernel.COORD_COMPLEX);
+		this.setToStringMode(Kernel.COORD_COMPLEX);
 	}
 
 	@Override

@@ -737,27 +737,27 @@ public class GeoVector3D extends GeoVec4D
 
 	@Override
 	public void setCartesian() {
-		setMode(Kernel.COORD_CARTESIAN);
+		this.setToStringMode(Kernel.COORD_CARTESIAN);
 	}
 
 	@Override
 	public void setCartesian3D() {
-		setMode(Kernel.COORD_CARTESIAN_3D);
+		this.setToStringMode(Kernel.COORD_CARTESIAN_3D);
 	}
 
 	@Override
 	public void setSpherical() {
-		setMode(Kernel.COORD_SPHERICAL);
+		this.setToStringMode(Kernel.COORD_SPHERICAL);
 	}
 
 	@Override
 	public void setPolar() {
-		setMode(Kernel.COORD_POLAR);
+		this.setToStringMode(Kernel.COORD_POLAR);
 	}
 
 	@Override
 	public void setComplex() {
-		setMode(Kernel.COORD_COMPLEX);
+		this.setToStringMode(Kernel.COORD_COMPLEX);
 	}
 
 	@Override

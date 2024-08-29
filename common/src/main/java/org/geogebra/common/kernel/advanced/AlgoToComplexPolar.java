@@ -93,7 +93,7 @@ public class AlgoToComplexPolar extends AlgoElement {
 		this.coordStyle = coordStyle1;
 		setInputOutput();
 		compute();
-		((VectorValue) out).setMode(coordStyle1);
+		((VectorValue) out).setToStringMode(coordStyle1);
 	}
 
 	@Override
@@ -115,22 +115,22 @@ public class AlgoToComplexPolar extends AlgoElement {
 	public void compute() {
 		if (inPoint != null) {
 			outPoint.set(inPoint);
-			outPoint.setMode(coordStyle);
+			outPoint.setToStringMode(coordStyle);
 			return;
 		}
 		if (inVector != null) {
 			outVector.set(inVector);
-			outVector.setMode(coordStyle);
+			outVector.setToStringMode(coordStyle);
 			return;
 		}
 		if (inNumber != null) {
 			outPoint.setCoords(inNumber.getDouble(), 0, 1);
-			outPoint.setMode(coordStyle);
+			outPoint.setToStringMode(coordStyle);
 			return;
 		}
 		outPoint.setCoords(inList.get(0).evaluateDouble(),
 				inList.get(1).evaluateDouble(), 1);
-		outPoint.setMode(coordStyle);
+		outPoint.setToStringMode(coordStyle);
 	}
 
 	@Override

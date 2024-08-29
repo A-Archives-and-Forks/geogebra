@@ -438,7 +438,7 @@ public class ConsElementXMLHandler {
 		geo.setLineOpacity(255);
 		if (geo instanceof VectorNDValue) {
 			((VectorNDValue) geo)
-					.setMode(((VectorNDValue) geo).getDimension() == 3
+					.setToStringMode(((VectorNDValue) geo).getDimension() == 3
 							? Kernel.COORD_CARTESIAN_3D
 							: Kernel.COORD_CARTESIAN);
 		} else if (geo instanceof GeoPolyLine) {

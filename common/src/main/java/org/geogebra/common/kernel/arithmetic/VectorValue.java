@@ -42,9 +42,9 @@ public interface VectorValue extends VectorNDValue {
 	/**
 	 * Sets coord mode
 	 * 
-	 * @param mode
+	 * @param toStringMode
 	 *            Kernel.COORD_*
 	 */
 	@Override
-	void setMode(int mode);
+	void setToStringMode(int toStringMode);
 }

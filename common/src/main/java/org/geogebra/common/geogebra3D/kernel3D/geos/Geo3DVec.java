@@ -385,7 +385,7 @@ final public class Geo3DVec extends ValidExpression
 
 		if (!DoubleUtil.isZero(a.getZ()) || !DoubleUtil.isZero(b.getZ())) {
 			c.setCoords(Double.NaN, Double.NaN);
-			c.setMode(Kernel.COORD_COMPLEX);
+			c.setToStringMode(Kernel.COORD_COMPLEX);
 			return;
 		}
 
@@ -393,7 +393,7 @@ final public class Geo3DVec extends ValidExpression
 		out = out.multiply(new Complex(b.getX(), b.getY()));
 		c.setCoords(out.getReal(), out.getImaginary());
 
-		c.setMode(Kernel.COORD_COMPLEX);
+		c.setToStringMode(Kernel.COORD_COMPLEX);
 	}
 
 	/**
@@ -688,9 +688,8 @@ final public class Geo3DVec extends ValidExpression
 	}
 
 	@Override
-	public void setMode(int mode) {
-		this.mode = mode;
-
+	public void setToStringMode(int toStringMode) {
+		this.mode = toStringMode;
 	}
 
 	@Override

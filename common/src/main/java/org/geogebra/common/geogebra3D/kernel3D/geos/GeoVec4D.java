@@ -124,17 +124,6 @@ public abstract class GeoVec4D extends GeoElement3D implements GeoCoords4D,
 				.append("\" w=\"").append(getW()).append("\"/>\n");
 	}
 
-	/**
-	 * Sets the coord style
-	 * 
-	 * @param mode
-	 *            new coord style
-	 */
-	@Override
-	public void setMode(int mode) {
-		toStringMode = mode;
-	}
-
 	@Override
 	public final boolean hasCoords() {
 		return true;

@@ -50,9 +50,9 @@ public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 	@Test
 	public void testAllowsComplexNumbers() {
 		GeoVec2D vectorA = new GeoVec2D(getKernel(), 1, 2);
-		vectorA.setMode(Kernel.COORD_COMPLEX);
+		vectorA.setToStringMode(Kernel.COORD_COMPLEX);
 		GeoVec2D vectorB = new GeoVec2D(getKernel(), 1, 2);
-		vectorB.setMode(Kernel.COORD_COMPLEX);
+		vectorB.setToStringMode(Kernel.COORD_COMPLEX);
 
 		assertAllowed(Operation.MULTIPLY, vectorA, vectorB, is(true));
 	}

@@ -108,9 +108,9 @@ public class AlgoDependentGeoCopy extends AlgoElement implements DependentAlgo {
 				&& origGeo instanceof GeoLine
 				&& origGeo
 						.getToStringMode() == GeoLine.PARAMETRIC) {
-			((GeoLine) origGeo).setMode(GeoLine.EQUATION_EXPLICIT);
+			((GeoLine) origGeo).setToStringMode(GeoLine.EQUATION_EXPLICIT);
 			String ret = origGeo.getLabel(tpl);
-			((GeoLine) origGeo).setMode(GeoLine.PARAMETRIC);
+			((GeoLine) origGeo).setToStringMode(GeoLine.PARAMETRIC);
 			return ret;
 		}
 		// we use the expression as it may add $ signs

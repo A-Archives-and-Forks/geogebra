@@ -553,7 +553,7 @@ final public class GeoVector extends GeoVec3D implements Path, VectorValue,
 	@Override
 	public GeoVec2D getVector() {
 		GeoVec2D ret = new GeoVec2D(kernel, x, y);
-		ret.setMode(getToStringMode());
+		ret.setToStringMode(getToStringMode());
 		return ret;
 	}
 

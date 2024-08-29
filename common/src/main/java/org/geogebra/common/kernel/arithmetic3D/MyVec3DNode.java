@@ -107,7 +107,7 @@ public class MyVec3DNode extends ValidExpression
 	public MyVec3DNode deepCopy(Kernel kernel1) {
 		MyVec3DNode ret = new MyVec3DNode(kernel1, x.deepCopy(kernel1),
 				y.deepCopy(kernel1), z.deepCopy(kernel1));
-		ret.setMode(mode);
+		ret.setToStringMode(mode);
 		if (isCASVector()) {
 			ret.setupCASVector();
 		}
@@ -266,7 +266,7 @@ public class MyVec3DNode extends ValidExpression
 		double[] coords = getCoords();
 		Geo3DVecInterface ret = kernel.getManager3D().newGeo3DVec(coords[0],
 				coords[1], coords[2]);
-		ret.setMode(mode);
+		ret.setToStringMode(mode);
 		return ret;
 	}
 
@@ -317,7 +317,7 @@ public class MyVec3DNode extends ValidExpression
 	public void setSphericalPolarCoords(ExpressionValue r,
 			ExpressionValue theta, ExpressionValue phi) {
 		setCoords(r, theta, phi);
-		setMode(Kernel.COORD_SPHERICAL);
+		setToStringMode(Kernel.COORD_SPHERICAL);
 	}
 
 	@Override
@@ -367,10 +367,10 @@ public class MyVec3DNode extends ValidExpression
 	}
 
 	@Override
-	public void setMode(int mode) {
-		this.mode = mode;
+	public void setToStringMode(int toStringMode) {
+		this.mode = toStringMode;
 
-		if (mode == Kernel.COORD_CARTESIAN_3D) {
+		if (toStringMode == Kernel.COORD_CARTESIAN_3D) {
 			stringifier.setPrintingMode(VectorPrintingMode.Cartesian);
 		} else {
 			stringifier.setPrintingMode(VectorPrintingMode.Polar);
@@ -418,7 +418,7 @@ public class MyVec3DNode extends ValidExpression
 				MyVec3DNode el = new MyVec3DNode(kernel,
 						MyList.get(xEval, idx), MyList.get(yEval, idx),
 						MyList.get(zEval, idx));
-				el.setMode(mode);
+				el.setToStringMode(mode);
 				result.addListElement(el);
 			}
 			return result;

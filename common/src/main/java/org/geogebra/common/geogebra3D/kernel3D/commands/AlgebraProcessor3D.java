@@ -113,7 +113,7 @@ public class AlgebraProcessor3D extends AlgebraProcessor {
 		}
 
 		if (mode == Kernel.COORD_SPHERICAL) {
-			((GeoVec4D) ret[0]).setMode(Kernel.COORD_SPHERICAL);
+			((GeoVec4D) ret[0]).setToStringMode(Kernel.COORD_SPHERICAL);
 		}
 		ret[0].setLabel(label);
 		return ret;

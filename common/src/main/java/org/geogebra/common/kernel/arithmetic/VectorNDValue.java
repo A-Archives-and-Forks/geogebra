@@ -33,9 +33,9 @@ public interface VectorNDValue extends ExpressionValue {
 	public double[] getPointAsDouble();
 
 	/**
-	 * @param mode
+	 * @param toStringMode
 	 *            one of Kernel.COORD_* constants
 	 */
-	public void setMode(int mode);
+	public void setToStringMode(int toStringMode);
 
 }

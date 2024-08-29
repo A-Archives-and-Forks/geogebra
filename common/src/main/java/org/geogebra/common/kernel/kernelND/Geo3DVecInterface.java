@@ -76,6 +76,6 @@ public interface Geo3DVecInterface extends GeoVecInterface {
 	 * @param mode
 	 *            coordinates mode
 	 */
-	public void setMode(int mode);
+	void setToStringMode(int mode);
 
 }

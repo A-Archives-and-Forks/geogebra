@@ -32,6 +32,6 @@ public interface CoordStyle {
 	 * @param mode
 	 *            mode
 	 */
-	public void setMode(int mode);
+	void setToStringMode(int mode);
 
 }

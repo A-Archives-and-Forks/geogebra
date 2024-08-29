@@ -2399,7 +2399,7 @@ public class AlgebraProcessor {
 			String label = fun.getLabel();
 			MyVecNode ve = new MyVecNode(kernel, fun.getExpression(),
 					fun.getFunctionVariable().wrap());
-			ve.setMode(Kernel.COORD_POLAR);
+			ve.setToStringMode(Kernel.COORD_POLAR);
 			// TODO the "r" check is there to allow r=theta in the
 			// future
 			if (!"r".equals(label)) {
@@ -3571,9 +3571,9 @@ public class AlgebraProcessor {
 			}
 		}
 		if (polar) {
-			vector.setMode(Kernel.COORD_POLAR);
+			vector.setToStringMode(Kernel.COORD_POLAR);
 		} else if (complex) {
-			vector.setMode(Kernel.COORD_COMPLEX);
+			vector.setToStringMode(Kernel.COORD_COMPLEX);
 		}
 		if (info.isLabelOutput()) {
 			vector.setLabel(label);

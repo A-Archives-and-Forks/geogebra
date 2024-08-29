@@ -65,7 +65,7 @@ public class AlgoDependentPoint extends AlgoElement
 		setInputOutput(); // for AlgoElement
 
 		if (complex) {
-			P.setMode(Kernel.COORD_COMPLEX);
+			P.setToStringMode(Kernel.COORD_COMPLEX);
 		}
 
 		// compute value of dependent number

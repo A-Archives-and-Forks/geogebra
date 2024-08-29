@@ -128,7 +128,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		int lineStyle = getConstruction().getApplication().getConfig()
 				.getLineDisplayStyle();
 		if (lineStyle > -1) {
-			setMode(lineStyle);
+			setToStringMode(lineStyle);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	public GeoLine(Construction c, int mode) {
 		this(c);
-		setMode(mode);
+		setToStringMode(mode);
 	}
 
 	/**
@@ -888,7 +888,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	@Override
 	final public void setToParametric(String parameter) {
-		setMode(GeoLine.PARAMETRIC);
+		setToStringMode(GeoLine.PARAMETRIC);
 		if (parameter != null && parameter.length() > 0) {
 			this.parameter = parameter;
 		}
@@ -897,27 +897,27 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	/** change equation mode to explicit */
 	@Override
 	final public void setToExplicit() {
-		setMode(EQUATION_EXPLICIT);
+		setToStringMode(EQUATION_EXPLICIT);
 	}
 
 	private void setToExplicit(boolean force) {
-		setMode(EQUATION_EXPLICIT, force);
+		setToStringMode(EQUATION_EXPLICIT, force);
 	}
 
 	/** set equation mode to implicit */
 	@Override
 	final public void setToImplicit() {
-		setMode(EQUATION_IMPLICIT);
+		setToStringMode(EQUATION_IMPLICIT);
 	}
 
 	@Override
 	final public void setToUser() {
-		setMode(EQUATION_USER);
+		setToStringMode(EQUATION_USER);
 	}
 
 	@Override
-	final public void setMode(int mode) {
-		setMode(mode, false);
+	final public void setToStringMode(int mode) {
+		setToStringMode(mode, false);
 	}
 
 	/**
@@ -929,7 +929,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 * @param force
 	 *            mode is forced
 	 */
-	public void setMode(int mode, boolean force) {
+	public void setToStringMode(int mode, boolean force) {
 		if (!force && isEquationFormEnforced()) {
 			toStringMode = cons.getApplication().getConfig().getEnforcedLineEquationForm();
 		} else {

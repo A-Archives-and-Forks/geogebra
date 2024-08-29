@@ -1204,7 +1204,7 @@ public enum Operation {
 			if (lt instanceof VectorValue) {
 				GeoVec2D ret = ((VectorValue) lt).getVector().floor();
 				// eg complex
-				ret.setMode(((VectorValue) lt).getToStringMode());
+				ret.setToStringMode(((VectorValue) lt).getToStringMode());
 				return ret;
 			}
 			if (lt instanceof Vector3DValue) {
@@ -1226,7 +1226,7 @@ public enum Operation {
 			if (lt instanceof VectorValue) {
 				GeoVec2D ret = ((VectorValue) lt).getVector().ceil();
 				// eg complex
-				ret.setMode(((VectorValue) lt).getToStringMode());
+				ret.setToStringMode(((VectorValue) lt).getToStringMode());
 				return ret;
 			}
 			if (lt instanceof Vector3DValue) {
@@ -1258,7 +1258,7 @@ public enum Operation {
 			if (lt instanceof VectorValue) {
 				GeoVec2D ret = ((VectorValue) lt).getVector().round();
 				// eg complex
-				ret.setMode(((VectorValue) lt).getToStringMode());
+				ret.setToStringMode(((VectorValue) lt).getToStringMode());
 				return ret;
 			}
 			if (lt instanceof Vector3DValue) {
@@ -1287,7 +1287,7 @@ public enum Operation {
 			if (lt instanceof VectorValue) {
 				GeoVec2D ret = ((VectorValue) lt).getVector().round();
 				// eg complex
-				ret.setMode(((VectorValue) lt).getToStringMode());
+				ret.setToStringMode(((VectorValue) lt).getToStringMode());
 				return ret;
 			}
 			if (lt instanceof Vector3DValue) {

@@ -66,7 +66,7 @@ public class AlgoFoldExpression extends AlgoElement {
 		resultFun = foldComputer.getTemplate(cons,
 				expression.getGeoClassType());
 		if (op == Operation.MULTIPLY && resultFun instanceof VectorNDValue) {
-			((VectorNDValue) resultFun).setMode(Kernel.COORD_COMPLEX);
+			((VectorNDValue) resultFun).setToStringMode(Kernel.COORD_COMPLEX);
 		}
 		setInputOutput();
 		compute();

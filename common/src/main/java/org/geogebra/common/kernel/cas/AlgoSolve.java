@@ -163,10 +163,10 @@ public class AlgoSolve extends AlgoElement implements UsesCAS {
 
 			GeoElement el = solutions2.get(i);
 			if (el instanceof GeoLine) {
-				((GeoLine) el).setMode(GeoLine.EQUATION_USER);
+				((GeoLine) el).setToStringMode(GeoLine.EQUATION_USER);
 			}
 			if (el instanceof GeoPlaneND) {
-				((GeoPlaneND) el).setMode(GeoLine.EQUATION_USER);
+				((GeoPlaneND) el).setToStringMode(GeoLine.EQUATION_USER);
 			}
 
 			if (el instanceof GeoList) {

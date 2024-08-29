@@ -95,7 +95,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof CoordStyle) {
 				CoordStyle point1 = (CoordStyle) geo1;
-				point1.setMode(coordStyle);
+				point1.setToStringMode(coordStyle);
 				geo1.updateRepaint();
 			}
 		}
@@ -112,7 +112,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.EQUATION_IMPLICIT);
+				line1.setToStringMode(GeoLine.EQUATION_IMPLICIT);
 				line1.updateRepaint();
 			}
 		}
@@ -129,7 +129,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.EQUATION_EXPLICIT);
+				line1.setToStringMode(GeoLine.EQUATION_EXPLICIT);
 				line1.updateRepaint();
 			}
 		}
@@ -146,7 +146,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.EQUATION_GENERAL);
+				line1.setToStringMode(GeoLine.EQUATION_GENERAL);
 				line1.updateRepaint();
 			}
 		}
@@ -163,7 +163,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.PARAMETRIC);
+				line1.setToStringMode(GeoLine.PARAMETRIC);
 				line1.updateRepaint();
 			}
 		}

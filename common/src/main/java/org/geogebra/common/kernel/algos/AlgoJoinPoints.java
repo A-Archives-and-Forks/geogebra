@@ -80,7 +80,7 @@ public class AlgoJoinPoints extends AlgoElement
 		addIncidence();
 		int mode = cons.getApplication().getConfig().getLineDisplayStyle();
 		if (mode != -1) {
-			g.setMode(mode, true);
+			g.setToStringMode(mode, true);
 		}
 	}
 

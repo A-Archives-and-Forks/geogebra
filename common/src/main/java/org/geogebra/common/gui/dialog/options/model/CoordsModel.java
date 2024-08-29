@@ -59,7 +59,7 @@ public class CoordsModel extends MultipleOptionsModel {
 
 	@Override
 	protected void apply(int index, int value) {
-		getCoordStyleAt(index).setMode(coordValues.get(value));
+		getCoordStyleAt(index).setToStringMode(coordValues.get(value));
 		getGeoAt(index).updateRepaint();
 	}
 

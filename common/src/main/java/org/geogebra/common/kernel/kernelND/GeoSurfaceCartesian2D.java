@@ -103,7 +103,7 @@ public class GeoSurfaceCartesian2D extends GeoSurfaceCartesianND {
 		}
 		GeoVec2D ret = new GeoVec2D(kernel, fun[0].evaluate(tmp), fun[1].evaluate(tmp));
 		if (complexVariable != null) {
-			ret.setMode(Kernel.COORD_COMPLEX);
+			ret.setToStringMode(Kernel.COORD_COMPLEX);
 		}
 		return ret;
 	}

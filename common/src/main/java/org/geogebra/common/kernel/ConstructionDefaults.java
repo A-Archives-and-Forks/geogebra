@@ -488,7 +488,7 @@ public class ConstructionDefaults implements SettingListener {
 						? colPointG : colComplexPoint);
 		complexPoint.setPointSize(pointSize);
 		complexPoint.setDefaultGeoType(DEFAULT_POINT_COMPLEX);
-		complexPoint.setMode(Kernel.COORD_COMPLEX);
+		complexPoint.setToStringMode(Kernel.COORD_COMPLEX);
 		defaultGeoElements.put(DEFAULT_POINT_COMPLEX, complexPoint);
 
 		// line
@@ -498,7 +498,7 @@ public class ConstructionDefaults implements SettingListener {
 		line.setObjColor(getLineColor());
 		// line.setLineThickness(getDefaultLineThickness());
 		line.setDefaultGeoType(DEFAULT_LINE);
-		line.setMode(GeoLine.EQUATION_IMPLICIT);
+		line.setToStringMode(GeoLine.EQUATION_IMPLICIT);
 		setDefaultLineStyle(line);
 		defaultGeoElements.put(DEFAULT_LINE, line);
 

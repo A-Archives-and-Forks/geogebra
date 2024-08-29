@@ -471,12 +471,12 @@ public class GeoPlane3D extends GeoElement3D
 
 	@Override
 	final public void setToUser() {
-		setMode(GeoLine.EQUATION_USER);
+		setToStringMode(GeoLine.EQUATION_USER);
 	}
 
 	@Override
 	final public void setToImplicit() {
-		setMode(GeoLine.EQUATION_IMPLICIT);
+		setToStringMode(GeoLine.EQUATION_IMPLICIT);
 	}
 
 	/**
@@ -902,11 +902,6 @@ public class GeoPlane3D extends GeoElement3D
 		}
 		GeoLine.addUsedVars(usedVars, getDefinition());
 		return usedVars.toArray(new String[0]);
-	}
-
-	@Override
-	public void setMode(int stringMode) {
-		this.toStringMode = stringMode;
 	}
 
 	@Override

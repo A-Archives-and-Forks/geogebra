@@ -91,7 +91,7 @@ public class LineEqnModel extends MultipleOptionsModel {
 
 	@Override
 	protected void apply(int index, int value) {
-		getLineAt(index).setMode(eqnValues.get(value));
+		getLineAt(index).setToStringMode(eqnValues.get(value));
 		getGeoAt(index).updateRepaint();
 
 	}

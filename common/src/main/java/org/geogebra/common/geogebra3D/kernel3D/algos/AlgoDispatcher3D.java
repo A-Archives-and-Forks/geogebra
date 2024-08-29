@@ -299,7 +299,7 @@ public class AlgoDispatcher3D extends AlgoDispatcher {
 	public GeoVectorND vector3D() {
 		GeoVector3D v = new GeoVector3D(cons);
 		v.setCoords(0, 0, 0, 0);
-		v.setMode(Kernel.COORD_CARTESIAN_3D);
+		v.setToStringMode(Kernel.COORD_CARTESIAN_3D);
 		return v;
 	}
 

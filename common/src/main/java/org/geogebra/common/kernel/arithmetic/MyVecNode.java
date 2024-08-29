@@ -89,7 +89,7 @@ public class MyVecNode extends ValidExpression
 	public MyVecNode deepCopy(Kernel kernel1) {
 		MyVecNode ret = new MyVecNode(kernel1, x.deepCopy(kernel1),
 				y.deepCopy(kernel1));
-		ret.setMode(mode);
+		ret.setToStringMode(mode);
 		if (isCASVector()) {
 			ret.setupCASVector();
 		}
@@ -126,7 +126,7 @@ public class MyVecNode extends ValidExpression
 	 */
 	public void setPolarCoords(ExpressionValue r, ExpressionValue phi) {
 		setCoords(r, phi);
-		setMode(Kernel.COORD_POLAR);
+		setToStringMode(Kernel.COORD_POLAR);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class MyVecNode extends ValidExpression
 		} else { // CARTESIAN
 			ret = new GeoVec2D(kernel, x.evaluateDouble(), y.evaluateDouble());
 		}
-		ret.setMode(mode);
+		ret.setToStringMode(mode);
 		return ret;
 	}
 
@@ -199,10 +199,10 @@ public class MyVecNode extends ValidExpression
 	}
 
 	@Override
-	public void setMode(int mode) {
-		this.mode = mode;
+	public void setToStringMode(int toStringMode) {
+		this.mode = toStringMode;
 
-		if (mode == Kernel.COORD_CARTESIAN) {
+		if (toStringMode == Kernel.COORD_CARTESIAN) {
 			stringifier.setPrintingMode(VectorPrintingMode.Cartesian);
 		} else {
 			stringifier.setPrintingMode(VectorPrintingMode.Polar);
@@ -332,7 +332,7 @@ public class MyVecNode extends ValidExpression
 			for (int idx = 0; idx < size; idx++) {
 				MyVecNode el = new MyVecNode(kernel, MyList.get(xEval, idx),
 						MyList.get(yEval, idx));
-				el.setMode(mode);
+				el.setToStringMode(mode);
 				result.addListElement(el);
 			}
 			return result;

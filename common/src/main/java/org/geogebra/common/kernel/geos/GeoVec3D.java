@@ -184,17 +184,6 @@ public abstract class GeoVec3D extends GeoElement
 	}
 
 	/**
-	 * Sets the coord style
-	 * 
-	 * @param mode
-	 *            new coord style
-	 */
-	@Override
-	public void setMode(int mode) {
-		toStringMode = mode;
-	}
-
-	/**
 	 * Changes coord style to POLAR
 	 */
 	@Override
@@ -228,7 +217,7 @@ public abstract class GeoVec3D extends GeoElement
 
 	@Override
 	public void setSpherical() {
-		setMode(Kernel.COORD_SPHERICAL);
+		setToStringMode(Kernel.COORD_SPHERICAL);
 	}
 
 	@Override

@@ -187,7 +187,7 @@ public class GeoPoint extends GeoVec3D implements VectorValue, PathOrPoint,
 	public GeoPoint(Construction c, boolean isHelper, int coordMode) {
 		super(c);
 		if (!isHelper) {
-			setMode(coordMode);
+			setToStringMode(coordMode);
 			setConstructionDefaults();
 			setAnimationType(ANIMATION_INCREASING);
 		}
@@ -346,15 +346,15 @@ public class GeoPoint extends GeoVec3D implements VectorValue, PathOrPoint,
 			} else {
 				setCoords(p.getInhomX(), p.getInhomY(), 1, macroFeedback);
 			}
-			setMode(p.getToStringMode()); // complex etc
+			setToStringMode(p.getToStringMode()); // complex etc
 		} else if (geo.isGeoVector()) {
 			GeoVector v = (GeoVector) geo;
 			setCoords(v.getX(), v.getY(), 1d);
-			setMode(v.getToStringMode()); // complex etc
+			setToStringMode(v.getToStringMode()); // complex etc
 		} else if (geo.isGeoNumeric()) {
 			GeoNumeric v = (GeoNumeric) geo;
 			setCoords(v.getDouble(), 0, 1d);
-			setMode(Kernel.COORD_COMPLEX);
+			setToStringMode(Kernel.COORD_COMPLEX);
 		} else if (geo instanceof GeoList) {
 			// GGB-1981
 			GeoList list = (GeoList) geo;
@@ -1728,7 +1728,7 @@ public class GeoPoint extends GeoVec3D implements VectorValue, PathOrPoint,
 	@Override
 	public GeoVec2D getVector() {
 		GeoVec2D ret = new GeoVec2D(kernel, inhomX, inhomY);
-		ret.setMode(getToStringMode());
+		ret.setToStringMode(getToStringMode());
 		return ret;
 	}
 

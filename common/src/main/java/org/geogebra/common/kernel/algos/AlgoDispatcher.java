@@ -185,7 +185,7 @@ public class AlgoDispatcher {
 	final public GeoVector vector(double x, double y) {
 		GeoVector v = new GeoVector(cons);
 		v.setCoords(x, y, 0.0);
-		v.setMode(Kernel.COORD_CARTESIAN);
+		v.setToStringMode(Kernel.COORD_CARTESIAN);
 		return v;
 	}
 
@@ -218,7 +218,7 @@ public class AlgoDispatcher {
 
 		GeoPoint p = (GeoPoint) algo.getP();
 		if (complex) {
-			p.setMode(Kernel.COORD_COMPLEX);
+			p.setToStringMode(Kernel.COORD_COMPLEX);
 		} else if (!coords2D) {
 			p.setCartesian3D();
 		}
@@ -1360,7 +1360,7 @@ public class AlgoDispatcher {
 				y);
 		GeoPoint p = algo.getP();
 		if (complex) {
-			p.setMode(Kernel.COORD_COMPLEX);
+			p.setToStringMode(Kernel.COORD_COMPLEX);
 		} else if (!coords2D) {
 			p.setCartesian3D();
 			p.update();

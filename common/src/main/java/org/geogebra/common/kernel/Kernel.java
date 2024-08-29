@@ -4292,7 +4292,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	public GeoVec2D getImaginaryUnit() {
 		if (imaginaryUnit == null) {
 			imaginaryUnit = new GeoVec2D(this, 0, 1);
-			imaginaryUnit.setMode(COORD_COMPLEX);
+			imaginaryUnit.setToStringMode(COORD_COMPLEX);
 		}
 
 		return imaginaryUnit;

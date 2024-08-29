@@ -59,7 +59,7 @@ final public class GeoVec2D extends ValidExpression
 	private static final int MAXIT = 100; // Maximum number of iterations
 											// allowed in Ei.
 
-	private int mode; // POLAR or CARTESIAN
+	private int toStringMode; // POLAR or CARTESIAN
 
 	@Weak
 	private Kernel kernel;
@@ -101,14 +101,14 @@ final public class GeoVec2D extends ValidExpression
 		this(v.kernel);
 		x = v.x;
 		y = v.y;
-		mode = v.mode;
+		toStringMode = v.toStringMode;
 	}
 
 	/**
 	 * @return true for imaginary unit
 	 */
 	public boolean isImaginaryUnit() {
-		return mode == Kernel.COORD_COMPLEX && MyDouble.exactEqual(x, 0)
+		return toStringMode == Kernel.COORD_COMPLEX && MyDouble.exactEqual(x, 0)
 				&& MyDouble.exactEqual(y, 1);
 	}
 
@@ -369,7 +369,7 @@ final public class GeoVec2D extends ValidExpression
 		c.y = a.y + b.y;
 		if (a.getToStringMode() == Kernel.COORD_COMPLEX
 				|| b.getToStringMode() == Kernel.COORD_COMPLEX) {
-			c.setMode(Kernel.COORD_COMPLEX);
+			c.setToStringMode(Kernel.COORD_COMPLEX);
 		}
 	}
 
@@ -389,7 +389,7 @@ final public class GeoVec2D extends ValidExpression
 		if (a.getToStringMode() == Kernel.COORD_COMPLEX) {
 			c.x = a.x + b.getDouble();
 			c.y = a.y;
-			c.setMode(Kernel.COORD_COMPLEX);
+			c.setToStringMode(Kernel.COORD_COMPLEX);
 		} else {
 			c.x = a.x + b.getDouble();
 			c.y = a.y + b.getDouble();
@@ -477,7 +477,7 @@ final public class GeoVec2D extends ValidExpression
 		if (a.getToStringMode() == Kernel.COORD_COMPLEX) {
 			c.x = b.getDouble() - a.x;
 			c.y = -a.y;
-			c.setMode(Kernel.COORD_COMPLEX);
+			c.setToStringMode(Kernel.COORD_COMPLEX);
 		} else {
 			c.x = b.getDouble() - a.x;
 			c.y = b.getDouble() - a.y;
@@ -499,7 +499,7 @@ final public class GeoVec2D extends ValidExpression
 		if (a.getToStringMode() == Kernel.COORD_COMPLEX) {
 			c.x = a.x - b.getDouble();
 			c.y = a.y;
-			c.setMode(Kernel.COORD_COMPLEX);
+			c.setToStringMode(Kernel.COORD_COMPLEX);
 		} else {
 			c.x = a.x - b.getDouble();
 			c.y = a.y - b.getDouble();
@@ -521,7 +521,7 @@ final public class GeoVec2D extends ValidExpression
 		c.y = a.y - b.getY();
 		if (a.getToStringMode() == Kernel.COORD_COMPLEX
 				|| b.getToStringMode() == Kernel.COORD_COMPLEX) {
-			c.setMode(Kernel.COORD_COMPLEX);
+			c.setToStringMode(Kernel.COORD_COMPLEX);
 		}
 	}
 
@@ -563,7 +563,7 @@ final public class GeoVec2D extends ValidExpression
 			add.mult((i - 1) / (double) i / i);
 			ret.add(add);
 		}
-		ret.setMode(Kernel.COORD_COMPLEX);
+		ret.setToStringMode(Kernel.COORD_COMPLEX);
 		return ret;
 	}
 
@@ -665,7 +665,7 @@ final public class GeoVec2D extends ValidExpression
 				c.y = out.getImaginary();
 			}
 		}
-		c.setMode(Kernel.COORD_COMPLEX);
+		c.setToStringMode(Kernel.COORD_COMPLEX);
 	}
 
 	/**
@@ -888,7 +888,7 @@ final public class GeoVec2D extends ValidExpression
 		s = Riemann.zeta(s);
 		c.x = s[0]; // real
 		c.y = s[1]; // imaginary
-		c.setMode(Kernel.COORD_COMPLEX);
+		c.setToStringMode(Kernel.COORD_COMPLEX);
 	}
 
 	/**
@@ -1047,14 +1047,14 @@ final public class GeoVec2D extends ValidExpression
 	private static void fromComplex(GeoVec2D c, Complex out) {
 		c.x = out.getReal();
 		c.y = out.getImaginary();
-		c.setMode(Kernel.COORD_COMPLEX);
+		c.setToStringMode(Kernel.COORD_COMPLEX);
 	}
 
 	@Override
 	public String toString(StringTemplate tpl) {
 		if (isImaginaryUnit()) {
 			return tpl.getImaginary();
-		} else if (mode == Kernel.COORD_COMPLEX) {
+		} else if (toStringMode == Kernel.COORD_COMPLEX) {
 			initStringBuilder();
 			sbToString.setLength(0);
 			sbToString.append(tpl.leftBracket());
@@ -1105,7 +1105,7 @@ final public class GeoVec2D extends ValidExpression
 
 	@Override
 	public int getToStringMode() {
-		return mode;
+		return toStringMode;
 	}
 
 	@Override
@@ -1119,8 +1119,8 @@ final public class GeoVec2D extends ValidExpression
 	}
 
 	@Override
-	public void setMode(int mode) {
-		this.mode = mode;
+	public void setToStringMode(int toStringMode) {
+		this.toStringMode = toStringMode;
 	}
 
 	@Override
@@ -1142,13 +1142,13 @@ final public class GeoVec2D extends ValidExpression
 
 	@Override
 	public ValueType getValueType() {
-		return this.mode != Kernel.COORD_COMPLEX ? ValueType.NONCOMPLEX2D
+		return this.toStringMode != Kernel.COORD_COMPLEX ? ValueType.NONCOMPLEX2D
 				: ValueType.COMPLEX;
 	}
 
 	@Override
 	public boolean evaluatesToVectorNotPoint() {
-		return this.mode != Kernel.COORD_COMPLEX;
+		return this.toStringMode != Kernel.COORD_COMPLEX;
 	}
 
 	@Override
