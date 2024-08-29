@@ -81,14 +81,9 @@ public class ImplicitCurvePlotter {
 		split();
 		data.clear();
 		List<CurvePlotContext> list = new ArrayList<>();
-		subContexts.forEach(c -> process(c, list));
+		subContexts.forEach(c -> algo.compute(c, list));
 		subContexts.clear();
-		subContexts.addAll(list);
-
-	}
-
-	private void process(CurvePlotContext context, List<CurvePlotContext> list) {
-		algo.compute(context, list);
+		subContexts.addAll(filterByCell(list));
 	}
 
 

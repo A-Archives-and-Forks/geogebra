@@ -15,17 +15,15 @@ public class ImplicitCurveController implements CoordSystemAnimationListener {
 	private ImplicitCurvePlotter plotter;
 	private final EuclidianController ec;
 	private final GeoElement geo;
-	private final EuclidianView view;
 	private boolean updateEnabled=true;
 
 	public ImplicitCurveController(EuclidianView view, GeoElement geo) {
-		this.view = view;
 		this.geo = geo;
 		ec = view.getEuclidianController();
 		ec.addZoomerAnimationListener(this, geo);
 		plotter = new ImplicitCurvePlotter(geo, new EuclidianViewBoundsImp(view),
 				new GeneralPathClippedForCurvePlotter(view));
-		updatePlotter();
+		//updatePlotter();
 	}
 
 	private void updatePlotter() {
@@ -43,15 +41,22 @@ public class ImplicitCurveController implements CoordSystemAnimationListener {
 	@Override
 	public void onZoomStop(CoordSystemInfo info) {
 		updateEnabled = true;
+		logUpdateEnabled();
 	}
 
 	@Override
 	public void onMove(CoordSystemInfo info) {
-		updateEnabled = !geo.isAnimating();
+		updateEnabled = false;
+		logUpdateEnabled();
+	}
+
+	private void logUpdateEnabled() {
+//		Log.debug("Update " + (updateEnabled ? "enabled" : "disabled"));
 	}
 
 	@Override
 	public void onMoveStop() {
 		updateEnabled = true;
+		logUpdateEnabled();
 	}
 }
