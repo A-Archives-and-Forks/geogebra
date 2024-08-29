@@ -27,7 +27,7 @@ import org.gwtproject.user.client.ui.FlowPanel;
 
 import elemental2.dom.DomGlobal;
 
-public class NotesTopbar extends FlowPanel implements SetLabels, CoordSystemListener,
+public class NotesTopBar extends FlowPanel implements SetLabels, CoordSystemListener,
 		ModeChangeListener {
 	private final AppletParameters appletParams;
 	private final TopbarController controller;
@@ -42,7 +42,7 @@ public class NotesTopbar extends FlowPanel implements SetLabels, CoordSystemList
 	 * constructor
 	 * @param appW - application
 	 */
-	public NotesTopbar(AppW appW) {
+	public NotesTopBar(AppW appW) {
 		this.appletParams = appW.getAppletParameters();
 		controller = new TopbarController(appW);
 		if (appW.getActiveEuclidianView() != null) {
@@ -50,6 +50,13 @@ public class NotesTopbar extends FlowPanel implements SetLabels, CoordSystemList
 		}
 		addStyleName("topbar");
 		buildGui();
+	}
+
+	/**
+	 * @return whether the topbar is attached
+	 */
+	public boolean wasAttached() {
+		return getElement().hasChildNodes();
 	}
 
 	private void buildGui() {
