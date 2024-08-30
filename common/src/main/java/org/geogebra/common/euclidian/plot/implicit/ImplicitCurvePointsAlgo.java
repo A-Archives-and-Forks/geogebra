@@ -20,5 +20,5 @@ public interface ImplicitCurvePointsAlgo {
 //			findSolutionsInFaces(c, list);
 //		}
 //	}
-	void compute(CurvePlotContext context, List<CurvePlotContext> list);
+	void compute(BernsteinPlotCell context, List<BernsteinPlotCell> list);
 }

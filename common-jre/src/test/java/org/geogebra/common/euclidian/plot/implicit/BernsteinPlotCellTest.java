@@ -8,18 +8,18 @@ import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.util.debug.Log;
 import org.junit.Test;
 
-public class CurvePlotContextTest extends BaseUnitTest {
-	private CurvePlotContext context;
+public class BernsteinPlotCellTest extends BaseUnitTest {
+	private BernsteinPlotCell context;
 	private BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
 
 	@Test
 	public void testSpitContext() {
 		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), defaultLimits());
-		context = new CurvePlotContext(getDefaultBoundingBox(),
+		context = new BernsteinPlotCell(getDefaultBoundingBox(),
 				bernstein);
-		CurvePlotContext[] contexts = context.split();
+		BernsteinPlotCell[] contexts = context.split();
 
-		for (CurvePlotContext ctx: contexts)  {
+		for (BernsteinPlotCell ctx: contexts)  {
 			//		checkEvalOnContext(bernstein, ctx);
 			Log.debug(ctx);
 		}
@@ -29,7 +29,7 @@ public class CurvePlotContextTest extends BaseUnitTest {
 		return new BoundsRectangle(0, 1, 0, 1);
 	}
 
-	private void checkEvalOnContext(BernsteinPolynomial bernstein, CurvePlotContext context) {
+	private void checkEvalOnContext(BernsteinPolynomial bernstein, BernsteinPlotCell context) {
 		double offsetX = context.boundingBox.getX1();
 		double offsetY = context.boundingBox.getY1();
 		assertSameValue(bernstein, offsetX + 0, offsetY + 0, context, 0, 0);
@@ -42,19 +42,19 @@ public class CurvePlotContextTest extends BaseUnitTest {
 	}
 
 	private static void assertSameValue(BernsteinPolynomial bernstein, double x0, double y0,
-			CurvePlotContext context, double x, double y) {
+			BernsteinPlotCell context, double x, double y) {
 		assertEquals(bernstein.evaluate(x0, y0), context.polynomial.evaluate(x, y),
 				0);
 	}
 
-	private CurvePlotBoundingBox getDefaultBoundingBox() {
-		return new CurvePlotBoundingBox(0, 0, 1, 1);
+	private BernsteinBoundingBox getDefaultBoundingBox() {
+		return new BernsteinBoundingBox(0, 0, 1, 1);
 	}
 
 	@Test
 	public void testEdges() {
 		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), defaultLimits());
-		context = new CurvePlotContext(getDefaultBoundingBox(),
+		context = new BernsteinPlotCell(getDefaultBoundingBox(),
 				bernstein);
 	}
 }

@@ -26,8 +26,8 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
 	private ImplicitCurveController controller;
-	private GeoImplicit implicitCurve;
-	private boolean isBernsteinBasedPlotter;
+	private final GeoImplicit implicitCurve;
+	private final boolean isBernsteinBasedPlotter;
 
 	// private int fillSign; //0=>no filling, only curve -1=>fill the negativ
 	// part, 1=>fill positiv part

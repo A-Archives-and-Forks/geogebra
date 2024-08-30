@@ -9,26 +9,26 @@ import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 
 final class ImplicitCurvePlotterVisualDebug {
 	private final EuclidianViewBounds bounds;
-	private final List<CurvePlotContext> subContexts;
+	private final List<BernsteinPlotCell> subContexts;
 
 	ImplicitCurvePlotterVisualDebug(EuclidianViewBounds bounds,
-			List<CurvePlotContext> subContexts) {
+			List<BernsteinPlotCell> subContexts) {
 		this.bounds = bounds;
 		this.subContexts = subContexts;
 	}
 
 
-	void draw(GGraphics2D g2, List<BoxEdge> output) {
-		drawOutput(g2, output);
-//		for (CurvePlotContext ctx : subContexts) {
-//			drawDebug(g2, ctx);
-//		}
+	void draw(GGraphics2D g2) {
+	//	drawOutput(g2, output);
+		for (BernsteinPlotCell ctx : subContexts) {
+			drawDebug(g2, ctx);
+		}
 
 	}
 
-	private void drawDebug(GGraphics2D g2, CurvePlotContext ctx) {
+	private void drawDebug(GGraphics2D g2, BernsteinPlotCell cell) {
 		GColor color;
-		switch (ctx.getContextCass()) {
+		switch (cell.getKind()) {
 		case CELL0:
 			color = GColor.GREEN;
 			break;
@@ -43,13 +43,13 @@ final class ImplicitCurvePlotterVisualDebug {
 			color = GColor.BLACK;
 		}
 
-		int x = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getX1()));
-		int y = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getY1()));
-		int width = (int) (bounds.toScreenCoordXd(ctx.boundingBox.getX2()) - x);
-		int height = (int) (bounds.toScreenCoordYd(ctx.boundingBox.getY2()) - y);
+		int x = (int) (bounds.toScreenCoordXd(cell.boundingBox.getX1()));
+		int y = (int) (bounds.toScreenCoordYd(cell.boundingBox.getY1()));
+		int width = (int) (bounds.toScreenCoordXd(cell.boundingBox.getX2()) - x);
+		int height = (int) (bounds.toScreenCoordYd(cell.boundingBox.getY2()) - y);
 		g2.setColor(color);
 
-		g2.fillRect(x, y, width, height);
+//		g2.fillRect(x, y, width, height);
 		g2.setColor(GColor.BLACK.deriveWithAlpha(25));
 		g2.drawRect(x, y, width, height);
 	}

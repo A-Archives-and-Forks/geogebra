@@ -12,18 +12,14 @@ import org.geogebra.common.kernel.geos.GeoElement;
 
 public class ImplicitCurveController implements CoordSystemAnimationListener {
 
-	private ImplicitCurvePlotter plotter;
-	private final EuclidianController ec;
-	private final GeoElement geo;
+	private final ImplicitCurvePlotter plotter;
 	private boolean updateEnabled=true;
 
 	public ImplicitCurveController(EuclidianView view, GeoElement geo) {
-		this.geo = geo;
-		ec = view.getEuclidianController();
+		EuclidianController ec = view.getEuclidianController();
 		ec.addZoomerAnimationListener(this, geo);
 		plotter = new ImplicitCurvePlotter(geo, new EuclidianViewBoundsImp(view),
 				new GeneralPathClippedForCurvePlotter(view));
-		//updatePlotter();
 	}
 
 	private void updatePlotter() {

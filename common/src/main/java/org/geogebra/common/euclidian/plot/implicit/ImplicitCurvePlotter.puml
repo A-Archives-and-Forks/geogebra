@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/class-diagram
+skinparam genericDisplay old
+interface Splittable<T> {
++ T[] split()
+}
+
+note bottom of Splittable : split() is a key method of the algo
+
+interface BernsteinPolynomial {
++ BernsteinPolynomial[] split()
+}
+
+class BernsteinPlotCell {
+	- polynomial : BernsteinPolynomial
+	- dx : BernsteinPolynomial
+	- dy : BernsteinPolynomial
+	- boundingBox : BernsteinBoundingBox
+	+ BernsteinPlotCell[] split()
+	+ boolean mightHaveASolution()
+	+ void markCellUnused()
+	- classify()
+}
+
+class BernsteinBoundingBox {
+	+ BernsteinBoundingBox split()
+	+ getX1() : double
+	+ getY1() : double
+	+ getX2() : double
+	+ getY2() : double
+	+ getWidth() : double
+	+ getHeight() : double
+}
+
+class CellEdge {
++ CellEdge[] split()
+}
+
+enum EdgeKind {
+LEFT,
+TOP,
+RIGHT,
+BOTTOM
+}
+
+BernsteinPlotCell <|-- Splittable
+BernsteinPlotCell *-- CellEdge : 4
+BernsteinPlotCell *-- BernsteinBoundingBox
+BernsteinPlotCell *-- BernsteinPolynomial
+CellEdge *-- EdgeKind
+
+BernsteinPolynomial <|-- Splittable
+CellEdge <|-- Splittable
+BernsteinBoundingBox <|-- Splittable
+@enduml
