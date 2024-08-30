@@ -180,20 +180,6 @@ public class GeoElementPropertiesFactory {
 	}
 
 	/**
-	 * Creates Filling style properties for a list of GeoElements.
-	 * @param localization localization
-	 * @param elements input elements
-	 * @return the list of properties for the GeoElement(s)
-	 */
-	public static PropertiesArray createFillingStyleProperties(
-			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createFillingStyleProperty(localization, elements));
-		return createPropertiesArray(localization, properties, elements);
-	}
-
-
-	/**
 	 * Returns an Integer RangeProperty controlling the point size or null if not applicable.
 	 * @param localization localization
 	 * @param elements elements

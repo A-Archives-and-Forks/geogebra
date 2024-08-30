@@ -18,9 +18,9 @@ public class FillingStyleProperty extends AbstractEnumeratedProperty<FillType>
 			implements IconsEnumeratedProperty<FillType> {
 
 	private static final PropertyResource[] icons = {
-			PropertyResource.ICON_FILLING_HATCHED, PropertyResource.ICON_FILLING_DOTTED,
-			PropertyResource.ICON_FILLING_CROSSHATCHED, PropertyResource.ICON_FILLING_HONEYCOMB,
-			PropertyResource.ICON_NO_FILLING
+			PropertyResource.ICON_NO_FILLING, PropertyResource.ICON_FILLING_HATCHED,
+			PropertyResource.ICON_FILLING_DOTTED, PropertyResource.ICON_FILLING_CROSSHATCHED,
+			PropertyResource.ICON_FILLING_HONEYCOMB,
 	};
 
 	private final GeoElementDelegate delegate;
@@ -30,11 +30,11 @@ public class FillingStyleProperty extends AbstractEnumeratedProperty<FillType>
 			throws NotApplicablePropertyException {
 		super(localization, "Filling");
 		delegate = new FillingStylePropertyDelegate(element);
-		setValues(FillType.HATCH,
+		setValues(FillType.STANDARD,
+				FillType.HATCH,
 				FillType.DOTTED,
 				FillType.CROSSHATCHED,
-				FillType.HONEYCOMB,
-				FillType.STANDARD);
+				FillType.HONEYCOMB);
 	}
 
 	@Override
