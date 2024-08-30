@@ -63,7 +63,11 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		PropertiesArray lineStyleProperty = GeoElementPropertiesFactory
 				.createNotesLineStyleProperties(getApp().getLocalization(), activeGeoList);
-		addLineStyleButton(lineStyleProperty, activeGeoList.get(0));
+		addPropertyPopupButton(lineStyleProperty, activeGeoList.get(0));
+
+		PropertiesArray fillingStyleProperty = GeoElementPropertiesFactory
+				.createFillingStyleProperties(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(fillingStyleProperty, activeGeoList.get(0));
 
 		addDivider();
 
@@ -71,7 +75,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addLineStyleButton(PropertiesArray properties, GeoElement geo) {
+	private void addPropertyPopupButton(PropertiesArray properties, GeoElement geo) {
 		if (properties.getProperties().length == 0) {
 			return;
 		}
