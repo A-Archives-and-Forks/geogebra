@@ -48,7 +48,7 @@ public class IconButtonWithProperty extends IconButton {
 			} else {
 				showPropertyPopup();
 			}
-			AriaHelper.setAriaExpanded(this, true);
+			AriaHelper.setAriaExpanded(this, propertyPopup.isShowing());
 		});
 
 		propertyPopup.addCloseHandler((event) -> {
