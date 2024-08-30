@@ -16,11 +16,27 @@ public class ThicknessProperty extends AbstractRangeProperty<Integer> {
 
 	private final GeoElementDelegate delegate;
 
-	/***/
+	/**
+	 * Constructor
+	 * @param localization - localization
+	 * @param element - geo
+	 * @throws NotApplicablePropertyException - exception
+	 */
 	public ThicknessProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
 		super(localization, "Thickness", null, 9, 1);
 		delegate = new ThicknessPropertyDelegate(element);
+	}
+
+	/**
+	 * Constructor
+	 * @param localization - localization
+	 * @param max - maximum of range
+	 * @param delegate - delegate
+	 */
+	public ThicknessProperty(Localization localization, int max, GeoElementDelegate delegate) {
+		super(localization, "Thickness", null, max, 1);
+		this.delegate = delegate;
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
 import org.geogebra.common.properties.impl.objects.MinProperty;
 import org.geogebra.common.properties.impl.objects.NameProperty;
+import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
 import org.geogebra.common.properties.impl.objects.PointStyleProperty;
@@ -100,6 +101,20 @@ public class GeoElementPropertiesFactory {
 		List<Property> properties = new ArrayList<>();
 		addPropertyIfNotNull(properties, createLineStyleProperty(localization, elements));
 		addPropertyIfNotNull(properties, createThicknessProperty(localization, elements));
+		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
+	 * Creates Lines style properties for a list of GeoElements.
+	 * @param localization localization
+	 * @param elements input elements
+	 * @return the list of properties for the GeoElement(s)
+	 */
+	public static PropertiesArray createNotesLineStyleProperties(
+			Localization localization, List<GeoElement> elements) {
+		List<Property> properties = new ArrayList<>();
+		addPropertyIfNotNull(properties, createLineStyleProperty(localization, elements));
+		addPropertyIfNotNull(properties, createNotesThicknessProperty(localization, elements));
 		return createPropertiesArray(localization, properties, elements);
 	}
 
@@ -198,6 +213,27 @@ public class GeoElementPropertiesFactory {
 			}
 			return new RangePropertyCollection<>(
 					thicknessProperties.toArray(new ThicknessProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an Integer RangeProperty controlling the line thickness in notes,
+	 * null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static RangePropertyCollection<?, ?> createNotesThicknessProperty(Localization
+			localization, List<GeoElement> elements) {
+		try {
+			List<NotesThicknessProperty> thicknessProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				thicknessProperties.add(new NotesThicknessProperty(localization, element));
+			}
+			return new RangePropertyCollection<>(
+					thicknessProperties.toArray(new NotesThicknessProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
