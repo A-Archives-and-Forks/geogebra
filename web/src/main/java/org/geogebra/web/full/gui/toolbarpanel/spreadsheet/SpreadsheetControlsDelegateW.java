@@ -134,12 +134,7 @@ public class SpreadsheetControlsDelegateW implements SpreadsheetControlsDelegate
 				String itemText = loc.getMenu(item.getLocalizationKey());
 				AriaMenuItem menuItem;
 
-				if (image != null) {
-					menuItem = new AriaMenuItem(MainMenu.getMenuBarHtml(image, itemText),
-							true, item::performAction);
-				} else {
-					menuItem = new AriaMenuItem(itemText, true, item::performAction);
-				}
+				menuItem = MainMenu.getMenuBarItem(image, itemText, item::performAction);
 				contextMenu.addItem(menuItem);
 			}
 		}
