@@ -3,13 +3,11 @@ package org.geogebra.web.full.gui.toolbar.mow.toolbox.components;
 import java.util.List;
 
 import org.geogebra.common.gui.SetLabels;
-import org.geogebra.web.full.css.ToolbarSvgResources;
 import org.geogebra.web.full.gui.app.GGWToolBar;
 import org.geogebra.web.full.gui.menubar.MainMenu;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
-import org.geogebra.web.resources.SVGResource;
 import org.geogebra.web.resources.SVGResourcePrototype;
 
 public class CategoryMenuPopup extends GPopupMenuW implements SetLabels {
@@ -36,8 +34,6 @@ public class CategoryMenuPopup extends GPopupMenuW implements SetLabels {
 	}
 
 	private void addItem(int mode) {
-		SVGResource image = GGWToolBar.getImageURLNotMacro(
-				ToolbarSvgResources.INSTANCE, mode, getApp());
 		String text = getTextForMode(mode);
 
 		AriaMenuItem item = MainMenu.getMenuBarItem(
