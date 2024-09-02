@@ -33,6 +33,10 @@ public class IconButton extends StandardButton implements SetLabels {
 		this.appW = appW;
 		selectionColor = getSelectionColor(appW);
 		AriaHelper.setDataTitle(this, appW.getToolName(mode));
+		GGWToolBar.getImageResource(mode, appW, image -> {
+			this.image = (SVGResource) image;
+			setActive(getElement().hasClassName("active"));
+		});
 		addStyleName("iconButton");
 		GGWToolBar.getImageResource(mode, appW, image -> {
 			this.image = (SVGResource) image;

@@ -10,6 +10,7 @@ import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
+import org.geogebra.web.resources.SVGResourcePrototype;
 
 public class CategoryMenuPopup extends GPopupMenuW implements SetLabels {
 	private final List<Integer> tools;
@@ -39,9 +40,18 @@ public class CategoryMenuPopup extends GPopupMenuW implements SetLabels {
 				ToolbarSvgResources.INSTANCE, mode, getApp());
 		String text = getTextForMode(mode);
 
-		AriaMenuItem item = new AriaMenuItem(MainMenu.getMenuBarHtmlClassic(
-				image.getSafeUri().asString(), text), true, () -> getApp().setMode(mode));
+		AriaMenuItem item = MainMenu.getMenuBarItem(
+				SVGResourcePrototype.EMPTY, text, () -> getApp().setMode(mode));
+		getImageForMode(mode, item);
 		addItem(item);
+	}
+
+	/**
+	 * @param mode - tool mode
+	 * @param item popup item
+	 */
+	public void getImageForMode(int mode, AriaMenuItem item) {
+		GGWToolBar.getImageResource(mode, getApp(), item);
 	}
 
 	/**
