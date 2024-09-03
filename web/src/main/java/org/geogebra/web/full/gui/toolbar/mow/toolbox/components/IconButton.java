@@ -238,7 +238,9 @@ public class IconButton extends StandardButton implements SetLabels {
 
 	@Override
 	public void setIcon(ResourcePrototype icon) {
-		super.setIcon(icon);
-		image = (SVGResource) icon;
+		SVGResource svgResource = isActive()
+				? ((SVGResource) icon).withFill(selectionColor) : (SVGResource) icon;
+		super.setIcon(svgResource);
+		image = svgResource;
 	}
 }
