@@ -38,7 +38,6 @@ final class ImplicitCurvePlotterVisualDebug {
 		case CELL2:
 			color = GColor.GRAY;
 			break;
-		case NONE:
 		default:
 			color = GColor.BLACK;
 		}

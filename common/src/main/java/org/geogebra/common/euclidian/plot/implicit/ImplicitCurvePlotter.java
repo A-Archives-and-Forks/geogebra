@@ -13,14 +13,13 @@ import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.util.debug.Log;
 
 public class ImplicitCurvePlotter {
 	public static final int MAX_SPLIT_RECURSION = 1;
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
 	public static final int SMALLEST_BOX_IN_PIXELS = 10;
 	public static final double SMALLEST_EDGE_IN_PIXELS = 2;
-	private final List<BernsteinPlotCell> subContexts = new ArrayList<>();
+	private final List<BernsteinPlotCell> subCells = new ArrayList<>();
 	private final GeoElement curve;
 	private final EuclidianViewBounds bounds;
 	private final GeneralPathClippedForCurvePlotter gp;
@@ -38,18 +37,18 @@ public class ImplicitCurvePlotter {
 		converter = new BernsteinPolynomialConverter();
 		initContext();
 		if (VISUAL_DEBUG_ENABLED) {
-			visualDebug = new ImplicitCurvePlotterVisualDebug(bounds, subContexts);
+			visualDebug = new ImplicitCurvePlotterVisualDebug(bounds, subCells);
 		}
 	}
 
 	public void initContext() {
-		Log.debug("initContext()");
 		BoundsRectangle limits = new BoundsRectangle(bounds);
 		BernsteinPolynomial polynomial = converter.from(curve, limits);
 		BernsteinBoundingBox box = new BernsteinBoundingBox(limits);
-		BernsteinPlotCell rootContext = new BernsteinPlotCell(box, polynomial);
-		subContexts.clear();
-		subContexts.add(rootContext);
+		BernsteinPlotCell rootCell = new BernsteinPlotCell(box, polynomial);
+		subCells.clear();
+		subCells.add(rootCell);
+		grid.resize(bounds);
 	}
 
 	public void draw(GGraphics2D g2) {
@@ -84,21 +83,20 @@ public class ImplicitCurvePlotter {
 	public void update() {
 		split();
 		List<BernsteinPlotCell> list = new ArrayList<>();
-		grid.resize(bounds);
-		subContexts.forEach(c -> algo.compute(c, list));
-		subContexts.clear();
-		subContexts.addAll(filterByCell(list));
+		subCells.forEach(c -> algo.compute(c, list));
+		subCells.clear();
+		subCells.addAll(filterByCell(list));
 //		subContexts.addAll(list);
 	}
 
 
 	private void split() {
 		List<BernsteinPlotCell> list = new ArrayList<>();
-		for (BernsteinPlotCell ctx: subContexts) {
+		for (BernsteinPlotCell ctx: subCells) {
 			Collections.addAll(list, ctx.split());
 		}
-		subContexts.clear();
-		subContexts.addAll(filterByCell(list));
+		subCells.clear();
+		subCells.addAll(filterByCell(list));
 	}
 
 	private static List<BernsteinPlotCell> filterByCell(List<BernsteinPlotCell> list) {
@@ -107,6 +105,6 @@ public class ImplicitCurvePlotter {
 	}
 
 	public int subContentCount() {
-		return subContexts.size();
+		return subCells.size();
 	}
 }
