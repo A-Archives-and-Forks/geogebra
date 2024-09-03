@@ -76,7 +76,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void addPropertyPopupButton(GeoElement geo, Property... properties) {
-		if (properties.length == 0) {
+		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
 		Property firstProperty = properties[0];
