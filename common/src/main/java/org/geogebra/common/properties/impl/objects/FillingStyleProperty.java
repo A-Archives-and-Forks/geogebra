@@ -28,7 +28,7 @@ public class FillingStyleProperty extends AbstractEnumeratedProperty<FillType>
 	/***/
 	public FillingStyleProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "Filling");
+		super(localization, "stylebar.Filling");
 		delegate = new FillingStylePropertyDelegate(element);
 		setValues(FillType.STANDARD,
 				FillType.HATCH,

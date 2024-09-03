@@ -26,8 +26,9 @@ public class IconButtonWithProperty extends IconButton {
 	 * Constructor
 	 * @param appW - application
 	 * @param icon - svg resource of button
-	 * @param properties - array of applicable properties
 	 * @param ariaLabel - aria label
+	 * @param geo - geo element
+	 * @param properties - array of applicable properties
 	 */
 	public IconButtonWithProperty(AppW appW, SVGResource icon, String ariaLabel, GeoElement geo,
 			Property... properties) {
@@ -95,6 +96,7 @@ public class IconButtonWithProperty extends IconButton {
 	}
 
 	private void showPropertyPopup() {
+		appW.closePopups();
 		propertyPopup.show();
 		propertyPopup.setPopupPosition((int) (getAbsoluteLeft() - appW.getAbsLeft()),
 				(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop())
