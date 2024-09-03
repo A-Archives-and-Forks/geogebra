@@ -23,6 +23,7 @@ import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
 import org.geogebra.common.properties.impl.objects.EquationFormProperty;
 import org.geogebra.common.properties.impl.objects.FillingStyleProperty;
+import org.geogebra.common.properties.impl.objects.HorizontalAlignmentProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
@@ -275,6 +276,27 @@ public class GeoElementPropertiesFactory {
 			}
 			return new IconsEnumeratedPropertyCollection<>(
 					fillingStyleProperties.toArray(new FillingStyleProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the horizontal alignment or null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedPropertyCollection createHorizontalAlignmentProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<HorizontalAlignmentProperty> horizontalAlignmentProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				horizontalAlignmentProperties.add(new HorizontalAlignmentProperty(localization,
+						element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					horizontalAlignmentProperties.toArray(new HorizontalAlignmentProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
