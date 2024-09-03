@@ -51,7 +51,7 @@ public class FillingStyleProperty extends AbstractEnumeratedProperty<FillType>
 
 	@Override
 	public boolean isEnabled() {
-			return delegate.isEnabled();
+		return delegate.isEnabled();
 	}
 
 	@Override
