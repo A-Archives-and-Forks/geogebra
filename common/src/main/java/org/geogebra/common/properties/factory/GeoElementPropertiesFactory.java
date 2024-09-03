@@ -282,7 +282,8 @@ public class GeoElementPropertiesFactory {
 	}
 
 	/**
-	 * Returns an IconsEnumeratedProperty controlling the horizontal alignment or null if not applicable.
+	 * Returns an IconsEnumeratedProperty controlling the horizontal alignment or null
+	 * if not applicable.
 	 * @param localization localization
 	 * @param elements elements
 	 * @return property or null

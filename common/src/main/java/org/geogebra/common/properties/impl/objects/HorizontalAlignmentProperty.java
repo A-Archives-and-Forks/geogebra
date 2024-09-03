@@ -36,7 +36,6 @@ public class HorizontalAlignmentProperty extends AbstractEnumeratedProperty<Hori
 				HorizontalAlignment.RIGHT);
 	}
 
-
 	@Override
 	public PropertyResource[] getValueIcons() {
 		return icons;
