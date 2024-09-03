@@ -22,6 +22,7 @@ import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
 import org.geogebra.common.properties.impl.objects.EquationFormProperty;
+import org.geogebra.common.properties.impl.objects.FillingStyleProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
@@ -254,6 +255,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new IconsEnumeratedPropertyCollection<>(
 					lineStyleProperties.toArray(new LineStyleProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the filling type or null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedPropertyCollection createFillingStyleProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<FillingStyleProperty> fillingStyleProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				fillingStyleProperties.add(new FillingStyleProperty(localization, element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					fillingStyleProperties.toArray(new FillingStyleProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

@@ -24,6 +24,16 @@ public class PropertiesIconAdapter {
 			return res.line_dotted();
 		case ICON_LINE_TYPE_DASHED_SHORT:
 			return res.line_dashed_short();
+		case ICON_FILLING_HATCHED:
+			return res.pattern_hatching();
+		case ICON_FILLING_DOTTED:
+			return res.pattern_dots();
+		case ICON_FILLING_CROSSHATCHED:
+			return res.pattern_cross_hatching();
+		case ICON_FILLING_HONEYCOMB:
+			return res.pattern_honeycomb();
+		case ICON_NO_FILLING:
+			return res.no_pattern();
 		}
 		return res.stylebar_empty();
 	}

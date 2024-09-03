@@ -300,7 +300,10 @@
 		.buttonList {
 			display: flex;
 			gap: 8px;
-			margin-bottom: 16px;
+		}
+
+		.sliderComponent {
+			margin-top: 16px;
 		}
 	}
 }

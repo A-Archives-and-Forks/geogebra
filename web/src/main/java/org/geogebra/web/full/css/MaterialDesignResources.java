@@ -265,6 +265,9 @@ public interface MaterialDesignResources extends ClientBundle, ResourceIconProvi
 	@Source("org/geogebra/common/icons/svg/web/matDesignIcons/dynStylebar/filling_honeycomb.svg")
 	SVGResource pattern_honeycomb();
 
+	@Source("org/geogebra/common/icons/svg/web/matDesignIcons/dynStylebar/no_filling.svg")
+	SVGResource no_pattern();
+
 	// plus menu icon resources
 
 	@Source("org/geogebra/common/icons/svg/web/matDesignIcons/av/wrong_input.svg")

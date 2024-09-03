@@ -6,7 +6,6 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.RangeProperty;
-import org.geogebra.common.properties.factory.PropertiesArray;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
@@ -27,17 +26,18 @@ public class IconButtonWithProperty extends IconButton {
 	 * Constructor
 	 * @param appW - application
 	 * @param icon - svg resource of button
-	 * @param properties - array of applicable properties
 	 * @param ariaLabel - aria label
+	 * @param geo - geo element
+	 * @param properties - array of applicable properties
 	 */
-	public IconButtonWithProperty(AppW appW, SVGResource icon, PropertiesArray properties,
-			String ariaLabel, GeoElement geo) {
+	public IconButtonWithProperty(AppW appW, SVGResource icon, String ariaLabel, GeoElement geo,
+			Property... properties) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		widgetAdapter = new PropertyWidgetAdapter(appW);
 		AriaHelper.setAriaHasPopup(this);
 
-		buildGUI(properties, geo);
+		buildGUI(geo, properties);
 		addHandlers();
 	}
 
@@ -57,29 +57,35 @@ public class IconButtonWithProperty extends IconButton {
 		});
 	}
 
-	private void buildGUI(PropertiesArray properties, GeoElement geo) {
+	private void buildGUI(GeoElement geo, Property... properties) {
 		initPropertyPopup();
 		FlowPanel propertyPanel = new FlowPanel();
 
-		for (Property property : properties.getProperties()) {
-			if (property instanceof IconsEnumeratedProperty) {
-				FlowPanel enumeratedPropertyButtonPanel = widgetAdapter.getIconListPanel(
-						(IconsEnumeratedProperty<?>) property, (index) -> {
-							lineThicknessSlider.setLineType(index);
-							setIcon(PropertiesIconAdapter.getIcon(((IconsEnumeratedProperty<?>)
-									property).getValueIcons()[index]));
-						});
-				propertyPanel.add(enumeratedPropertyButtonPanel);
-			}
-
-			if (property instanceof RangeProperty) {
-				lineThicknessSlider = widgetAdapter.getSliderWidget(
-						(RangePropertyCollection<?, ?>) property, geo, "Thickness");
-				propertyPanel.add(lineThicknessSlider);
-			}
+		for (Property property : properties) {
+			processProperty(property, propertyPanel, geo);
 		}
 
 		propertyPopup.add(propertyPanel);
+	}
+
+	private void processProperty(Property property, FlowPanel parent, GeoElement geo) {
+		if (property instanceof IconsEnumeratedProperty) {
+			FlowPanel enumeratedPropertyButtonPanel = widgetAdapter.getIconListPanel(
+					(IconsEnumeratedProperty<?>) property, (index) -> {
+						if (lineThicknessSlider != null) {
+							lineThicknessSlider.setLineType(index);
+						}
+						setIcon(PropertiesIconAdapter.getIcon(((IconsEnumeratedProperty<?>)
+								property).getValueIcons()[index]));
+					});
+			parent.add(enumeratedPropertyButtonPanel);
+		}
+
+		if (property instanceof RangeProperty) {
+			lineThicknessSlider = widgetAdapter.getSliderWidget(
+					(RangePropertyCollection<?, ?>) property, geo, "Thickness");
+			parent.add(lineThicknessSlider);
+		}
 	}
 
 	private void initPropertyPopup() {
@@ -90,6 +96,7 @@ public class IconButtonWithProperty extends IconButton {
 	}
 
 	private void showPropertyPopup() {
+		appW.closePopups();
 		propertyPopup.show();
 		propertyPopup.setPopupPosition((int) (getAbsoluteLeft() - appW.getAbsLeft()),
 				(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop())
