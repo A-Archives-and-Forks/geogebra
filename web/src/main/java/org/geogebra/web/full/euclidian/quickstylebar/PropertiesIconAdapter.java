@@ -34,6 +34,12 @@ public class PropertiesIconAdapter {
 			return res.pattern_honeycomb();
 		case ICON_NO_FILLING:
 			return res.no_pattern();
+		case ICON_ALIGNMENT_LEFT:
+			return res.horizontal_align_left();
+		case ICON_ALIGNMENT_CENTER:
+			return res.horizontal_align_center();
+		case ICON_ALIGNMENT_RIGHT:
+			return res.horizontal_align_right();
 		}
 		return res.stylebar_empty();
 	}
