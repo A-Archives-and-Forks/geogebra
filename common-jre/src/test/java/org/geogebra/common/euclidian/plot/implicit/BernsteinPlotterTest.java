@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class ImplicitCurvePlotterTest extends BaseUnitTest {
-	private ImplicitCurvePlotter plotter;
+public class BernsteinPlotterTest extends BaseUnitTest {
+	private BernsteinPlotter plotter;
 	private EuclidianView view;
 	private EuclidianViewBoundsImp bounds;
 
@@ -26,10 +26,10 @@ public class ImplicitCurvePlotterTest extends BaseUnitTest {
 	@Test
 	public void testUpdate() {
 		GeoElement curve = add("");
-		plotter = new ImplicitCurvePlotter(curve, bounds,
+		plotter = new BernsteinPlotter(curve, bounds,
 				new GeneralPathClippedForCurvePlotter(view));
 		plotter.update();
-		assertEquals(1024, plotter.subContentCount());
+		assertEquals(1024, plotter.plotCellCount());
 	}
 
 }

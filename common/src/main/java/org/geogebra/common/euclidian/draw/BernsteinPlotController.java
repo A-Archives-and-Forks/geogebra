@@ -7,23 +7,23 @@ import org.geogebra.common.euclidian.EuclidianController;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.euclidian.EuclidianViewBoundsImp;
 import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
-import org.geogebra.common.euclidian.plot.implicit.ImplicitCurvePlotter;
+import org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter;
 import org.geogebra.common.kernel.geos.GeoElement;
 
-public class ImplicitCurveController implements CoordSystemAnimationListener {
+public class BernsteinPlotController implements CoordSystemAnimationListener {
 
-	private final ImplicitCurvePlotter plotter;
+	private final BernsteinPlotter plotter;
 	private boolean updateEnabled=true;
 
-	public ImplicitCurveController(EuclidianView view, GeoElement geo) {
+	public BernsteinPlotController(EuclidianView view, GeoElement geo) {
 		EuclidianController ec = view.getEuclidianController();
 		ec.addZoomerAnimationListener(this, geo);
-		plotter = new ImplicitCurvePlotter(geo, new EuclidianViewBoundsImp(view),
+		plotter = new BernsteinPlotter(geo, new EuclidianViewBoundsImp(view),
 				new GeneralPathClippedForCurvePlotter(view));
 	}
 
 	private void updatePlotter() {
-		plotter.initContext();
+		plotter.updateRootCell();
 		plotter.update();
 	}
 

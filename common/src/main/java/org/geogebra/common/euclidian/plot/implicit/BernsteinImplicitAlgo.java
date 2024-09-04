@@ -1,28 +1,27 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import static org.geogebra.common.euclidian.plot.implicit.ImplicitCurvePlotter.SMALLEST_BOX_IN_PIXELS;
+import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_BOX_IN_PIXELS;
+import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_EDGE_IN_PIXELS;
 
-import java.util.List;
 import java.util.Stack;
 
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 
-public class StackImplicitCurvePointsAlgo implements ImplicitCurvePointsAlgo {
+public class BernsteinImplicitAlgo {
 
 	private final BernsteinCellGrid grid;
 	private final EuclidianViewBounds bounds;
 
-	public StackImplicitCurvePointsAlgo(BernsteinCellGrid grid, EuclidianViewBounds bounds) {
+	public BernsteinImplicitAlgo(BernsteinCellGrid grid, EuclidianViewBounds bounds) {
 		this.grid = grid;
 		this.bounds = bounds;
 	}
 
-	@Override
- 	public void compute(BernsteinPlotCell cell, List<BernsteinPlotCell> list) {
-		findSolutionsInFaces(cell, list);
+ 	public void findSolutions(BernsteinPlotCell cell) {
+		findSolutionsInFaces(cell);
 	}
 
-	private void findSolutionsInFaces(BernsteinPlotCell cell, List<BernsteinPlotCell> list) {
+	private void findSolutionsInFaces(BernsteinPlotCell cell) {
 		// Stack to replace recursion
 		Stack<BernsteinPlotCell> stack = new Stack<>();
 		stack.push(cell);
@@ -30,7 +29,6 @@ public class StackImplicitCurvePointsAlgo implements ImplicitCurvePointsAlgo {
 		while (!stack.isEmpty()) {
 			BernsteinPlotCell currentCell = stack.pop();
 
-			list.add(currentCell);
 			if (!currentCell.mightHaveSolution()) {
 				return;
 			}
@@ -50,8 +48,8 @@ public class StackImplicitCurvePointsAlgo implements ImplicitCurvePointsAlgo {
 	private boolean isBoxSmallEnough(BernsteinBoundingBox box) {
 		double width = bounds.toScreenCoordXd(box.getX2()) - bounds.toScreenCoordXd(box.getX1());
 		double height = bounds.toScreenCoordYd(box.getY1()) - bounds.toScreenCoordYd(box.getY2());
-		return width < ImplicitCurvePlotter.SMALLEST_BOX_IN_PIXELS
-				|| height < ImplicitCurvePlotter.SMALLEST_BOX_IN_PIXELS;
+		return width < SMALLEST_BOX_IN_PIXELS
+				|| height < SMALLEST_BOX_IN_PIXELS;
 	}
 
 	private void findSolutionsInEdges(BernsteinPlotCell context) {
@@ -117,7 +115,6 @@ public class StackImplicitCurvePointsAlgo implements ImplicitCurvePointsAlgo {
 		double width = edge.isHorizontal()
 				? bounds.toScreenCoordXd(x1) - bounds.toScreenCoordXd(x2)
 				: bounds.toScreenCoordYd(x1) - bounds.toScreenCoordYd(x2);
-		return width < ImplicitCurvePlotter.SMALLEST_EDGE_IN_PIXELS;
+		return width < SMALLEST_EDGE_IN_PIXELS;
 	}
-
 }

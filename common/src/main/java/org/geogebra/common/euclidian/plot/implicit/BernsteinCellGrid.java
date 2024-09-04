@@ -1,6 +1,6 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import static org.geogebra.common.euclidian.plot.implicit.ImplicitCurvePlotter.SMALLEST_BOX_IN_PIXELS;
+import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_BOX_IN_PIXELS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,23 @@ public class BernsteinCellGrid {
 				if (cell != null) {
 					GPoint2D center = cell.center();
 					list.add(center);
+				}
+			}
+		}
+		return list;
+	}
+
+	 public final List<BernsteinPlotCell> toList() {
+		List<BernsteinPlotCell> list = new ArrayList<>();
+		for (int row = 0; row < cells.length; row++) {
+			BernsteinPlotCell[] arow = cells[row];
+			if (arow == null) {
+				continue;
+			}
+			for (int col = 0; col < arow.length ; col++) {
+				BernsteinPlotCell cell = arow[col];
+				if (cell != null) {
+					list.add(cell);
 				}
 			}
 		}

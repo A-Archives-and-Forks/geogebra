@@ -25,7 +25,7 @@ import org.geogebra.common.kernel.implicit.GeoImplicit;
 public class DrawImplicitCurve extends DrawLocus {
 
 	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
-	private ImplicitCurveController controller;
+	private BernsteinPlotController controller;
 	private final GeoImplicit implicitCurve;
 	private final boolean isBernsteinBasedPlotter;
 
@@ -50,7 +50,7 @@ public class DrawImplicitCurve extends DrawLocus {
 				&& BernsteinPolynomialConverter.iSupported(geo);
 
 		if (isBernsteinBasedPlotter) {
-			controller = new ImplicitCurveController(view, geo);
+			controller = new BernsteinPlotController(view, geo);
 		} else {
 			update();
 		}
