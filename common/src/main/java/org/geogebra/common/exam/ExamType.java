@@ -217,7 +217,7 @@ public enum ExamType {
 	 * @return exam region
 	 */
 	public static ExamType byName(String shortName) {
-		for (ExamType region: values()) {
+		for (ExamType region : values()) {
 			if (region.name().equalsIgnoreCase(shortName)) {
 				return region;
 			}
@@ -233,7 +233,8 @@ public enum ExamType {
 	 * @param config config
 	 * @return available exam types
 	 */
-	public static List<ExamType> getAvailableExamTypes(Localization localization, AppConfig config) {
+	public static List<ExamType> getAvailableExamTypes(Localization localization,
+			AppConfig config) {
 		if (!config.getAppCode().equals(GeoGebraConstants.SUITE_APPCODE)) {
 			return Collections.emptyList();
 		}
@@ -269,7 +270,7 @@ public enum ExamType {
 			}
 		});
 		return examTypes;
-	};
+	}
 
 	public abstract String getDisplayName(Localization loc, AppConfig config);
 

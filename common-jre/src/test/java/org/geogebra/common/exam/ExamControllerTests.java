@@ -349,7 +349,6 @@ public class ExamControllerTests implements ExamControllerDelegate {
 		assertFalse(availableTools.contains(EuclidianConstants.MODE_POINT));
 	}
 
-
 	@Test
 	public void testCommandArgumentFilter() {
 		setInitialApp(SuiteSubApp.GRAPHING);

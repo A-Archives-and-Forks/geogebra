@@ -35,7 +35,7 @@ public enum FeaturePreview {
 	/**
 	 * Set this to true to enable feature previews.
 	 */
-	public static boolean PREVIEW_FEATURES_ENABLED = false;
+	static boolean PREVIEW_FEATURES_ENABLED = false;
 
 	private final boolean isEnabled;
 

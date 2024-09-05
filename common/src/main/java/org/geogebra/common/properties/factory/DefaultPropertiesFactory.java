@@ -9,7 +9,6 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
-import org.geogebra.common.main.settings.AlgebraSettings;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.properties.PropertiesRegistry;
@@ -76,7 +75,6 @@ public class DefaultPropertiesFactory implements PropertiesFactory {
 	 */
 	protected PropertiesArray createAlgebraProperties(App app, Localization localization,
 			PropertiesRegistry propertiesRegistry) {
-		AlgebraSettings algebraSettings = app.getSettings().getAlgebra();
 		Kernel kernel = app.getKernel();
 		String name = localization.getMenu("Algebra");
 		return new PropertiesArray(name,
