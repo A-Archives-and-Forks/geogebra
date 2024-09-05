@@ -29,7 +29,7 @@ public class HTML5Export {
 		// make sure translation files loaded OK
 		sb.append("<meta charset=\"utf-8\"/>\n");
 
-		if (app.has(Feature.TUBE_BETA)) {
+		if (app.has(FeaturePreview.TUBE_BETA)) {
 			sb.append(
 					"<script src=\"https://beta.geogebra.org/scripts/deployggb.js\"></script>\n\n");
 

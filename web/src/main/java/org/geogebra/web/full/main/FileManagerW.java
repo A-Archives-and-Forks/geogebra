@@ -4,7 +4,6 @@ import java.util.TreeSet;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.Feature;
 import org.geogebra.common.main.MaterialsManager;
 import org.geogebra.common.move.ggtapi.models.JSONParserGGT;
 import org.geogebra.common.move.ggtapi.models.Material;
@@ -117,7 +116,7 @@ public class FileManagerW extends FileManager {
 
 	@Override
 	public boolean shouldKeep(int id) {
-		if (!getApp().has(Feature.LOCALSTORAGE_FILES)) {
+		if (!GeoGebraConstants.Platform.OFFLINE.equals(getApp().getPlatform())) {
 			return false;
 		}
 		if (offlineIDs.contains(id)) {

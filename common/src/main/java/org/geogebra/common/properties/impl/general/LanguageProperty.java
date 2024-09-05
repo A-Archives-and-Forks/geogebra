@@ -1,7 +1,7 @@
 package org.geogebra.common.properties.impl.general;
 
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.Feature;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
@@ -35,7 +35,7 @@ public class LanguageProperty extends AbstractNamedEnumeratedProperty<String> {
 
     private void setupValues(App app, Localization localization) {
         Language[] languages = localization.getSupportedLanguages(
-                app.has(Feature.ALL_LANGUAGES));
+                app.has(FeaturePreview.ALL_LANGUAGES));
         String[] valueNames = new String[languages.length];
         languageCodes = new String[languages.length];
         for (int i = 0; i < languages.length; i++) {

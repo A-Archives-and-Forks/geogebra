@@ -33,7 +33,7 @@ import javax.swing.event.ChangeListener;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.PathRegionHandling;
-import org.geogebra.common.main.Feature;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.MyError.Errors;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
@@ -875,7 +875,7 @@ public class OptionsAdvancedD implements OptionPanelD,
 
 	private List<Language> getSupportedLanguages() {
 		return Arrays.asList(app.getLocalization()
-				.getSupportedLanguages(app.has(Feature.ALL_LANGUAGES)));
+				.getSupportedLanguages(app.has(FeaturePreview.ALL_LANGUAGES)));
 	}
 
 	/**

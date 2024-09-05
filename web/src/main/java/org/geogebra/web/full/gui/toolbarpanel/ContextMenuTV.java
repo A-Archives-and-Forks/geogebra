@@ -16,11 +16,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.kernelND.GeoEvaluatable;
 import org.geogebra.common.main.DialogManager;
-<<<<<<< HEAD
 import org.geogebra.common.ownership.GlobalScope;
-=======
-import org.geogebra.common.main.exam.restriction.FeatureRestriction;
->>>>>>> mms
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
 import org.geogebra.web.full.css.MaterialDesignResources;

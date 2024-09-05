@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.Feature;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.lang.Language;
@@ -359,7 +359,7 @@ public abstract class LocalizationJre extends Localization {
 	 * @return true if it allows languages that are not fully translated.
 	 */
 	public boolean hasAllLanguages() {
-		return app.has(Feature.ALL_LANGUAGES);
+		return app.has(FeaturePreview.ALL_LANGUAGES);
 	}
 
 	private ArrayList<Locale> buildSupportedLocales(boolean prerelease) {

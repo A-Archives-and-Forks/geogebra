@@ -6,10 +6,15 @@ import static org.geogebra.common.GeoGebraConstants.GEOMETRY_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.GRAPHING_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.PROBABILITY_APPCODE;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.geogebra.common.GeoGebraConstants;
-import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.main.AppConfig;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
 
@@ -219,6 +224,52 @@ public enum ExamType {
 		}
 		return null;
 	}
+
+	/**
+	 * Returns the available exam types. Filters based on the AppConfig and the available Features.
+	 * Sorts the result based on {@link ExamType#getDisplayName(Localization, AppConfig)}, making
+	 * sure that {@link ExamType#GENERIC} is always first.
+	 * @param localization localization
+	 * @param config config
+	 * @return available exam types
+	 */
+	public static List<ExamType> getAvailableExamTypes(Localization localization, AppConfig config) {
+		if (!config.getAppCode().equals(GeoGebraConstants.SUITE_APPCODE)) {
+			return Collections.emptyList();
+		}
+		List<ExamType> examTypes = new ArrayList<>();
+		examTypes.add(GENERIC);
+		if (FeaturePreview.REALSCHULE_EXAM.isEnabled()) {
+			examTypes.add(REALSCHULE);
+		}
+		if (FeaturePreview.CVTE_EXAM.isEnabled()) {
+			examTypes.add(CVTE);
+		}
+		if (FeaturePreview.MMS_EXAM.isEnabled()) {
+			examTypes.add(MMS);
+		}
+		if (FeaturePreview.IB_EXAM.isEnabled()) {
+			examTypes.add(IB);
+		}
+		examTypes.add(NIEDERSACHSEN);
+		examTypes.add(VLAANDEREN);
+		examTypes.add(BAYERN_CAS);
+
+		examTypes.sort(new Comparator<ExamType>() {
+			@Override
+			public int compare(ExamType o1, ExamType o2) {
+				if (o1 == ExamType.GENERIC) {
+					return -1;
+				} else if (o2 == ExamType.GENERIC) {
+					return 1;
+				} else {
+					return o1.getDisplayName(localization, config)
+							.compareTo(o2.getDisplayName(localization, config));
+				}
+			}
+		});
+		return examTypes;
+	};
 
 	public abstract String getDisplayName(Localization loc, AppConfig config);
 

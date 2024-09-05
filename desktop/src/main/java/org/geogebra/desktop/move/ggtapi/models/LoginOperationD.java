@@ -5,7 +5,7 @@ import javax.swing.SwingUtilities;
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.factories.UtilFactory;
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.Feature;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.move.events.GenericEvent;
 import org.geogebra.common.move.ggtapi.models.AuthenticationModel;
 import org.geogebra.common.move.ggtapi.models.ClientInfo;
@@ -54,7 +54,7 @@ public class LoginOperationD extends LogInOperation {
 			client.setType("desktop");
 			client.setWidth(1024);
 			client.setWidth(768);
-			api = new GeoGebraTubeAPID(app.has(Feature.TUBE_BETA), client);
+			api = new GeoGebraTubeAPID(app.has(FeaturePreview.TUBE_BETA), client);
 		}
 		return api;
 	}

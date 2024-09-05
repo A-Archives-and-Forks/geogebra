@@ -83,7 +83,7 @@ import org.geogebra.common.kernel.matrix.CoordSys;
 import org.geogebra.common.kernel.matrix.Coords;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.App.ExportType;
-import org.geogebra.common.main.Feature;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.GeoGebraColorConstants;
 import org.geogebra.common.main.GuiManagerInterface;
 import org.geogebra.common.main.ScreenReader;
@@ -6157,7 +6157,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	}
 
 	private void adjustObjects() {
-		if (app.has(Feature.ADJUST_WIDGETS) && screenChanged) {
+		if (app.has(FeaturePreview.ADJUST_WIDGETS) && screenChanged) {
 			app.adjustScreen(true);
 			screenChanged = false;
 			repaint();

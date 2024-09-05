@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.geogebra.common.jre.util.Base64;
-import org.geogebra.common.main.Feature;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.move.ggtapi.events.LoginEvent;
 import org.geogebra.common.move.ggtapi.models.AuthenticationModel;
 import org.geogebra.common.move.ggtapi.models.ClientInfo;
@@ -140,7 +140,7 @@ public class TubeAPITest extends Assert {
 
 	private GeoGebraTubeAPID getAuthAPI(String token) {
 		GeoGebraTubeAPID geoGebraTubeAPID = new GeoGebraTubeAPID(app
-				.has(Feature.TUBE_BETA), getAuthClient(null, token));
+				.has(FeaturePreview.TUBE_BETA), getAuthClient(null, token));
 		updateUrls(geoGebraTubeAPID);
 		return geoGebraTubeAPID;
 	}

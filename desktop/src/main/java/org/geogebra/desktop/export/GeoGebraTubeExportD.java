@@ -21,7 +21,7 @@ import javax.swing.JProgressBar;
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.Feature;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.desktop.gui.dialog.Dialog;
@@ -387,7 +387,7 @@ public class GeoGebraTubeExportD {
 	 * @return base upload URL for GeoGebraTube
 	 */
 	public String getUploadURL(App app0) {
-		if (app0.has(Feature.TUBE_BETA)) {
+		if (app0.has(FeaturePreview.TUBE_BETA)) {
 			return GeoGebraConstants.uploadURLBeta;
 		}
 
