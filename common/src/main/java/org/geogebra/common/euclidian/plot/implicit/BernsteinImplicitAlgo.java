@@ -3,23 +3,61 @@ package org.geogebra.common.euclidian.plot.implicit;
 import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_BOX_IN_PIXELS;
 import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_EDGE_IN_PIXELS;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
+import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
+import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
+import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
+import org.geogebra.common.kernel.geos.GeoElement;
 
-public class BernsteinImplicitAlgo {
+public class BernsteinImplicitAlgo implements PlotterAlgo {
 
-	private final BernsteinCellGrid grid;
+	private final CellGrid<BernsteinPlotCell>  grid;
 	private final EuclidianViewBounds bounds;
+	private final GeoElement curve;
+	private final BernsteinPolynomialConverter converter;
 
-	public BernsteinImplicitAlgo(BernsteinCellGrid grid, EuclidianViewBounds bounds) {
+	public BernsteinImplicitAlgo(CellGrid<BernsteinPlotCell> grid, EuclidianViewBounds bounds,
+			GeoElement curve) {
 		this.grid = grid;
 		this.bounds = bounds;
+		this.curve = curve;
+		converter = new BernsteinPolynomialConverter();
 	}
 
- 	public void findSolutions(BernsteinPlotCell cell) {
+	@Override
+	public void compute() {
+		grid.resize(bounds);
+		List<BernsteinPlotCell> cells = initialSplit(createRootCell());
+		cells.forEach(this::findSolutions);
+	}
+
+	private List<BernsteinPlotCell> initialSplit(BernsteinPlotCell rootCell) {
+		List<BernsteinPlotCell> list = new ArrayList<>();
+		Collections.addAll(list, rootCell.split());
+		return cellsWithPossibleSolution(list);
+	}
+
+	private BernsteinPlotCell createRootCell() {
+		BoundsRectangle limits = new BoundsRectangle(bounds);
+		BernsteinPolynomial polynomial = converter.from(curve, limits);
+		BernsteinBoundingBox box = new BernsteinBoundingBox(limits);
+		return new BernsteinPlotCell(box, polynomial);
+	}
+
+	private void findSolutions(BernsteinPlotCell cell) {
 		findSolutionsInFaces(cell);
 	}
+	private static List<BernsteinPlotCell> cellsWithPossibleSolution(List<BernsteinPlotCell> list) {
+		return list.stream().filter(BernsteinPlotCell::mightHaveSolution)
+				.collect(Collectors.toList());
+	}
+
 
 	private void findSolutionsInFaces(BernsteinPlotCell cell) {
 		// Stack to replace recursion
@@ -34,7 +72,7 @@ public class BernsteinImplicitAlgo {
 			}
 
 			if (isBoxSmallEnough(currentCell.boundingBox)) {
-				addCell(currentCell);
+				putToGrid(currentCell);
 			} else {
 				for (BernsteinPlotCell c : currentCell.split()) {
 					if (c.mightHaveSolution()) {
@@ -52,23 +90,24 @@ public class BernsteinImplicitAlgo {
 				|| height < SMALLEST_BOX_IN_PIXELS;
 	}
 
+	@SuppressWarnings("unused")
 	private void findSolutionsInEdges(BernsteinPlotCell context) {
 		context.createEdges();
-		for (BoxEdge edge : context.getEdges()) {
+		for (BernsteinPlotCellEdge edge : context.getEdges()) {
 			if (edge.mightHaveSolutions()) {
 				findSolutionsInOneEdge(edge);
 			}
 		}
 	}
 
-	private void findSolutionsInOneEdge(BoxEdge startEdge) {
-		Stack<BoxEdge> stack = new Stack<>();
+	private void findSolutionsInOneEdge(BernsteinPlotCellEdge startEdge) {
+		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
 		stack.push(startEdge);
 
 		while (!stack.isEmpty()) {
-			BoxEdge edge = stack.pop();
+			BernsteinPlotCellEdge edge = stack.pop();
 			if (edge.isDerivativeSignDiffer()) {
-				BoxEdge[] split = edge.split();
+				BernsteinPlotCellEdge[] split = edge.split();
 				stack.push(split[0]);
 				stack.push(split[1]);
 			} else {
@@ -78,19 +117,19 @@ public class BernsteinImplicitAlgo {
 
 	}
 
-	private void findSignChangeInEdge(BoxEdge startEdge) {
-		Stack<BoxEdge> stack = new Stack<>();
+	private void findSignChangeInEdge(BernsteinPlotCellEdge startEdge) {
+		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
 		stack.push(startEdge);
 		while (!stack.isEmpty()) {
-			BoxEdge edge = stack.pop();
+			BernsteinPlotCellEdge edge = stack.pop();
 			if (edge.mightHaveSolutions() && isEdgeSmallEnough(edge)) {
 				if (edge.hasIntersect()) {
-//					data.addIntersect(edge);
+					addIntersect(edge);
 				}
 				return;
 			}
 
-			BoxEdge[] split = edge.split();
+			BernsteinPlotCellEdge[] split = edge.split();
 			if (split[0].mightHaveSolutions()) {
 				stack.push(split[0]);
 			}
@@ -100,7 +139,12 @@ public class BernsteinImplicitAlgo {
 		}
 	}
 
-	private void addCell(BernsteinPlotCell cell) {
+	@SuppressWarnings("unused")
+	private void addIntersect(BernsteinPlotCellEdge edge) {
+		// TODO: implement
+	}
+
+	private void putToGrid(BernsteinPlotCell cell) {
 		int column = (int) Math.round(bounds.toScreenCoordXd(cell.boundingBox.getX1())
 				/ SMALLEST_BOX_IN_PIXELS);
 		int row =  (int) Math.round(bounds.toScreenCoordYd(cell.boundingBox.getY1())
@@ -109,7 +153,7 @@ public class BernsteinImplicitAlgo {
 
 	}
 
-	private boolean isEdgeSmallEnough(BoxEdge edge) {
+	private boolean isEdgeSmallEnough(BernsteinPlotCellEdge edge) {
 		double x1 = edge.startPoint().x;
 		double x2 = x1 + edge.length();
 		double width = edge.isHorizontal()

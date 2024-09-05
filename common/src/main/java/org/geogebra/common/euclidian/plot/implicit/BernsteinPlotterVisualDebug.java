@@ -6,7 +6,12 @@ import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 
-final class BernsteinPlotterVisualDebug {
+/**
+ * Draws visual debug on EV, cell bounds, kinds, possible solutions, edges, etc.
+ * with colors.
+ * This class should not be used in release!
+ */
+final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell> {
 	private final EuclidianViewBounds bounds;
 	private List<BernsteinPlotCell> cells;
 
@@ -15,7 +20,8 @@ final class BernsteinPlotterVisualDebug {
 	}
 
 
-	void draw(GGraphics2D g2) {
+	@Override
+	public void draw(GGraphics2D g2) {
 		if (cells == null) {
 			return;
 		}
@@ -52,14 +58,12 @@ final class BernsteinPlotterVisualDebug {
 		g2.drawRect(x, y, width, height);
 	}
 
-	public void drawEdges(GGraphics2D g2, List<BoxEdge> edges) {
-		for (BoxEdge edge : edges) {
-			edge.draw(g2, bounds);
-		}
-
-	}
-
-	public void setCells(List<BernsteinPlotCell> cells) {
+	/**
+	 *
+	 * @param cells to display debug information from.
+	 */
+	@Override
+	public void setData(List<BernsteinPlotCell> cells) {
 		this.cells = cells;
 
 	}

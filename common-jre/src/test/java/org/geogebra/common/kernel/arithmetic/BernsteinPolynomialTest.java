@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
-import org.geogebra.common.euclidian.plot.implicit.BoundsRectangle;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.util.debug.Log;

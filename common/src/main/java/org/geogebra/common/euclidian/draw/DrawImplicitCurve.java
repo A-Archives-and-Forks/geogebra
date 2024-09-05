@@ -18,6 +18,7 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.euclidian.EuclidianViewBoundsImp;
 import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter;
+import org.geogebra.common.euclidian.plot.implicit.CoordSystemAnimatedPlotter;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
@@ -28,7 +29,7 @@ import org.geogebra.common.kernel.implicit.GeoImplicit;
 public class DrawImplicitCurve extends DrawLocus {
 
 	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
-	private BernsteinPlotter bernsteinPlotter;
+	private CoordSystemAnimatedPlotter bernsteinPlotter;
 	private final GeoImplicit implicitCurve;
 	private final boolean isBernsteinBasedPlotter;
 

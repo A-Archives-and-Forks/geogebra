@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
+import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
 import org.geogebra.common.util.debug.Log;
 import org.junit.Test;
 

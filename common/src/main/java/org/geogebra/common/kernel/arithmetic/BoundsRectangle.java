@@ -1,7 +1,10 @@
-package org.geogebra.common.euclidian.plot.implicit;
+package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 
+/**
+ * Represents a simple bounds rectangle with x and y min and max.
+ */
 public class BoundsRectangle {
 
 	private final double xmin;

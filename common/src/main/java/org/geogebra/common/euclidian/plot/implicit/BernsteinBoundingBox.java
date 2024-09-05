@@ -2,6 +2,7 @@ package org.geogebra.common.euclidian.plot.implicit;
 
 import java.util.Objects;
 
+import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
 import org.geogebra.common.kernel.arithmetic.Splittable;
 
 public class BernsteinBoundingBox implements Splittable<BernsteinBoundingBox> {

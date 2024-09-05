@@ -1,6 +1,5 @@
 package org.geogebra.common.kernel.arithmetic;
 
-import org.geogebra.common.euclidian.plot.implicit.BoundsRectangle;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
