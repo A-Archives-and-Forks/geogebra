@@ -7,6 +7,7 @@ import static org.geogebra.common.GeoGebraConstants.GRAPHING_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.PROBABILITY_APPCODE;
 
 import org.geogebra.common.GeoGebraConstants;
+import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.Localization;
@@ -52,14 +53,37 @@ public enum ExamType {
 
 		@Override
 		public void applyRestrictions(ExamRestrictionModel model) {
-			model.setSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE);
+			model.setRestrictedSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE);
 			model.setCommandFilter(CommandFilterFactory.createMmsFilter());
-			model.setFeatureRestrictions(FeatureRestriction.DATA_TABLE_REGRESSION);
+			// ToDo
+//			model.setFeatureRestrictions(ExamFeatureRestriction.DATA_TABLE_REGRESSION);
 		}
 
 		@Override
 		public void setDefaultSubAppCode(ExamRestrictionModel model) {
 			model.setDefaultAppCode(CAS_APPCODE);
+		}
+	},
+
+	REALSCHULE() {
+		@Override
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "Bayern Realschulrechner";
+		}
+
+		@Override
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "Realschule";
+		}
+
+		@Override
+		public void applyRestrictions(ExamRestrictionModel model) {
+			// deprecated, will be removed
+		}
+
+		@Override
+		public void setDefaultSubAppCode(ExamRestrictionModel model) {
+			// deprecated, will be removed
 		}
 	},
 	NIEDERSACHSEN() {
