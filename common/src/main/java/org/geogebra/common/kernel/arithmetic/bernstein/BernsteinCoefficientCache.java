@@ -1,4 +1,4 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
 public class BernsteinCoefficientCache {
 	double[][] current;

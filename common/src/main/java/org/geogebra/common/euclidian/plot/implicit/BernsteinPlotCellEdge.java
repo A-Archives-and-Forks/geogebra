@@ -1,8 +1,8 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
 import org.geogebra.common.awt.GPoint2D;
-import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.Splittable;
+import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.util.DoubleUtil;
 
 /**

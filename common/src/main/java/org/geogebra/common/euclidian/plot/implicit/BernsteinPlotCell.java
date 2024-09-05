@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.geogebra.common.awt.GPoint2D;
-import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.Splittable;
+import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 
 /**
  * BernsteinPlotCell is the basic building block of the algorithm.

@@ -10,9 +10,9 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
-import org.geogebra.common.kernel.arithmetic.BernsteinPolynomial;
-import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
+import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
+import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
 
 public class BernsteinImplicitAlgo implements PlotterAlgo {

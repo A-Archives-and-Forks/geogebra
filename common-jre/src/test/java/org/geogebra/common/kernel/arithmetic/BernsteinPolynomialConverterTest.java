@@ -1,6 +1,6 @@
 package org.geogebra.common.kernel.arithmetic;
 
-import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter.iSupported;
+import static org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter.iSupported;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

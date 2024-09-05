@@ -1,6 +1,6 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
-import static org.geogebra.common.kernel.arithmetic.BinomialCoefficientsSign.from1Var;
+import static org.geogebra.common.kernel.arithmetic.bernstein.BinomialCoefficientsSign.from1Var;
 
 import org.geogebra.common.util.MyMath;
 

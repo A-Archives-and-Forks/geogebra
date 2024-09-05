@@ -20,7 +20,7 @@ import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter;
 import org.geogebra.common.euclidian.plot.implicit.CoordSystemAnimatedPlotter;
 import org.geogebra.common.factories.AwtFactory;
-import org.geogebra.common.kernel.arithmetic.BernsteinPolynomialConverter;
+import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
 
 /**

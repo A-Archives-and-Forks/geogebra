@@ -1,5 +1,8 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
+import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
+import org.geogebra.common.kernel.arithmetic.Polynomial;
+import org.geogebra.common.kernel.arithmetic.Term;
 import org.geogebra.common.util.MyMath;
 
 public class BernsteinBuilder2Var {
@@ -29,9 +32,10 @@ public class BernsteinBuilder2Var {
 		for (int i = 0; i < polynomial.length(); i++) {
 			Term term = polynomial.getTerm(i);
 			if (term != null) {
-				int powerX = term.degree('x');
+				int powerX =
+						term.degree('x');
 				int powerY = term.degree('y');
-					coeffs[powerX][powerY] += term.coefficient.evaluateDouble();
+					coeffs[powerX][powerY] += term.getCoefficient().evaluateDouble();
 				}
 			}
 

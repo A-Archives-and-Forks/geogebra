@@ -1,5 +1,10 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
+import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
+import org.geogebra.common.kernel.arithmetic.Function;
+import org.geogebra.common.kernel.arithmetic.FunctionNVar;
+import org.geogebra.common.kernel.arithmetic.Polynomial;
+import org.geogebra.common.kernel.arithmetic.Term;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
@@ -67,7 +72,7 @@ public class BernsteinPolynomialConverter {
 			Term term = i < polynomial.length() ? polynomial.getTerm(i) : null;
 			if (term != null) {
 				int power = term.degree(variableName);
-				coeffs[power] = term.coefficient.evaluateDouble();
+				coeffs[power] = term.getCoefficient().evaluateDouble();
 			}
 		}
 		return coeffs;

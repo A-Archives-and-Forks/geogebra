@@ -1,4 +1,6 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
+
+import org.geogebra.common.kernel.arithmetic.Splittable;
 
 /**
  * Interface representing Bernstein polynomials and its operations.

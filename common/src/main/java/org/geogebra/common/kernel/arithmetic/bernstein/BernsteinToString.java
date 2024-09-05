@@ -1,4 +1,4 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
 import org.geogebra.common.util.StringUtil;
 
