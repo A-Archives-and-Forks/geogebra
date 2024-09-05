@@ -1,9 +1,0 @@
-@startuml
-skinparam classAttributeIconSize 0
-enum EdgeKind{
-TOP
-LEFT
-BOTTOM
-RIGHT
-}
-@enduml
