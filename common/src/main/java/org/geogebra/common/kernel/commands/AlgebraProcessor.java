@@ -3846,18 +3846,12 @@ public class AlgebraProcessor {
 		if (!this.cmdDispatcher.isAllowedByCommandFilters(cmd)) {
 			return null;
 		}
-		// IntegralBetween gives all syntaxes. Typing Integral or NIntegral
-		// gives suggestions for NIntegral
-		if (cmd == Commands.Integral) {
-			return syntax.getCommandSyntaxCAS("NIntegral");
-		}
 		if (noCASfilter == null) {
 			noCASfilter = CommandFilterFactory.createNoCasCommandFilter();
 		}
 		if (!noCASfilter.isCommandAllowed(cmd)) {
 			return null;
 		}
-
 		return syntax.getCommandSyntax(internalCommandName, dim);
 	}
 
