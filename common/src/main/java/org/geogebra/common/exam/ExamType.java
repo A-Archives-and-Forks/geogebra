@@ -40,6 +40,51 @@ public enum ExamType {
 			// no restrictions -> no default needed
 		}
 	},
+
+	REALSCHULE() {
+		@Override
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "Bayern Realschulrechner";
+		}
+
+		@Override
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "Realschule";
+		}
+
+		@Override
+		public void applyRestrictions(ExamRestrictionModel model) {
+			// deprecated, will be removed
+		}
+
+		@Override
+		public void setDefaultSubAppCode(ExamRestrictionModel model) {
+			// deprecated, will be removed
+		}
+	},
+
+	CVTE() {
+		@Override
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "CvTE goedgekeurde examenstand";
+		}
+
+		@Override
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "CvTE";
+		}
+
+		@Override
+		public void applyRestrictions(ExamRestrictionModel model) {
+			// deprecated, will be removed
+		}
+
+		@Override
+		public void setDefaultSubAppCode(ExamRestrictionModel model) {
+			// deprecated, will be removed
+		}
+	},
+
 	MMS() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
@@ -65,27 +110,7 @@ public enum ExamType {
 		}
 	},
 
-	REALSCHULE() {
-		@Override
-		public String getDisplayName(Localization loc, AppConfig config) {
-			return "Bayern Realschulrechner";
-		}
 
-		@Override
-		public String getShortDisplayName(Localization loc, AppConfig config) {
-			return "Realschule";
-		}
-
-		@Override
-		public void applyRestrictions(ExamRestrictionModel model) {
-			// deprecated, will be removed
-		}
-
-		@Override
-		public void setDefaultSubAppCode(ExamRestrictionModel model) {
-			// deprecated, will be removed
-		}
-	},
 	NIEDERSACHSEN() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
