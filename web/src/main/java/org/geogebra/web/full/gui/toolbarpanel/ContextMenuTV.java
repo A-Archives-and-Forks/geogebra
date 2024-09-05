@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.gui.view.table.RegressionSpecification;
 import org.geogebra.common.gui.view.table.TableUtil;
 import org.geogebra.common.gui.view.table.TableValuesPoints;
@@ -15,7 +16,11 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.kernelND.GeoEvaluatable;
 import org.geogebra.common.main.DialogManager;
+<<<<<<< HEAD
 import org.geogebra.common.ownership.GlobalScope;
+=======
+import org.geogebra.common.main.exam.restriction.FeatureRestriction;
+>>>>>>> mms
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
 import org.geogebra.web.full.css.MaterialDesignResources;
@@ -36,9 +41,6 @@ import org.gwtproject.user.client.Command;
 
 /**
  * Context menu which is opened with the table of values header 3dot button
- * 
- * @author csilla
- *
  */
 public class ContextMenuTV {
 	private final TableValuesView view;
@@ -127,11 +129,13 @@ public class ContextMenuTV {
 				getColumnTitleHTML("x " + headerHTMLName), "Close", null);
 		addStats(getStatisticsTitleHTML("x " + headerHTMLName),
 				view::getStatistics2Var, twoVarStat, "StatsDialog.NoDataMsg2VarStats");
-
-		DialogData regressionData = new DialogData("Regression",
-				getColumnTitleHTML(headerHTMLName), "Close", "Plot");
-		addCommand(() -> showRegression(regressionData), "Regression",
-				"regression");
+		if (!GlobalScope.examController.isFeatureRestricted(
+				ExamFeatureRestriction.DATA_TABLE_REGRESSION)) {
+			DialogData regressionData = new DialogData("Regression",
+					getColumnTitleHTML(headerHTMLName), "Close", "Plot");
+			addCommand(() -> showRegression(regressionData), "Regression",
+					"regression");
+		}
 	}
 
 	private void addOneVarStats(String headerHTMLName) {
