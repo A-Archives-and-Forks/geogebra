@@ -28,8 +28,11 @@ import org.mockito.Matchers;
 import com.google.gwtmockito.WithClassesToStub;
 import com.himamis.retex.renderer.web.graphics.JLMContext2d;
 
+import elemental2.dom.Element;
+import elemental2.dom.HTMLScriptElement;
+
 @RunWith(GgbMockitoTestRunner.class)
-@WithClassesToStub({EuclidianSimplePanelW.class, JLMContext2d.class})
+@WithClassesToStub({EuclidianSimplePanelW.class, JLMContext2d.class, Element.class, HTMLScriptElement.class})
 public class AccessibilityViewTest {
 
 	private AppW app;

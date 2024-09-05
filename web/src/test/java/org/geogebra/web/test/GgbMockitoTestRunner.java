@@ -67,6 +67,7 @@ import com.himamis.retex.renderer.web.graphics.JLMContextHelper;
 import elemental2.core.JsDate;
 import elemental2.core.Uint8Array;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLScriptElement;
 import elemental2.dom.XMLHttpRequest;
 import elemental2.webgl.WebGLRenderingContext;
@@ -179,7 +180,8 @@ public class GgbMockitoTestRunner extends GwtMockitoTestRunner {
         classes.add(FocusImpl.class);
         classes.add(JsDate.class);
         classes.add(CellBasedWidgetImplStandard.class);
-        classes(HTMLScriptElement.class);
+        classes.add(Element.class);
+        classes.add(HTMLScriptElement.class);
         return classes;
     }
 
