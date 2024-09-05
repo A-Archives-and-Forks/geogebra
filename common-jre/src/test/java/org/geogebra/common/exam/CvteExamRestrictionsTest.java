@@ -1,10 +1,8 @@
 package org.geogebra.common.exam;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.geogebra.common.BaseUnitTest;
-import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.main.error.ErrorHelper;
 import org.geogebra.common.properties.impl.DefaultPropertiesRegistry;
 import org.junit.Before;

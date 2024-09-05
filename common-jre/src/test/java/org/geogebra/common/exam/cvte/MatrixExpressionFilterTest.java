@@ -1,9 +1,10 @@
-package org.geogebra.common.exam.restrictions.cvte;
+package org.geogebra.common.exam.cvte;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.exam.restrictions.cvte.MatrixExpressionFilter;
 import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.junit.Test;
 

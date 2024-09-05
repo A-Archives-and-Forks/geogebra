@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.AppCommonFactory;
@@ -304,6 +305,17 @@ public class ExamControllerTests implements ExamControllerDelegate {
 	}
 
 	@Test
+	public void testToolsExcludedDuringExam() {
+		setInitialApp(SuiteSubApp.GEOMETRY);
+		examController.prepareExam();
+		examController.setExamRestrictionsForTesting(
+				new TestExamRestrictions(ExamType.GENERIC));
+		examController.startExam(ExamType.GENERIC, null);
+
+		assertFalse(app.getAvailableTools().contains(EuclidianConstants.MODE_POINT));
+	}
+
+	@Test
 	public void testCvteRestrictions() {
 		setInitialApp(SuiteSubApp.GEOMETRY);
 		examController.prepareExam();
@@ -335,6 +347,34 @@ public class ExamControllerTests implements ExamControllerDelegate {
 		ToolCollection availableTools = app.getAvailableTools();
 		assertTrue(availableTools.contains(EuclidianConstants.MODE_MOVE));
 		assertFalse(availableTools.contains(EuclidianConstants.MODE_POINT));
+	}
+
+
+	@Test
+	public void testCommandArgumentFilter() {
+		setInitialApp(SuiteSubApp.GRAPHING);
+		examController.prepareExam();
+		examController.setExamRestrictionsForTesting(
+				new TestExamRestrictions(ExamType.GENERIC));
+		examController.startExam(ExamType.GENERIC, null);
+
+		assertNull(evaluate("Max(1, 2)"));
+	}
+
+	@Test
+	public void testSyntaxFilter() {
+		setInitialApp(SuiteSubApp.GRAPHING);
+		examController.prepareExam();
+		examController.setExamRestrictionsForTesting(
+				new TestExamRestrictions(ExamType.GENERIC));
+		examController.startExam(ExamType.GENERIC, null);
+
+		AutocompleteProvider provider = new AutocompleteProvider(app, false);
+		Optional<AutocompleteProvider.Completion> completion =
+				provider.getCompletions("Max").filter(it -> it.getCommand().equals("Max"))
+						.findFirst();
+		assertTrue(completion.isPresent());
+		assertEquals(1, completion.get().syntaxes.size());
 	}
 
 	// -- ExamControllerDelegate --
