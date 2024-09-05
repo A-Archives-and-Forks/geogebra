@@ -394,7 +394,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	protected HashMap<Integer, Boolean> showConstProtNavigationNeedsUpdate = null;
 	protected HashMap<Integer, Boolean> showConsProtNavigation = null;
 	protected AppCompanion companion;
-	protected boolean prerelease;
+	private boolean prerelease;
 
 	private boolean showResetIcon = false;
 	private ParserFunctions pf;
@@ -3005,6 +3005,15 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return GeoGebraConstants.VERSION_STRING + "?";
 	}
 
+	/**
+	 * Update prerelease flag
+	 * @param isPrerelease true if prerelease is on
+	 */
+	public void setPrerelease(boolean isPrerelease) {
+		prerelease = isPrerelease;
+		FeaturePreview.PREVIEW_FEATURES_ENABLED = prerelease;
+	}
+
 	public final void zoom(double px, double py, double zoomFactor) {
 		getActiveEuclidianView().zoom(px, py, zoomFactor, 15, true);
 	}
@@ -4875,14 +4884,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public void updateKeyboardSettings(LinkedHashMap<String, String> attrs) {
 		// only desktop
-	}
-
-	/**
-	 *
-	 * @return true if is prerelease
-	 */
-	public boolean isPrerelease() {
-		return prerelease;
 	}
 
 	/**

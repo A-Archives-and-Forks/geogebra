@@ -21,6 +21,8 @@ public enum FeaturePreview {
 	GEOMETRIC_DISCOVERY,
 	/** G3D-343 */
 	G3D_SELECT_META(false),
+	/** MOB-1722 */
+	MOB_EXPORT_STL,
 	/** APPS-4961 */
 	CVTE_EXAM,
 	/** APPS-4867 */

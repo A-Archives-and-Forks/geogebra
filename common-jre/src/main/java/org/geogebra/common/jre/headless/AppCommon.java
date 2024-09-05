@@ -738,7 +738,7 @@ public class AppCommon extends App {
 	}
 
 	public void setPrerelease() {
-		prerelease = true;
+		setPrerelease(true);
 	}
 
 	private static class LayoutHeadless extends Layout {

@@ -54,6 +54,7 @@ import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.DialogManager;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.FontManager;
 import org.geogebra.common.main.GeoElementSelectionListener;
 import org.geogebra.common.main.GeoGebraColorConstants;
@@ -2770,16 +2771,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 	public boolean enableFileFeatures() {
 		return this.appletParameters.getDataParamEnableFileFeatures();
-	}
-
-	/**
-	 * Update prerelease flag
-	 *
-	 * @param prerelease
-	 *            prerelease parameter
-	 */
-	public void setPrerelease(boolean prerelease) {
-		this.prerelease = prerelease;
 	}
 
 	@Override

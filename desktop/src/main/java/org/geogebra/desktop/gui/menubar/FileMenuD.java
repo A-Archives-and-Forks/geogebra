@@ -14,6 +14,7 @@ import javax.swing.KeyStroke;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.FormatCollada;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.FormatColladaHTML;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.FormatSTL;
+import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.util.FileExtensions;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.desktop.export.AnimationExportDialogD;
@@ -150,7 +151,7 @@ class FileMenuD extends BaseMenu {
 
 		submenu.add(exportPgfAction);
 		submenu.add(exportAsymptoteAction);
-		if (app.isPrerelease()) {
+		if (FeaturePreview.MOB_EXPORT_STL.isEnabled()) {
 			submenu.add(exportSTLaction);
 		}
 		if (app.is3D()) {
@@ -472,7 +473,7 @@ class FileMenuD extends BaseMenu {
 			}
 		};
 
-		if (app.isPrerelease()) {
+		if (FeaturePreview.MOB_EXPORT_STL.isEnabled()) {
 			exportSTLaction = new AbstractAction("STL" + Unicode.ELLIPSIS,
 					app.getEmptyIcon()) {
 				private static final long serialVersionUID = 1L;
