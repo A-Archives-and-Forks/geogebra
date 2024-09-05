@@ -3721,6 +3721,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 * @return whether it's supported
 	 * @deprecated Use {@link FeaturePreview#isEnabled()} directly
 	 */
+	@Deprecated
 	public final boolean has(FeaturePreview f) {
 		return f.isEnabled();
 	}
