@@ -34,13 +34,6 @@ public enum FeaturePreview {
 
 	private static boolean PREVIEW_FEATURES_ENABLED = false;
 
-	/**
-	 * Controls the availability of feature previews.
-	 */
-	public static void setPreviewFeaturesEnabled(boolean enabled) {
-		PREVIEW_FEATURES_ENABLED = enabled;
-	}
-
 	private final boolean isEnabled;
 
 	FeaturePreview() {
@@ -49,6 +42,13 @@ public enum FeaturePreview {
 
 	FeaturePreview(boolean isEnabled) {
 		this.isEnabled = isEnabled;
+	}
+
+	/**
+	 * Controls the availability of feature previews.
+	 */
+	public static void setPreviewFeaturesEnabled(boolean enabled) {
+		PREVIEW_FEATURES_ENABLED = enabled;
 	}
 
 	/**

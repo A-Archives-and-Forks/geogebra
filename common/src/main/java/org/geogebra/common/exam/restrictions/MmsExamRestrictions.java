@@ -6,9 +6,9 @@ import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 
-public class MmsExamRestrictions extends ExamRestrictions {
+final class MmsExamRestrictions extends ExamRestrictions {
 
-	public MmsExamRestrictions() {
+	MmsExamRestrictions() {
 		super(ExamType.MMS,
 				Set.of(SuiteSubApp.GRAPHING, SuiteSubApp.GEOMETRY, SuiteSubApp.G3D),
 				SuiteSubApp.CAS,
