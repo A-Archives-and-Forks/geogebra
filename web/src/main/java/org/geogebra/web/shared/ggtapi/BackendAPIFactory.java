@@ -73,7 +73,7 @@ public class BackendAPIFactory {
 
 	private GeoGebraTubeAPIW newTubeAPI() {
 		return new GeoGebraTubeAPIW(app.getClientInfo(),
-				app.has(FeaturePreview.TUBE_BETA),
+				app.isPreviewEnabled(FeaturePreview.TUBE_BETA),
 				articleElement);
 	}
 }

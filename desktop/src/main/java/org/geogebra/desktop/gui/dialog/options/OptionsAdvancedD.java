@@ -875,7 +875,7 @@ public class OptionsAdvancedD implements OptionPanelD,
 
 	private List<Language> getSupportedLanguages() {
 		return Arrays.asList(app.getLocalization()
-				.getSupportedLanguages(app.has(FeaturePreview.ALL_LANGUAGES)));
+				.getSupportedLanguages(app.isPreviewEnabled(FeaturePreview.ALL_LANGUAGES)));
 	}
 
 	/**

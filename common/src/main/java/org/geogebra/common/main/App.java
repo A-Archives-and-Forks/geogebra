@@ -3011,7 +3011,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public void setPrerelease(boolean isPrerelease) {
 		prerelease = isPrerelease;
-		FeaturePreview.setPreviewFeaturesEnabled(prerelease);
 	}
 
 	public final void zoom(double px, double py, double zoomFactor) {
@@ -3713,17 +3712,13 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * Check if featue is supported; depends on prerelease/ canary flags and
-	 * platform / app name.
+	 * Test if featue preview is enabled.
 	 *
-	 * @param f
-	 *            feature
-	 * @return whether it's supported
-	 * @deprecated Use {@link FeaturePreview#isEnabled()} directly
+	 * @param featurePreview feature preview
+	 * @return true if the feature preview is enabled.
 	 */
-	@Deprecated
-	public final boolean has(FeaturePreview f) {
-		return f.isEnabled();
+	public final boolean isPreviewEnabled(FeaturePreview featurePreview) {
+		return featurePreview.isEnabled() && prerelease;
 	}
 
 	public boolean isUnbundled() {
@@ -4279,7 +4274,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public String getURLforID(String id) {
 		String url;
-		if (has(FeaturePreview.TUBE_BETA)) {
+		if (isPreviewEnabled(FeaturePreview.TUBE_BETA)) {
 			url = GeoGebraConstants.GEOGEBRA_WEBSITE_BETA;
 		} else {
 			url = GeoGebraConstants.GEOGEBRA_WEBSITE;
@@ -4390,7 +4385,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *            whether to reset the stored offsets
 	 */
 	public void adjustScreen(boolean reset) {
-		if (!kernel.getApplication().has(FeaturePreview.ADJUST_WIDGETS)) {
+		if (!kernel.getApplication().isPreviewEnabled(FeaturePreview.ADJUST_WIDGETS)) {
 			return;
 		}
 		if (adjustScreen == null) {

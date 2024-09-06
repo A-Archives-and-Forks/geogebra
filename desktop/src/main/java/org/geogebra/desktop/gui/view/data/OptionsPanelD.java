@@ -545,7 +545,7 @@ public class OptionsPanelD extends JPanel implements PropertyChangeListener,
 		Box vBox = Box.createVerticalBox();
 		vBox.add(graphOptionsPanel);
 		vBox.add(dimPanel);
-		if (app.has(FeaturePreview.LOG_AXES)) {
+		if (app.isPreviewEnabled(FeaturePreview.LOG_AXES)) {
 			vBox.add(coordPanel);
 		}
 

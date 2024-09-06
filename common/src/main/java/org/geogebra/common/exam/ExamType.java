@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
+import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
@@ -226,27 +227,27 @@ public enum ExamType {
 	 * Returns the available exam types. Filters based on the AppConfig and the available Features.
 	 * Sorts the result based on {@link ExamType#getDisplayName(Localization, AppConfig)}, making
 	 * sure that {@link ExamType#GENERIC} is always first.
-	 * @param localization localization
-	 * @param config config
+	 * @param app application
 	 * @return available exam types
 	 */
-	public static List<ExamType> getAvailableExamTypes(Localization localization,
-			AppConfig config) {
+	public static List<ExamType> getAvailableExamTypes(App app) {
+		AppConfig config = app.getConfig();
+		Localization localization = app.getLocalization();
 		if (!config.getAppCode().equals(GeoGebraConstants.SUITE_APPCODE)) {
 			return Collections.emptyList();
 		}
 		List<ExamType> examTypes = new ArrayList<>();
 		examTypes.add(GENERIC);
-		if (FeaturePreview.REALSCHULE_EXAM.isEnabled()) {
+		if (app.isPreviewEnabled(FeaturePreview.REALSCHULE_EXAM)) {
 			examTypes.add(REALSCHULE);
 		}
-		if (FeaturePreview.CVTE_EXAM.isEnabled()) {
+		if (app.isPreviewEnabled(FeaturePreview.CVTE_EXAM)) {
 			examTypes.add(CVTE);
 		}
-		if (FeaturePreview.MMS_EXAM.isEnabled()) {
+		if (app.isPreviewEnabled(FeaturePreview.MMS_EXAM)) {
 			examTypes.add(MMS);
 		}
-		if (FeaturePreview.IB_EXAM.isEnabled()) {
+		if (app.isPreviewEnabled(FeaturePreview.IB_EXAM)) {
 			examTypes.add(IB);
 		}
 		examTypes.add(NIEDERSACHSEN);

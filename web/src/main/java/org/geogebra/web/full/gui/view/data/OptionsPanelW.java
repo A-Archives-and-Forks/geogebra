@@ -478,7 +478,7 @@ public class OptionsPanelW extends FlowPanel
 		graphPanel = new FlowPanel();
 		graphPanel.add(graphOptionsPanel);
 		graphPanel.add(dimPanel);
-		if (app.has(FeaturePreview.LOG_AXES)) {
+		if (app.isPreviewEnabled(FeaturePreview.LOG_AXES)) {
 			cbLogAxes.addItem("Standard To Standard");
 			cbLogAxes.addItem("Logarithmic To Standard");
 			cbLogAxes.addItem("Standard To Logarithmic");

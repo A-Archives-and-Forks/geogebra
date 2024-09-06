@@ -112,7 +112,7 @@ public class DrawablesTest extends BaseUnitTest {
 		for (GeoClass type : GeoClass.values()) {
 			Assert.assertTrue(type + "", types.contains(type)
 					|| (GeoClass.IMPLICIT_SURFACE_3D == type
-							&& !getApp().has(FeaturePreview.IMPLICIT_SURFACES))
+							&& !getApp().isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES))
 					|| GeoClass.SURFACECARTESIAN == type
 					|| GeoClass.CAS_CELL == type || GeoClass.SPACE == type
 					|| GeoClass.DEFAULT == type

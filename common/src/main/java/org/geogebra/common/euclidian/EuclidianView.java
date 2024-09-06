@@ -6157,7 +6157,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	}
 
 	private void adjustObjects() {
-		if (app.has(FeaturePreview.ADJUST_WIDGETS) && screenChanged) {
+		if (app.isPreviewEnabled(FeaturePreview.ADJUST_WIDGETS) && screenChanged) {
 			app.adjustScreen(true);
 			screenChanged = false;
 			repaint();

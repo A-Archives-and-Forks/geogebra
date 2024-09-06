@@ -359,7 +359,7 @@ public abstract class LocalizationJre extends Localization {
 	 * @return true if it allows languages that are not fully translated.
 	 */
 	public boolean hasAllLanguages() {
-		return app.has(FeaturePreview.ALL_LANGUAGES);
+		return app.isPreviewEnabled(FeaturePreview.ALL_LANGUAGES);
 	}
 
 	private ArrayList<Locale> buildSupportedLocales(boolean prerelease) {

@@ -1925,7 +1925,7 @@ public class CommandsTestCommon {
 
 	@Test
 	public void cmdImplicitSurface() {
-		if (app.has(FeaturePreview.IMPLICIT_SURFACES)) {
+		if (app.isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES)) {
 			t("ImplicitSurface[sin(x)+sin(y)+sin(z)]",
 					"sin(x) + sin(y) + sin(z) = 0");
 		}
@@ -2032,7 +2032,7 @@ public class CommandsTestCommon {
 				false, "(1, 1)");
 		intersect("Segment((0,0),(0,5))", "x^2+y^2+z^2=4",
 				false, "(?, ?, ?)", "(0, 2, 0)");
-		if (app.has(FeaturePreview.IMPLICIT_SURFACES)) {
+		if (app.isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES)) {
 			intersect("x^4+y^4+z^4=2", "x=y", false, "(-1, -1, 0)",
 					"(1, 1, 0)");
 		}

@@ -1559,7 +1559,7 @@ public class Ggb2giac {
 		// http://en.wikipedia.org/wiki/Quartic_function
 
 		// GGB-1635
-		if (app.has(FeaturePreview.SOLVE_QUARTIC)) {
+		if (app.isPreviewEnabled(FeaturePreview.SOLVE_QUARTIC)) {
 			p("SolveQuartic.1", "[" + "[ggbsqans:={}]," + "[ggbfun:=%0],"
 					+ "[ggbcoeffs:=coeffs(ggbfun)]," + "[a:=ggbcoeffs[0]],"
 					+ "[b:=ggbcoeffs[1]]," + "[c:=ggbcoeffs[2]],"

@@ -49,7 +49,7 @@ public class LocalizationCommon extends LocalizationJre {
 	@Override
 	protected ArrayList<Locale> getSupportedLocales() {
 		return getSupportedLocales(
-				app != null && app.has(FeaturePreview.ALL_LANGUAGES));
+				app != null && app.isPreviewEnabled(FeaturePreview.ALL_LANGUAGES));
 	}
 
 	@Override

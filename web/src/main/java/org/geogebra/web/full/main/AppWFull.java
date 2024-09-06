@@ -347,7 +347,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 	 */
 	private String getSupportedExamModes(String appCode) {
 		return Stream.concat(Stream.of(appCode, CHOOSE),
-						ExamType.getAvailableExamTypes(getLocalization(), getConfig()).stream()
+						ExamType.getAvailableExamTypes(this).stream()
 								.filter(r -> r != ExamType.GENERIC)
 								.map(r -> r.name().toLowerCase(Locale.ROOT)))
 				.collect(Collectors.joining(", "));

@@ -32,8 +32,6 @@ public enum FeaturePreview {
 	/** APPS-5740 */
 	REALSCHULE_EXAM;
 
-	private static boolean PREVIEW_FEATURES_ENABLED = false;
-
 	private final boolean isEnabled;
 
 	FeaturePreview() {
@@ -44,19 +42,7 @@ public enum FeaturePreview {
 		this.isEnabled = isEnabled;
 	}
 
-	/**
-	 * Controls the availability of feature previews.
-	 */
-	public static void setPreviewFeaturesEnabled(boolean enabled) {
-		PREVIEW_FEATURES_ENABLED = enabled;
-	}
-
-	/**
-	 * Test if a feature is available. Set {@link FeaturePreview#PREVIEW_FEATURES_ENABLED} to true
-	 * to preview features that are enabled.
-	 * @return true if this feature is enabled
-	 */
-	public boolean isEnabled() {
-		return isEnabled && PREVIEW_FEATURES_ENABLED;
+	boolean isEnabled() {
+		return isEnabled;
 	}
 }

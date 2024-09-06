@@ -136,7 +136,7 @@ public class OptionsMenuD extends BaseMenu
 		StringBuilder sb = new StringBuilder(20);
 
 		Language[] supportedLanguages = app.getLocalization()
-				.getSupportedLanguages(app.has(FeaturePreview.ALL_LANGUAGES));
+				.getSupportedLanguages(app.isPreviewEnabled(FeaturePreview.ALL_LANGUAGES));
 		for (Language loc : supportedLanguages) {
 
 			// enforce to show specialLanguageNames first

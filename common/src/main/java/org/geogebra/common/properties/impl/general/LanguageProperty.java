@@ -35,7 +35,7 @@ public class LanguageProperty extends AbstractNamedEnumeratedProperty<String> {
 
     private void setupValues(App app, Localization localization) {
         Language[] languages = localization.getSupportedLanguages(
-                app.has(FeaturePreview.ALL_LANGUAGES));
+                app.isPreviewEnabled(FeaturePreview.ALL_LANGUAGES));
         String[] valueNames = new String[languages.length];
         languageCodes = new String[languages.length];
         for (int i = 0; i < languages.length; i++) {

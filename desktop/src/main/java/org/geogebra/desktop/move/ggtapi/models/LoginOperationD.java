@@ -54,7 +54,7 @@ public class LoginOperationD extends LogInOperation {
 			client.setType("desktop");
 			client.setWidth(1024);
 			client.setWidth(768);
-			api = new GeoGebraTubeAPID(app.has(FeaturePreview.TUBE_BETA), client);
+			api = new GeoGebraTubeAPID(app.isPreviewEnabled(FeaturePreview.TUBE_BETA), client);
 		}
 		return api;
 	}

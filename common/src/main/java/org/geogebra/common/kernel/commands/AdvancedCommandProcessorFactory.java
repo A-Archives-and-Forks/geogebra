@@ -141,7 +141,7 @@ public class AdvancedCommandProcessorFactory implements CommandProcessorFactory 
 		case ImplicitCurve:
 			return new CmdImplicitPoly(kernel);
 		case ImplicitSurface:
-			return !kernel.getApplication().has(FeaturePreview.IMPLICIT_SURFACES)
+			return !kernel.getApplication().isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES)
 					? null : new CmdImplicitSurface(kernel);
 		case Roots:
 			return new CmdRoots(kernel);

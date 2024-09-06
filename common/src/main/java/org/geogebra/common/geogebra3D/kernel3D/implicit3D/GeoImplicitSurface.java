@@ -982,7 +982,7 @@ public class GeoImplicitSurface extends GeoElement3D
 
 	@Override
 	public boolean hasDrawable3D() {
-		return kernel.getApplication().has(FeaturePreview.IMPLICIT_SURFACES);
+		return kernel.getApplication().isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES);
 	}
 
 	/**

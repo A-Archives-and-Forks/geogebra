@@ -252,7 +252,7 @@ public class AlgebraTestHelper {
 		return a == Commands.MatrixPlot || a == Commands.DensityPlot
 				|| a == Commands.Polyhedron
 				|| (a == Commands.ImplicitSurface
-				&& !app.has(FeaturePreview.IMPLICIT_SURFACES));
+				&& !app.isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES));
 	}
 
 }

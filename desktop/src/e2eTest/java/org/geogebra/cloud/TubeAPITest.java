@@ -140,7 +140,7 @@ public class TubeAPITest extends Assert {
 
 	private GeoGebraTubeAPID getAuthAPI(String token) {
 		GeoGebraTubeAPID geoGebraTubeAPID = new GeoGebraTubeAPID(app
-				.has(FeaturePreview.TUBE_BETA), getAuthClient(null, token));
+				.isPreviewEnabled(FeaturePreview.TUBE_BETA), getAuthClient(null, token));
 		updateUrls(geoGebraTubeAPID);
 		return geoGebraTubeAPID;
 	}

@@ -71,7 +71,7 @@ public abstract class AlgoSphereNDPointRadius extends AlgoElement {
 
 		compute();
 
-		if (kernel.getApplication().has(FeaturePreview.GEOMETRIC_DISCOVERY)) {
+		if (kernel.getApplication().isPreviewEnabled(FeaturePreview.GEOMETRIC_DISCOVERY)) {
 			if (r.getLabelSimple() != null || r.getParentAlgorithm() instanceof AlgoRadius) {
 				autoColor();
 			}

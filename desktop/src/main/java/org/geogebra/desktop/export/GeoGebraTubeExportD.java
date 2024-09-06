@@ -387,7 +387,7 @@ public class GeoGebraTubeExportD {
 	 * @return base upload URL for GeoGebraTube
 	 */
 	public String getUploadURL(App app0) {
-		if (app0.has(FeaturePreview.TUBE_BETA)) {
+		if (app0.isPreviewEnabled(FeaturePreview.TUBE_BETA)) {
 			return GeoGebraConstants.uploadURLBeta;
 		}
 

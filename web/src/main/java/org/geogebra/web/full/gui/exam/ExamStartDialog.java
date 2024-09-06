@@ -42,11 +42,10 @@ public class ExamStartDialog extends ComponentDialog {
 		addDialogContent(startText);
 		if (mayChoseType((AppW) app)) {
 			Localization localization = app.getLocalization();
-			AppConfig config = app.getConfig();
-			List<ExamType> examTypes = ExamType.getAvailableExamTypes(localization, config);
+			List<ExamType> examTypes = ExamType.getAvailableExamTypes(app);
 			ArrayList<RadioButtonData<ExamType>> data = new ArrayList<>();
 			for (ExamType examType : examTypes) {
-				String displayName = examType.getDisplayName(localization, config);
+				String displayName = examType.getDisplayName(localization, app.getConfig());
 				data.add(new RadioButtonData<>(displayName, examType));
 			}
 			RadioButtonPanel<ExamType> regionPicker = new RadioButtonPanel<>(
