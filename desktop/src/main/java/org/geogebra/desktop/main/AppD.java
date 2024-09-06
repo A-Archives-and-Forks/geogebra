@@ -386,7 +386,8 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 		this.loc = loc;
 		loc.setApp(this);
 		this.cmdArgs = args;
-		this.prerelease = args != null && args.containsArg("prerelease");
+		boolean prerelease = args != null && args.containsArg("prerelease");
+		setPrerelease(prerelease);
 
 		if (prerelease) {
 			Log.error("*********************************");

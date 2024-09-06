@@ -394,7 +394,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	protected HashMap<Integer, Boolean> showConstProtNavigationNeedsUpdate = null;
 	protected HashMap<Integer, Boolean> showConsProtNavigation = null;
 	protected AppCompanion companion;
-	protected boolean prerelease;
+	private boolean prerelease;
 
 	private boolean showResetIcon = false;
 	private ParserFunctions pf;
