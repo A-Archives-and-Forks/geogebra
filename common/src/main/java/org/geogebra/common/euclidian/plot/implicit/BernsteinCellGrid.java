@@ -3,6 +3,7 @@ package org.geogebra.common.euclidian.plot.implicit;
 import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_BOX_IN_PIXELS;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
@@ -23,6 +24,10 @@ public class BernsteinCellGrid implements CellGrid<BernsteinPlotCell> {
 	 */
 	 @Override
 	 public final List<BernsteinPlotCell> toList() {
+		 if (cells == null) {
+			 return Collections.emptyList();
+		 }
+
 		List<BernsteinPlotCell> list = new ArrayList<>();
 		for (int row = 0; row < cells.length; row++) {
 			BernsteinPlotCell[] arow = cells[row];

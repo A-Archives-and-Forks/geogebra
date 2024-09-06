@@ -46,7 +46,6 @@ public abstract class CoordSystemAnimatedPlotter implements CoordSystemAnimation
 		updateEnabled = false;
 	}
 
-
 	/**
 	 * Draw the results of this plotter.
 	 * @param g2 {@link GGraphics2D}

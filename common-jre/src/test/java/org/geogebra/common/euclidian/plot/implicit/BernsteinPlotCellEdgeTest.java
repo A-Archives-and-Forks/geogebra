@@ -16,7 +16,7 @@ public class BernsteinPlotCellEdgeTest extends BaseUnitTest {
 	@Test
 	public void testSplit() {
 		BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
-		GeoImplicitCurve curve 	= add("x^3 - y^3 = 0");
+		GeoImplicitCurve curve = add("x^3 - y^3 = 0");
 		BernsteinPolynomial polynomial =
 				converter.from(curve, new BoundsRectangle(0, 1, 0, 1));
 		BernsteinPlotCellEdge
@@ -33,8 +33,8 @@ public class BernsteinPlotCellEdgeTest extends BaseUnitTest {
 
 	private void startPointShouldBe(BernsteinPlotCellEdge edge, double x, double y) {
 		GPoint2D p = edge.startPoint();
-		assertTrue("Expected: (" + x + ", " + y +")  Actual: (" + p.x + ", " + p.y +")"
-				,p.x == x && p.y == y);
+		assertTrue("Expected: (" + x + ", " + y + ")  Actual: (" + p.x + ", " + p.y + ")",
+				p.x == x && p.y == y);
 
 	}
 }

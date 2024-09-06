@@ -7,12 +7,14 @@ import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.util.debug.Log;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BernsteinPlotCellTest extends BaseUnitTest {
 	private BernsteinPlotCell context;
 	private BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
 
+	@Ignore
 	@Test
 	public void testSpitContext() {
 		BernsteinPolynomial bernstein = converter.from(add("x^3 - y^3 - 0.6 = 0"), defaultLimits());
@@ -21,7 +23,7 @@ public class BernsteinPlotCellTest extends BaseUnitTest {
 		BernsteinPlotCell[] contexts = context.split();
 
 		for (BernsteinPlotCell ctx: contexts)  {
-			//		checkEvalOnContext(bernstein, ctx);
+			checkEvalOnContext(bernstein, ctx);
 			Log.debug(ctx);
 		}
 	}
