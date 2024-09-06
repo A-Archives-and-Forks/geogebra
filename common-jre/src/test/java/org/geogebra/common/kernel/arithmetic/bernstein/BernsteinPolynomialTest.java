@@ -1,14 +1,11 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
 import static org.junit.Assert.assertEquals;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
-import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinBuilder1Var;
-import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
-import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial1Var;
-import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial2Var;
-import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
+import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
+import org.geogebra.common.kernel.arithmetic.Polynomial;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.util.debug.Log;

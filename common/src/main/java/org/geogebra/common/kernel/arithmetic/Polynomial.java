@@ -64,7 +64,7 @@ public class Polynomial implements HasDebugString {
 	 * @param vars
 	 *            variables string (to create one term)
 	 */
-	Polynomial(Kernel kernel, String vars) {
+	public Polynomial(Kernel kernel, String vars) {
 		this(kernel);
 		terms.add(new Term(kernel, 1.0d, vars));
 	}
