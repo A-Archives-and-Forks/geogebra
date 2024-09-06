@@ -3011,7 +3011,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public void setPrerelease(boolean isPrerelease) {
 		prerelease = isPrerelease;
-		FeaturePreview.PREVIEW_FEATURES_ENABLED = prerelease;
+		FeaturePreview.setPreviewFeaturesEnabled(prerelease);
 	}
 
 	public final void zoom(double px, double py, double zoomFactor) {
