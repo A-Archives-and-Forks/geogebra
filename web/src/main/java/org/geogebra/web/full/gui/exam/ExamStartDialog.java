@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.geogebra.common.exam.ExamController;
 import org.geogebra.common.exam.ExamType;
-import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.web.full.gui.components.radiobutton.RadioButtonData;

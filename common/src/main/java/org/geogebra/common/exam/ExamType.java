@@ -232,7 +232,6 @@ public enum ExamType {
 	 */
 	public static List<ExamType> getAvailableExamTypes(App app) {
 		AppConfig config = app.getConfig();
-		Localization localization = app.getLocalization();
 		if (!config.getAppCode().equals(GeoGebraConstants.SUITE_APPCODE)) {
 			return Collections.emptyList();
 		}
@@ -254,6 +253,7 @@ public enum ExamType {
 		examTypes.add(VLAANDEREN);
 		examTypes.add(BAYERN_CAS);
 
+		Localization localization = app.getLocalization();
 		examTypes.sort(new Comparator<ExamType>() {
 			@Override
 			public int compare(ExamType o1, ExamType o2) {

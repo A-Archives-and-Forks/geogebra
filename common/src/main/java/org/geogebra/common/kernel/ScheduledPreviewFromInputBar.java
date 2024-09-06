@@ -188,7 +188,8 @@ public class ScheduledPreviewFromInputBar implements Runnable {
 					}
 
 					this.kernel.notifyUpdatePreviewFromInputBar(previewGeos);
-				} else if (kernel.getApplication().isPreviewEnabled(FeaturePreview.MOB_PREVIEW_WHEN_EDITING)
+				} else if (kernel.getApplication()
+						.isPreviewEnabled(FeaturePreview.MOB_PREVIEW_WHEN_EDITING)
 						&& !existingGeo.hasChildren() && existingGeo.isIndependent()) {
 					previewRedefine(ve, existingGeo, info);
 				} else {
