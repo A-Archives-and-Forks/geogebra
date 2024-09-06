@@ -121,11 +121,9 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		return getSafe(pcoeffs, i) + (i >= 1 ? (pcoeffs[i - 1] + potherCoeffs[i - 1]) / 2 : 0);
 	}
 
-
 	static double getSafe(double[] coeffs, int i) {
 		return i < coeffs.length && i >= 0 ? coeffs[i] : 0;
 	}
-
 
 	private BernsteinPolynomial newInstance(double[] coeffs) {
 		return new BernsteinPolynomial1Var(coeffs, variableName, min, max);

@@ -19,7 +19,6 @@ public class BernsteinPolynomialConverter {
 		builder2Var = new BernsteinBuilder2Var(builder1Var);
 	}
 
-
 	/**
 	 *
 	 * @param geo to convert
@@ -28,7 +27,7 @@ public class BernsteinPolynomialConverter {
 	 */
 	public BernsteinPolynomial from(GeoElement geo, BoundsRectangle limits) {
 		if (geo.isGeoImplicitCurve()) {
-			GeoImplicitCurve curve = ((GeoImplicitCurve) geo);
+			GeoImplicitCurve curve = (GeoImplicitCurve) geo;
 			return curve.isDefined() ? fromImplicitCurve(curve, limits) : null;
 		} else if (geo instanceof GeoFunctionNVar) {
 			FunctionNVar function = ((GeoFunctionNVar) geo).getFunction();
@@ -45,7 +44,8 @@ public class BernsteinPolynomialConverter {
 		return fromFunctionNVar(functionNVar, limits);
 	}
 
-	private BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar, BoundsRectangle limits) {
+	private BernsteinPolynomial fromFunctionNVar(FunctionNVar functionNVar,
+			BoundsRectangle limits) {
 		Polynomial polynomial = functionNVar.getPolynomial();
 		return fromPolynomial(polynomial, polynomial.degree('x'),
 				polynomial.degree('y'), limits);
@@ -78,9 +78,14 @@ public class BernsteinPolynomialConverter {
 		return coeffs;
 	}
 
+	/**
+	 *
+	 * @param geo to check
+	 * @return if geo can be converted to a Bernstein polynomial.
+	 */
 	public static boolean iSupported(GeoElement geo) {
 		if (geo.isGeoImplicitCurve()) {
-			GeoImplicitCurve curve = ((GeoImplicitCurve) geo);
+			GeoImplicitCurve curve = (GeoImplicitCurve) geo;
 			return isCurveSupported(curve);
 		} else if (geo instanceof GeoFunctionNVar) {
 			FunctionNVar function = ((GeoFunctionNVar) geo).getFunction();

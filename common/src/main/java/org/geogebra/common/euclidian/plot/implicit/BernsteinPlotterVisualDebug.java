@@ -19,7 +19,6 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 		this.bounds = bounds;
 	}
 
-
 	@Override
 	public void draw(GGraphics2D g2) {
 		if (cells == null) {

@@ -21,17 +21,37 @@ public final class BernsteinPlotCellEdge implements Splittable<BernsteinPlotCell
 	private final EdgeKind kind;
 	private GPoint2D startPoint = null;
 
-
-	public static BernsteinPlotCellEdge create(BernsteinPlotCell parent, BernsteinPolynomial polynomial, double coordMin, double coordMax,
-			double fixedCoord, EdgeKind kind) {
-
+	/**
+	 *
+	 * @param parent cell of the edge.
+	 * @param polynomial the original polynomial of the cell.
+	 * @param coordMin of the edge.
+	 * @param coordMax of the edge.
+	 * @param fixedCoord the fixed coordinate of the edge. il. for horizontal edge this is the y
+	 * coordinate.
+	 * @param kind : top, left, bottom or right
+	 * @return a new edge.
+	 */
+	public static BernsteinPlotCellEdge create(BernsteinPlotCell parent,
+			BernsteinPolynomial polynomial, double coordMin, double coordMax, double fixedCoord,
+			EdgeKind kind) {
 		String varName = kind.isHorizontal() ? "y" : "x";
-		return new BernsteinPlotCellEdge(parent, polynomial.substitute(varName, fixedCoord), coordMin, coordMax,
-				fixedCoord, kind);
+		return new BernsteinPlotCellEdge(parent, polynomial.substitute(varName, fixedCoord),
+				coordMin, coordMax, fixedCoord, kind);
 	}
 
-	private BernsteinPlotCellEdge(BernsteinPlotCell parent, BernsteinPolynomial polynomial, double coordMin, double coordMax, double fixedCoord,
-			EdgeKind kind) {
+	/**
+	 *
+	 * @param parent cell of the edge.
+	 * @param polynomial the one variable polynomial of the edge.
+	 * @param coordMin of the edge.
+	 * @param coordMax of the edge.
+	 * @param fixedCoord the fixed coordinate of the edge. il. for horizontal edge this is the y
+	 * coordinate.
+	 * @param kind : top, left, bottom or right
+	 */
+	private BernsteinPlotCellEdge(BernsteinPlotCell parent, BernsteinPolynomial polynomial,
+			double coordMin, double coordMax, double fixedCoord, EdgeKind kind) {
 		this.parent = parent;
 		this.polynomial = polynomial;
 		this.coordMin = coordMin;
@@ -41,29 +61,36 @@ public final class BernsteinPlotCellEdge implements Splittable<BernsteinPlotCell
 		length = coordMax - coordMin;
 	}
 
+	@Override
 	public BernsteinPlotCellEdge[] split() {
 		BernsteinPolynomial[] polynomials = polynomial.split();
 		BernsteinPlotCellEdge[] edges = new BernsteinPlotCellEdge[2];
 		double half = length / 2;
-		edges[0] = new BernsteinPlotCellEdge(parent, polynomials[0], coordMin, coordMin + half, fixedCoord, kind);
-		edges[1] = new BernsteinPlotCellEdge(parent, polynomials[1], coordMin + half, coordMax, fixedCoord, kind);
+		edges[0] = new BernsteinPlotCellEdge(parent, polynomials[0],
+				coordMin, coordMin + half, fixedCoord, kind);
+		edges[1] = new BernsteinPlotCellEdge(parent, polynomials[1],
+				coordMin + half, coordMax, fixedCoord, kind);
 		return edges;
 	}
 
 	@Override
 	public String toString() {
-		return "HorizontalEdge{" +
-				"polynomial=" + polynomial +
-				", x1=" + coordMin +
-				", x2=" + coordMax +
-				", y=" + fixedCoord +
-				'}';
+		return "HorizontalEdge{"
+				+ "polynomial=" + polynomial
+				+ ", x1=" + coordMin
+				+ ", x2=" + coordMax
+				+ ", y=" + fixedCoord
+				+ '}';
 	}
 
 	public boolean mightHaveSolutions() {
 		return !polynomial.hasNoSolution();
 	}
 
+	/**
+	 *
+	 * @return if the x and y partial derivatives of the edge polynomial differ.
+	 */
 	public boolean isDerivativeSignDiffer() {
 		BernsteinPolynomial dx = polynomial.derivative("x");
 		BernsteinPolynomial dy = polynomial.derivative("y");
@@ -74,6 +101,10 @@ public final class BernsteinPlotCellEdge implements Splittable<BernsteinPlotCell
 		return length <= (kind.isHorizontal() ? pixelInRW.x : pixelInRW.y);
 	}
 
+	/**
+	 *
+	 * @return the very first point of the edge (from left or top)
+	 */
 	public GPoint2D startPoint() {
 		if (startPoint == null) {
 			startPoint = kind.isHorizontal()
@@ -83,21 +114,36 @@ public final class BernsteinPlotCellEdge implements Splittable<BernsteinPlotCell
 		return startPoint;
 	}
 
+	/**
+	 *
+	 * @return the length of the edge in real world units.
+	 */
 	public double length() {
 		return length;
 	}
 
+	/**
+	 * @return @{link EdgeKind}
+	 */
 	public EdgeKind getKind() {
 		return kind;
 	}
 
+	/**
+	 *
+	 * @return if edge is horizontal, ie it is the top or the bottom edge.
+	 */
 	public boolean isHorizontal() {
 		return kind.isHorizontal();
 	}
 
+	/**
+	 *
+	 * @return if the polynomial has solution on this edge.
+	 */
 	public boolean hasIntersect() {
 		GPoint2D p = startPoint();
-		double eps =1E-4;
+		double eps = 1E-4;
 		return !(isHorizontalEqual(p, eps) || isVerticalEqual(p, eps));
 	}
 

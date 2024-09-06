@@ -43,7 +43,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		}
 	}
 
-
 	@Override
 	public double evaluate(double valueX, double valueY) {
 		double[] partialEval = new double[degreeX + 1];
@@ -204,7 +203,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 		sliceNegative[mcoeffs.length] = motherCoeffs[motherCoeffs.length - 1];
 
-
 		return new BernsteinPolynomial[][]{slicePositive, sliceNegative};
 	}
 
@@ -245,6 +243,11 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 				mainSplit[1].splitCoefficients()};
 	}
 
+	/**
+	 * Splits the coefficients which are also Bernstein polynomials
+	 * @return the split parts.
+	 */
+	@Override
 	public BernsteinPolynomial[] splitCoefficients() {
 		BernsteinPolynomial[] bPlusCoeffs = new BernsteinPolynomial[degreeX + 1];
 		BernsteinPolynomial[] bMinusCoeffs = new BernsteinPolynomial[degreeX + 1];
@@ -285,6 +288,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		return new BernsteinPolynomial2Var(derivedCoeffs, minX, maxX, degreeX);
 	}
 
+	@Override
 	public String toString() {
 		return BernsteinToString.toString2Var(this);
 	}
@@ -313,6 +317,7 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 			double otherCoeff) {
 		return null;
 	}
+
 	@Override
 	public int degreeX() {
 		return degreeX;

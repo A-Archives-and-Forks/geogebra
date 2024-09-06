@@ -18,6 +18,12 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	private final PlotterAlgo algo;
 	private final CellGrid<BernsteinPlotCell> grid;
 
+	/**
+	 *
+	 * @param curve to draw
+	 * @param bounds {@link EuclidianViewBounds}
+	 * @param gp {@link GeneralPathClippedForCurvePlotter}
+	 */
 	public BernsteinPlotter(GeoElement curve, EuclidianViewBounds bounds,
 			GeneralPathClippedForCurvePlotter gp) {
 		this.bounds = bounds;
@@ -30,6 +36,7 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 		}
 	}
 
+	@Override
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
 			visualDebug.draw(g2);
@@ -47,7 +54,6 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 			visualDebug.setData(grid.toList());
 		}
 	}
-
 
 	private void drawResults(GGraphics2D g2) {
 		gp.reset();
@@ -68,7 +74,6 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 		gp.lineTo((int) bounds.toScreenCoordXd(p.x),
 				(int) bounds.toScreenCoordYd(p.y));
 	}
-
 
 	public int plotCellCount() {
 		return grid.toList().size();

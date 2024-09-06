@@ -22,26 +22,42 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 	private final BernsteinPlotCellKind kind;
 	private final Map<EdgeKind, BernsteinPlotCellEdge> edges = new HashMap<>();
 
+	/**
+	 *
+	 * @return kind: top, left, bottom, right,
+	 */
 	BernsteinPlotCellKind getKind() {
 		return kind;
 	}
 
+	/**
+	 *
+	 * @return the edges of the cell.
+	 */
 	public Collection<BernsteinPlotCellEdge> getEdges() {
 		return edges.values();
 	}
 
+	/**
+	 *
+	 * @return the center point of the cell.
+	 */
 	public GPoint2D center() {
-		return new GPoint2D(boundingBox.getXHalf(), boundingBox.getYHalf());
+		return new GPoint2D(boundingBox.getXHalf(),
+				boundingBox.getYHalf());
 	}
-
 
 	enum BernsteinPlotCellKind {
 		CELL0,
 		CELL1,
 		CELL2
-
 	}
 
+	/**
+	 *
+	 * @param box bounding box of the cell
+	 * @param polynomial restricted to the cell.
+	 */
 	public BernsteinPlotCell(BernsteinBoundingBox box, BernsteinPolynomial polynomial) {
 		boundingBox = box;
 		this.polynomial = polynomial;
@@ -75,33 +91,31 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 		return cells;
 	}
 
-
-
 	void createEdges() {
-		edges.put(EdgeKind.TOP, BernsteinPlotCellEdge.create(this, polynomial, boundingBox.getX1(),
-				boundingBox.getX2(),
+		edges.put(EdgeKind.TOP, BernsteinPlotCellEdge.create(this, polynomial,
+				boundingBox.getX1(), boundingBox.getX2(),
 				boundingBox.getY1(), EdgeKind.TOP));
 
-		edges.put(EdgeKind.LEFT, BernsteinPlotCellEdge.create(this, polynomial, boundingBox.getY1(), boundingBox.getY2(),
+		edges.put(EdgeKind.LEFT, BernsteinPlotCellEdge.create(this, polynomial,
+				boundingBox.getY1(), boundingBox.getY2(),
 				boundingBox.getX1(), EdgeKind.LEFT));
 
-		edges.put(EdgeKind.BOTTOM, BernsteinPlotCellEdge.create(this, polynomial, boundingBox.getX1(),
-				boundingBox.getX2(),
+		edges.put(EdgeKind.BOTTOM, BernsteinPlotCellEdge.create(this, polynomial,
+				boundingBox.getX1(), boundingBox.getX2(),
 				boundingBox.getY2(), EdgeKind.BOTTOM));
 
-		edges.put(EdgeKind.RIGHT, BernsteinPlotCellEdge.create(this, polynomial, boundingBox.getY1(), boundingBox.getY2(),
+		edges.put(EdgeKind.RIGHT, BernsteinPlotCellEdge.create(this, polynomial,
+				boundingBox.getY1(), boundingBox.getY2(),
 				boundingBox.getX2(), EdgeKind.RIGHT));
-
 	}
-
 
 	@Override
 	public String toString() {
-		return "CurvePlotContext{" +
-				"boundingBox=" + boundingBox +
-				", polynomial=" + polynomial +
-				", contextCass=" + kind +
-				'}';
+		return "CurvePlotContext{"
+				+ "boundingBox=" + boundingBox
+				+ ", polynomial=" + polynomial
+				+ ", contextCass=" + kind
+				+ '}';
 	}
 
 	public boolean mightHaveSolution() {

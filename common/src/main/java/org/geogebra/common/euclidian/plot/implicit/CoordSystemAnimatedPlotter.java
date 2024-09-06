@@ -4,6 +4,10 @@ import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.CoordSystemAnimationListener;
 import org.geogebra.common.euclidian.CoordSystemInfo;
 
+/**
+ * Plotter with the feature to enable/disable updating.
+ * Update can be expensive so sometimes it is good to disable at animation, like zoom or pan.
+ */
 public abstract class CoordSystemAnimatedPlotter implements CoordSystemAnimationListener {
 
 	private boolean updateEnabled;
@@ -23,6 +27,9 @@ public abstract class CoordSystemAnimatedPlotter implements CoordSystemAnimation
 		enableUpdate();
 	}
 
+	/**
+	 * Updates the plotter if update is enabled.
+	 */
 	public void updateOnDemand() {
 		if (updateEnabled) {
 			update();
@@ -39,5 +46,10 @@ public abstract class CoordSystemAnimatedPlotter implements CoordSystemAnimation
 		updateEnabled = false;
 	}
 
+
+	/**
+	 * Draw the results of this plotter.
+	 * @param g2 {@link GGraphics2D}
+	 */
 	public abstract void draw(GGraphics2D g2);
 }

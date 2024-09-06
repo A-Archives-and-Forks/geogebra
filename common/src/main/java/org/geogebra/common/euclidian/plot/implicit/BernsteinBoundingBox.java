@@ -13,6 +13,13 @@ public class BernsteinBoundingBox implements Splittable<BernsteinBoundingBox> {
 	private final double xHalf;
 	private final double yHalf;
 
+	/**
+	 *
+	 * @param x1 left x coordinate.
+	 * @param y1 top y coordinate.
+	 * @param x2 right x coordinate.
+	 * @param y2 bottom y coordinate.
+	 */
 	public BernsteinBoundingBox(double x1, double y1, double x2, double y2) {
 		this.x1 = x1;
 		this.x2 = x2;
@@ -38,8 +45,14 @@ public class BernsteinBoundingBox implements Splittable<BernsteinBoundingBox> {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof BernsteinBoundingBox)) return false;
+		if (this == o) {
+			return true;
+		}
+
+		if (!(o instanceof BernsteinBoundingBox)) {
+			return false;
+		}
+
 		BernsteinBoundingBox that = (BernsteinBoundingBox) o;
 		return Double.compare(x1, that.x1) == 0
 				&& Double.compare(y1, that.y1) == 0
@@ -54,11 +67,11 @@ public class BernsteinBoundingBox implements Splittable<BernsteinBoundingBox> {
 
 	@Override
 	public String toString() {
-		return "Box{x1=" + x1 +
-				", y1=" + y1 +
-				", y2=" + y2 +
-				", x2=" + x2 +
-				'}';
+		return "Box{x1=" + x1
+				+ ", y1=" + y1
+				+ ", y2=" + y2
+				+ ", x2=" + x2
+				+ '}';
 	}
 
 	public double getX1() {

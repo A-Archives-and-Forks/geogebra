@@ -22,6 +22,12 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private final GeoElement curve;
 	private final BernsteinPolynomialConverter converter;
 
+	/**
+	 *
+	 * @param grid {@link CellGrid}
+	 * @param bounds {@link EuclidianViewBounds}
+	 * @param curve the curve geo.
+	 */
 	public BernsteinImplicitAlgo(CellGrid<BernsteinPlotCell> grid, EuclidianViewBounds bounds,
 			GeoElement curve) {
 		this.grid = grid;
@@ -53,11 +59,11 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private void findSolutions(BernsteinPlotCell cell) {
 		findSolutionsInFaces(cell);
 	}
+
 	private static List<BernsteinPlotCell> cellsWithPossibleSolution(List<BernsteinPlotCell> list) {
 		return list.stream().filter(BernsteinPlotCell::mightHaveSolution)
 				.collect(Collectors.toList());
 	}
-
 
 	private void findSolutionsInFaces(BernsteinPlotCell cell) {
 		// Stack to replace recursion

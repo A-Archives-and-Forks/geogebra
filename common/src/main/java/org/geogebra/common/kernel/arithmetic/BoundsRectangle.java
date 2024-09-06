@@ -12,6 +12,13 @@ public class BoundsRectangle {
 	private final double ymin;
 	private final double ymax;
 
+	/**
+	 *
+	 * @param xmin x minimum
+	 * @param xmax x maximum
+	 * @param ymin y minimum
+	 * @param ymax y maximum
+	 */
 	public BoundsRectangle(double xmin, double xmax, double ymin, double ymax) {
 		this.xmin = xmin;
 		this.ymin = ymin;
@@ -41,11 +48,11 @@ public class BoundsRectangle {
 
 	@Override
 	public String toString() {
-		return "BoundsRectangle{" +
-				"xmin=" + xmin +
-				", xmax=" + xmax +
-				", ymin=" + ymin +
-				", ymax=" + ymax +
-				'}';
+		return "BoundsRectangle{"
+				+ "xmin=" + xmin
+				+ ", xmax=" + xmax
+				+ ", ymin=" + ymin
+				+ ", ymax=" + ymax
+				+ '}';
 	}
 }

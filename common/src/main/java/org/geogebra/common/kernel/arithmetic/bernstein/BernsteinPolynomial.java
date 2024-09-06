@@ -108,6 +108,7 @@ public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 			double otherCoeff);
 
 	int degreeX();
+
 	int degreeY();
 
 	BernsteinPolynomial[] splitCoefficients();

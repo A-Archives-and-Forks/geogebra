@@ -4,6 +4,12 @@ import org.geogebra.common.util.StringUtil;
 
 public class BernsteinToString {
 
+	/**
+	 * Serialize a one variable Bernstein polynomial.
+	 *
+	 * @param polynomial to serialize
+	 * @return String representation of the polynomial
+	 */
 	public static String toString1Var(BernsteinPolynomial1Var polynomial) {
 		if (polynomial.isConstant()) {
 			return "" + (int) polynomial.bernsteinCoeffs[0];
@@ -47,10 +53,17 @@ public class BernsteinToString {
 		return base + StringUtil.numberToIndex(i);
 	}
 
+	/**
+	 * Serialize a two variable Bernstein polynomial.
+	 *
+	 * @param polynomial to serialize
+	 * @return String representation of the polynomial
+	 */
 	public static String toString2Var(BernsteinPolynomial2Var polynomial) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = polynomial.degreeX; i >= 0; i--) {
-			BernsteinPolynomial c = i < polynomial.bernsteinCoeffs.length ? polynomial.bernsteinCoeffs[i]
+			BernsteinPolynomial c = i < polynomial.bernsteinCoeffs.length
+					? polynomial.bernsteinCoeffs[i]
 					: null;
 			if (c == null || "0".equals(c.toString())) {
 				continue;
