@@ -103,15 +103,12 @@ public enum ExamType {
 
 		@Override
 		public void applyRestrictions(ExamRestrictionModel model) {
-			model.setRestrictedSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE);
-			model.setCommandFilter(CommandFilterFactory.createMmsFilter());
-			// ToDo
-//			model.setFeatureRestrictions(ExamFeatureRestriction.DATA_TABLE_REGRESSION);
+			// deprecated, will be removed
 		}
 
 		@Override
 		public void setDefaultSubAppCode(ExamRestrictionModel model) {
-			model.setDefaultAppCode(CAS_APPCODE);
+			// deprecated, will be removed
 		}
 	},
 
