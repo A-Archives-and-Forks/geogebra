@@ -33,4 +33,7 @@ public enum PropertyResource {
 
 	/* Horizontal alignment type */
 	ICON_ALIGNMENT_LEFT, ICON_ALIGNMENT_CENTER, ICON_ALIGNMENT_RIGHT,
+
+	/* Vertical alignment type */
+	ICON_ALIGNMENT_BOTTOM, ICON_ALIGNMENT_MIDDLE, ICON_ALIGNMENT_TOP,
 }

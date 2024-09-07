@@ -38,6 +38,7 @@ import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 import org.geogebra.common.properties.impl.objects.ShowTraceProperty;
 import org.geogebra.common.properties.impl.objects.SlopeSizeProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
+import org.geogebra.common.properties.impl.objects.VerticalAlignmentProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 
 /**
@@ -298,6 +299,28 @@ public class GeoElementPropertiesFactory {
 			}
 			return new IconsEnumeratedPropertyCollection<>(
 					horizontalAlignmentProperties.toArray(new HorizontalAlignmentProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the horizontal alignment or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedPropertyCollection createVerticalAlignmentProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<VerticalAlignmentProperty> verticalAlignmentProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				verticalAlignmentProperties.add(new VerticalAlignmentProperty(localization,
+						element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					verticalAlignmentProperties.toArray(new VerticalAlignmentProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

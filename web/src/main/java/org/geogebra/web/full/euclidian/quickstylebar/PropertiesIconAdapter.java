@@ -40,6 +40,12 @@ public class PropertiesIconAdapter {
 			return res.horizontal_align_center();
 		case ICON_ALIGNMENT_RIGHT:
 			return res.horizontal_align_right();
+		case ICON_ALIGNMENT_BOTTOM:
+			return res.vertical_align_bottom();
+		case ICON_ALIGNMENT_MIDDLE:
+			return res.vertical_align_middle();
+		case ICON_ALIGNMENT_TOP:
+			return res.vertical_align_top();
 		}
 		return res.stylebar_empty();
 	}

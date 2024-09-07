@@ -69,9 +69,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				.createNotesLineStyleProperties(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), lineStyleProperty.getProperties());
 
+		addDivider();
+
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), horizontalAlignmentProperty);
+
+		Property verticalAlignmentProperty = GeoElementPropertiesFactory
+				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), verticalAlignmentProperty);
 
 		addDivider();
 
