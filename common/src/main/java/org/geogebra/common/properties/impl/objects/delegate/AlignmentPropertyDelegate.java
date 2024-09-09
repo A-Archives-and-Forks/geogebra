@@ -3,9 +3,9 @@ package org.geogebra.common.properties.impl.objects.delegate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
 
-public class HorizontalAlignmentPropertyDelegate extends AbstractGeoElementDelegate {
+public class AlignmentPropertyDelegate extends AbstractGeoElementDelegate {
 
-	public HorizontalAlignmentPropertyDelegate(GeoElement element)
+	public AlignmentPropertyDelegate(GeoElement element)
 			throws NotApplicablePropertyException {
 		super(element);
 	}

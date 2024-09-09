@@ -63,23 +63,27 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property fillingStyleProperty = GeoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), null, fillingStyleProperty);
+		addPropertyPopupButton(activeGeoList.get(0), null, false, fillingStyleProperty);
 
 		PropertiesArray lineStyleProperty = GeoElementPropertiesFactory
 				.createNotesLineStyleProperties(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), null, lineStyleProperty.getProperties());
+		addPropertyPopupButton(activeGeoList.get(0), null, false, lineStyleProperty.getProperties());
 
 		Property segmentStartProperty = GeoElementPropertiesFactory
 				.createSegmentStartProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", segmentStartProperty);
+		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", true, segmentStartProperty);
 
 		Property segmentEndProperty = GeoElementPropertiesFactory
 				.createSegmentEndProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", segmentEndProperty);
+		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", true, segmentEndProperty);
 
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), null, horizontalAlignmentProperty);
+		addPropertyPopupButton(activeGeoList.get(0), null, true, horizontalAlignmentProperty);
+
+		Property verticalAlignmentProperty = GeoElementPropertiesFactory
+				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), null, true, verticalAlignmentProperty);
 
 		addDivider();
 
@@ -87,7 +91,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addPropertyPopupButton(GeoElement geo, String className, Property... properties) {
+	private void addPropertyPopupButton(GeoElement geo, String className, boolean closePopupOnAction,
+			Property... properties) {
 		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
@@ -95,7 +100,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		IconButton button = new IconButtonWithProperty(getApp(), className, getIcon(
 				(IconsEnumeratedProperty<?>) firstProperty), firstProperty.getName(), geo,
-				properties);
+				closePopupOnAction, properties);
 		styleAndRegisterButton(button);
 	}
 

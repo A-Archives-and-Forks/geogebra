@@ -1,5 +1,6 @@
 @use 'colors';
 @use 'colorMap' as *;
+@use 'z-index';
 
 .GeoGebraFrame {
 	
@@ -301,6 +302,10 @@
 			display: inline-flex;
 			gap: 8px;
 			flex-flow: wrap;
+
+			.iconButton {
+				z-index: z-index.$z-dialog-under-keyboard;
+			}
 		}
 
 		.sliderComponent {
