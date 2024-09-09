@@ -15,10 +15,16 @@ import org.gwtproject.user.client.ui.FlowPanel;
 
 public class PropertyWidgetAdapter {
 	private final AppW appW;
+	private final boolean closePopupOnAction;
 	private List<IconButton> enumeratedPropertyButtons;
 
-	public PropertyWidgetAdapter(AppW appW) {
+	/**
+	 * @param appW - application
+	 * @param closePopupOnAction - weather popup should be closed on element click
+	 */
+	public PropertyWidgetAdapter(AppW appW, boolean closePopupOnAction) {
 		this.appW = appW;
+		this.closePopupOnAction = closePopupOnAction;
 	}
 
 	/**
@@ -42,6 +48,9 @@ public class PropertyWidgetAdapter {
 				setIconButtonActive(enumeratedPropertyIconButton);
 				if (uiUpdater != null) {
 					uiUpdater.accept(finalI);
+				}
+				if (closePopupOnAction) {
+					appW.closePopups();
 				}
 				appW.storeUndoInfo();
 			});
