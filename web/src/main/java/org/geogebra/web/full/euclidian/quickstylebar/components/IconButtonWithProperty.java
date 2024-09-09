@@ -25,13 +25,14 @@ public class IconButtonWithProperty extends IconButton {
 	/**
 	 * Constructor
 	 * @param appW - application
+	 * @param className - class name
 	 * @param icon - svg resource of button
 	 * @param ariaLabel - aria label
 	 * @param geo - geo element
 	 * @param properties - array of applicable properties
 	 */
-	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel, GeoElement geo,
-			Property... properties) {
+	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel,
+			GeoElement geo, Property... properties) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		widgetAdapter = new PropertyWidgetAdapter(appW);

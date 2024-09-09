@@ -305,7 +305,6 @@ public class GeoElementPropertiesFactory {
 		}
 	}
 
-
 	/**
 	 * Returns an IconsEnumeratedProperty controlling the segment start style or null
 	 * if not applicable.
