@@ -63,15 +63,23 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property fillingStyleProperty = GeoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), fillingStyleProperty);
+		addPropertyPopupButton(activeGeoList.get(0), null, fillingStyleProperty);
 
 		PropertiesArray lineStyleProperty = GeoElementPropertiesFactory
 				.createNotesLineStyleProperties(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), lineStyleProperty.getProperties());
+		addPropertyPopupButton(activeGeoList.get(0), null, lineStyleProperty.getProperties());
+
+		Property segmentStartProperty = GeoElementPropertiesFactory
+				.createSegmentStartProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", segmentStartProperty);
+
+		Property segmentEndProperty = GeoElementPropertiesFactory
+				.createSegmentEndProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", segmentEndProperty);
 
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), horizontalAlignmentProperty);
+		addPropertyPopupButton(activeGeoList.get(0), null, horizontalAlignmentProperty);
 
 		addDivider();
 
@@ -79,13 +87,13 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addPropertyPopupButton(GeoElement geo, Property... properties) {
+	private void addPropertyPopupButton(GeoElement geo, String className, Property... properties) {
 		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
 		Property firstProperty = properties[0];
 
-		IconButton button = new IconButtonWithProperty(getApp(), getIcon(
+		IconButton button = new IconButtonWithProperty(getApp(), className, getIcon(
 				(IconsEnumeratedProperty<?>) firstProperty), firstProperty.getName(), geo,
 				properties);
 		styleAndRegisterButton(button);

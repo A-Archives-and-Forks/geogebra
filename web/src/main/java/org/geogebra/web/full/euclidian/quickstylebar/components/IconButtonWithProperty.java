@@ -30,7 +30,7 @@ public class IconButtonWithProperty extends IconButton {
 	 * @param geo - geo element
 	 * @param properties - array of applicable properties
 	 */
-	public IconButtonWithProperty(AppW appW, SVGResource icon, String ariaLabel, GeoElement geo,
+	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel, GeoElement geo,
 			Property... properties) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
@@ -38,6 +38,9 @@ public class IconButtonWithProperty extends IconButton {
 		AriaHelper.setAriaHasPopup(this);
 
 		buildGUI(geo, properties);
+		if (className != null) {
+			propertyPopup.addStyleName(className);
+		}
 		addHandlers();
 	}
 
