@@ -63,15 +63,21 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property fillingStyleProperty = GeoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), fillingStyleProperty);
+		addPropertyPopupButton(activeGeoList.get(0), false, fillingStyleProperty);
 
 		PropertiesArray lineStyleProperty = GeoElementPropertiesFactory
 				.createNotesLineStyleProperties(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), lineStyleProperty.getProperties());
+		addPropertyPopupButton(activeGeoList.get(0), false, lineStyleProperty.getProperties());
+
+		addDivider();
 
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), horizontalAlignmentProperty);
+		addPropertyPopupButton(activeGeoList.get(0), true, horizontalAlignmentProperty);
+
+		Property verticalAlignmentProperty = GeoElementPropertiesFactory
+				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), true, verticalAlignmentProperty);
 
 		addDivider();
 
@@ -79,7 +85,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addPropertyPopupButton(GeoElement geo, Property... properties) {
+	private void addPropertyPopupButton(GeoElement geo, boolean closePopupOnAction,
+			Property... properties) {
 		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
@@ -87,7 +94,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		IconButton button = new IconButtonWithProperty(getApp(), getIcon(
 				(IconsEnumeratedProperty<?>) firstProperty), firstProperty.getName(), geo,
-				properties);
+				closePopupOnAction, properties);
 		styleAndRegisterButton(button);
 	}
 
