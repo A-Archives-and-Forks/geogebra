@@ -32,8 +32,8 @@ public class IconButtonWithProperty extends IconButton {
 	 * @param closePopupOnAction - weather should close popup after clicking on popup element
 	 * @param properties - array of applicable properties
 	 */
-	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel, GeoElement geo,
-			boolean closePopupOnAction, Property... properties) {
+	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel,
+			GeoElement geo, boolean closePopupOnAction, Property... properties) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		widgetAdapter = new PropertyWidgetAdapter(appW, closePopupOnAction);
