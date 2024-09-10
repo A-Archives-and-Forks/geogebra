@@ -49,7 +49,7 @@ public class SegmentEndProperty extends AbstractEnumeratedProperty<SegmentStyle>
 	protected void doSetValue(SegmentStyle value) {
 		GeoSegment element = (GeoSegment) delegate.getElement();
 		element.setEndStyle(value);
-		element.updateVisualStyle(GProperty.COMBINED);
+		element.updateVisualStyleRepaint(GProperty.COMBINED);
 	}
 
 	@Override
