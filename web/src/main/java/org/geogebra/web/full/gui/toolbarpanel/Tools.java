@@ -147,13 +147,13 @@ public class Tools extends FlowPanel implements SetLabels {
 			this.addStyleName("customToolbar");
 		}
 
-		List<ToolCategory> categories = parentTab.toolCollection.getCategories();
+		List<ToolCategory> categories = app.getAvailableTools().getCategories();
 
 		for (int i = 0; i < categories.size(); i++) {
 			ToolCategory category = categories.get(i);
 			if (GlobalScope.examController.isIdle() || category.isAllowedInExam()) {
 				CategoryPanel catPanel = new CategoryPanel(category,
-						parentTab.toolCollection.getTools(i));
+						app.getAvailableTools().getTools(i));
 				categoryPanelList.add(catPanel);
 				add(catPanel);
 			}
