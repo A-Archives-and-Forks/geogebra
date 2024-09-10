@@ -50,7 +50,7 @@ public class ToolsTab extends ToolbarTab {
 	/**
 	 * Tool categories
 	 */
-	ToolCollection toolCollection;
+	private final ToolCollection toolCollection;
 
 	/**
 	 * panel containing tools
