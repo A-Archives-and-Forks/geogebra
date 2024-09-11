@@ -10,6 +10,7 @@ import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.ModeChangeListener;
 import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.exam.ExamController;
+import org.geogebra.common.gui.toolcategorization.ToolsetLevel;
 import org.geogebra.common.gui.view.table.TableValuesView;
 import org.geogebra.common.io.layout.DockPanelData.TabIds;
 import org.geogebra.common.io.layout.Perspective;
@@ -94,7 +95,7 @@ public class ToolbarPanel extends FlowPanel
 	private final ScheduledCommand deferredOnRes = this::resize;
 	private @CheckForNull UndoRedoPanel undoRedoPanel;
 	private FlowPanel heading;
-	private DockPanelDecorator decorator;
+	private final DockPanelDecorator decorator;
 	private final ExamController examController = GlobalScope.examController;
 
 	/**
@@ -1204,6 +1205,7 @@ public class ToolbarPanel extends FlowPanel
 	public void updateContent() {
 		ToolsTab toolsTab = getToolsTab();
 		if (toolsTab != null) {
+			toolsTab.setLevel(ToolsetLevel.STANDARD);
 			toolsTab.updateContent();
 		}
 	}
@@ -1386,10 +1388,6 @@ public class ToolbarPanel extends FlowPanel
 		// if tool tabs is active, still paint algebra
 		ToolbarTab active = tabTable != null && tabTable.isActive() ? tabTable : tabAlgebra;
 		active.paintToCanvas(context2d, counter, left + 72, top);
-	}
-
-	public void setAVIconNonSelect(boolean exam) {
-		navRail.setAVIconNonSelect(exam);
 	}
 
 	/**

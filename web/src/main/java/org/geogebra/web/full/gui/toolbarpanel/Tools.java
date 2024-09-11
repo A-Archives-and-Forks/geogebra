@@ -7,6 +7,7 @@ import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.toolbar.ToolBar;
 import org.geogebra.common.gui.toolcategorization.ToolCategory;
+import org.geogebra.common.gui.toolcategorization.ToolCollection;
 import org.geogebra.common.main.App;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.util.debug.Analytics;
@@ -147,13 +148,15 @@ public class Tools extends FlowPanel implements SetLabels {
 			this.addStyleName("customToolbar");
 		}
 
-		List<ToolCategory> categories = app.getAvailableTools().getCategories();
+		ToolCollection collection = app.getAvailableTools();
+		collection.setLevel(parentTab.getLevel());
+		List<ToolCategory> categories = collection.getCategories();
 
 		for (int i = 0; i < categories.size(); i++) {
 			ToolCategory category = categories.get(i);
 			if (GlobalScope.examController.isIdle() || category.isAllowedInExam()) {
 				CategoryPanel catPanel = new CategoryPanel(category,
-						app.getAvailableTools().getTools(i));
+						collection.getTools(i));
 				categoryPanelList.add(catPanel);
 				add(catPanel);
 			}

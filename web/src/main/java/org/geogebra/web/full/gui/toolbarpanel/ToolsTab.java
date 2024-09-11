@@ -2,10 +2,7 @@ package org.geogebra.web.full.gui.toolbarpanel;
 
 import java.util.Collection;
 
-import org.geogebra.common.gui.toolcategorization.ToolCollection;
-import org.geogebra.common.gui.toolcategorization.ToolCollectionFactory;
 import org.geogebra.common.gui.toolcategorization.ToolsetLevel;
-import org.geogebra.common.gui.util.InvalidToolFilter;
 import org.geogebra.common.main.App;
 import org.geogebra.web.full.util.CustomScrollbar;
 import org.geogebra.web.html5.gui.util.AriaHelper;
@@ -46,11 +43,7 @@ public class ToolsTab extends ToolbarTab {
 	private final App app;
 
 	public boolean isCustomToolbar = false;
-
-	/**
-	 * Tool categories
-	 */
-	private final ToolCollection toolCollection;
+	private ToolsetLevel level = ToolsetLevel.STANDARD;
 
 	/**
 	 * panel containing tools
@@ -60,10 +53,6 @@ public class ToolsTab extends ToolbarTab {
 		super(toolbarPanel);
 		this.toolbarPanel = toolbarPanel;
 		this.app = toolbarPanel.getApp();
-
-		ToolCollectionFactory toolCollectionFactory = app.createToolCollectionFactory();
-		toolCollection = toolCollectionFactory.createToolCollection();
-		toolCollection.filter(new InvalidToolFilter(app));
 
 		createContents();
 		if (!isCustomToolbar) {
@@ -92,13 +81,13 @@ public class ToolsTab extends ToolbarTab {
 
 	/** More button handler */
 	private void onMorePressed() {
-		toolCollection.setLevel(toolCollection.getLevel().getNext());
+		setLevel(level.getNext());
 		updateContent();
 	}
 
 	/** Less button handler */
 	private void onLessPressed() {
-		toolCollection.setLevel(toolCollection.getLevel().getPrevious());
+		setLevel(level.getPrevious());
 		updateContent();
 	}
 
@@ -106,8 +95,7 @@ public class ToolsTab extends ToolbarTab {
 	 * add more or less button to tool panel
 	 */
 	private void addMoreLessButtons() {
-		Collection<ToolsetLevel> levels = toolCollection.getLevels();
-		ToolsetLevel level = toolCollection.getLevel();
+		Collection<ToolsetLevel> levels = app.getAvailableTools().getLevels();
 
 		if (levels.contains(level.getPrevious())) {
 			toolsPanel.add(lessBtn);
@@ -208,5 +196,13 @@ public class ToolsTab extends ToolbarTab {
 			moreBtn.setText(app.getLocalization().getMenu("Tools.More"));
 			lessBtn.setText(app.getLocalization().getMenu("Tools.Less"));
 		}
+	}
+
+	public ToolsetLevel getLevel() {
+		return level;
+	}
+
+	public void setLevel(ToolsetLevel level) {
+		this.level = level;
 	}
 }
