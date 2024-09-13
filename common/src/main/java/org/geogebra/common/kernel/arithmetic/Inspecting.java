@@ -359,6 +359,36 @@ public interface Inspecting {
 
 	}
 
+	public enum OperationChecker implements Inspecting {
+		/** singleton instance */
+		INSTANCE;
+		private Operation operation;
+		private int count = 0;
+
+		public static OperationChecker get(Operation operation) {
+			INSTANCE.operation = operation;
+			INSTANCE.count = 0;
+			return INSTANCE;
+		}
+
+		@Override
+		public boolean check(ExpressionValue v) {
+			if (v.isOperation(operation)) {
+				count++;
+			}
+
+			return false;
+		}
+
+		public int getCount() {
+			return count;
+		}
+
+		public void reset() {
+			count = 0;
+		}
+	}
+
 	/**
 	 * @author csilla check whether the expression contains only "-" (needed for
 	 *         Theorem proving)

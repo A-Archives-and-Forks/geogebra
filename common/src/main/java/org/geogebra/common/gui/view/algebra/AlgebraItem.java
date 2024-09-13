@@ -6,6 +6,7 @@ import org.geogebra.common.kernel.algos.AlgoFractionText;
 import org.geogebra.common.kernel.algos.Algos;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
+import org.geogebra.common.kernel.arithmetic.RationalizableFraction;
 import org.geogebra.common.kernel.cas.AlgoSolve;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.DescriptionMode;
@@ -404,7 +405,8 @@ public class AlgebraItem {
 	 * @return whether we should show symbolic switch for the geo
 	 */
 	public static boolean shouldShowSymbolicOutputButton(GeoElement geo) {
-		return isSymbolicDiffers(geo) && !isTextItem(geo);
+		return (isSymbolicDiffers(geo) && !isTextItem(geo))
+				|| RationalizableFraction.isSupported(geo);
 	}
 
 	/**
