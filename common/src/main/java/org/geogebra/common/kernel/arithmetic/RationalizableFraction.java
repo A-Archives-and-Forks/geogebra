@@ -20,17 +20,19 @@ public class RationalizableFraction {
 			return false;
 		}
 
-		if (hasMoreSquareRoots(root.getLeft()) || hasMoreSquareRoots(root.getRight())) {
+		int sq1 = getSquareRootCount(root.getLeft());
+		int sq2 = getSquareRootCount(root.getRight());
+		if (((sq1 > 1 || sq2 > 1) || (sq1 + sq2 == 0))) {
 			return false;
 		}
 
 		return isSupported(root.getLeftTree()) && isSupported(root.getRightTree());
 	}
 
-	private static boolean hasMoreSquareRoots(ExpressionValue node) {
+	private static int getSquareRootCount(ExpressionValue node) {
 		OperationChecker operationChecker = OperationChecker.get(Operation.SQRT);
 		node.inspect(operationChecker);
-		return operationChecker.getCount() > 1;
+		return operationChecker.getCount();
 	}
 
 	private static boolean isSupported(ExpressionNode node) {

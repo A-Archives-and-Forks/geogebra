@@ -47,6 +47,7 @@ import org.geogebra.common.kernel.arithmetic.FunctionVariable;
 import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.MySpecialDouble;
 import org.geogebra.common.kernel.arithmetic.NumberValue;
+import org.geogebra.common.kernel.arithmetic.RationalizableFraction;
 import org.geogebra.common.kernel.arithmetic.RecurringDecimal;
 import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.geogebra.common.kernel.arithmetic.ValueType;
@@ -2216,6 +2217,10 @@ public class GeoNumeric extends GeoElement
 			} else {
 				return rd.toString(tpl);
 			}
+		}
+
+		if (symbolicMode && RationalizableFraction.isSupported(this)) {
+			return "-----";
 		}
 
 		return super.getFormulaString(tpl, substituteNumbers);

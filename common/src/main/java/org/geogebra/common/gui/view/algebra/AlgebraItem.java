@@ -216,7 +216,7 @@ public class AlgebraItem {
 	public static String getOutputTextForGeoElement(GeoElement element) {
 		String outputText = "";
 		if (element.isLaTeXDrawableGeo()
-				|| AlgebraItem.isGeoFraction(element)) {
+				|| RationalizableFraction.isSupported(element)) {
 			outputText = element.getLaTeXDescriptionRHS(true,
 					getOutputStringTemplate(element));
 		} else {

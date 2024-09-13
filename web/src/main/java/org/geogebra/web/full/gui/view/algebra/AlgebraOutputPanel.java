@@ -2,6 +2,7 @@ package org.geogebra.web.full.gui.view.algebra;
 
 import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.gui.view.algebra.AlgebraItem;
+import org.geogebra.common.kernel.arithmetic.RationalizableFraction;
 import org.geogebra.common.kernel.geos.DescriptionMode;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
@@ -45,10 +46,8 @@ public class AlgebraOutputPanel extends FlowPanel {
 	}
 
 	/**
-	 * @param text
-	 *            prefix
-	 * @param isLaTeX
-	 *            whether output is LaTeX
+	 * @param text prefix
+	 * @param isLaTeX whether output is LaTeX
 	 */
 	void addPrefixLabel(String text, boolean isLaTeX) {
 		final Label label = new Label(text);
@@ -178,8 +177,9 @@ public class AlgebraOutputPanel extends FlowPanel {
 
 		if (latex
 				&& (geo1.isLaTeXDrawableGeo()
-						|| AlgebraItem.isGeoFraction(geo1)
-						|| AlgebraItem.isGeoSurd(geo1))) {
+				|| AlgebraItem.isGeoFraction(geo1)
+				|| RationalizableFraction.isSupported(geo1)
+				|| AlgebraItem.isGeoSurd(geo1))) {
 			valCanvas = DrawEquationW.paintOnCanvas(geo1, text, valCanvas,
 					fontSize);
 			valCanvas.addStyleName("canvasVal");
@@ -213,12 +213,9 @@ public class AlgebraOutputPanel extends FlowPanel {
 	*/
 
 	/**
-	 * @param text
-	 *            preview text
-	 * @param previewGeo
-	 *            preview geo
-	 * @param fontSize
-	 *            size in pixels
+	 * @param text preview text
+	 * @param previewGeo preview geo
+	 * @param fontSize size in pixels
 	 */
 	public void showLaTeXPreview(String text, GeoElementND previewGeo,
 			int fontSize) {
