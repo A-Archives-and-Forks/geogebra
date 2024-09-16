@@ -242,7 +242,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			addAction(action);
 		}
 
-		if (mode != GeoLine.PARAMETRIC) {
+		if (mode != GeoLine.EQUATION_PARAMETRIC) {
 			action = new AbstractAction(loc.getMenu("ParametricForm")) {
 				/**
 				 * 

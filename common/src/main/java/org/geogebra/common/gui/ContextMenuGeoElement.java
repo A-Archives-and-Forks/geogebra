@@ -163,7 +163,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.PARAMETRIC);
+				line1.setMode(GeoLine.EQUATION_PARAMETRIC);
 				line1.updateRepaint();
 			}
 		}

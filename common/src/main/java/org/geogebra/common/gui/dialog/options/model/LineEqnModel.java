@@ -20,7 +20,7 @@ public class LineEqnModel extends MultipleOptionsModel {
 		super(app);
 
 		eqnValues = Arrays.asList(GeoLine.EQUATION_IMPLICIT,
-				GeoLine.EQUATION_EXPLICIT, GeoLine.PARAMETRIC,
+				GeoLine.EQUATION_EXPLICIT, GeoLine.EQUATION_PARAMETRIC,
 				GeoLine.EQUATION_GENERAL, GeoLine.EQUATION_USER);
 
 	}

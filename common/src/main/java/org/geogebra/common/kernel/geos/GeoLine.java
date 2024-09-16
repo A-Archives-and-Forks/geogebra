@@ -86,7 +86,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	/** explicit equation */
 	public static final int EQUATION_EXPLICIT = 1; // y = m x + b
 	/** parametric equation */
-	public static final int PARAMETRIC = 2;
+	public static final int EQUATION_PARAMETRIC = 2;
 	/** non-canonical implicit equation */
 	public static final int EQUATION_IMPLICIT_NON_CANONICAL = 3;
 	/** general form **/
@@ -888,7 +888,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	@Override
 	final public void setToParametric(String parameter) {
-		setMode(GeoLine.PARAMETRIC);
+		setMode(GeoLine.EQUATION_PARAMETRIC);
 		if (parameter != null && parameter.length() > 0) {
 			this.parameter = parameter;
 		}
@@ -995,7 +995,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 		if (!coefficientsDefined() || (DoubleUtil.isZero(x) && DoubleUtil.isZero(y)
 				&& getToStringMode() != EQUATION_USER)) {
-			if (getToStringMode() == PARAMETRIC) {
+			if (getToStringMode() == EQUATION_PARAMETRIC) {
 				return "X" + tpl.getEqualsWithSpace() + "(?, ?)";
 			} else {
 				// eg list = {x = ?}
@@ -1010,7 +1010,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			g[2] = z;
 			return kernel.buildExplicitEquation(g, vars, tpl, true).toString();
 
-		case PARAMETRIC:
+		case EQUATION_PARAMETRIC:
 			getInhomPointOnLine(P); // point
 			StringBuilder sbBuildValueStr = getSbToString();
 			GeoCasCell casCell = getCorrespondingCasCell();
@@ -1719,12 +1719,12 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	@Override
 	public boolean isParametric() {
-		return getToStringMode() == GeoLine.PARAMETRIC;
+		return getToStringMode() == GeoLine.EQUATION_PARAMETRIC;
 	}
 
 	@Override
 	public ValueType getValueType() {
-		return getToStringMode() == GeoLine.PARAMETRIC ? ValueType.PARAMETRIC2D
+		return getToStringMode() == GeoLine.EQUATION_PARAMETRIC ? ValueType.PARAMETRIC2D
 				: ValueType.EQUATION;
 	}
 
@@ -1970,7 +1970,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	private void setModeWithImplicitEquationAsDefault(int mode) {
 		switch (mode) {
-			case PARAMETRIC:
+			case EQUATION_PARAMETRIC:
 			case EQUATION_EXPLICIT:
 			case EQUATION_IMPLICIT_NON_CANONICAL:
 			case EQUATION_GENERAL:

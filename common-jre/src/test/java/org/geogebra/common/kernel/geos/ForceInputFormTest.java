@@ -43,8 +43,8 @@ public class ForceInputFormTest extends BaseUnitTest {
 
         GeoLine geoLineWithCommand = factory.createGeoLineWithCommand();
         geoLineWithCommand.setLabel("lineCmd");
-        geoLineWithCommand.setMode(GeoLine.PARAMETRIC, true);
-        Assert.assertEquals(GeoLine.PARAMETRIC, geoLineWithCommand.getToStringMode());
+        geoLineWithCommand.setMode(GeoLine.EQUATION_PARAMETRIC, true);
+        Assert.assertEquals(GeoLine.EQUATION_PARAMETRIC, geoLineWithCommand.getToStringMode());
 
         getApp().setXML(getApp().getXML(), true);
 

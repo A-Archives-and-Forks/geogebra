@@ -21,7 +21,7 @@ public class EquationFormProperty extends AbstractNamedEnumeratedProperty<Intege
 			throws NotApplicablePropertyException {
 		super(localization, "Equation");
 		delegate = new EquationFormDelegate(element);
-		setValues(GeoLine.EQUATION_IMPLICIT, GeoLine.EQUATION_EXPLICIT, GeoLine.PARAMETRIC,
+		setValues(GeoLine.EQUATION_IMPLICIT, GeoLine.EQUATION_EXPLICIT, GeoLine.EQUATION_PARAMETRIC,
 				GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, GeoLine.EQUATION_GENERAL,
 				GeoLine.EQUATION_USER);
 		setValueNames("ImplicitLineEquation", "ExplicitLineEquation", "ParametricForm",

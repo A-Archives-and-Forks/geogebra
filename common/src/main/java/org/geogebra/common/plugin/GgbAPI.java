@@ -1858,7 +1858,7 @@ public abstract class GgbAPI implements JavaScriptAPI {
 			GeoLine line = (GeoLine) geo;
 
 			if ("parametric".equals(style)) {
-				line.setMode(GeoLine.PARAMETRIC);
+				line.setMode(GeoLine.EQUATION_PARAMETRIC);
 			} else if ("explicit".equals(style)) {
 				line.setMode(GeoLine.EQUATION_EXPLICIT);
 			} else if ("implicit".equals(style)) {

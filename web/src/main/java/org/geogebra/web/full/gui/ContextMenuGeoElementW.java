@@ -727,7 +727,7 @@ public class ContextMenuGeoElementW extends ContextMenuGeoElement
 			addAction(action, sb.toString());
 		}
 
-		if (mode != GeoLine.PARAMETRIC) {
+		if (mode != GeoLine.EQUATION_PARAMETRIC) {
 			action = () -> parametricFormCmd();
 			addAction(action, loc.getMenu("ParametricForm"));
 		}

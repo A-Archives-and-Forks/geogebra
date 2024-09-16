@@ -206,7 +206,7 @@ public class XMLBuilder {
 	public static void appendEquationTypeLine(StringBuilder sb, int toStringMode,
 			String parameter) {
 		switch (toStringMode) {
-		case GeoLine.PARAMETRIC:
+		case GeoLine.EQUATION_PARAMETRIC:
 			sb.append("\t<eqnStyle style=\"parametric\" parameter=\"");
 			sb.append(parameter);
 			sb.append("\"/>\n");
