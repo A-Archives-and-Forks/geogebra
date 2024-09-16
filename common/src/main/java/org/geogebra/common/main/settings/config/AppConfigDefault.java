@@ -26,6 +26,7 @@ import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.AppKeyboardType;
+import org.geogebra.common.main.EquationForms;
 import org.geogebra.common.main.settings.LabelVisibility;
 import org.geogebra.common.main.settings.updater.SettingsUpdater;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
@@ -312,6 +313,12 @@ public class AppConfigDefault extends AbstractAppConfig {
 	@Override
 	public AppKeyboardType getKeyboardType() {
 		return AppKeyboardType.GRAPHING;
+	}
+
+	@CheckForNull
+	@Override
+	public EquationForms getEquationForms() {
+		return null;
 	}
 
 	@Override

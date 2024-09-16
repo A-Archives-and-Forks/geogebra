@@ -22,7 +22,9 @@ import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppKeyboardType;
+import org.geogebra.common.main.EquationForms;
 import org.geogebra.common.main.settings.LabelVisibility;
+import org.geogebra.common.main.settings.config.equationforms.EquationFormsGeometry;
 import org.geogebra.common.main.settings.updater.GeometrySettingsUpdater;
 import org.geogebra.common.main.settings.updater.SettingsUpdater;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
@@ -302,6 +304,12 @@ public class AppConfigGeometry extends AbstractAppConfig {
 	@Override
 	public ParserFunctionsFactory createParserFunctionsFactory() {
 		return ParserFunctionsFactory.createParserFunctionsFactory();
+	}
+
+	@CheckForNull
+	@Override
+	public EquationForms getEquationForms() {
+		return new EquationFormsGeometry();
 	}
 
 	@Override

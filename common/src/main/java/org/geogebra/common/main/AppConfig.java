@@ -26,8 +26,6 @@ public interface AppConfig extends Serializable {
 
 	String getAVTitle();
 
-	int getLineDisplayStyle();
-
 	/**
 	 * @return translation key for short app name (Scientific Calculator)
 	 */
@@ -246,12 +244,21 @@ public interface AppConfig extends Serializable {
 	 */
 	Set<FillType> getAvailableFillTypes();
 
+	// TODO this replaces the semanticlaly unclear getLineDisplayStyle(),
+	// getEnforcedLineEquationForm(), getEnforcedConicEquationForm()
+	@CheckForNull
+	EquationForms getEquationForms();
+
+	@Deprecated // replaced by getEquationForms()
+	int getLineDisplayStyle();
+
 	/**
 	 * Returns an equation form constant declared in the GeoLine class,
 	 * or -1 if it's not set
 	 *
 	 * @return equation form or -1
 	 */
+	@Deprecated // replaced by getEquationForms()
 	int getEnforcedLineEquationForm();
 
 	/**
@@ -260,6 +267,7 @@ public interface AppConfig extends Serializable {
 	 *
 	 * @return equation form or -1
 	 */
+	@Deprecated // replaced by getEquationForms()
 	int getEnforcedConicEquationForm();
 
 	/**

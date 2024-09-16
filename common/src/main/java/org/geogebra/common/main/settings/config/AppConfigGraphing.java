@@ -25,7 +25,9 @@ import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppKeyboardType;
+import org.geogebra.common.main.EquationForms;
 import org.geogebra.common.main.settings.LabelVisibility;
+import org.geogebra.common.main.settings.config.equationforms.EquationFormsGraphing;
 import org.geogebra.common.main.settings.updater.GraphingSettingsUpdater;
 import org.geogebra.common.main.settings.updater.SettingsUpdater;
 import org.geogebra.common.main.syntax.suggestionfilter.GraphingSyntaxFilter;
@@ -62,11 +64,6 @@ public class AppConfigGraphing extends AbstractAppConfig {
 	@Override
 	public String getAVTitle() {
 		return "Algebra";
-	}
-
-	@Override
-	public int getLineDisplayStyle() {
-		return GeoLine.EQUATION_EXPLICIT;
 	}
 
 	@Override
@@ -310,6 +307,16 @@ public class AppConfigGraphing extends AbstractAppConfig {
 	@Override
 	public ParserFunctionsFactory createParserFunctionsFactory() {
 		return ParserFunctionsFactory.createGraphingParserFunctionsFactory();
+	}
+
+	@Override
+	public EquationForms getEquationForms() {
+		return new EquationFormsGraphing();
+	}
+
+	@Override
+	public int getLineDisplayStyle() {
+		return GeoLine.EQUATION_EXPLICIT;
 	}
 
 	@Override
