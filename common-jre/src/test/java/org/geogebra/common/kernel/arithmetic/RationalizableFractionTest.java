@@ -40,11 +40,24 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testRationalizationOutput() {
+	public void decimalValueShouldBeOK() {
 		GeoNumeric num = add("1/sqrt(2)");
 		num.setSymbolicMode(false, true);
 		assertEquals("0.71", num.getFormulaString(StringTemplate.defaultTemplate, true));
 		num.setSymbolicMode(true, true);
-		assertEquals("sqrt(2) / 2", num.getFormulaString(StringTemplate.defaultTemplate, true));
+	}
+
+	@Test
+	public void testRationalizationOutput() {
+		rationalizationShouldBe("1 / sqrt(2)", "sqrt(2) / 2");
+		rationalizationShouldBe("(sqrt(2) + 1) / sqrt(2)", "(2 + sqrt(2)) / 2");
+		rationalizationShouldBe("(1 + sqrt(2)) / sqrt(2)", "(sqrt(2) + 2) / 2");
+		rationalizationShouldBe("1 / (1 - sqrt(2))", "sqrt(2) + 1");
+	}
+
+	private void rationalizationShouldBe(String definition, String expected) {
+		GeoNumeric num = add(definition);
+		num.setSymbolicMode(true, true);
+		assertEquals(expected, num.getFormulaString(StringTemplate.defaultTemplate, true));
 	}
 }

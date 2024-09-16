@@ -2220,7 +2220,7 @@ public class GeoNumeric extends GeoElement
 		}
 
 		if (symbolicMode && RationalizableFraction.isSupported(this)) {
-			return "-----";
+			return RationalizableFraction.apply(this, tpl);
 		}
 
 		return super.getFormulaString(tpl, substituteNumbers);

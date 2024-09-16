@@ -1,5 +1,7 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.Inspecting.OperationChecker;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
@@ -39,5 +41,41 @@ public class RationalizableFraction {
 		return node.isLeaf() || node.inspect(
 				v -> v.isOperation(Operation.SQRT) || v.isOperation(Operation.PLUS)
 						|| v.isOperation(Operation.MINUS));
+	}
+
+	public static String apply(GeoNumeric num, StringTemplate tpl) {
+		ExpressionNode node = num.getDefinition();
+		ExpressionNode numerator = node.getLeftTree();
+		ExpressionNode denominator = node.getRightTree();
+		ExpressionNode result=null;
+		Kernel kernel = num.getKernel();
+		if (denominator.isOperation(Operation.SQRT)) {
+			ExpressionValue rationalized = denominator.getLeft();
+			if (numerator.isLeaf()) {
+				result = new ExpressionNode(kernel,
+						numerator.multiply(denominator),
+						Operation.DIVIDE, rationalized);
+			} else {
+				ExpressionNode numeratorLeft =
+						simplifiedMultiply(rationalized, numerator.getLeftTree(), denominator);
+				ExpressionNode numeratorRight =
+						simplifiedMultiply(rationalized, numerator.getRightTree(), denominator);
+				ExpressionNode newNumerator =
+						new ExpressionNode(kernel, numeratorLeft, numerator.getOperation(),
+								numeratorRight);
+				result = new ExpressionNode(kernel,
+						newNumerator,
+						Operation.DIVIDE, rationalized);
+
+			}
+		}
+		return result != null ? result.toOutputValueString(tpl) : "";
+	}
+
+	private static ExpressionNode simplifiedMultiply(ExpressionValue rationalized,
+			ExpressionNode node1, ExpressionNode denominator) {
+		return rationalized.equals(node1.getLeft())
+				? rationalized.wrap()
+				: node1.multiply(denominator);
 	}
 }
