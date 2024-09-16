@@ -657,6 +657,9 @@ public class AppCommon extends App {
 		return config;
 	}
 
+	/**
+	 * For testing only
+	 */
 	public void setConfig(AppConfig config) {
 		this.config = config;
 		this.kernel.setEquationForms(config.getEquationForms());

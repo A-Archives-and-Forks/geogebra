@@ -126,11 +126,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public GeoLine(Construction c) {
 		super(c);
 		setConstructionDefaults();
-
-		EquationForms equationForms = c.getKernel().getEquationForms();
-		if (equationForms != null) {
-			setEquationForm(equationForms.getDefaultLineEquationForm());
-		}
+		setEquationFormFromKernel();
 	}
 
 	/**
@@ -161,6 +157,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public GeoLine(Construction cons, double a, double b, double c) {
 		super(cons, a, b, c); // GeoVec3D constructor
 		setConstructionDefaults();
+		setEquationFormFromKernel();
 	}
 
 	/**
@@ -940,6 +937,13 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	public void setEquationForm(int equationForm) {
 		toStringMode = equationForm;
+	}
+
+	private void setEquationFormFromKernel() {
+		EquationForms equationForms = cons.getKernel().getEquationForms();
+		if (equationForms != null) {
+			setEquationForm(equationForms.getDefaultLineEquationForm());
+		}
 	}
 
 	/** output depends on mode: PARAMETRIC or EQUATION */
