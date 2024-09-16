@@ -22,7 +22,7 @@ import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppKeyboardType;
-import org.geogebra.common.main.EquationForms;
+import org.geogebra.common.kernel.EquationForms;
 import org.geogebra.common.main.settings.LabelVisibility;
 import org.geogebra.common.main.settings.config.equationforms.EquationFormsGeometry;
 import org.geogebra.common.main.settings.updater.GeometrySettingsUpdater;

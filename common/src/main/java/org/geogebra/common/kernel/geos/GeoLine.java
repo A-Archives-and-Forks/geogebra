@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationForms;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
 import org.geogebra.common.kernel.Path;
@@ -125,10 +126,10 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public GeoLine(Construction c) {
 		super(c);
 		setConstructionDefaults();
-		int lineStyle = getConstruction().getApplication().getConfig()
-				.getLineDisplayStyle();
-		if (lineStyle > -1) {
-			setMode(lineStyle);
+
+		EquationForms equationForms = c.getKernel().getEquationForms();
+		if (equationForms != null) {
+			setEquationForm(equationForms.getDefaultLineEquationForm());
 		}
 	}
 
@@ -935,6 +936,10 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		} else {
 			setModeWithImplicitEquationAsDefault(mode);
 		}
+	}
+
+	public void setEquationForm(int equationForm) {
+		toStringMode = equationForm;
 	}
 
 	/** output depends on mode: PARAMETRIC or EQUATION */

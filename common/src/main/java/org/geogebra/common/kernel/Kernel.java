@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeSet;
 
+import javax.annotation.CheckForNull;
+
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.cas.GeoGebraCAS;
 import org.geogebra.common.euclidian.EuclidianView;
@@ -183,6 +185,8 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	protected AlgebraProcessor algProcessor;
 	/** Evaluator for ExpressionNode */
 	protected ExpressionNodeEvaluator expressionNodeEvaluator;
+
+	private EquationForms equationForms;
 
 	/**
 	 * CAS variable handling
@@ -407,6 +411,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	public Kernel(App app, GeoFactory factory) {
 		this(factory);
 		this.app = app;
+		this.equationForms = app.getConfig().getEquationForms();
 
 		newConstruction();
 		getExpressionNodeEvaluator();
@@ -5239,5 +5244,14 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 
 	public GeoFunctionConverter getFunctionConverter() {
 		return functionConverter;
+	}
+
+	@CheckForNull
+	public EquationForms getEquationForms() {
+		return equationForms;
+	}
+
+	public void setEquationForms(@CheckForNull EquationForms equationForms) {
+		this.equationForms = equationForms;
 	}
 }

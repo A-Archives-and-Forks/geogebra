@@ -1,4 +1,4 @@
-package org.geogebra.common.main;
+package org.geogebra.common.kernel;
 
 /**
  * The equation forms to be used for lines and other objects, as created by different sources.

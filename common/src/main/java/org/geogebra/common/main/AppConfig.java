@@ -8,6 +8,7 @@ import javax.annotation.CheckForNull;
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.toolcategorization.AppType;
 import org.geogebra.common.io.layout.DockPanelData;
+import org.geogebra.common.kernel.EquationForms;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
@@ -244,10 +245,10 @@ public interface AppConfig extends Serializable {
 	 */
 	Set<FillType> getAvailableFillTypes();
 
-	// TODO this replaces the semanticlaly unclear getLineDisplayStyle(),
-	// getEnforcedLineEquationForm(), getEnforcedConicEquationForm()
+	// TODO this replaces the semantically unclear getLineDisplayStyle(),
+	//  getEnforcedLineEquationForm(), getEnforcedConicEquationForm()
 	@CheckForNull
-	EquationForms getEquationForms();
+    EquationForms getEquationForms();
 
 	@Deprecated // replaced by getEquationForms()
 	int getLineDisplayStyle();

@@ -1,7 +1,7 @@
 package org.geogebra.common.main.settings.config.equationforms;
 
 import org.geogebra.common.kernel.geos.GeoLine;
-import org.geogebra.common.main.EquationForms;
+import org.geogebra.common.kernel.EquationForms;
 
 // TODO fill in correct values
 public class EquationFormsGeometry implements EquationForms {

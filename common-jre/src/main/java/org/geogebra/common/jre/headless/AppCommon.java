@@ -659,6 +659,7 @@ public class AppCommon extends App {
 
 	public void setConfig(AppConfig config) {
 		this.config = config;
+		this.kernel.setEquationForms(config.getEquationForms());
 	}
 
 	public void setCASFactory(CASFactory casFactory) {
