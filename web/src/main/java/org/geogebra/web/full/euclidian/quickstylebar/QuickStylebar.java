@@ -2,8 +2,8 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
+import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.EuclidianStyleBar;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.SetLabels;
@@ -35,10 +35,6 @@ import org.gwtproject.user.client.ui.FlowPanel;
 public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	private final EuclidianView ev;
 	private final StylebarPositioner stylebarPositioner;
-	private final BiConsumer<Integer, Integer> positionSetter = (posX, posY) -> {
-		getElement().getStyle().setLeft(posX, Unit.PX);
-		getElement().getStyle().setTop(posY, Unit.PX);
-	};
 	private final List<IconButton> quickButtons = new ArrayList<>();
 	public final static int POPUP_MENU_DISTANCE = 8;
 	private ContextMenuGeoElementW contextMenu;
@@ -205,8 +201,14 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		clear();
 		buildGUI();
-		stylebarPositioner.positionDynStylebar(this, getOffsetWidth(), getOffsetHeight(),
-				positionSetter);
+		GPoint position = stylebarPositioner.getPositionForStyleBar(getOffsetWidth(),
+				getOffsetHeight());
+		if (position != null) {
+			getElement().getStyle().setLeft(position.x, Unit.PX);
+			getElement().getStyle().setTop(position.y, Unit.PX);
+		} else {
+			setVisible(false);
+		}
 	}
 
 	@Override
