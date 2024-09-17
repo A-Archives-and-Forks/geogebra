@@ -53,11 +53,14 @@ public class RationalizableFraction {
 		ExpressionValue rationalized = denominator.getLeft();
 		if (numerator.isLeaf()) {
 			result = getNumeratorIsLeaf(kernel, numerator, denominator);
+		} else if (numerator.isOperation(Operation.SQRT)
+				|| (hasTwoTags(numerator) && hasTwoTags(denominator))) {
+			result = getNumeratorIsSqrt(kernel, numerator, denominator);
 		} else {
-			ExpressionNode numeratorLeft =
-					simplifiedMultiply(rationalized, numerator.getLeftTree(), denominator);
+ 			ExpressionNode numeratorLeft =
+					simplifiedMultiply(kernel, rationalized, numerator.getLeftTree(), denominator);
 			ExpressionNode numeratorRight =
-					simplifiedMultiply(rationalized, numerator.getRightTree(), denominator);
+					simplifiedMultiply(kernel, rationalized, numerator.getRightTree(), denominator);
 			ExpressionNode newNumerator =
 					new ExpressionNode(kernel, numeratorLeft, numerator.getOperation(),
 							numeratorRight);
@@ -67,6 +70,12 @@ public class RationalizableFraction {
 
 		}
 		return result != null ? result.toOutputValueString(tpl) : "";
+	}
+
+	private static boolean hasTwoTags(ExpressionNode node) {
+		// isSupported() guarantees that exactly one of the leaves is SQRT by now,
+		// so no check is needed here.
+		return node.isOperation(Operation.PLUS) || node.isOperation(Operation.MINUS);
 	}
 
 	private static ExpressionNode getNumeratorIsLeaf(Kernel kernel, ExpressionNode numerator,
@@ -102,7 +111,7 @@ public class RationalizableFraction {
 			double v = denominator.multiply(mul).evaluateDouble();
 			if (DoubleUtil.isEqual(v, 1, Kernel.STANDARD_PRECISION)) {
 				return new ExpressionNode(kernel,
-						numerator.multiply(mul));
+						numerator.multiplyR(mul));
 			}
 
 			if (DoubleUtil.isEqual(v, -1, Kernel.STANDARD_PRECISION)) {
@@ -122,10 +131,54 @@ public class RationalizableFraction {
 		throw new NoFactorization();
 	}
 
-	private static ExpressionNode simplifiedMultiply(ExpressionValue rationalized,
+	private static ExpressionNode simplifiedMultiply(Kernel kernel, ExpressionValue rationalized,
 			ExpressionNode node1, ExpressionNode denominator) {
 		return rationalized.equals(node1.getLeft())
 				? rationalized.wrap()
-				: node1.multiply(denominator);
+				: doMultiply(kernel, node1, denominator);
+	}
+
+	private static ExpressionNode doMultiply(Kernel kernel, ExpressionNode left, ExpressionNode right) {
+		ExpressionNode sqrts = checkJoinSqrts(kernel, left, right);
+		if (sqrts != null) {
+			return sqrts;
+		}
+		return left.multiply(right);
+	}
+
+	private static ExpressionNode getNumeratorIsSqrt(Kernel kernel, ExpressionNode numerator,
+			ExpressionNode denominator) {
+		if (numerator.isOperation(Operation.SQRT)) {
+			ExpressionNode sqrts = checkJoinSqrts(kernel, numerator, denominator);
+
+			if (sqrts != null) {
+				return new ExpressionNode(kernel,
+						sqrts,
+						Operation.DIVIDE, denominator.getLeft());
+			}
+		}
+
+		try {
+			return checkFactorization(kernel, numerator, denominator, Operation.MINUS);
+		} catch (NoFactorization e) {
+			//
+		}
+
+		try {
+			return checkFactorization(kernel, numerator, denominator, Operation.PLUS);
+		} catch (NoFactorization e) {
+			//
+		}
+
+		return null;
+	}
+
+	private static ExpressionNode checkJoinSqrts(Kernel kernel, ExpressionNode numerator,
+			ExpressionNode denominator) {
+		return denominator.isOperation(Operation.SQRT) ?
+				new ExpressionNode(kernel,
+					new MyDouble(kernel, numerator.getLeftTree().multiply(denominator.getLeft())
+						.wrap().evaluateDouble()),
+				Operation.SQRT, null) : null;
 	}
 }

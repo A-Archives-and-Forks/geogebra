@@ -48,7 +48,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testRationalizationLeafNumerator() {
+	public void testRationalizationNumeratorIsOne() {
 		rationalizationShouldBe("1 / sqrt(2)", "sqrt(2) / 2");
 		rationalizationShouldBe("1 / (sqrt(2) + 1)", "sqrt(2) - 1");
 		rationalizationShouldBe("1 / (sqrt(2) - 1)", "sqrt(2) + 1");
@@ -59,11 +59,16 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void name() {
-		rationalizationShouldBe("1 / (sqrt(2) - 1)", "sqrt(2) + 1");
-		rationalizationShouldBe("(sqrt(2) + 1) / sqrt(2)", "(2 + sqrt(2)) / 2");
-		rationalizationShouldBe("(1 + sqrt(2)) / sqrt(2)", "(sqrt(2) + 2) / 2");
-
+	public void testRationalizationNumeratorIsSquareRoot() {
+		rationalizationShouldBe("sqrt(3) / sqrt(2)", "sqrt(6) / 2");
+		rationalizationShouldBe("(sqrt(3) + 1) / sqrt(2)", "(sqrt(6) + sqrt(2)) / 2");
+		rationalizationShouldBe("(1 + sqrt(3)) / sqrt(2)", "(sqrt(2) + sqrt(6)) / 2");
+		rationalizationShouldBe("sqrt(3) / (sqrt(2) - 1)", "sqrt(3) (sqrt(2) + 1)");
+		rationalizationShouldBe("sqrt(3) / (sqrt(2) + 1)", "sqrt(3) (sqrt(2) - 1)");
+		rationalizationShouldBe("(sqrt(3) + 1) / (sqrt(2) + 1)",
+				"(sqrt(3) + 1) (sqrt(2) - 1)");
+		rationalizationShouldBe("(sqrt(3) + 1) / (sqrt(2) - 1)",
+				"(sqrt(3) + 1) (sqrt(2) + 1)");
 	}
 
 	private void rationalizationShouldBe(String definition, String expected) {
