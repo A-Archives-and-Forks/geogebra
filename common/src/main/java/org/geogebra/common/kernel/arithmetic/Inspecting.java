@@ -359,12 +359,20 @@ public interface Inspecting {
 
 	}
 
+	/**
+	 * Checks and counts the given operator in the expression.
+	 */
 	public enum OperationChecker implements Inspecting {
 		/** singleton instance */
 		INSTANCE;
 		private Operation operation;
 		private int count = 0;
 
+		/**
+		 *
+		 * @param operation to count.
+		 * @return the checker instance.
+		 */
 		public static OperationChecker get(Operation operation) {
 			INSTANCE.operation = operation;
 			INSTANCE.count = 0;
