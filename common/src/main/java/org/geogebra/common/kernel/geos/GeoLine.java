@@ -88,7 +88,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public static final int EQUATION_EXPLICIT = 1; // y = m x + b
 	/** parametric equation */
 	public static final int EQUATION_PARAMETRIC = 2;
-	/** non-canonical implicit equation */
+	/** non-canonical implicit equation (not used anywhere) */
 //	public static final int EQUATION_IMPLICIT_NON_CANONICAL = 3; // a x + b y = -c
 	/** general form **/
 	public static final int EQUATION_GENERAL = 4; // a x + b y + c = 0 (GGB-1212)
@@ -129,8 +129,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public GeoLine(Construction c) {
 		super(c);
 		setConstructionDefaults();
-		// TODO get from EquationForms if this needs to be configurable
-		setEquationForm(EQUATION_IMPLICIT);
+		setDefaultEquationForm();
 	}
 
 	/**
@@ -162,8 +161,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public GeoLine(Construction cons, double a, double b, double c) {
 		super(cons, a, b, c); // GeoVec3D constructor
 		setConstructionDefaults();
-		// TODO get from EquationForms if this needs to be configurable
-		setEquationForm(EQUATION_IMPLICIT);
+		setDefaultEquationForm();
 	}
 
 	/**
@@ -916,13 +914,16 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		setEquationForm(EQUATION_USER);
 	}
 
-	// code like line.setMode(GeoLine.EQUATION_IMPLICIT) is used in a few places
+	// code like line.setMode(GeoLine.EQUATION_...) is used in a few places
 	@Override
 	final public void setMode(int mode) {
 		setEquationForm(mode);
 	}
 
 	public void setEquationForm(int equationForm) {
+		if (equationForm == -1) {
+			return; // ignore value for "undefined" (see EquationForms)
+		}
 		switch (equationForm) {
 		case EQUATION_IMPLICIT:
 		case EQUATION_EXPLICIT:
@@ -935,6 +936,11 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			break;
 		}
 		this.toStringMode = this.equationForm;
+	}
+
+	private void setDefaultEquationForm() {
+		// TODO get from EquationForms if this needs to be configurable
+		setEquationForm(EQUATION_IMPLICIT);
 	}
 
 	/** output depends on mode: PARAMETRIC or EQUATION */

@@ -24,6 +24,7 @@ import java.util.HashSet;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationForms;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -79,9 +80,9 @@ public class AlgoJoinPoints extends AlgoElement
 		compute();
 		addIncidence();
 
-		int mode = cons.getApplication().getConfig().getLineDisplayStyle();
-		if (mode != -1) {
-			g.setMode(mode, true);
+		EquationForms equationForms = kernel.getEquationForms();
+		if (equationForms != null) {
+			g.setEquationForm(equationForms.getLineCommandEquationForm());
 		}
 	}
 

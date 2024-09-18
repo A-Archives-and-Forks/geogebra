@@ -498,8 +498,8 @@ public class ConstructionDefaults implements SettingListener {
 		line.setObjColor(getLineColor());
 		// line.setLineThickness(getDefaultLineThickness());
 		line.setDefaultGeoType(DEFAULT_LINE);
-		// TODO take from EquationForms? do we actually need this?
-		//  GraphingSettingsUpdater overrides this with EQUATION_EXPLICIT (with no effect?)
+		// TODO do we actually need this? if so, fetch value from EquationForms instead?
+		//  note: GraphingSettingsUpdater overrides this with EQUATION_EXPLICIT (with what effect?)
 		line.setMode(GeoLine.EQUATION_IMPLICIT);
 		setDefaultLineStyle(line);
 		defaultGeoElements.put(DEFAULT_LINE, line);
