@@ -40,6 +40,44 @@ public class PropertiesIconAdapter {
 			return res.horizontal_align_center();
 		case ICON_ALIGNMENT_RIGHT:
 			return res.horizontal_align_right();
+		case ICON_ALIGNMENT_BOTTOM:
+			return res.vertical_align_bottom();
+		case ICON_ALIGNMENT_MIDDLE:
+			return res.vertical_align_middle();
+		case ICON_ALIGNMENT_TOP:
+			return res.vertical_align_top();
+		case ICON_SEGMENT_START_DEFAULT:
+			return res.stylingbar_start_default();
+		case ICON_SEGMENT_START_LINE:
+			return res.stylingbar_start_line();
+		case ICON_SEGMENT_START_SQUARE_OUTLINE:
+			return res.stylingbar_start_square_outlined();
+		case ICON_SEGMENT_START_SQUARE:
+			return res.stylingbar_start_square();
+		case ICON_SEGMENT_START_ARROW:
+			return res.stylingbar_start_arrow();
+		case ICON_SEGMENT_START_ARROW_FILLED:
+			return res.stylingbar_start_arrow_filled();
+		case ICON_SEGMENT_START_CIRCLE_OUTLINE:
+			return res.stylingbar_start_circle_outlined();
+		case ICON_SEGMENT_START_CIRCLE:
+			return res.stylingbar_start_circle();
+		case ICON_SEGMENT_END_DEFAULT:
+			return res.stylingbar_end_default();
+		case ICON_SEGMENT_END_LINE:
+			return res.stylingbar_end_line();
+		case ICON_SEGMENT_END_SQUARE_OUTLINE:
+			return res.stylingbar_end_square_outlined();
+		case ICON_SEGMENT_END_SQUARE:
+			return res.stylingbar_end_square();
+		case ICON_SEGMENT_END_ARROW:
+			return res.stylingbar_end_arrow();
+		case ICON_SEGMENT_END_ARROW_FILLED:
+			return res.stylingbar_end_arrow_filled();
+		case ICON_SEGMENT_END_CIRCLE_OUTLINE:
+			return res.stylingbar_end_circle_outlined();
+		case ICON_SEGMENT_END_CIRCLE:
+			return res.stylingbar_end_circle();
 		}
 		return res.stylebar_empty();
 	}

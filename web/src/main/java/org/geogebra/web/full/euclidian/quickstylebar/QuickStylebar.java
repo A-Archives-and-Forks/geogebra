@@ -2,8 +2,8 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
+import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.EuclidianStyleBar;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.SetLabels;
@@ -35,10 +35,6 @@ import org.gwtproject.user.client.ui.FlowPanel;
 public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	private final EuclidianView ev;
 	private final StylebarPositioner stylebarPositioner;
-	private final BiConsumer<Integer, Integer> positionSetter = (posX, posY) -> {
-		getElement().getStyle().setLeft(posX, Unit.PX);
-		getElement().getStyle().setTop(posY, Unit.PX);
-	};
 	private final List<IconButton> quickButtons = new ArrayList<>();
 	public final static int POPUP_MENU_DISTANCE = 8;
 	private ContextMenuGeoElementW contextMenu;
@@ -63,15 +59,28 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property fillingStyleProperty = GeoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), fillingStyleProperty);
+		addPropertyPopupButton(activeGeoList.get(0), null, false, fillingStyleProperty);
 
 		PropertiesArray lineStyleProperty = GeoElementPropertiesFactory
 				.createNotesLineStyleProperties(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), lineStyleProperty.getProperties());
+		addPropertyPopupButton(activeGeoList.get(0), null, false,
+				lineStyleProperty.getProperties());
+
+		Property segmentStartProperty = GeoElementPropertiesFactory
+				.createSegmentStartProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", true, segmentStartProperty);
+
+		Property segmentEndProperty = GeoElementPropertiesFactory
+				.createSegmentEndProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", true, segmentEndProperty);
 
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), horizontalAlignmentProperty);
+		addPropertyPopupButton(activeGeoList.get(0), null, true, horizontalAlignmentProperty);
+
+		Property verticalAlignmentProperty = GeoElementPropertiesFactory
+				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), null, true, verticalAlignmentProperty);
 
 		addDivider();
 
@@ -79,15 +88,16 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addPropertyPopupButton(GeoElement geo, Property... properties) {
+	private void addPropertyPopupButton(GeoElement geo, String className,
+			boolean closePopupOnAction, Property... properties) {
 		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
 		Property firstProperty = properties[0];
 
-		IconButton button = new IconButtonWithProperty(getApp(), getIcon(
+		IconButton button = new IconButtonWithProperty(getApp(), className, getIcon(
 				(IconsEnumeratedProperty<?>) firstProperty), firstProperty.getName(), geo,
-				properties);
+				closePopupOnAction, properties);
 		styleAndRegisterButton(button);
 	}
 
@@ -191,8 +201,14 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		clear();
 		buildGUI();
-		stylebarPositioner.positionDynStylebar(this, getOffsetWidth(), getOffsetHeight(),
-				positionSetter);
+		GPoint position = stylebarPositioner.getPositionForStyleBar(getOffsetWidth(),
+				getOffsetHeight());
+		if (position != null) {
+			getElement().getStyle().setLeft(position.x, Unit.PX);
+			getElement().getStyle().setTop(position.y, Unit.PX);
+		} else {
+			setVisible(false);
+		}
 	}
 
 	@Override

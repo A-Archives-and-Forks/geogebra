@@ -3,7 +3,7 @@ package org.geogebra.common.properties.impl.objects;
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
-import org.geogebra.common.kernel.geos.properties.HorizontalAlignment;
+import org.geogebra.common.kernel.geos.properties.VerticalAlignment;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
@@ -12,12 +12,12 @@ import org.geogebra.common.properties.impl.objects.delegate.AlignmentPropertyDel
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 
-public class HorizontalAlignmentProperty extends AbstractEnumeratedProperty<HorizontalAlignment>
-		implements IconsEnumeratedProperty<HorizontalAlignment> {
+public class VerticalAlignmentProperty extends AbstractEnumeratedProperty<VerticalAlignment>
+		implements IconsEnumeratedProperty<VerticalAlignment> {
 
 	private static final PropertyResource[] icons = {
-			PropertyResource.ICON_ALIGNMENT_LEFT, PropertyResource.ICON_ALIGNMENT_CENTER,
-			PropertyResource.ICON_ALIGNMENT_RIGHT
+			PropertyResource.ICON_ALIGNMENT_TOP, PropertyResource.ICON_ALIGNMENT_MIDDLE,
+			PropertyResource.ICON_ALIGNMENT_BOTTOM
 	};
 
 	private final GeoElementDelegate delegate;
@@ -27,13 +27,13 @@ public class HorizontalAlignmentProperty extends AbstractEnumeratedProperty<Hori
 	 * @param localization the localization used
 	 * @param element the name of the property
 	 */
-	public HorizontalAlignmentProperty(Localization localization, GeoElement element)
+	public VerticalAlignmentProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "stylebar.HorizontalAlign");
+		super(localization, "stylebar.VericalAlign");
 		delegate = new AlignmentPropertyDelegate(element);
-		setValues(HorizontalAlignment.LEFT,
-				HorizontalAlignment.CENTER,
-				HorizontalAlignment.RIGHT);
+		setValues(VerticalAlignment.TOP,
+				VerticalAlignment.MIDDLE,
+				VerticalAlignment.BOTTOM);
 	}
 
 	@Override
@@ -42,17 +42,17 @@ public class HorizontalAlignmentProperty extends AbstractEnumeratedProperty<Hori
 	}
 
 	@Override
-	protected void doSetValue(HorizontalAlignment value) {
+	protected void doSetValue(VerticalAlignment value) {
 		HasTextFormatter element = (HasTextFormatter) delegate.getElement();
 		if (getLocalization() != null && !value.equals(element.getFormatter()
-				.getHorizontalAlignment())) {
-			element.getFormatter().setHorizontalAlignment(value);
+				.getVerticalAlignment())) {
+			element.getFormatter().setVerticalAlignment(value);
 		}
 		((GeoElement) element).updateVisualStyle(GProperty.COMBINED);
 	}
 
 	@Override
-	public HorizontalAlignment getValue() {
-		return ((HasTextFormatter) delegate.getElement()).getFormatter().getHorizontalAlignment();
+	public VerticalAlignment getValue() {
+		return ((HasTextFormatter) delegate.getElement()).getFormatter().getVerticalAlignment();
 	}
 }

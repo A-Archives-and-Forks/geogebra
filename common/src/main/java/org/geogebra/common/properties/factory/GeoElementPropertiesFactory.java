@@ -33,11 +33,14 @@ import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
 import org.geogebra.common.properties.impl.objects.PointStyleProperty;
+import org.geogebra.common.properties.impl.objects.SegmentEndProperty;
+import org.geogebra.common.properties.impl.objects.SegmentStartProperty;
 import org.geogebra.common.properties.impl.objects.ShowInAVProperty;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 import org.geogebra.common.properties.impl.objects.ShowTraceProperty;
 import org.geogebra.common.properties.impl.objects.SlopeSizeProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
+import org.geogebra.common.properties.impl.objects.VerticalAlignmentProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 
 /**
@@ -298,6 +301,70 @@ public class GeoElementPropertiesFactory {
 			}
 			return new IconsEnumeratedPropertyCollection<>(
 					horizontalAlignmentProperties.toArray(new HorizontalAlignmentProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the horizontal alignment or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedPropertyCollection createVerticalAlignmentProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<VerticalAlignmentProperty> verticalAlignmentProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				verticalAlignmentProperties.add(new VerticalAlignmentProperty(localization,
+						element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					verticalAlignmentProperties.toArray(new VerticalAlignmentProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the segment start style or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedPropertyCollection createSegmentStartProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<SegmentStartProperty> segmentStartProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				segmentStartProperties.add(new SegmentStartProperty(localization, element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					segmentStartProperties.toArray(new SegmentStartProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the segment end style or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedPropertyCollection createSegmentEndProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<SegmentEndProperty> segmentEndProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				segmentEndProperties.add(new SegmentEndProperty(localization, element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					segmentEndProperties.toArray(new SegmentEndProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
