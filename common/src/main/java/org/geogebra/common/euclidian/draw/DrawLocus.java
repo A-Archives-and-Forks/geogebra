@@ -120,7 +120,6 @@ public class DrawLocus extends Drawable {
 	}
 
 	protected void updateAlgos() {
-		ensureLocusUpdated();
 		AlgoElement algo = geo.getParentAlgorithm();
 		if (algo instanceof AlgoLocusEquation) {
 			AlgoLocusEquation ale = (AlgoLocusEquation) geo.getParentAlgorithm();
@@ -134,10 +133,6 @@ public class DrawLocus extends Drawable {
 				ae.update();
 			}
 		}
-	}
-
-	protected void ensureLocusUpdated() {
-		// only for implicit curves
 	}
 
 	@Override
