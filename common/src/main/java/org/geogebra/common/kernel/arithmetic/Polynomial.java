@@ -64,7 +64,7 @@ public class Polynomial implements HasDebugString {
 	 * @param vars
 	 *            variables string (to create one term)
 	 */
-	Polynomial(Kernel kernel, String vars) {
+	public Polynomial(Kernel kernel, String vars) {
 		this(kernel);
 		terms.add(new Term(kernel, 1.0d, vars));
 	}
@@ -87,14 +87,14 @@ public class Polynomial implements HasDebugString {
 	 *            index
 	 * @return i-th term
 	 */
-	Term getTerm(int i) {
+	public Term getTerm(int i) {
 		return terms.get(i);
 	}
 
 	/**
 	 * @return number of terms
 	 */
-	int length() {
+	public int length() {
 		return terms.size();
 	}
 
@@ -491,7 +491,7 @@ public class Polynomial implements HasDebugString {
 	 * @return the degree of the variable,
 	 * For example degree('y') is 2 for x^3 y^2
 	 */
-	int degree(char varName) {
+	public int degree(char varName) {
 		// a quadratic Polynomial may only have terms with one or two variables
 		// or constant terms
 		int deg = 0;

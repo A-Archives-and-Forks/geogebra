@@ -1,6 +1,6 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
-import static org.geogebra.common.kernel.arithmetic.BernsteinPolynomial1Var.copyArrayTo;
+import static org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial1Var.copyArrayTo;
 
 import org.geogebra.common.util.MyMath;
 

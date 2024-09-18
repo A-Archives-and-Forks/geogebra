@@ -160,7 +160,7 @@ public class Term implements Comparable<Object> {
 	 *            term whose degree we want
 	 * @return degree
 	 */
-	int degree(char var) {
+	public int degree(char var) {
 		int count = 0;
 		for (int i = 0; i < variables.length(); i++) {
 			if (variables.charAt(i) == var) {

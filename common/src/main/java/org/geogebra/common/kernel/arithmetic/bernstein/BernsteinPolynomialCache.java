@@ -1,4 +1,4 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
 public final class BernsteinPolynomialCache {
 	BernsteinPolynomial[] current;

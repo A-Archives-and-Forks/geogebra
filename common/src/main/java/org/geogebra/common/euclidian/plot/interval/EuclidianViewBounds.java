@@ -76,7 +76,6 @@ public interface EuclidianViewBounds {
 
 	/**
 	 * Converts x from real world to screen coordinate.
-	 *
 	 * @param x real world coordinate
 	 * @return as screen coordinate.
 	 */
@@ -84,7 +83,6 @@ public interface EuclidianViewBounds {
 
 	/**
 	 * Converts y from real world to screen coordinate.
-	 *
 	 * @param y real world coordinate
 	 * @return as screen coordinate.
 	 */

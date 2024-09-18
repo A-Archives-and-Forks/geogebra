@@ -72,26 +72,14 @@ public class DrawLocus extends Drawable {
 	}
 
 	@Override
-	final public void update() {
+	public void update() {
 		isVisible = geo.isEuclidianVisible();
 		bitmap = null;
 		if (!isVisible) {
 			return;
 		}
-		ensureLocusUpdated();
-		AlgoElement algo = geo.getParentAlgorithm();
-		if (algo instanceof AlgoLocusEquation) {
-			AlgoLocusEquation ale = (AlgoLocusEquation) geo.getParentAlgorithm();
-			if (ale.resetFingerprint(geo.getKernel(), false)) {
-				ale.update();
-			}
-		}
-		if (algo instanceof AlgoEnvelope) {
-			AlgoEnvelope ae = (AlgoEnvelope) geo.getParentAlgorithm();
-			if (ae.resetFingerprint(geo.getKernel(), false)) {
-				ae.update();
-			}
-		}
+
+		updateAlgos();
 
 		buildGeneralPath(locus.getPoints());
 
@@ -131,8 +119,20 @@ public class DrawLocus extends Drawable {
 		}
 	}
 
-	protected void ensureLocusUpdated() {
-		// only for implicit curves
+	protected void updateAlgos() {
+		AlgoElement algo = geo.getParentAlgorithm();
+		if (algo instanceof AlgoLocusEquation) {
+			AlgoLocusEquation ale = (AlgoLocusEquation) geo.getParentAlgorithm();
+			if (ale.resetFingerprint(geo.getKernel(), false)) {
+				ale.update();
+			}
+		}
+		if (algo instanceof AlgoEnvelope) {
+			AlgoEnvelope ae = (AlgoEnvelope) geo.getParentAlgorithm();
+			if (ae.resetFingerprint(geo.getKernel(), false)) {
+				ae.update();
+			}
+		}
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class DrawLocus extends Drawable {
 		drawLocus(g2);
 	}
 
-	private void drawLocus(GGraphics2D g2) {
+	protected void drawLocus(GGraphics2D g2) {
 		if (isVisible) {
 			if (geo.isPenStroke() && !geo.getKernel().getApplication().isExporting()) {
 				GRectangle bounds = getBounds();
