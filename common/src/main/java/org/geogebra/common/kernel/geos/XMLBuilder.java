@@ -212,6 +212,9 @@ public class XMLBuilder {
 			sb.append("\"/>\n");
 			break;
 
+		case GeoLine.EQUATION_IMPLICIT:
+			appendType(sb, "implicit");
+			break;
 		case GeoLine.EQUATION_EXPLICIT:
 			appendType(sb, "explicit");
 			break;
@@ -222,12 +225,13 @@ public class XMLBuilder {
 			appendType(sb, "user");
 			break;
 
-		case GeoLine.EQUATION_IMPLICIT_NON_CANONICAL:
-			// don't want anything here
-			break;
+//		case GeoLine.EQUATION_IMPLICIT_NON_CANONICAL:
+//			// don't want anything here
+//			break;
 
 		default:
-			appendType(sb, "implicit");
+//			appendType(sb, "implicit");
+			break;
 		}
 
 	}

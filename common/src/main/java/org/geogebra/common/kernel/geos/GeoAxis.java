@@ -28,7 +28,7 @@ import org.geogebra.common.plugin.GeoClass;
  * 
  * @author Markus
  */
-public class GeoAxis extends GeoLine implements GeoAxisND {
+public final class GeoAxis extends GeoLine implements GeoAxisND {
 
 	private int type;
 	// for numbers and ticks

@@ -3,6 +3,7 @@ package org.geogebra.common.main.settings.updater;
 import org.geogebra.common.kernel.ConstructionDefaults;
 import org.geogebra.common.kernel.geos.GeoLine;
 
+// TODO remove / this is not needed
 public class GraphingSettingsUpdater extends SettingsUpdater {
 
 	@Override

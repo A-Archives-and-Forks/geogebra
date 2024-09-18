@@ -78,6 +78,7 @@ public class AlgoJoinPoints extends AlgoElement
 		// compute line through P, Q
 		compute();
 		addIncidence();
+
 		int mode = cons.getApplication().getConfig().getLineDisplayStyle();
 		if (mode != -1) {
 			g.setMode(mode, true);
