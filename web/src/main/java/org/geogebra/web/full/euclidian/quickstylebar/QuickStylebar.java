@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.awt.GPoint;
+import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianStyleBar;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.SetLabels;
@@ -56,6 +57,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		if (activeGeoList.isEmpty()) {
 			return;
 		}
+
+		addCropButton();
 
 		Property fillingStyleProperty = GeoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
@@ -115,6 +118,23 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				() -> getApp().splitAndDeleteSelectedObjects(),
 				MaterialDesignResources.INSTANCE.delete_black(), "Delete");
 		styleAndRegisterButton(deleteButton);
+	}
+
+	private void addCropButton() {
+		if (!(isImageGeoSelected()
+				&& ev.getMode() != EuclidianConstants.MODE_SELECT)) {
+			return;
+		}
+
+		IconButton cropButton = new IconButton(getApp(), null,
+				MaterialDesignResources.INSTANCE.crop_black(), "stylebar.Crop");
+		cropButton.setActive(ev.getBoundingBox() != null && ev.getBoundingBox().isCropBox());
+		cropButton.addFastClickHandler((source) -> {
+			cropButton.setActive(!cropButton.isActive());
+			ev.getEuclidianController().updateBoundingBoxFromSelection(cropButton.isActive());
+			ev.repaintView();
+		});
+		styleAndRegisterButton(cropButton);
 	}
 
 	private void addContextMenuButton() {
@@ -244,5 +264,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	@Override
 	public void reinit() {
 		// nothing for now
+	}
+
+	private boolean isImageGeoSelected() {
+		return ev.getEuclidianController().getAppSelectedGeos().size() == 1
+				&& ev.getEuclidianController().getAppSelectedGeos().get(0).isGeoImage();
 	}
 }

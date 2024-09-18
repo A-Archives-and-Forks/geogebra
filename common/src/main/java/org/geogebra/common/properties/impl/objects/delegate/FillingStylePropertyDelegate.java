@@ -10,6 +10,6 @@ public class FillingStylePropertyDelegate extends AbstractGeoElementDelegate {
 
 	@Override
 	protected boolean checkIsApplicable(GeoElement element) {
-		return element.isFillable();
+		return element.isFillable() && !element.isGeoImage();
 	}
 }
