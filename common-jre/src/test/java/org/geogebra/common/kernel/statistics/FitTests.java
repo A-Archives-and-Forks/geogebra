@@ -31,8 +31,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitCommand.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("0.625x² - 0.25x"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitCommand.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitCommand.getToStringMode());
     }
 
     @Test
@@ -44,8 +42,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitCommand.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("-0.9999900000095 + x²"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitCommand.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitCommand.getToStringMode());
     }
 
     @Test
@@ -56,8 +52,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitExp.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("1ℯ^(0.6931471805599x)"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitExp.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitExp.getToStringMode());
     }
 
     @Test
@@ -68,8 +62,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitGrowth.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("1.3126490515349 * 1.2311444133449^x"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitGrowth.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitGrowth.getToStringMode());
     }
 
     @Test
@@ -138,8 +130,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitLog.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("-2 + 3ln(x)"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitLog.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitLog.getToStringMode());
     }
 
     @Test
@@ -151,8 +141,6 @@ public class FitTests extends BaseUnitTest {
         assertThat(outputString,
                 equalTo("1.9758703744321 / (1 - 0.0255090128073ℯ^(0.9956097809388x))"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitLogistic.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitLogistic.getToStringMode());
     }
 
     @Test
@@ -163,8 +151,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitPoly.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("x³ - x² + 0x + 1"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitPoly.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitPoly.getToStringMode());
     }
 
     @Test
@@ -175,8 +161,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitPow.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("0.9744885773743x^0.708475312856"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitPow.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitPow.getToStringMode());
     }
 
     @Test
@@ -187,8 +171,6 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitSin.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("1 + 1sin(1.5707963267949x - 1.5707963267949)"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitSin.getDescriptionMode());
-        // TODO remove this line (toStringMode initialized to Kernel.COORD_CARTESIAN)
-        Assert.assertEquals(GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, fitSin.getToStringMode());
     }
 
     @Test

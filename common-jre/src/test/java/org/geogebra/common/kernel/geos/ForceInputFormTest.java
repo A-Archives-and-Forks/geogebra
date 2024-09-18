@@ -43,7 +43,7 @@ public class ForceInputFormTest extends BaseUnitTest {
 
         GeoLine geoLineWithCommand = factory.createGeoLineWithCommand();
         geoLineWithCommand.setLabel("lineCmd");
-        geoLineWithCommand.setMode(GeoLine.EQUATION_PARAMETRIC, true);
+        geoLineWithCommand.setMode(GeoLine.EQUATION_PARAMETRIC);
         Assert.assertEquals(GeoLine.EQUATION_PARAMETRIC, geoLineWithCommand.getToStringMode());
 
         getApp().setXML(getApp().getXML(), true);
@@ -68,11 +68,7 @@ public class ForceInputFormTest extends BaseUnitTest {
         Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoLine.getToStringMode());
         Assert.assertEquals(GeoConic.EQUATION_EXPLICIT, parabola.getToStringMode());
         Assert.assertEquals(GeoConic.EQUATION_IMPLICIT, hyperbola.getToStringMode());
-		// this test is nonsense: EQUATION_IMPLICIT_NON_CANONICAL isn't used anywhere,
-		// the value of 3 is coming from the default value of toStringMode in GeoElement:
-		// toStringMode = Kernel.COORD_CARTESIAN
-		// not EQUATION_IMPLICIT_NON_CANONICAL, which also has a numeric value of 3
-        Assert.assertEquals(GeoRay.EQUATION_IMPLICIT_NON_CANONICAL, geoRay.getToStringMode());
+        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoRay.getToStringMode());
     }
 
 	@Test
