@@ -1,10 +1,12 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
+
+import org.geogebra.common.kernel.arithmetic.Splittable;
 
 /**
  * Interface representing Bernstein polynomials and its operations.
  *
  */
-public interface BernsteinPolynomial {
+public interface BernsteinPolynomial extends Splittable<BernsteinPolynomial> {
 
 	/**
 	 * Evaluates the polynomial.
@@ -41,6 +43,7 @@ public interface BernsteinPolynomial {
 	 *
 	 * @return the two polynomials in array.
 	 */
+	@Override
 	BernsteinPolynomial[] split();
 
 	/**
@@ -73,22 +76,6 @@ public interface BernsteinPolynomial {
 	BernsteinPolynomial plus(BernsteinPolynomial bernsteinPolynomial);
 
 	/**
-	 * Multiplies the Bernstein polynomial with (1 - x)
-	 * Note: x stands for any name that was previously given to the variable.
-	 *
-	 * @return the result polynomial.
-	 */
-	BernsteinPolynomial multiplyByOneMinusX();
-
-	/**
-	 * Multiplies the Bernstein polynomial with x
-	 * Note: x stands for any name that was previously given to the variable.
-	 *
-	 * @return the result polynomial.
-	 */
-	BernsteinPolynomial multiplyByX();
-
-	/**
 	 *
 	 * @return if the polynomial is a simple constant number.
 	 */
@@ -99,4 +86,30 @@ public interface BernsteinPolynomial {
 	 * @return the number of variables of Bernstein polynomial;
 	 */
 	int numberOfVariables();
+
+	/**
+	 *
+	 * @return true if the polynomial has no solution.
+	 */
+	boolean hasNoSolution();
+
+	/**
+	 *
+	 * @return sign of the coefficients {+, - or mixed}.
+	 */
+	BinomialCoefficientsSign getSign();
+
+	BernsteinPolynomial substitute(String variable, double value);
+
+	BernsteinPolynomial linearCombination(BernsteinPolynomial coeffs, BernsteinPolynomial otherPoly,
+			BernsteinPolynomial otherCoeffs);
+
+	BernsteinPolynomial linearCombination(double coeff, BernsteinPolynomial otherPoly,
+			double otherCoeff);
+
+	int degreeX();
+
+	int degreeY();
+
+	BernsteinPolynomial[] splitCoefficients();
 }

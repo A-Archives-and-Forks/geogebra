@@ -1,12 +1,12 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.bernstein;
 
 import static org.junit.Assert.assertEquals;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
+import org.geogebra.common.kernel.arithmetic.Polynomial;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoFunction;
-import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.util.debug.Log;
 import org.junit.Before;
@@ -23,23 +23,15 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void setUp() {
 		add("ZoomIn(0,0,1,1)");
 		view = getApp().getEuclidianView1();
-		converter =
-				new BernsteinPolynomialConverter();
-
+		converter = new BernsteinPolynomialConverter();
 	}
 
 	private void newBernsteinPolynomialPolynomialFrom(String definition) {
 		GeoElement geo = add(definition);
 		if (geo.isGeoImplicitCurve()) {
 			curve = ((GeoImplicitCurve) geo);
-			bernstein = converter.fromImplicitCurve(curve, view.getXmin(), view.getXmax());
-		} else if (geo instanceof GeoFunctionNVar) {
-			bernstein = converter.fromFunctionNVar(((GeoFunctionNVar) geo).getFunction(),
-					view.getXmin(), view.getXmax());
-		} else if (geo instanceof GeoFunction) {
-			bernstein = converter.fromFunctionNVar(((GeoFunction) geo).getFunction(),
-					view.getXmin(), view.getXmax());
 		}
+		bernstein = converter.from(geo, new BoundsRectangle(0, 1, 0, 1));
 	}
 
 	@Test
@@ -89,7 +81,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	public void testOneVariableToBernsteinPolynomial() {
 		Polynomial polynomial = new Polynomial(getKernel(), "y");
 		BernsteinPolynomial bernsteinPolynomial = converter.fromPolynomial(polynomial,
-				0, 2, 0, 1);
+				0, 2, new BoundsRectangle(0, 1, 0, 1));
 		assertEquals("y\u00B2 + y (1 - y)", bernsteinPolynomial.toString());
 	}
 
@@ -202,7 +194,7 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 				+ "(- 80y\u00B3) x\u00B3 (1 - x)\u00B3 + (- 60y\u00B3) x\u00B2 (1 - x)\u2074 + "
 				+ "(- 24y\u00B3) x (1 - x)\u2075 + (- 4y\u00B3) (1 - x)\u2076",
 				bernstein.toString());
-		assertEquals(323084, bernstein.evaluate(8, 5), 0);
+		assertEquals(323084, bernstein.evaluate(8, 5), 1E-6);
 	}
 
 	@Test
@@ -247,5 +239,49 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 
 	private void splitShouldBeSame(double actual, double x, double y) {
 		assertEquals(bernstein.evaluate(x, y), actual, 1E-6);
+	}
+
+	@Test
+	public void testHasNoSolution() {
+		shouldHaveNoSolution(2, 8, 12, 7);
+		shouldHaveNoSolution(-2, -3, -0.75, -7);
+	}
+
+	@Test
+	public void testMightHaveSolution() {
+		mightHaveSolution(2, -8, 12, 7);
+		mightHaveSolution(-1, 8, 12, 7);
+		mightHaveSolution(-0.2, -8, -12, 7);
+	}
+
+	private void mightHaveSolution(double... bcoeffs) {
+		testSolution(false, bcoeffs);
+	}
+
+	private void shouldHaveNoSolution(double... bcoeffs) {
+		testSolution(true, bcoeffs);
+	}
+
+	private void testSolution(boolean shouldHave, double... bcoeffs) {
+		bernstein = new BernsteinPolynomial1Var(bcoeffs, 'x', 0, 1);
+		assertEquals(shouldHave, bernstein.hasNoSolution());
+	}
+
+	@Test
+	public void testSubstituteY() {
+		newBernsteinPolynomialPolynomialFrom("x^3 + y^3 = 0");
+		assertEquals("9x\u00B3 + 24x\u00B2 (1 - x) + 24x (1 - x)\u00B2"
+						+ " + 8(1 - x)\u00B3",
+				bernstein.substitute("y", 2).toString());
+	}
+
+	@Test
+	public void testSubstituteX() {
+		newBernsteinPolynomialPolynomialFrom("x^3 + y^3 = 0");
+		assertEquals("y\u00B3", bernstein.substitute("x", 0).toString());
+		assertEquals("0", bernstein.substitute("x", 1).toString());
+		assertEquals("9y\u00B3 + 24y\u00B2 (1 - y) + 24y (1 - y)\u00B2"
+						+ " + 8(1 - y)\u00B3",
+				bernstein.substitute("x", 2).toString());
 	}
 }

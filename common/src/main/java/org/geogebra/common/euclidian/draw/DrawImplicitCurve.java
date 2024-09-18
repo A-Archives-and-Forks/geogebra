@@ -13,8 +13,14 @@ the Free Software Foundation.
 package org.geogebra.common.euclidian.draw;
 
 import org.geogebra.common.awt.GArea;
+import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.euclidian.EuclidianViewBoundsImp;
+import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
+import org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter;
+import org.geogebra.common.euclidian.plot.implicit.CoordSystemAnimatedPlotter;
 import org.geogebra.common.factories.AwtFactory;
+import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
 
 /**
@@ -22,7 +28,10 @@ import org.geogebra.common.kernel.implicit.GeoImplicit;
  */
 public class DrawImplicitCurve extends DrawLocus {
 
-	private GeoImplicit implicitCurve;
+	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
+	private CoordSystemAnimatedPlotter bernsteinPlotter;
+	private final GeoImplicit implicitCurve;
+	private final boolean isBernsteinBasedPlotter;
 
 	// private int fillSign; //0=>no filling, only curve -1=>fill the negativ
 	// part, 1=>fill positiv part
@@ -41,7 +50,31 @@ public class DrawImplicitCurve extends DrawLocus {
 		this.view = view;
 		this.implicitCurve = implicitCurve;
 		this.geo = implicitCurve.toGeoElement();
-		update();
+		isBernsteinBasedPlotter = BERNSTEIN_BASED_PLOTTER
+				&& BernsteinPolynomialConverter.iSupported(geo);
+
+		if (isBernsteinBasedPlotter) {
+			createBernsteinPlotter();
+		} else {
+			update();
+		}
+	}
+
+	private void createBernsteinPlotter() {
+		bernsteinPlotter = new BernsteinPlotter(geo, new EuclidianViewBoundsImp(view),
+				new GeneralPathClippedForCurvePlotter(view));
+
+		view.getEuclidianController()
+				.addZoomerAnimationListener(bernsteinPlotter, geo);
+	}
+
+	@Override
+	protected void drawLocus(GGraphics2D g2) {
+		if (isBernsteinBasedPlotter) {
+			bernsteinPlotter.draw(g2);
+		} else {
+			super.drawLocus(g2);
+		}
 	}
 
 	@Override
@@ -68,8 +101,10 @@ public class DrawImplicitCurve extends DrawLocus {
 	}
 
 	@Override
-	protected void ensureLocusUpdated() {
+	protected void updateAlgos() {
+		if (isBernsteinBasedPlotter) {
+			return;
+		}
 		implicitCurve.getLocus();
 	}
-
 }
