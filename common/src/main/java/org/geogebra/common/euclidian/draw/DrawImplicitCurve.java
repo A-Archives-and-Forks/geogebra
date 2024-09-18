@@ -111,6 +111,9 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	@Override
 	protected void updateAlgos() {
-		// nothing to do
+		if (isBernsteinBasedPlotter) {
+			return;
+		}
+		super.updateAlgos();
 	}
 }

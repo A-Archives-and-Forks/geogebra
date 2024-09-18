@@ -54,10 +54,10 @@ public class BernsteinBoundingBox implements Splittable<BernsteinBoundingBox> {
 		}
 
 		BernsteinBoundingBox that = (BernsteinBoundingBox) o;
-		return Double.compare(x1, that.x1) == 0
-				&& Double.compare(y1, that.y1) == 0
-				&& Double.compare(x2, that.x2) == 0
-				&& Double.compare(y2, that.y2) == 0;
+		return x1 == that.x1
+				&& y1 == that.y1
+				&& x2 == that.x2
+				&& y2 == that.y2;
 	}
 
 	@Override
