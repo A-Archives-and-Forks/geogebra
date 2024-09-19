@@ -88,7 +88,7 @@ public class IconButtonWithProperty extends IconButton {
 
 		if (property instanceof RangeProperty) {
 			lineThicknessSlider = widgetAdapter.getSliderWidget(
-					(RangePropertyCollection<?, ?>) property, geo, "Thickness");
+					(RangePropertyCollection<?, ?>) property, geo);
 			parent.add(lineThicknessSlider);
 		}
 	}

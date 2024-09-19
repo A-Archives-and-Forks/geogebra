@@ -15,6 +15,8 @@ import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
+import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperty;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
@@ -58,6 +60,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			return;
 		}
 
+		Property imageOpacityProperty = GeoElementPropertiesFactory.createImageOpacityProperty(
+				getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), null, false, imageOpacityProperty);
+
 		addCropButton();
 
 		Property fillingStyleProperty = GeoElementPropertiesFactory
@@ -98,15 +104,23 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		}
 		Property firstProperty = properties[0];
 
-		IconButton button = new IconButtonWithProperty(getApp(), className, getIcon(
-				(IconsEnumeratedProperty<?>) firstProperty), firstProperty.getName(), geo,
+		IconButton button = new IconButtonWithProperty(getApp(), className, getIcon(firstProperty),
+				firstProperty.getName(), geo,
 				closePopupOnAction, properties);
 		styleAndRegisterButton(button);
 	}
 
-	private SVGResource getIcon(IconsEnumeratedProperty<?> property) {
-		PropertyResource[] propertyIcons = property.getValueIcons();
-		return PropertiesIconAdapter.getIcon(propertyIcons[property.getIndex()]);
+	private SVGResource getIcon(Property property) {
+		if (property instanceof IconsEnumeratedProperty<?>) {
+			PropertyResource[] propertyIcons = ((IconsEnumeratedProperty<?>) property).getValueIcons();
+			return PropertiesIconAdapter.getIcon(propertyIcons[
+					((IconsEnumeratedProperty<?>) property).getIndex()]);
+		} else if (property instanceof RangePropertyCollection<?, ?>
+				&& ((RangePropertyCollection<?, ?>) property).getProperties()[0]
+				instanceof ImageOpacityProperty) {
+			return MaterialDesignResources.INSTANCE.opacity_black();
+		}
+		return MaterialDesignResources.INSTANCE.stylebar_empty();
 	}
 
 	private void addDivider() {
