@@ -112,7 +112,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 	private SVGResource getIcon(Property property) {
 		if (property instanceof IconsEnumeratedProperty<?>) {
-			PropertyResource[] propertyIcons = ((IconsEnumeratedProperty<?>) property).getValueIcons();
+			PropertyResource[] propertyIcons = ((IconsEnumeratedProperty<?>)
+					property).getValueIcons();
 			return PropertiesIconAdapter.getIcon(propertyIcons[
 					((IconsEnumeratedProperty<?>) property).getIndex()]);
 		} else if (property instanceof RangePropertyCollection<?, ?>
@@ -144,6 +145,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				MaterialDesignResources.INSTANCE.crop_black(), "stylebar.Crop");
 		cropButton.setActive(ev.getBoundingBox() != null && ev.getBoundingBox().isCropBox());
 		cropButton.addFastClickHandler((source) -> {
+			getApp().closePopups();
 			cropButton.setActive(!cropButton.isActive());
 			ev.getEuclidianController().updateBoundingBoxFromSelection(cropButton.isActive());
 			ev.repaintView();
@@ -157,6 +159,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		contextMenu = createContextMenu(contextMenuBtn);
 		contextMenuBtn.addFastClickHandler((event) -> {
+			getApp().closePopups();
 			GPopupMenuW popupMenu = contextMenu.getWrappedPopup();
 			if (popupMenu.isMenuShown()) {
 				popupMenu.hideMenu();
