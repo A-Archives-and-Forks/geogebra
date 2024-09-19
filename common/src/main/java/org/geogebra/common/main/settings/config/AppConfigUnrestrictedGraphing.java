@@ -5,15 +5,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.toolcategorization.AppType;
+import org.geogebra.common.kernel.EquationForms;
 import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.AppKeyboardType;
+import org.geogebra.common.main.settings.config.equationforms.EquationFormsGraphing;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
 
 /**
@@ -83,6 +86,12 @@ public class AppConfigUnrestrictedGraphing extends AppConfigGraphing {
 	@Override
 	public ParserFunctionsFactory createParserFunctionsFactory() {
 		return ParserFunctionsFactory.createParserFunctionsFactory();
+	}
+
+	@Nonnull
+	@Override
+	public EquationForms getEquationForms() {
+		return new EquationFormsUnrestrictedGraphing();
 	}
 
 	@Override

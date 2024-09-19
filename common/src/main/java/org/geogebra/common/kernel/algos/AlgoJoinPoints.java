@@ -80,10 +80,8 @@ public class AlgoJoinPoints extends AlgoElement
 		compute();
 		addIncidence();
 
-		EquationForms equationForms = kernel.getEquationForms();
-		if (equationForms != null) {
-			g.setEquationForm(equationForms.getLineCommandEquationForm());
-		}
+		// TODO try to remove/refactor this, but make sure APPS-2326 is satisfied
+		g.setEquationForm(kernel.getEquationForms().getLineCommandEquationForm());
 	}
 
 	/**

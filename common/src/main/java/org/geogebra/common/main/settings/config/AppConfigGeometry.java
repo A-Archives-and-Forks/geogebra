@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.toolcategorization.AppType;
@@ -306,7 +307,7 @@ public class AppConfigGeometry extends AbstractAppConfig {
 		return ParserFunctionsFactory.createParserFunctionsFactory();
 	}
 
-	@CheckForNull
+	@Nonnull
 	@Override
 	public EquationForms getEquationForms() {
 		return new EquationFormsGeometry();

@@ -5246,6 +5246,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 		return functionConverter;
 	}
 
+	// TODO can we make this @NonNull (initialize with default?)
 	@CheckForNull
 	public EquationForms getEquationForms() {
 		return equationForms;

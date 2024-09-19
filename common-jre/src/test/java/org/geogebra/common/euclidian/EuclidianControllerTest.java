@@ -110,7 +110,6 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		click(0, 0);
 		click(100, 100);
 		checkContent("A = (0, 0)", "B = (2, -2)", "f: x + y = 0");
-
 	}
 
 	@Test

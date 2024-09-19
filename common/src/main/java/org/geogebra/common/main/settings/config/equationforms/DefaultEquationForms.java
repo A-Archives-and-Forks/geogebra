@@ -6,6 +6,11 @@ import org.geogebra.common.kernel.geos.GeoLine;
 public class DefaultEquationForms implements EquationForms {
 
 	@Override
+	public int getDefaultLineEquationForm() {
+		return GeoLine.EQUATION_IMPLICIT;
+	}
+
+	@Override
 	public int getAlgebraicLineEquationForm() {
 		return GeoLine.EQUATION_USER;
 	}

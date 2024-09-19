@@ -7,6 +7,24 @@ package org.geogebra.common.kernel;
  */
 public interface EquationForms {
 
+//	// TODO alternative to separate methods?
+//	enum Origin {
+//		DEFAULT,
+//		LINEAR_EQUATION,
+//		CMD_LINE,
+//		CMD_FITLINE;
+//
+//
+//	}
+//	int getEquationForm(Origin origin);
+
+	/**
+	 * The default (baseline) equation form for all lines.
+	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
+	 * TODO this can be changed for some apps (e.g. Classic)
+	 */
+	int getDefaultLineEquationForm();
+
 	/**
 	 * The equation form for lines created from linear equations.
 	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
