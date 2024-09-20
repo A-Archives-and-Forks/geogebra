@@ -1,6 +1,10 @@
 package org.geogebra.web.full.euclidian.quickstylebar;
 
+import org.geogebra.common.properties.IconsEnumeratedProperty;
+import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.resources.SVGResource;
 
@@ -82,4 +86,21 @@ public class PropertiesIconAdapter {
 		return res.stylebar_empty();
 	}
 
+	/**
+	 * @param property - property
+	 * @return icon based on property
+	 */
+	public static SVGResource getIcon(Property property) {
+		if (property instanceof IconsEnumeratedProperty<?>) {
+			PropertyResource[] propertyIcons = ((IconsEnumeratedProperty<?>)
+					property).getValueIcons();
+			return PropertiesIconAdapter.getIcon(propertyIcons[
+					((IconsEnumeratedProperty<?>) property).getIndex()]);
+		} else if (property instanceof RangePropertyCollection<?, ?>
+				&& ((RangePropertyCollection<?, ?>) property).getProperties()[0]
+				instanceof ImageOpacityProperty) {
+			return MaterialDesignResources.INSTANCE.opacity_black();
+		}
+		return MaterialDesignResources.INSTANCE.stylebar_empty();
+	}
 }

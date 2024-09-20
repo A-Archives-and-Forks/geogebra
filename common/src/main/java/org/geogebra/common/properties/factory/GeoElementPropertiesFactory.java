@@ -24,6 +24,7 @@ import org.geogebra.common.properties.impl.objects.ElementColorProperty;
 import org.geogebra.common.properties.impl.objects.EquationFormProperty;
 import org.geogebra.common.properties.impl.objects.FillingStyleProperty;
 import org.geogebra.common.properties.impl.objects.HorizontalAlignmentProperty;
+import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
@@ -429,6 +430,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new RangePropertyCollection<>(
 					opacityProperties.toArray(new OpacityProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a RangePropertyCollection controlling the opacity or null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static RangeProperty<Integer> createImageOpacityProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<ImageOpacityProperty> opacityProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				opacityProperties.add(new ImageOpacityProperty(localization, element));
+			}
+			return new RangePropertyCollection<>(
+					opacityProperties.toArray(new ImageOpacityProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

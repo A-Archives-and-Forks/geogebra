@@ -1,9 +1,11 @@
 package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import org.geogebra.common.awt.GColor;
+import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.RangeProperty;
+import org.geogebra.common.properties.impl.AbstractRangeProperty;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
-import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
+import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
 import org.geogebra.web.full.gui.util.LineStylePreview;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
@@ -16,8 +18,9 @@ public class SliderWithProperty extends FlowPanel {
 	private final AppW appW;
 	private final RangePropertyCollection<?, ?> property;
 	private LineStylePreview preview;
+	private Label unitLabel;
 	private SliderPanelW sliderPanel;
-	private int lineThickness;
+	private int rangeValue;
 	private int lineType;
 	private GColor color;
 
@@ -25,37 +28,52 @@ public class SliderWithProperty extends FlowPanel {
 	 * constructor
 	 * @param appW - application
 	 * @param property - range property
-	 * @param sliderLabel - label of slider
 	 * @param lineType - line type
-	 * @param lineThickness - line thickness
+	 * @param rangeValue - range value
 	 * @param color - line color
 	 */
 	public SliderWithProperty(AppW appW, RangePropertyCollection<?, ?> property,
-			String sliderLabel, int lineType, int lineThickness, GColor color) {
+			int lineType, int rangeValue, GColor color) {
 		this.appW = appW;
 		this.property = property;
-		this.lineThickness = lineThickness;
+		this.rangeValue = rangeValue;
 		this.lineType = lineType;
 		this.color = color;
 
 		addStyleName("sliderComponent");
-		buildGui(sliderLabel);
+		buildGui();
 	}
 
-	private void buildGui(String sliderText) {
+	private void buildGui() {
+		String sliderText  = getFirstProperty().getName();
 		Label sliderLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(
 				appW.getLocalization().getMenu(sliderText), "sliderLabel");
-		preview = new LineStylePreview(30, 30);
-		preview.addStyleName("preview");
 
 		FlowPanel labelPreviewHolder = new FlowPanel();
 		labelPreviewHolder.addStyleName("labelPreviewHolder");
 		labelPreviewHolder.add(sliderLabel);
-		labelPreviewHolder.add(preview);
+		addPropertyBasedPreview(labelPreviewHolder);
 
 		add(labelPreviewHolder);
 		buildSlider();
 		add(sliderPanel);
+	}
+
+	private void addPropertyBasedPreview(FlowPanel parent) {
+		if (getFirstProperty() instanceof ThicknessProperty) {
+			addStyleName("withMargin");
+			preview = new LineStylePreview(30, 30);
+			preview.addStyleName("preview");
+			parent.add(preview);
+		} else if (getFirstProperty() instanceof ImageOpacityProperty) {
+			unitLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(((ImageOpacityProperty)
+					getFirstProperty()).getValue() + "%", "sliderLabel");
+			parent.add(unitLabel);
+		}
+	}
+
+	private Property getFirstProperty() {
+		return property.getProperties()[0];
 	}
 
 	private void buildSlider() {
@@ -72,31 +90,37 @@ public class SliderWithProperty extends FlowPanel {
 	}
 
 	private void setInitialValue() {
-		Integer val = ((NotesThicknessProperty) property.getProperties()[0]).getValue();
+		Integer val = (Integer) ((AbstractRangeProperty<?>) getFirstProperty()).getValue();
 		sliderPanel.setValue(val.doubleValue());
-		preview.update(val, lineThickness, color);
+		updatePreview(val, rangeValue, color);
 	}
 
 	private void onInputChange(int val) {
 		for (RangeProperty<?> prop : property.getProperties()) {
 			if (prop instanceof ThicknessProperty) {
 				((ThicknessProperty) prop).setValue(val);
+			} else if (prop instanceof ImageOpacityProperty) {
+				((ImageOpacityProperty) prop).setValue(val);
 			}
 		}
 
-		setLineThickness(val);
+		setRangeValue(val);
 	}
 
-	private void updatePreview(int lineThickness, int lineType, GColor color) {
-		preview.update(lineThickness, lineType, color);
+	private void updatePreview(int rangeValue, int lineType, GColor color) {
+		if (preview != null) {
+			preview.update(rangeValue, lineType, color);
+		} else if (unitLabel != null) {
+			unitLabel.setText(rangeValue + "%");
+		}
 	}
 
 	/**
-	 * @param lineThickness - line thickness
+	 * @param rangeValue - line thickness or opacity
 	 */
-	public void setLineThickness(int lineThickness) {
-		this.lineThickness = lineThickness;
-		updatePreview(lineThickness, lineType, color);
+	public void setRangeValue(int rangeValue) {
+		this.rangeValue = rangeValue;
+		updatePreview(rangeValue, lineType, color);
 	}
 
 	/**
@@ -104,7 +128,7 @@ public class SliderWithProperty extends FlowPanel {
 	 */
 	public void setLineType(int lineType) {
 		this.lineType = lineType;
-		updatePreview(lineThickness, lineType, color);
+		updatePreview(rangeValue, lineType, color);
 	}
 
 	/**
@@ -112,6 +136,6 @@ public class SliderWithProperty extends FlowPanel {
 	 */
 	public void setLineColor(GColor color) {
 		this.color = color;
-		updatePreview(lineThickness, lineType, color);
+		updatePreview(rangeValue, lineType, color);
 	}
 }
