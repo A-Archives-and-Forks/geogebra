@@ -52,20 +52,24 @@ public class SliderWithProperty extends FlowPanel {
 		FlowPanel labelPreviewHolder = new FlowPanel();
 		labelPreviewHolder.addStyleName("labelPreviewHolder");
 		labelPreviewHolder.add(sliderLabel);
-		if (getFirstProperty() instanceof ThicknessProperty) {
-			addStyleName("withMargin");
-			preview = new LineStylePreview(30, 30);
-			preview.addStyleName("preview");
-			labelPreviewHolder.add(preview);
-		} else if (getFirstProperty() instanceof ImageOpacityProperty) {
-			unitLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(((ImageOpacityProperty)
-					getFirstProperty()).getValue() + "%", "sliderLabel");
-			labelPreviewHolder.add(unitLabel);
-		}
+		addPropertyBasedPreview(labelPreviewHolder);
 
 		add(labelPreviewHolder);
 		buildSlider();
 		add(sliderPanel);
+	}
+
+	private void addPropertyBasedPreview(FlowPanel parent) {
+		if (getFirstProperty() instanceof ThicknessProperty) {
+			addStyleName("withMargin");
+			preview = new LineStylePreview(30, 30);
+			preview.addStyleName("preview");
+			parent.add(preview);
+		} else if (getFirstProperty() instanceof ImageOpacityProperty) {
+			unitLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(((ImageOpacityProperty)
+					getFirstProperty()).getValue() + "%", "sliderLabel");
+			parent.add(unitLabel);
+		}
 	}
 
 	private Property getFirstProperty() {
