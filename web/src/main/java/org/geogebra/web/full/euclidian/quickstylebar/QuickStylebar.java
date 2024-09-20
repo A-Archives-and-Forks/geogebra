@@ -145,7 +145,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			if (popupMenu.isMenuShown()) {
 				popupMenu.hideMenu();
 			} else {
-				popupMenu.show(this, 0, getOffsetHeight() + POPUP_MENU_DISTANCE);
+				popupMenu.show(contextMenuBtn, 0, getOffsetHeight() + POPUP_MENU_DISTANCE);
 				getApp().registerPopup(popupMenu.getPopupPanel());
 			}
 
