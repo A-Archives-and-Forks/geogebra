@@ -24,6 +24,7 @@ import org.geogebra.common.euclidian.Drawable;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.euclidian.plot.CurvePlotterUtils;
 import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
+import org.geogebra.common.euclidian.plot.PathPlotter;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.algos.AlgoElement;
@@ -190,7 +191,7 @@ public class DrawLocus extends Drawable {
 
 	private void buildGeneralPath(ArrayList<? extends MyPoint> pointList) {
 		if (gp == null) {
-			gp = new GeneralPathClippedForCurvePlotter(view);
+			gp = createPlotter();
 		}
 		gp.resetWithThickness(geo.getLineThickness());
 		// Use the last plotted point for positioning the label:
@@ -211,6 +212,14 @@ public class DrawLocus extends Drawable {
 				labelPosition[1] = py;
 			}
 		}
+	}
+
+	protected GeneralPathClippedForCurvePlotter createPlotter() {
+		return new GeneralPathClippedForCurvePlotter(view);
+	}
+
+	private PathPlotter createGeneralPath() {
+		return createPlotter();
 	}
 
 	@Override
