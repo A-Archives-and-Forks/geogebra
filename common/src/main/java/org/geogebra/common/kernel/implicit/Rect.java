@@ -2,7 +2,7 @@ package org.geogebra.common.kernel.implicit;
 
 import org.geogebra.common.kernel.matrix.Coords;
 
-class Rect {
+class Rect implements PlotRect {
 	/**
 	 * 
 	 */
@@ -63,19 +63,52 @@ class Rect {
 		return rect;
 	}
 
+	@Override
 	public double x1() {
 		return this.coords.val[0];
 	}
 
+	@Override
 	public double x2() {
 		return this.coords.val[0] + fx;
 	}
 
+	@Override
 	public double y1() {
 		return this.coords.val[1];
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+
 	public double y2() {
 		return this.coords.val[1] + fy;
+	}
+
+	@Override
+	public double topLeft() {
+		return evals[0];
+	}
+
+	@Override
+	public double topRight() {
+		return evals[1];
+	}
+
+	@Override
+	public double bottomLeft() {
+		return evals[3];
+	}
+
+	@Override
+	public double bottomRight() {
+		return evals[2];
+	}
+
+	@Override
+	public double cornerAt(int i) {
+		return evals[i];
 	}
 }

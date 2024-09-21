@@ -92,15 +92,15 @@ public class LinkSegments {
 	}
 
 
-	public int create(Rect r, int factor) {
+	public int create(PlotRect r, int factor) {
 		int gridType = config(r);
 		if (gridType == T0101 || gridType == T_INV) {
 			return gridType;
 		}
 
 		double x1 = r.x1(), x2 = r.x2(), y1 = r.y1(), y2 = r.y2();
-		double tl = r.evals[0], tr = r.evals[1], br = r.evals[2],
-				bl = r.evals[3];
+		double tl = r.topLeft(), tr = r.topRight(), br = r.bottomRight(),
+				bl = r.bottomLeft();
 		double q1 = 0.0, q2 = 0.0;
 
 		switch (gridType) {
@@ -201,10 +201,10 @@ public class LinkSegments {
 		abortList();
 	}
 
-	public int config(Rect r) {
+	public int config(PlotRect r) {
 		int config = 0;
 		for (int i = 0; i < 4; i++) {
-			config = (config << 1) | sign(r.evals[i]);
+			config = (config << 1) | sign(r.cornerAt(i));
 		}
 		return config >= 8 ? (~config) & 0xf : config;
 	}
