@@ -63,12 +63,51 @@ public enum EdgeConfig {
 	/**
 	 * both corners at the bottom are inside / outside
 	 */
-	T0011(3),
+	T0011(3) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {new MyPoint(r.x1(), GeoImplicitCurve.interpolate(r.topLeft(), r.bottomLeft(), r.y1(),
+					r.y2()), SegmentType.MOVE_TO),
+					new MyPoint(r.x2(),
+					GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2()),
+					SegmentType.LINE_TO)};
+		}
+
+		@Override
+		public double getQ1(PlotRect r) {
+			return minAbs(r.topLeft(), r.bottomLeft());
+		}
+
+		@Override
+		public double getQ2(PlotRect r) {
+			return minAbs(r.topRight(), r.bottomRight());
+		}
+	},
 
 	/**
 	 * top left corner is inside / outside
 	 */
-	T0100(4),
+	T0100(4) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {
+					new MyPoint(r.x2(), GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(),
+							r.y2()), SegmentType.MOVE_TO),
+					new MyPoint(GeoImplicitCurve.interpolate(r.topRight(), r.topLeft(), r.x2(), r.x1()),
+							r.y1(), SegmentType.LINE_TO)
+			};
+		}
+
+		@Override
+		public double getQ1(PlotRect r) {
+			return minAbs(r.topRight(), r.bottomRight());
+		}
+
+		@Override
+		public double getQ2(PlotRect r) {
+			return minAbs(r.topRight(), r.topLeft());
+		}
+	},
 
 	/**
 	 * opposite corners are inside / outside. NOTE: This configuration is
@@ -79,12 +118,49 @@ public enum EdgeConfig {
 	/**
 	 * both the corners at the left are inside / outside
 	 */
-	T0110(6),
+	T0110(6) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {new MyPoint(GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+					r.y1(), SegmentType.MOVE_TO),
+					new MyPoint(GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
+					r.y2(), SegmentType.LINE_TO)};
+		}
+
+		@Override
+		public double getQ1(PlotRect r) {
+			return minAbs(r.topLeft(), r.topRight());
+		}
+
+		@Override
+		public double getQ2(PlotRect r) {
+			return minAbs(r.bottomLeft(), r.bottomRight());
+		}
+	},
 
 	/**
 	 * only top left corner is inside / outside
 	 */
-	T0111(7),
+	T0111(7) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {new MyPoint(r.x1(),
+					GeoImplicitCurve.interpolate(r.topLeft(), r.bottomLeft(), r.y1(), r.y2()),
+					SegmentType.MOVE_TO),
+					new MyPoint(GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+					r.y1(), SegmentType.LINE_TO)};
+		}
+
+		@Override
+		public double getQ1(PlotRect r) {
+			return minAbs(r.bottomLeft(), r.topLeft());
+		}
+
+		@Override
+		public double getQ2(PlotRect r) {
+			return minAbs(r.topLeft(), r.topRight());
+		}
+	},
 
 	/**
 	 * invalid configuration. expression value is undefined / infinity for at

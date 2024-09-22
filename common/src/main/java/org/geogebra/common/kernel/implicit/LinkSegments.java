@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.geogebra.common.kernel.MyPoint;
-import org.geogebra.common.kernel.SegmentType;
 import org.geogebra.common.util.DoubleUtil;
 public class LinkSegments {
 	private final GeoImplicitCurve geoImplicitCurve;
@@ -87,70 +86,16 @@ public class LinkSegments {
 			return gridType;
 		}
 
-		double x1 = r.x1(), x2 = r.x2(), y1 = r.y1(), y2 = r.y2();
-		double tl = r.topLeft(), tr = r.topRight(), br = r.bottomRight(),
-				bl = r.bottomLeft();
 		double q1 = 0.0, q2 = 0.0;
 
-		switch (gridType) {
-		// one or three corners are inside / outside
-		case T0001:
-		case T0010:
-			pts = gridType.getPoints(r);
-			q1 = gridType.getQ1(r);
-			q2 = gridType.getQ2(r);
-			break;
-
-//			pts[0] = new MyPoint(x2,
-//					GeoImplicitCurve.interpolate(br, tr, y2,
-//							y1), SegmentType.MOVE_TO);
-//			pts[1] = new MyPoint(GeoImplicitCurve.interpolate(br, bl, x2, x1),
-//					y2, SegmentType.LINE_TO);
-//			q1 = minAbs(br, tr);
-//			q2 = minAbs(br, bl);
-//			break;
-
-		case T0100:
-			pts[0] = new MyPoint(x2, GeoImplicitCurve.interpolate(tr, br, y1,
-					y2), SegmentType.MOVE_TO);
-			pts[1] = new MyPoint(GeoImplicitCurve.interpolate(tr, tl, x2, x1),
-					y1, SegmentType.LINE_TO);
-			q1 = minAbs(tr, br);
-			q2 = minAbs(tr, tl);
-			break;
-
-		case T0111:
-			pts[0] = new MyPoint(x1,
-					GeoImplicitCurve.interpolate(tl, bl, y1, y2),
-					SegmentType.MOVE_TO);
-			pts[1] = new MyPoint(GeoImplicitCurve.interpolate(tl, tr, x1, x2),
-					y1, SegmentType.LINE_TO);
-			q1 = minAbs(bl, tl);
-			q2 = minAbs(tl, tr);
-			break;
-
-		// two consecutive corners are inside / outside
-		case T0011:
-			pts[0] = new MyPoint(x1, GeoImplicitCurve.interpolate(tl, bl, y1,
-					y2), SegmentType.MOVE_TO);
-			pts[1] = new MyPoint(x2,
-					GeoImplicitCurve.interpolate(tr, br, y1, y2),
-					SegmentType.LINE_TO);
-			q1 = minAbs(tl, bl);
-			q2 = minAbs(tr, br);
-			break;
-
-		case T0110:
-			pts[0] = new MyPoint(GeoImplicitCurve.interpolate(tl, tr, x1, x2),
-					y1, SegmentType.MOVE_TO);
-			pts[1] = new MyPoint(GeoImplicitCurve.interpolate(bl, br, x1, x2),
-					y2, SegmentType.LINE_TO);
-			q1 = minAbs(tl, tr);
-			q2 = minAbs(bl, br);
-			break;
-		default:
+		pts = gridType.getPoints(r);
+		if (pts == null) {
 			return EdgeConfig.EMPTY;
 		}
+
+		q1 = gridType.getQ1(r);
+		q2 = gridType.getQ2(r);
+
 		// check continuity of the function between P1 and P2
 		double p = Math.abs(this.geoImplicitCurve
 				.evaluateImplicitCurve(pts[0].x, pts[0].y, factor));
