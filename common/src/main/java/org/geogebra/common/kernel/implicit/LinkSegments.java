@@ -1,8 +1,5 @@
 package org.geogebra.common.kernel.implicit;
 
-import static org.geogebra.common.kernel.implicit.CornerConfig.EMPTY;
-import static org.geogebra.common.kernel.implicit.CornerConfig.VALID;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,8 +31,8 @@ public class LinkSegments {
 	}
 
 	public int add(Rect r, int factor) {
-		int status = create(r, factor);
-		if (status == VALID) {
+		EdgeConfig status = create(r, factor);
+		if (status == EdgeConfig.VALID) {
 			if (pts[0].x > pts[1].x) {
 				temp = pts[0];
 				pts[0] = pts[1];
@@ -74,7 +71,7 @@ public class LinkSegments {
 				abortList();
 			}
 		}
-		return status;
+		return status.flag();
 	}
 
 
@@ -84,10 +81,10 @@ public class LinkSegments {
 	}
 
 
-	public int create(PlotRect r, int factor) {
+	public EdgeConfig create(PlotRect r, int factor) {
 		EdgeConfig gridType = EdgeConfig.fromFlag(config(r));
 		if (gridType == EdgeConfig.T0101 || gridType == EdgeConfig.T_INV) {
-			return gridType.flag();
+			return gridType;
 		}
 
 		double x1 = r.x1(), x2 = r.x2(), y1 = r.y1(), y2 = r.y2();
@@ -156,7 +153,7 @@ public class LinkSegments {
 			q2 = minAbs(bl, br);
 			break;
 		default:
-			return EMPTY;
+			return EdgeConfig.EMPTY;
 		}
 		// check continuity of the function between P1 and P2
 		double p = Math.abs(this.geoImplicitCurve
@@ -164,9 +161,9 @@ public class LinkSegments {
 		double q = Math.abs(this.geoImplicitCurve
 				.evaluateImplicitCurve(pts[1].x, pts[1].y, factor));
 		if (p <= q1 && q <= q2) {
-			return VALID;
+			return EdgeConfig.VALID;
 		}
-		return EMPTY;
+		return EdgeConfig.EMPTY;
 	}
 
 	private static double minAbs(double a, double b) {
