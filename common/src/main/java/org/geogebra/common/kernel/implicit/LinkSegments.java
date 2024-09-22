@@ -1,14 +1,6 @@
 package org.geogebra.common.kernel.implicit;
 
 import static org.geogebra.common.kernel.implicit.CornerConfig.EMPTY;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0001;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0010;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0011;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0100;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0101;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0110;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0111;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T_INV;
 import static org.geogebra.common.kernel.implicit.CornerConfig.VALID;
 
 import java.util.ArrayList;
@@ -93,9 +85,9 @@ public class LinkSegments {
 
 
 	public int create(PlotRect r, int factor) {
-		int gridType = config(r);
-		if (gridType == T0101 || gridType == T_INV) {
-			return gridType;
+		EdgeConfig gridType = EdgeConfig.fromFlag(config(r));
+		if (gridType == EdgeConfig.T0101 || gridType == EdgeConfig.T_INV) {
+			return gridType.flag();
 		}
 
 		double x1 = r.x1(), x2 = r.x2(), y1 = r.y1(), y2 = r.y2();
