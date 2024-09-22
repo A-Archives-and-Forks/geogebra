@@ -3,6 +3,9 @@ package org.geogebra.common.kernel.implicit;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geogebra.common.kernel.MyPoint;
+import org.geogebra.common.kernel.SegmentType;
+
 public enum EdgeConfig {
 	/**
 	 * All corners are inside / outside
@@ -12,12 +15,50 @@ public enum EdgeConfig {
 	/**
 	 * only bottom left corner is inside / outside
 	 */
-	T0001(1),
+	T0001(1) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] { new MyPoint(r.x1(),
+					GeoImplicitCurve.interpolate(r.bottomLeft(), r.topLeft(), r.y2(),
+							r.y1()), SegmentType.MOVE_TO),
+					new MyPoint(GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
+					r.y2(), SegmentType.LINE_TO)};
+		}
+
+		@Override
+		public double getQ1(PlotRect r) {
+			return minAbs(r.bottomLeft(), r.topLeft());
+		}
+
+		@Override
+		public double getQ2(PlotRect r) {
+			return minAbs(r.bottomLeft(), r.bottomRight());
+		}
+	},
 
 	/**
 	 * bottom right corner is inside / outside
 	 */
-	T0010(2),
+	T0010(2) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {new MyPoint(r.x2(),
+					GeoImplicitCurve.interpolate(r.bottomRight(), r.topRight(), r.y2(),
+							r.y1()), SegmentType.MOVE_TO),
+					new MyPoint(GeoImplicitCurve.interpolate(r.bottomRight(), r.bottomLeft(), r.x2(), r.x1()),
+					r.y2(), SegmentType.LINE_TO)};
+		}
+
+		@Override
+		public double getQ1(PlotRect r) {
+			return minAbs(r.bottomRight(), r.topRight());
+		}
+
+		@Override
+		public double getQ2(PlotRect r) {
+			return minAbs(r.bottomRight(), r.bottomLeft());
+		}
+	},
 
 	/**
 	 * both corners at the bottom are inside / outside
@@ -64,6 +105,7 @@ public enum EdgeConfig {
 			map.put(config.flag, config);
 		}
 	}
+
 	EdgeConfig(int flag) {
 		this.flag = flag;
 	}
@@ -75,5 +117,22 @@ public enum EdgeConfig {
 	public int flag() {
 		return flag;
 	}
+
+	public MyPoint[] getPoints(PlotRect r) {
+		return null;
+	}
+
+	public double getQ1(PlotRect r) {
+		return 0;
+	}
+
+	public double getQ2(PlotRect r) {
+		return 0;
+	}
+
+	private static double minAbs(double a, double b) {
+		return Math.min(Math.abs(a), Math.abs(b));
+	}
+
 }
 

@@ -95,24 +95,20 @@ public class LinkSegments {
 		switch (gridType) {
 		// one or three corners are inside / outside
 		case T0001:
-			pts[0] = new MyPoint(x1,
-					GeoImplicitCurve.interpolate(bl, tl, y2,
-							y1), SegmentType.MOVE_TO);
-			pts[1] = new MyPoint(GeoImplicitCurve.interpolate(bl, br, x1, x2),
-					y2, SegmentType.LINE_TO);
-			q1 = minAbs(bl, tl);
-			q2 = minAbs(bl, br);
+		case T0010:
+			pts = gridType.getPoints(r);
+			q1 = gridType.getQ1(r);
+			q2 = gridType.getQ2(r);
 			break;
 
-		case T0010:
-			pts[0] = new MyPoint(x2,
-					GeoImplicitCurve.interpolate(br, tr, y2,
-							y1), SegmentType.MOVE_TO);
-			pts[1] = new MyPoint(GeoImplicitCurve.interpolate(br, bl, x2, x1),
-					y2, SegmentType.LINE_TO);
-			q1 = minAbs(br, tr);
-			q2 = minAbs(br, bl);
-			break;
+//			pts[0] = new MyPoint(x2,
+//					GeoImplicitCurve.interpolate(br, tr, y2,
+//							y1), SegmentType.MOVE_TO);
+//			pts[1] = new MyPoint(GeoImplicitCurve.interpolate(br, bl, x2, x1),
+//					y2, SegmentType.LINE_TO);
+//			q1 = minAbs(br, tr);
+//			q2 = minAbs(br, bl);
+//			break;
 
 		case T0100:
 			pts[0] = new MyPoint(x2, GeoImplicitCurve.interpolate(tr, br, y1,
