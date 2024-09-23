@@ -17,6 +17,13 @@ final class RationalizeFractionAlgo {
 	}
 
 	public ExpressionNode compute() {
+		double numeratorValue = numerator.evaluateDouble();
+		double denominatorValue = denominator.evaluateDouble();
+		if (Math.abs(numeratorValue) == Math.abs(denominatorValue)) {
+			double value = numeratorValue == denominatorValue ? 1 : -1;
+			return (new MyDouble(kernel, value)).wrap();
+		}
+
 		if (numerator.isLeaf()) {
 			return rationalizeAsLeafNumerator();
 		}
