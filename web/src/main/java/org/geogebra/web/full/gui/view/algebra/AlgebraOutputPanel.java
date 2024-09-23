@@ -85,7 +85,6 @@ public class AlgebraOutputPanel extends FlowPanel {
 	 */
 	public static ToggleButton createSymbolicButton(FlowPanel parent,
 			final GeoElement geo) {
-
 		ToggleButton btnSymbolic = getSymbolicButtonIfExists(parent);
 
 		if (btnSymbolic == null) {

@@ -22,6 +22,7 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.algos.AlgoFractionText;
 import org.geogebra.common.kernel.algos.AlgoPointOnPath;
+import org.geogebra.common.kernel.arithmetic.RationalizableFraction;
 import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.geos.DescriptionMode;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -390,7 +391,8 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	protected boolean updateValuePanel(String text) {
 		boolean ret = outputPanel.updateValuePanel(geo, text, latex,
 				getFontSize());
-		if (geo != null && AlgebraItem.shouldShowSymbolicOutputButton(geo)) {
+		if (geo != null && AlgebraItem.shouldShowSymbolicOutputButton(geo)
+			&& RationalizableFraction.isNonTrivial(geo)) {
 			addControls();
 			symbolicButton = AlgebraOutputPanel.createSymbolicButton(controls, geo);
 		} else if (controls != null) {
