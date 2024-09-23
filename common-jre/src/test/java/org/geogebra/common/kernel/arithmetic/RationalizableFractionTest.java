@@ -83,7 +83,11 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("-(sqrt(3) + 2) / (sqrt(3) + 2)", "-1");
 		rationalizationShouldBe("(sqrt(3) + 2) / -(sqrt(3) + 2)", "-1");
 		rationalizationShouldBe("-(sqrt(3) + 2) / -(sqrt(3) + 2)", "1");
+	}
 
+	@Test
+	public void name() {
+		rationalizationShouldBe("(3 * sqrt(2)) / sqrt(18)", "1");
 	}
 
 	@Test
