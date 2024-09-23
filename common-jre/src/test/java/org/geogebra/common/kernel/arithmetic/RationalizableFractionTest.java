@@ -71,9 +71,21 @@ public class RationalizableFractionTest extends BaseUnitTest {
 				"(sqrt(3) + 1) (sqrt(2) + 1)");
 	}
 
+	@Test
+	public void testOutputAsLatex() {
+		rationalizationShouldBe("sqrt(3) / sqrt(2)",
+				"\\frac{\\sqrt{6}}{2}", StringTemplate.latexTemplate);
+
+	}
+
 	private void rationalizationShouldBe(String definition, String expected) {
+		rationalizationShouldBe(definition, expected, StringTemplate.defaultTemplate);
+	}
+
+	private void rationalizationShouldBe(String definition, String expected, StringTemplate tpl) {
 		GeoNumeric num = add(definition);
 		num.setSymbolicMode(true, true);
-		assertEquals(expected, num.getFormulaString(StringTemplate.defaultTemplate, true));
+		assertEquals(expected, num.getFormulaString(tpl, true));
 	}
+
 }

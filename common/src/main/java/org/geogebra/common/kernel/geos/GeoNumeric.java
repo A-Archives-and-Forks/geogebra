@@ -2222,7 +2222,7 @@ public class GeoNumeric extends GeoElement
 		if (symbolicMode && RationalizableFraction.isSupported(this)) {
 			ExpressionNode result = RationalizableFraction.rationalize(getDefinition());
 			return result != null
-					? result.toOutputValueString(StringTemplate.defaultTemplate)
+					? result.toOutputValueString(tpl)
 					: "";
 		}
 
