@@ -50,7 +50,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	@Test
 	public void testRationalizationNumeratorIsConstant() {
 		rationalizationShouldBe("1 / sqrt(2)", "sqrt(2) / 2");
-		rationalizationShouldBe("2 / sqrt(2)", "(2 * sqrt(2)) / 2");
+		rationalizationShouldBe("2 / sqrt(2)", "(2sqrt(2)) / 2");
 		rationalizationShouldBe("1 / (sqrt(2) + 1)", "sqrt(2) - 1");
 		rationalizationShouldBe("1 / (sqrt(2) - 1)", "sqrt(2) + 1");
 		rationalizationShouldBe("1 / (1 + sqrt(2))", "-1 + sqrt(2)");
@@ -98,7 +98,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	@Test
 	public void testOutputAsLatex() {
 		rationalizationShouldBe("2 / sqrt(2)",
-				"\\frac{2 \\sqrt{2}}{2}", StringTemplate.latexTemplate);
+				"\\frac{2 \\; \\sqrt{2}}{2}", StringTemplate.latexTemplate);
 
 		rationalizationShouldBe("sqrt(3) / sqrt(2)",
 				"\\frac{\\sqrt{6}}{2}", StringTemplate.latexTemplate);
@@ -115,4 +115,9 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		assertEquals(expected, num.getFormulaString(tpl, true));
 	}
 
+	@Test
+	public void testSimplifySquareRoots() {
+		rationalizationShouldBe("sqrt(3) / sqrt(4)", "sqrt(3) / 2");
+		rationalizationShouldBe("sqrt(3) / sqrt(1)", "sqrt(3)");
+	}
 }

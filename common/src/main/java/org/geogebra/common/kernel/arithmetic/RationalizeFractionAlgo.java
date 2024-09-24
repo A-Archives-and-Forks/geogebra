@@ -45,7 +45,7 @@ final class RationalizeFractionAlgo {
 	private ExpressionNode rationalizeAsLeafNumerator() {
 		if (denominator.isOperation(Operation.SQRT)) {
 			return new ExpressionNode(kernel,
-					numerator.multiply(denominator),
+					numerator.multiplyR(denominator),
 					Operation.DIVIDE, denominator.getLeft());
 		}
 

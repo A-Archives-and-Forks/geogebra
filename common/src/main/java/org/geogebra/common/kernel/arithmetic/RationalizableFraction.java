@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.Inspecting.OperationChecker;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoNumeric;
@@ -55,12 +56,21 @@ public final class RationalizableFraction {
 	 */
 	public static ExpressionNode rationalize(ExpressionNode node) {
 		Integer v = getValueIfTrivial(node);
+		Kernel kernel = node.getKernel();
 		if (v != null) {
-			return new MyDouble(node.getKernel(), v).wrap();
+			return new MyDouble(kernel, v).wrap();
+		}
+
+		Integer denominatorValue = getValueIfTrivial(node.getRightTree());
+		if (denominatorValue != null) {
+			return denominatorValue == 1
+			? new ExpressionNode(node.getLeftTree())
+					: new ExpressionNode(kernel, node.getLeftTree(), Operation.DIVIDE,
+					new MyDouble(kernel, denominatorValue));
 		}
 
 		RationalizeFractionAlgo algo =
-				new RationalizeFractionAlgo(node.getKernel(), node.getLeftTree(),
+				new RationalizeFractionAlgo(kernel, node.getLeftTree(),
 						node.getRightTree());
 		return algo.compute();
 	}
