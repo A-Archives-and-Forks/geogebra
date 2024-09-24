@@ -67,6 +67,11 @@ public class AlgebraItem {
 		if (!(geo instanceof HasSymbolicMode)) {
 			return false;
 		}
+
+		if (RationalizableFraction.isSupported(geo)) {
+			return true;
+		}
+
 		if (geo instanceof GeoSymbolic) {
 			GeoSymbolic symbolic = (GeoSymbolic) geo;
 			if (symbolic.shouldWrapInNumeric()) {
@@ -405,8 +410,7 @@ public class AlgebraItem {
 	 * @return whether we should show symbolic switch for the geo
 	 */
 	public static boolean shouldShowSymbolicOutputButton(GeoElement geo) {
-		return (isSymbolicDiffers(geo) && !isTextItem(geo))
-				|| RationalizableFraction.isSupported(geo);
+		return isSymbolicDiffers(geo) && !isTextItem(geo);
 	}
 
 	/**
