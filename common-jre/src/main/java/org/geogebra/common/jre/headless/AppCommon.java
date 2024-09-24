@@ -710,7 +710,7 @@ public class AppCommon extends App {
 	}
 
 	/**
-	 * Sets Geometry config and reinitializes the app.
+	 * Sets Classic config and reinitializes the app.
 	 */
 	public void setDefaultConfig() {
 		setConfig(new AppConfigDefault());

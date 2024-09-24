@@ -6,6 +6,7 @@ import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppConfig;
+import org.geogebra.common.main.settings.updater.SettingsUpdater;
 
 abstract class AbstractAppConfig implements AppConfig {
 
@@ -31,6 +32,11 @@ abstract class AbstractAppConfig implements AppConfig {
     @Override
     public String getSubAppCode() {
         return subAppCode;
+    }
+
+    @Override
+    public SettingsUpdater createSettingsUpdater() {
+        return new SettingsUpdater();
     }
 
     @Override

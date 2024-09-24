@@ -22,22 +22,24 @@ public interface EquationBehaviour {
 
 	/**
 	 * The equation form for conics created from user input.
-	 * @return one of the EQUATION_* constants defined in GeoConicND, or -1 if not applicable.
+	 * @return one of the {@code EQUATION_...} constants defined in GeoConicND, or -1 if ...
+	 *  TODO specify condition
 	 */
 	int getConicAlgebraInputEquationForm();
 
 	/**
 	 * The equation form for lines created from a (Line) command or tool.
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if the equation form
-	 * should be taken from the construction defaults for lines (see note in header).
+	 * @return one of the {@code EQUATION_...} constants defined in GeoLine, or -1 if the equation
+	 * form should be taken from the construction defaults for lines (see note in header).
+	 *
 	 * @see org.geogebra.common.kernel.algos.AlgoJoinPoints
 	 */
 	int getLineCommandEquationForm();
 
 	/**
 	 * The equation form for Rays created from a (Ray) command or tool.
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if the equation form
-	 * 	 * should be taken from the construction defaults for lines (see note in header).
+	 * @return one of the {@code EQUATION_...} constants defined in GeoLine, or -1 if the equation
+	 * form should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getRayCommandEquationForm();
 
@@ -46,8 +48,8 @@ public interface EquationBehaviour {
 
 	/**
 	 * The equation form for lines created from FitLine() commands.
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 the equation form
-	 * 	 * should be taken from the construction defaults for lines (see note in header).
+	 * @return one of the {@code EQUATION_...} constants defined in GeoLine, or -1 if the equation
+	 * form should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getFitLineCommandEquationForm();
 

@@ -14,6 +14,7 @@ package org.geogebra.common.kernel.statistics;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.algos.AlgoElement;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -47,13 +48,15 @@ public class AlgoFitLineY extends AlgoElement {
 		this.geoList = geoList;
 
 		g = new GeoLine(cons);
-		// ignore default (implicit)
-		// for FitXXX we always want "y=..."
-		g.setEquationForm(GeoLine.EQUATION_EXPLICIT);
 
 		setInputOutput(); // for AlgoElement
 
 		compute();
+
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour != null) {
+			g.setEquationForm(equationBehaviour.getFitLineCommandEquationForm());
+		}
 	}
 
 	@Override

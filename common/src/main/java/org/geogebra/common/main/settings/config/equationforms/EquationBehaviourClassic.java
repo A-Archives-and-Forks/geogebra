@@ -2,7 +2,10 @@ package org.geogebra.common.main.settings.config.equationforms;
 
 import org.geogebra.common.kernel.geos.GeoLine;
 
-public class EquationBehaviourClassic extends DefaultEquationBehaviour {
+/**
+ * Equation behaviour for the Classic app.
+ */
+public final class EquationBehaviourClassic extends DefaultEquationBehaviour {
 
 	@Override
 	public int getLineCommandEquationForm() {

@@ -771,7 +771,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	/**
 	 * Set visual style from defaults
-	 * TODO rename to setVisualStyleFromConstructionDefaults?
+	 * TODO APPS-5867: rename to setVisualStyleFromConstructionDefaults?
 	 */
 	final public void setConstructionDefaults() {
 		setConstructionDefaults(true, true);
@@ -1183,7 +1183,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	}
 
 	/**
-	 * set visual style from geo, except for
+	 * Set visual style from geo, except for
 	 *  * auxiliary flag
 	 *  * fixed flag
 	 *  * selection allowed flag

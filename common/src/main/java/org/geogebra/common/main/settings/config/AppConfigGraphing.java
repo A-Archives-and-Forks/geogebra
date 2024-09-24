@@ -29,7 +29,6 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppKeyboardType;
 import org.geogebra.common.main.settings.LabelVisibility;
 import org.geogebra.common.main.settings.config.equationforms.EquationBehaviourGraphing;
-import org.geogebra.common.main.settings.updater.GraphingSettingsUpdater;
 import org.geogebra.common.main.settings.updater.SettingsUpdater;
 import org.geogebra.common.main.syntax.suggestionfilter.GraphingSyntaxFilter;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
@@ -236,11 +235,6 @@ public class AppConfigGraphing extends AbstractAppConfig {
 	@Override
 	public boolean showToolsPanel() {
 		return true;
-	}
-
-	@Override
-	public SettingsUpdater createSettingsUpdater() {
-		return new GraphingSettingsUpdater();
 	}
 
 	@Override

@@ -158,6 +158,9 @@ public abstract class GeoConicND extends GeoQuadricND
 	private Coords tmpCoords1;
 	private Coords tmpCoords2;
 
+	// TODO APPS-5867: check all GeoConicND-creating code (algos, etc) and set
+	//  the equation form where applicable (see AlgoJoinPoints)
+
 	/**
 	 * default constructor
 	 *
@@ -1376,7 +1379,6 @@ public abstract class GeoConicND extends GeoQuadricND
 			toStringMode = equationForm;
 			break;
 		default:
-//				toStringMode = EQUATION_IMPLICIT;
 			break;
 		}
 	}

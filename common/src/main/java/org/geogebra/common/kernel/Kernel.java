@@ -5255,9 +5255,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	}
 
 	/**
-	 * Set the current equation behaviour.
-	 * <p/>
-	 * Note that the equation behaviour may change at run time, e.g. during certain exams.
+	 * Set the current equation behaviour (may change at runtime, e.g. during exams).
 	 */
 	public void setEquationBehaviour(@Nonnull EquationBehaviour equationBehaviour) {
 		this.equationBehaviour = equationBehaviour;

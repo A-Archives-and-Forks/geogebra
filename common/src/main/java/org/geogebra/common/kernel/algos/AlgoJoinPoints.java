@@ -80,15 +80,11 @@ public class AlgoJoinPoints extends AlgoElement
 		compute();
 		addIncidence();
 
-		// TODO make sure APPS-2326 is satisfied
-		// In Classic, the (line) equation style from the construction defaults overrides
-		// the static equation behaviour.
-		// In Graphing, the static equation behaviour overrides the construction defaults.
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());
 		}
-		// TODO set flag that prevents changing the equation form
+		// TODO APPS-5867: set flag that prevents changing the equation form
 	}
 
 	/**

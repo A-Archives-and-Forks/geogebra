@@ -47,14 +47,14 @@ public class AlgoFitLineX extends AlgoElement {
 
 		g = new GeoLine(cons);
 
+		setInputOutput(); // for AlgoElement
+
+		compute();
+
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			g.setEquationForm(equationBehaviour.getFitLineCommandEquationForm());
 		}
-
-		setInputOutput(); // for AlgoElement
-
-		compute();
 	}
 
 	@Override

@@ -5,12 +5,12 @@ import org.geogebra.common.kernel.geos.GeoLine;
 
 /**
  * Common behaviour across all apps for equation forms.
- * <p/>
- * Subclass and override for app-specific differences.
  *
- * @See <a href="https://docs.google.com/spreadsheets/d/1nL071WJP2qu-n1LafYGLoKbcrz486PTYd8q7KgnvGhA/edit?gid=1442218852#gid=1442218852">This spreadsheet"</a>.
+ * @apiNote Subclass and override for app-specific differences.
+ *
+ * @See <a href="https://docs.google.com/spreadsheets/d/1nL071WJP2qu-n1LafYGLoKbcrz486PTYd8q7KgnvGhA/edit?gid=1442218852#gid=1442218852">Equation form matrix"</a>.
  */
-public abstract class DefaultEquationBehaviour implements EquationBehaviour {
+public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getLinearAlgebraInputEquationForm() {

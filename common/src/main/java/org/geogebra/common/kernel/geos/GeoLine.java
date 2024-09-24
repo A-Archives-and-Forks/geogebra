@@ -873,9 +873,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	@Override
 	final public void setToParametric(String parameter) {
 		setEquationForm(GeoLine.EQUATION_PARAMETRIC);
-//		if (parameter != null && parameter.length() > 0) {
-			this.parameter = parameter;
-//		}
+		this.parameter = parameter;
 	}
 
 	/** change equation mode to explicit */
@@ -900,10 +898,12 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		setEquationForm(EQUATION_GENERAL);
 	}
 
-	// code like line.setMode(GeoLine.EQUATION_...) is used in a few places
+	/**
+	 * Code like {@code line.setMode(GeoLine.EQUATION_...)} is used in a few places,
+	 * so we have this override here to forward to {@link #setEquationForm(int)}.
+	 */
 	@Override
 	final public void setMode(int mode) {
-		super.setMode(mode);
 		setEquationForm(mode);
 	}
 
@@ -1836,14 +1836,14 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	}
 
 	/**
-	 * Sets the equation style (aka equation form) for a line.
+	 * Sets the equation style (aka equation form) for a line loaded from XML.
 	 * <p/>
 	 * This method may be called in two scenarios:
 	 * <ul>
 	 * <li>When loading the attributes of a regular construction element of type "line".
 	 * <li>When loading construction defaults for lines (from geogebra_defaults2d.xml). In this
-	 *   case, the GeoLine is the one kept in {@link org.geogebra.common.kernel.ConstructionDefaults
-	 *   ConstructionDefaults}.
+	 *   case, the {@code GeoLine} is the one kept in
+	 *   {@link org.geogebra.common.kernel.ConstructionDefaults ConstructionDefaults}.
 	 * </ul>
 	 * @param style
 	 *            equation style (aka equation form)
@@ -1853,12 +1853,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	@Override
 	public boolean setEquationStyleFromXML(String style, String parameter) {
-		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
-		if (equationBehaviour.getLineCommandEquationForm() != -1) {
-			setEquationForm(equationBehaviour.getLineCommandEquationForm());
-			return true;
-		}
-
 		if ("implicit".equals(style)) {
 			setToImplicit();
 		} else if ("explicit".equals(style)) {

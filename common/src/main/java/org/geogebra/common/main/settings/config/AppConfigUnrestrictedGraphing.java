@@ -16,7 +16,7 @@ import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.AppKeyboardType;
-import org.geogebra.common.main.settings.config.equationforms.EquationBehaviourUnrestrictedGraphing;
+import org.geogebra.common.main.settings.config.equationforms.DefaultEquationBehaviour;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
 
 /**
@@ -91,7 +91,7 @@ public class AppConfigUnrestrictedGraphing extends AppConfigGraphing {
 	@Nonnull
 	@Override
 	public EquationBehaviour getEquationBehaviour() {
-		return new EquationBehaviourUnrestrictedGraphing();
+		return new DefaultEquationBehaviour();
 	}
 
 	@Override
