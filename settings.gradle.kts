@@ -26,17 +26,18 @@ include("renderer-web")
 include("editor-base")
 include("editor-desktop")
 include("editor-web")
+
 include("test")
 
 include("keyboard-base")
-
 include("keyboard-scientific")
 include("keyboard-web")
+
 include("carota-web")
 
 include("gwtutil")
-
 include("gwt-generator")
+
 rootProject.name = "geogebra"
 
 rootProject.children.forEach { project ->
@@ -46,8 +47,4 @@ rootProject.children.forEach { project ->
         project.projectDir = file(projectDirName)
         assert(project.projectDir.isDirectory)
     }
-}
-
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version ("0.4.0")
 }
