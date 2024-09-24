@@ -17,11 +17,15 @@ public class EquationBehaviourTest extends BaseUnitTest {
 		GeoLine defaultLine = new GeoLine(getConstruction());
 		assertEquals(GeoLine.EQUATION_IMPLICIT, defaultLine.getEquationForm());
 
+		// Line created with tool
 		GeoPoint pointA = new GeoPoint(getConstruction(), 0, 0, 0);
 		GeoPoint pointB = new GeoPoint(getConstruction(), 1, 1, 0);
 		AlgoJoinPoints algoJoinPoints = new AlgoJoinPoints(getConstruction(), pointA, pointB);
 		GeoLine toolLine = algoJoinPoints.getLine();
 		assertEquals(GeoLine.EQUATION_EXPLICIT, toolLine.getEquationForm());
+
+		// Ray created with tool
+		// TODO APPS-5867
 	}
 
 	@Test
@@ -52,11 +56,15 @@ public class EquationBehaviourTest extends BaseUnitTest {
 		GeoLine defaultLine = new GeoLine(getConstruction());
 		assertEquals(GeoLine.EQUATION_IMPLICIT, defaultLine.getEquationForm());
 
+		// Line created with tool
 		GeoPoint pointA = new GeoPoint(getConstruction(), 0, 0, 0);
 		GeoPoint pointB = new GeoPoint(getConstruction(), 1, 1, 0);
 		AlgoJoinPoints algoJoinPoints = new AlgoJoinPoints(getConstruction(), pointA, pointB);
 		GeoLine toolLine = algoJoinPoints.getLine();
 		assertEquals(GeoLine.EQUATION_IMPLICIT, toolLine.getEquationForm());
+
+		// Ray created with tool
+		// TODO APPS-5867
 	}
 
 	@Test

@@ -20,6 +20,7 @@ package org.geogebra.common.kernel.algos;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -60,6 +61,12 @@ public class AlgoJoinPointsRay extends AlgoElement
 
 		ray.setLabel(label);
 		addIncidence();
+
+		// APPS-5867
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour != null) {
+			ray.setEquationForm(equationBehaviour.getRayCommandEquationForm());
+		}
 	}
 
 	/**

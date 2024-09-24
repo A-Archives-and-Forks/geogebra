@@ -27,6 +27,9 @@ public interface EquationBehaviour {
 	 */
 	int getConicAlgebraInputEquationForm();
 
+	// TODO APPS-5867: Lines, Conics, *Implicit Equations and Functions* are restricted to
+	//  “Input Form” in standalone Graphing
+
 	/**
 	 * The equation form for lines created from a (Line) command or tool.
 	 * @return one of the {@code EQUATION_...} constants defined in GeoLine, or -1 if the equation
@@ -42,9 +45,6 @@ public interface EquationBehaviour {
 	 * form should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getRayCommandEquationForm();
-
-	// TODO add more getters for any GeoLine/GeoRay/GeoSegment-producing code that needs
-	//  special equation forms
 
 	/**
 	 * The equation form for lines created from FitLine() commands.
@@ -62,14 +62,4 @@ public interface EquationBehaviour {
 	 * TODO could this be overriden for certain exams?
 	 */
 	boolean allowsChangingEquationFormsByUser();
-
-	/**
-	 * Whether to show an output row in the Algebra View for an element.
-	 * @param element
-	 * @return
-	 */
-	// TODO "For Rays, Conics, Implicit Equations and Functions created with a command
-	//  or tool we do not show the calculated equation / In the Algebra View no output row is shown"
-	//  -> this information needs to be saved at the time the element is created
-//	boolean showAlgebraViewOuputRow(GeoElement element);
 }

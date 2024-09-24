@@ -80,11 +80,11 @@ public class AlgoJoinPoints extends AlgoElement
 		compute();
 		addIncidence();
 
+		// APPS-5867
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());
 		}
-		// TODO APPS-5867: set flag that prevents changing the equation form
 	}
 
 	/**

@@ -2981,6 +2981,9 @@ public class AlgebraProcessor {
 		if (isExplicit) {
 			line.setToExplicit();
 		}
+		// TODO APPS-5867 "When manually entered, Lines, Conics, Implicit Equations and
+		//  Functions are restricted to “Input Form”." in standalone Graphing
+
 		line.showUndefinedInAlgebraView(true);
 		setEquationLabelAndVisualStyle(line, label, info);
 
@@ -3069,6 +3072,8 @@ public class AlgebraProcessor {
 				|| conic.getType() == GeoConicNDConstants.CONIC_CIRCLE) {
 			conic.setToSpecific();
 		}
+		// TODO APPS-5867 "When manually entered, Lines, Conics, Implicit Equations and
+		//  Functions are restricted to “Input Form”." in standalone Graphing
 		conic.setDefinition(def);
 		setEquationLabelAndVisualStyle(conic, label, info);
 
