@@ -82,7 +82,6 @@ import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.SelectionManager;
 import org.geogebra.common.main.SpecialPointsListener;
 import org.geogebra.common.main.SpecialPointsManager;
-import org.geogebra.common.main.settings.config.equationforms.CustomEquationBehaviour;
 import org.geogebra.common.ownership.NonOwning;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;

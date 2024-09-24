@@ -949,7 +949,12 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 * which doesn't make sense for lines.
 	 */
 	private void initializeEquationForm() {
-		toStringMode = EQUATION_IMPLICIT;
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour != null) {
+			toStringMode = equationBehaviour.getDefaultLineEquationForm();
+		} else {
+			toStringMode = EQUATION_IMPLICIT;
+		}
 	}
 
 	/** output depends on mode: PARAMETRIC or EQUATION */

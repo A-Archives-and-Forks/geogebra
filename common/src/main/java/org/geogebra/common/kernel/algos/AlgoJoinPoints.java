@@ -24,6 +24,7 @@ import java.util.HashSet;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -79,8 +80,14 @@ public class AlgoJoinPoints extends AlgoElement
 		compute();
 		addIncidence();
 
-		// TODO try to remove/refactor this, but make sure APPS-2326 is satisfied
-		g.setEquationForm(kernel.getEquationBehaviour().getLineCommandEquationForm());
+		// TODO make sure APPS-2326 is satisfied
+		// In Classic, the (line object) equation style from the construction defaults overrides
+		// the static equation behaviour.
+		// In Graphing, the static equation behaviour overrides the construction defaults.
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour != null) {
+			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());
+		}
 		// TODO set flag that prevents changing the equation form
 	}
 

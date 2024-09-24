@@ -13,11 +13,6 @@ import org.geogebra.common.kernel.geos.GeoLine;
 public abstract class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
-	public boolean allowsChangingEquationFormsByUser() {
-		return true;
-	}
-
-	@Override
 	public int getDefaultLineEquationForm() {
 		return GeoLine.EQUATION_IMPLICIT;
 	}
@@ -45,5 +40,10 @@ public abstract class DefaultEquationBehaviour implements EquationBehaviour {
 	@Override
 	public int getFitLineCommandEquationForm() {
 		return GeoLine.EQUATION_EXPLICIT;
+	}
+
+	@Override
+	public boolean allowsChangingEquationFormsByUser() {
+		return true;
 	}
 }

@@ -9,19 +9,9 @@ package org.geogebra.common.kernel;
 public interface EquationBehaviour {
 
 	/**
-	 * Whether this EquationBehaviour allows the equation forms to be changed by the user.
-	 * Since this is currently an all-or-none property (see spreadsheet linked in header)
-	 * there's only one method for all equation forms. If we need finer granularity, we can
-	 * split this into multiple methods.
-	 * @return true if the equation forms can be changed, false otherwise.
-	 * TODO could this be overriden for certain exams?
-	 */
-	boolean allowsChangingEquationFormsByUser();
-
-	/**
-	 * The default (baseline) equation form for all lines.
+	 * The default equation form for all lines. This default form may be overwritten by
+	 * one of the special cases below.
 	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
-	 * TODO do we needs this at all?
 	 */
 	int getDefaultLineEquationForm();
 
@@ -58,6 +48,16 @@ public interface EquationBehaviour {
 	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
 	 */
 	int getFitLineCommandEquationForm();
+
+	/**
+	 * Whether this EquationBehaviour allows the equation forms to be changed by the user.
+	 * Since this is currently an all-or-none property (see spreadsheet linked in header)
+	 * there's only one method for all equation forms. If we need finer granularity, we can
+	 * split this into multiple methods.
+	 * @return true if the equation forms can be changed, false otherwise.
+	 * TODO could this be overriden for certain exams?
+	 */
+	boolean allowsChangingEquationFormsByUser();
 
 	/**
 	 * Whether to show an output row in the Algebra View for an element.
