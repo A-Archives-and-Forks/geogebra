@@ -29,7 +29,7 @@ public class LinkSegments {
 		this.locusPoints = locusPoints;
 	}
 
-	public int add(Rect r, int factor) {
+	public int add(PlotRect r, int factor) {
 		EdgeConfig status = create(r, factor);
 		if (status == EdgeConfig.VALID) {
 			if (pts[0].x > pts[1].x) {
@@ -78,7 +78,6 @@ public class LinkSegments {
 		return DoubleUtil.isEqual(q1.x, q2.x, 1e-10)
 				&& DoubleUtil.isEqual(q1.y, q2.y, 1e-10);
 	}
-
 
 	public EdgeConfig create(PlotRect r, int factor) {
 		EdgeConfig gridType = EdgeConfig.fromFlag(config(r));
