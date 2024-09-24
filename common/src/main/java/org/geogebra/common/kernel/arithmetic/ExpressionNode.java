@@ -3487,6 +3487,14 @@ public class ExpressionNode extends ValidExpression
 		return resolvedSurd != null;
 	}
 
+	public boolean isRationalizableFraction() {
+		ExpressionNode resolvedFraction = RationalizableFraction.getResolution(this);
+		if (resolvedFraction != null) {
+			resolve = resolvedFraction;
+		}
+		return resolvedFraction != null;
+	}
+
 	/**
 	 * @return simplified fraction if this is one; null otherwise
 	 */

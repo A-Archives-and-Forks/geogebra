@@ -47,7 +47,6 @@ import org.geogebra.common.kernel.arithmetic.FunctionVariable;
 import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.MySpecialDouble;
 import org.geogebra.common.kernel.arithmetic.NumberValue;
-import org.geogebra.common.kernel.arithmetic.RationalizableFraction;
 import org.geogebra.common.kernel.arithmetic.RecurringDecimal;
 import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.geogebra.common.kernel.arithmetic.ValueType;
@@ -1910,7 +1909,8 @@ public class GeoNumeric extends GeoElement
 		boolean symbolicMode =
 				(definition == null)
 						|| (!definition.isSimpleFraction() && definition.isFractionNoPi())
-						|| (definition.isSimplifiableSurd());
+						|| (definition.isSimplifiableSurd())
+						|| (definition.isRationalizableFraction());
 		setSymbolicMode(symbolicMode, false);
 	}
 
@@ -2219,12 +2219,12 @@ public class GeoNumeric extends GeoElement
 			}
 		}
 
-		if (symbolicMode && RationalizableFraction.isSupported(this)) {
-			ExpressionNode result = RationalizableFraction.rationalize(getDefinition());
-			return result != null
-					? result.toOutputValueString(tpl)
-					: "";
-		}
+//		if (symbolicMode) {
+//			ExpressionNode result = RationalizableFraction.rationalize(getDefinition());
+//			return result != null
+//					? result.toOutputValueString(tpl)
+//					: "";
+//		}
 
 		return super.getFormulaString(tpl, substituteNumbers);
 	}

@@ -4,7 +4,6 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.Inspecting.OperationChecker;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoNumeric;
-import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 
@@ -15,11 +14,8 @@ public final class RationalizableFraction {
 	 * @param geo to check
 	 * @return if geo is a rationalizable fraction and supported by this algo.
 	 */
-	public static boolean isSupported(GeoElementND geo) {
-		if (!(geo instanceof GeoNumeric)) {
-			return false;
-		}
-		ExpressionNode root = geo.getDefinition();
+	public static boolean isSupported(ExpressionNode root) {
+
 		if (root == null) {
 			return false;
 		}
@@ -34,7 +30,7 @@ public final class RationalizableFraction {
 			return false;
 		}
 
-		return isSupported(root.getLeftTree()) && isSupported(root.getRightTree());
+		return isSubtreeSupported(root.getLeftTree()) && isSubtreeSupported(root.getRightTree());
 	}
 
 	private static int getSquareRootCount(ExpressionValue node) {
@@ -43,7 +39,7 @@ public final class RationalizableFraction {
 		return operationChecker.getCount();
 	}
 
-	private static boolean isSupported(ExpressionNode node) {
+	private static boolean isSubtreeSupported(ExpressionNode node) {
 		return node.isLeaf() || node.inspect(
 				v -> v.isOperation(Operation.SQRT) || v.isOperation(Operation.PLUS)
 						|| v.isOperation(Operation.MINUS));
@@ -54,7 +50,11 @@ public final class RationalizableFraction {
 	 * @param node to rationalize
 	 * @return the rationalized fraction.
 	 */
-	public static ExpressionNode rationalize(ExpressionNode node) {
+	public static ExpressionNode getResolution(ExpressionNode node) {
+		if (!isSupported(node)) {
+			return null;
+		}
+		
 		Integer v = getValueIfTrivial(node);
 		Kernel kernel = node.getKernel();
 		if (v != null) {

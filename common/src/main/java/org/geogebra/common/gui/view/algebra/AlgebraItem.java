@@ -6,7 +6,6 @@ import org.geogebra.common.kernel.algos.AlgoFractionText;
 import org.geogebra.common.kernel.algos.Algos;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
-import org.geogebra.common.kernel.arithmetic.RationalizableFraction;
 import org.geogebra.common.kernel.cas.AlgoSolve;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.DescriptionMode;
@@ -35,10 +34,11 @@ import org.geogebra.common.util.SymbolicUtil;
  */
 public class AlgebraItem {
 
-	public enum CASOutputType {
-		NUMERIC, SYMBOLIC
-	}
 
+
+	public enum CASOutputType {
+		NUMERIC, SYMBOLIC;
+	}
 	/**
 	 * @param geo
 	 *            element
@@ -66,10 +66,6 @@ public class AlgebraItem {
 	public static boolean isSymbolicDiffers(GeoElement geo) {
 		if (!(geo instanceof HasSymbolicMode)) {
 			return false;
-		}
-
-		if (RationalizableFraction.isSupported(geo)) {
-			return true;
 		}
 
 		if (geo instanceof GeoSymbolic) {
@@ -133,6 +129,11 @@ public class AlgebraItem {
 		GeoElementND value = geo.unwrapSymbolic();
 		return value instanceof GeoNumeric && value.getDefinition() != null
 				&& value.getDefinition().isFraction();
+	}
+
+	public static boolean isRationalizableFraction(GeoElement geo) {
+		return geo instanceof GeoNumeric && geo.getDefinition() != null
+				&& geo.getDefinition().isRationalizableFraction();
 	}
 
 	/**
@@ -220,8 +221,7 @@ public class AlgebraItem {
 	 */
 	public static String getOutputTextForGeoElement(GeoElement element) {
 		String outputText = "";
-		if (element.isLaTeXDrawableGeo()
-				|| RationalizableFraction.isSupported(element)) {
+		if (element.isLaTeXDrawableGeo()) {
 			outputText = element.getLaTeXDescriptionRHS(true,
 					getOutputStringTemplate(element));
 		} else {
