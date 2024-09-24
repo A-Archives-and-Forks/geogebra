@@ -17,6 +17,35 @@ final class RationalizeFractionAlgo {
 	}
 
 	public ExpressionNode compute() {
+		ExpressionNode result = compute0();
+		return result.isOperation(Operation.DIVIDE) ? cancelGCDs(result) : result;
+	}
+
+	private static ExpressionNode cancelGCDs(ExpressionNode node) {
+		ExpressionNode numerator = node.getLeftTree();
+		ExpressionNode denominator = node.getRightTree();
+		boolean numeratorLeaf = numerator.isLeaf();
+		boolean denominatorLeaf = denominator.isLeaf();
+		if (!numeratorLeaf && denominatorLeaf) {
+			ExpressionValue canceled = denominator.getLeft();
+			if (numerator.isOperation(Operation.MULTIPLY))  {
+				double evalCanceled = canceled.evaluateDouble();
+				double evalLeft = numerator.getLeft().evaluateDouble();
+				double evalRight = numerator.getRight().evaluateDouble();
+				long gcdLeft = Kernel.gcd((long) evalCanceled, (long) evalLeft);
+				long gcdRight = Kernel.gcd((long) evalCanceled, (long) evalRight);
+				if (DoubleUtil.isEqual(gcdLeft, evalCanceled)) {
+					return numerator.getRightTree();
+				} else if (DoubleUtil.isEqual(gcdRight, evalCanceled)) {
+					return numerator.getLeftTree();
+				} else {
+				}
+			}
+		}
+		return node;
+	}
+
+	public ExpressionNode compute0() {
 		if (numerator.isLeaf()) {
 			return rationalizeAsLeafNumerator();
 		}
@@ -36,6 +65,15 @@ final class RationalizeFractionAlgo {
 		return hasTwoTags(numerator) && hasTwoTags(denominator);
 	}
 
+	private ExpressionNode factorize() {
+		for (Operation op: new Operation[]{Operation.MINUS, Operation.PLUS}) {
+			if (denominator.isOperation(op)) {
+				return checkFactorization(op);
+			}
+		}
+		return null;
+	}
+
 	private static boolean hasTwoTags(ExpressionNode node) {
 		// isSupported() guarantees that exactly one of the leaves is SQRT by now,
 		// so no check is needed here.
@@ -49,22 +87,11 @@ final class RationalizeFractionAlgo {
 					Operation.DIVIDE, denominator.getLeft());
 		}
 
-		try {
-			return checkFactorization(Operation.MINUS);
-		} catch (NoFactorization e) {
-			//
-		}
 
-		try {
-			return checkFactorization(Operation.PLUS);
-		} catch (NoFactorization e) {
-			//
-		}
-
-		return null;
+		return factorize();
 	}
 
-	private ExpressionNode checkFactorization(Operation op) throws NoFactorization {
+	private ExpressionNode checkFactorization(Operation op) {
 		if (denominator.isOperation(op)) {
 			ExpressionNode mul =
 					new ExpressionNode(kernel, denominator.getLeft(), Operation.inverse(op),
@@ -90,7 +117,7 @@ final class RationalizeFractionAlgo {
 						Operation.DIVIDE, new MyDouble(kernel, v));
 			}
 		}
-		throw new NoFactorization();
+		return null;
 	}
 
 	private ExpressionNode simplifiedMultiply(ExpressionValue rationalized,
@@ -106,22 +133,6 @@ final class RationalizeFractionAlgo {
 		}
 
 		return left.multiply(right);
-	}
-
-	private ExpressionNode factorize() {
-		try {
-			return checkFactorization(Operation.MINUS);
-		} catch (NoFactorization e) {
-			//
-		}
-
-		try {
-			return checkFactorization(Operation.PLUS);
-		} catch (NoFactorization e) {
-			//
-		}
-
-		return null;
 	}
 
 	private ExpressionNode rationalizeAsSquareRootProduct() {
