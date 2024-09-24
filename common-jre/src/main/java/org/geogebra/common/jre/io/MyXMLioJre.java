@@ -193,6 +193,7 @@ public abstract class MyXMLioJre extends MyXMLio {
 		}
 		zip.close();
 
+
 		if (!isGGTfile) {
 			// ggb file: remove all macros from kernel before processing
 			kernel.removeAllMacros();

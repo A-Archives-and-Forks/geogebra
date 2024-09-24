@@ -92,7 +92,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			@Nullable Set<ExpressionFilter> expressionFilters,
 			@Nullable Set<CommandFilter> commandFilters,
 			@Nullable Set<CommandArgumentFilter> commandArgumentFilters,
-			@Nullable Set<String> frozenProperties) {
+			@Nullable Set<String> frozenProperties) { // TODO add EquationBehaviour
 		this.examType = examType;
 		this.disabledSubApps = disabledSubApps != null ? disabledSubApps : Set.of();
 		this.defaultSubApp = defaultSubApp != null ? defaultSubApp : SuiteSubApp.GRAPHING;
@@ -156,6 +156,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				algebraProcessor.addExpressionFilter(expressionFilter);
 			}
 		}
+		// TODO save Kernel equation behaviour, apply exam equation behaviour (if non-null)
 		if (propertiesRegistry != null) {
 			for (String frozenProperty : frozenProperties) {
 				Property property = propertiesRegistry.lookup(frozenProperty, context);
@@ -188,6 +189,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				algebraProcessor.removeExpressionFilter(expressionFilter);
 			}
 		}
+		// TODO restore Kernel equation behaviour
 		if (propertiesRegistry != null) {
 			for (String frozenProperty : frozenProperties) {
 				Property property = propertiesRegistry.lookup(frozenProperty, context);

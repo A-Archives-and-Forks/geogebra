@@ -120,7 +120,7 @@ public final class ExamController {
 	 */
 	public void setActiveContext(@Nonnull Object context,
 			@Nonnull CommandDispatcher commandDispatcher,
-			@Nonnull AlgebraProcessor algebraProcessor) {
+			@Nonnull AlgebraProcessor algebraProcessor) { // TODO add Kernel or replace with Kernel
 		// remove restrictions for current dependencies, if exam is active
 		if (examRestrictions != null && activeDependencies != null) {
 			removeRestrictionsFromContextDependencies(activeDependencies);

@@ -13,7 +13,7 @@ the Free Software Foundation.
 package org.geogebra.common.kernel.statistics;
 
 import org.geogebra.common.kernel.Construction;
-import org.geogebra.common.kernel.EquationForms;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.algos.AlgoElement;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -47,9 +47,9 @@ public class AlgoFitLineX extends AlgoElement {
 
 		g = new GeoLine(cons);
 
-		EquationForms equationForms = kernel.getEquationForms();
-		if (equationForms != null) {
-			g.setEquationForm(equationForms.getFitLineCommandEquationForm());
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour != null) {
+			g.setEquationForm(equationBehaviour.getFitLineCommandEquationForm());
 		}
 
 		setInputOutput(); // for AlgoElement

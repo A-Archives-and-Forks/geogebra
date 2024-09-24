@@ -2127,7 +2127,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		kernel = companion.newKernel();
 		kernel.setAngleUnit(appConfig.getDefaultAngleUnit());
 		kernel.setSymbolicMode(appConfig.getSymbolicMode());
-		kernel.setEquationForms(appConfig.getEquationForms());
+		kernel.setEquationBehaviour(appConfig.getEquationBehaviour());
 		// ensure that the selection manager is created
 		getSelectionManager();
 	}
@@ -4289,6 +4289,12 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		try {
 			// make sure objects are displayed in the correct View
 			setActiveView(App.VIEW_EUCLIDIAN);
+
+			// reset equation behaviour to app defaults (to clear out any overrides applied
+			// from construction defaults in previously opened files)
+			if (appConfig != null) {
+				kernel.setEquationBehaviour(appConfig.getEquationBehaviour());
+			}
 
 			getXMLio().readZipFromString(zipFile);
 

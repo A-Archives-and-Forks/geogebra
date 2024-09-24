@@ -662,7 +662,7 @@ public class AppCommon extends App {
 	 */
 	public void setConfig(AppConfig config) {
 		this.config = config;
-		this.kernel.setEquationForms(config.getEquationForms());
+		this.kernel.setEquationBehaviour(config.getEquationBehaviour());
 	}
 
 	public void setCASFactory(CASFactory casFactory) {

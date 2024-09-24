@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.geogebra.common.kernel.Construction;
-import org.geogebra.common.kernel.EquationForms;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
 import org.geogebra.common.kernel.Path;
@@ -126,6 +126,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	public GeoLine(Construction c) {
 		super(c);
+		initializeEquationForm();
 		setConstructionDefaults();
 	}
 
@@ -157,6 +158,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	public GeoLine(Construction cons, double a, double b, double c) {
 		super(cons, a, b, c); // GeoVec3D constructor
+		initializeEquationForm();
 		setConstructionDefaults();
 	}
 
@@ -887,9 +889,9 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	@Override
 	final public void setToParametric(String parameter) {
 		setEquationForm(GeoLine.EQUATION_PARAMETRIC);
-		if (parameter != null && parameter.length() > 0) {
+//		if (parameter != null && parameter.length() > 0) {
 			this.parameter = parameter;
-		}
+//		}
 	}
 
 	/** change equation mode to explicit */
@@ -909,9 +911,15 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		setEquationForm(EQUATION_USER);
 	}
 
+	@Override
+	final public void setToGeneral() {
+		setEquationForm(EQUATION_GENERAL);
+	}
+
 	// code like line.setMode(GeoLine.EQUATION_...) is used in a few places
 	@Override
 	final public void setMode(int mode) {
+		super.setMode(mode);
 		setEquationForm(mode);
 	}
 
@@ -930,6 +938,18 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		default:
 			break;
 		}
+	}
+
+	public int getEquationForm() {
+		return toStringMode;
+	}
+
+	/**
+	 * Override GeoElement's default value of Kernel.COORD_CARTESIAN,
+	 * which doesn't make sense for lines.
+	 */
+	private void initializeEquationForm() {
+		toStringMode = EQUATION_IMPLICIT;
 	}
 
 	/** output depends on mode: PARAMETRIC or EQUATION */
@@ -1778,11 +1798,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	}
 
 	@Override
-	public void setToGeneral() {
-		setEquationForm(EQUATION_GENERAL);
-	}
-
-	@Override
 	public boolean isLaTeXDrawableGeo() {
 		return toStringMode == GeoLine.EQUATION_USER
 				&& getDefinition() != null;
@@ -1844,12 +1859,27 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		return super.getDescriptionMode();
 	}
 
+	/**
+	 * Sets the equation style (aka equation form) for a line.
+	 * <p/>
+	 * This method may be called in two scenarios:
+	 * <ul>
+	 * <li>When loading the attributes of a regular construction element of type "line".
+	 * <li>When loading construction defaults for lines (from geogebra_defaults2d.xml). In this
+	 *   case, the GeoLine is the one kept in {@link org.geogebra.common.kernel.ConstructionDefaults
+	 *   ConstructionDefaults}.
+	 * </ul>
+	 * @param style
+	 *            equation style (aka equation form)
+	 * @param parameter
+	 *            parameter name
+	 * @return true if style was accepted as valid, or false otherwise.
+	 */
 	@Override
 	public boolean setTypeFromXML(String style, String parameter) {
-		// TODO ignore value from geogebra_defaults2d.xml (i.e., Classic / Settings)
-		// APPS-1303: "In Graphing, lines and conics should be restricted to "Input Form""
-//		if (isEquationFormEnforced()) {
-//			ignoreLineModeFromXML(style);
+//		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+//		if (equationBehaviour.getLineCommandEquationForm() != -1) {
+//			setEquationForm(equationBehaviour.getLineCommandEquationForm());
 //			return true;
 //		}
 
@@ -1949,33 +1979,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public boolean isPolynomialFunction(boolean forRoot) {
 		return true;
 	}
-
-//	protected void setModeIfEquationFormIsNotForced(int mode) {
-//		if (isEquationFormEnforced()) {
-//			toStringMode = cons.getApplication().getConfig().getEnforcedLineEquationForm();
-//		} else {
-//			toStringMode = mode;
-//		}
-//	}
-
-//	private boolean isEquationFormEnforced() {
-//		return cons.getApplication().getConfig().getEnforcedLineEquationForm() != -1;
-//	}
-
-//	private void setModeWithImplicitEquationAsDefault(int mode) {
-//		switch (mode) {
-//			case EQUATION_PARAMETRIC:
-//			case EQUATION_EXPLICIT:
-//			case EQUATION_IMPLICIT_NON_CANONICAL:
-//			case EQUATION_GENERAL:
-//			case EQUATION_USER:
-//				toStringMode = mode;
-//				break;
-//
-//			default:
-//				toStringMode = EQUATION_IMPLICIT;
-//		}
-//	}
 
 	@Override
 	public boolean hasSpecialEditor() {

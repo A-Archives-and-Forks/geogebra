@@ -21,6 +21,7 @@ package org.geogebra.common.kernel.geos;
 import java.util.ArrayList;
 
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.algos.SymbolicParametersBotanaAlgo;
 import org.geogebra.common.kernel.arithmetic.Equation;
 import org.geogebra.common.kernel.arithmetic.EquationValue;
@@ -756,6 +757,13 @@ public class GeoConic extends GeoConicND implements ConicMirrorable,
 
 	@Override
 	public boolean setTypeFromXML(String style, String parameter) {
+		// TODO do we need something similar to GeoLine.setTypeFromXML?
+//		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+//		if (equationBehaviour.getLineCommandEquationForm() != -1) {
+//			setEquationForm(equationBehaviour.getConicEquationForm());
+//			return true;
+//		}
+
 		if ("implicit".equals(style)) {
 			setToImplicit();
 		} else if ("specific".equals(style)) {

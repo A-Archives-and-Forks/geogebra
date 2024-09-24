@@ -180,7 +180,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	 * @param isIntersection
 	 *            if this is an intersection curve
 	 * @param stringMode
-	 *            toStroingMode, one of EQUATION_* constants
+	 *            toStringMode, one of EQUATION_* constants
 	 */
 	public GeoConicND(Construction c, int dimension, boolean isIntersection,
 			int stringMode) {
@@ -1203,7 +1203,7 @@ public abstract class GeoConicND extends GeoQuadricND
 		GeoConicND co = (GeoConicND) geo;
 
 		// copy everything
-		setModeIfEquationFormIsNotForced(co.toStringMode);
+		setEquationForm(co.getToStringMode());
 		type = co.type;
 		for (int i = 0; i < 6; i++) {
 			matrix[i] = co.matrix[i]; // flat matrix A
@@ -1277,21 +1277,6 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	/**
-	 * Sets equation mode to specific, implicit or explicit
-	 * 
-	 * @param mode
-	 *            equation mode (one of EQUATION_* constants)
-	 */
-	@Override
-	public void setToStringMode(int mode) {
-		if (isEquationFormEnforced()) {
-			toStringMode = cons.getApplication().getConfig().getEnforcedConicEquationForm();
-		} else {
-			setModeWithImplicitEquationAsDefault(mode);
-		}
-	}
-
-	/**
 	 * returns true if this conic is a circle Michael Borcherds 2008-03-23
 	 * 
 	 * @return true iff this conic is circle
@@ -1338,40 +1323,62 @@ public abstract class GeoConicND extends GeoQuadricND
 
 	/** Changes equation mode to Implicit */
 	final public void setToImplicit() {
-		setToStringMode(EQUATION_IMPLICIT);
+		setMode(EQUATION_IMPLICIT);
 	}
 
 	/** Changes equation mode to Explicit */
 	final public void setToExplicit() {
-		setToStringMode(EQUATION_EXPLICIT);
+		setMode(EQUATION_EXPLICIT);
 	}
 
 	/**
-	 * Changes equation mode to Explicit
+	 * Changes equation mode to Parametric
 	 * 
 	 * @param parameter
 	 *            new parameter name
 	 */
 	final public void setToParametric(String parameter) {
-		setToStringMode(EQUATION_PARAMETRIC);
-		if (parameter != null) {
-			this.parameter = parameter;
-		}
+		setMode(EQUATION_PARAMETRIC);
+		this.parameter = parameter;
 	}
 
-	/** Changes equation mode to Explicit */
+	/** Changes equation mode to User/Input */
 	final public void setToUser() {
-		setToStringMode(EQUATION_USER);
+		setMode(EQUATION_USER);
 	}
 
 	/** Changes equation mode to Vertex form */
 	final public void setToVertexform() {
-		setToStringMode(EQUATION_VERTEX);
+		setMode(EQUATION_VERTEX);
 	}
 
-	/** Changes equation mode to Vertex form */
+	/** Changes equation mode to Conic form */
 	final public void setToConicform() {
-		setToStringMode(EQUATION_CONICFORM);
+		setMode(EQUATION_CONICFORM);
+	}
+
+	final public void setMode(int mode) {
+		setEquationForm(mode);
+	}
+
+	public void setEquationForm(int equationForm) {
+		if (equationForm == -1) {
+			return; // ignore value for "undefined" (see EquationForms)
+		}
+		switch (equationForm) {
+		case EQUATION_SPECIFIC:
+		case EQUATION_EXPLICIT:
+		case EQUATION_IMPLICIT:
+		case EQUATION_USER:
+		case EQUATION_PARAMETRIC:
+		case EQUATION_VERTEX:
+		case EQUATION_CONICFORM:
+			toStringMode = equationForm;
+			break;
+		default:
+//				toStringMode = EQUATION_IMPLICIT;
+			break;
+		}
 	}
 
 	@Override
@@ -4345,43 +4352,6 @@ public abstract class GeoConicND extends GeoQuadricND
 	public double getEllipseCircumference() {
 		return EllipticArcLength.getEllipseCircumference(halfAxes[0],
 				halfAxes[1]);
-	}
-
-	/**
-	 * @param param
-	 *            parameter name
-	 */
-	public void toParametric(String param) {
-		this.toStringMode = GeoConicND.EQUATION_PARAMETRIC;
-		this.parameter = param;
-	}
-
-	private void setModeIfEquationFormIsNotForced(int mode) {
-		if (isEquationFormEnforced()) {
-			toStringMode = cons.getApplication().getConfig().getEnforcedConicEquationForm();
-		} else {
-			toStringMode = mode;
-		}
-	}
-
-	private boolean isEquationFormEnforced() {
-		return cons.getApplication().getConfig().getEnforcedConicEquationForm() != -1;
-	}
-
-	private void setModeWithImplicitEquationAsDefault(int mode) {
-		switch (mode) {
-			case EQUATION_SPECIFIC:
-			case EQUATION_EXPLICIT:
-			case EQUATION_USER:
-			case EQUATION_PARAMETRIC:
-			case EQUATION_VERTEX:
-			case EQUATION_CONICFORM:
-				toStringMode = mode;
-				break;
-
-			default:
-				toStringMode = EQUATION_IMPLICIT;
-		}
 	}
 
 	/**

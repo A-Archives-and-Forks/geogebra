@@ -11,7 +11,7 @@ import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.toolcategorization.AppType;
 import org.geogebra.common.io.layout.DockPanelData;
 import org.geogebra.common.io.layout.Perspective;
-import org.geogebra.common.kernel.EquationForms;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
@@ -28,7 +28,7 @@ import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppKeyboardType;
 import org.geogebra.common.main.settings.LabelVisibility;
-import org.geogebra.common.main.settings.config.equationforms.EquationFormsGraphing;
+import org.geogebra.common.main.settings.config.equationforms.EquationBehaviourGraphing;
 import org.geogebra.common.main.settings.updater.GraphingSettingsUpdater;
 import org.geogebra.common.main.settings.updater.SettingsUpdater;
 import org.geogebra.common.main.syntax.suggestionfilter.GraphingSyntaxFilter;
@@ -312,8 +312,8 @@ public class AppConfigGraphing extends AbstractAppConfig {
 
 	@Nonnull
 	@Override
-	public EquationForms getEquationForms() {
-		return new EquationFormsGraphing();
+	public EquationBehaviour getEquationBehaviour() {
+		return new EquationBehaviourGraphing();
 	}
 
 	@Override

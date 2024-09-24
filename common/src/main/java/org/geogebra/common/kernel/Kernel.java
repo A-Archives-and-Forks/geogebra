@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.cas.GeoGebraCAS;
@@ -81,6 +82,7 @@ import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.SelectionManager;
 import org.geogebra.common.main.SpecialPointsListener;
 import org.geogebra.common.main.SpecialPointsManager;
+import org.geogebra.common.main.settings.config.equationforms.CustomEquationBehaviour;
 import org.geogebra.common.ownership.NonOwning;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
@@ -186,7 +188,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	/** Evaluator for ExpressionNode */
 	protected ExpressionNodeEvaluator expressionNodeEvaluator;
 
-	private EquationForms equationForms;
+	private EquationBehaviour equationBehaviour;
 
 	/**
 	 * CAS variable handling
@@ -411,7 +413,6 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	public Kernel(App app, GeoFactory factory) {
 		this(factory);
 		this.app = app;
-		this.equationForms = app.getConfig().getEquationForms();
 
 		newConstruction();
 		getExpressionNodeEvaluator();
@@ -5246,13 +5247,20 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 		return functionConverter;
 	}
 
-	// TODO can we make this @NonNull (initialize with default?)
+	/**
+	 * The current equation behaviour (may change at runtime, e.g. during exams).
+	 */
 	@CheckForNull
-	public EquationForms getEquationForms() {
-		return equationForms;
+	public EquationBehaviour getEquationBehaviour() {
+		return equationBehaviour;
 	}
 
-	public void setEquationForms(@CheckForNull EquationForms equationForms) {
-		this.equationForms = equationForms;
+	/**
+	 * Set the current equation behaviour.
+	 * <p/>
+	 * Note that the equation behaviour may change at run time, e.g. during certain exams.
+	 */
+	public void setEquationBehaviour(@Nonnull EquationBehaviour equationBehaviour) {
+		this.equationBehaviour = equationBehaviour;
 	}
 }

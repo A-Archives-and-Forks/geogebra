@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.toolcategorization.AppType;
 import org.geogebra.common.io.layout.DockPanelData;
-import org.geogebra.common.kernel.EquationForms;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
@@ -246,10 +246,12 @@ public interface AppConfig extends Serializable {
 	 */
 	Set<FillType> getAvailableFillTypes();
 
-	// TODO this replaces the semantically unclear getLineDisplayStyle(),
-	//  getEnforcedLineEquationForm(), getEnforcedConicEquationForm()
+	/**
+	 * This replaces the semantically unclear {@link #getLineDisplayStyle()},
+	 * {@link #getEnforcedLineEquationForm()}, {@link #getEnforcedConicEquationForm()}.
+	 */
 	@Nonnull
-    EquationForms getEquationForms();
+	EquationBehaviour getEquationBehaviour();
 
 	@Deprecated // replaced by getEquationForms()
 	int getLineDisplayStyle();
@@ -277,6 +279,7 @@ public interface AppConfig extends Serializable {
 	 *
 	 * @return true if equation should be hidden in AV
 	 */
+	@Deprecated // replaced by getEquationForms()
 	boolean shouldHideEquations();
 
 	/**
