@@ -126,23 +126,8 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	public GeoLine(Construction c) {
 		super(c);
-		initializeEquationForm();
 		setConstructionDefaults();
 	}
-
-	/**
-	 * Creates new line
-	 * 
-	 * @param c
-	 *            construction
-	 * @param mode
-	 *            string mode (GeoLine.EQUATION_*)
-	 */
-	// TODO remove if not used
-//	public GeoLine(Construction c, int mode) {
-//		this(c);
-//		setMode(mode);
-//	}
 
 	/**
 	 * Creates new GeoLine
@@ -158,7 +143,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	public GeoLine(Construction cons, double a, double b, double c) {
 		super(cons, a, b, c); // GeoVec3D constructor
-		initializeEquationForm();
 		setConstructionDefaults();
 	}
 
@@ -942,19 +926,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	public int getEquationForm() {
 		return toStringMode;
-	}
-
-	/**
-	 * Override GeoElement's default value of Kernel.COORD_CARTESIAN,
-	 * which doesn't make sense for lines.
-	 */
-	private void initializeEquationForm() {
-		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
-		if (equationBehaviour != null) {
-			toStringMode = equationBehaviour.getDefaultLineEquationForm();
-		} else {
-			toStringMode = EQUATION_IMPLICIT;
-		}
 	}
 
 	/** output depends on mode: PARAMETRIC or EQUATION */
@@ -1881,12 +1852,12 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 * @return true if style was accepted as valid, or false otherwise.
 	 */
 	@Override
-	public boolean setTypeFromXML(String style, String parameter) {
-//		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
-//		if (equationBehaviour.getLineCommandEquationForm() != -1) {
-//			setEquationForm(equationBehaviour.getLineCommandEquationForm());
-//			return true;
-//		}
+	public boolean setEquationStyleFromXML(String style, String parameter) {
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour.getLineCommandEquationForm() != -1) {
+			setEquationForm(equationBehaviour.getLineCommandEquationForm());
+			return true;
+		}
 
 		if ("implicit".equals(style)) {
 			setToImplicit();

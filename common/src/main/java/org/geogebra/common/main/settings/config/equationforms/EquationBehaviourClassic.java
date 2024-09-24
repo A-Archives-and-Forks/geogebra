@@ -6,6 +6,6 @@ public class EquationBehaviourClassic extends DefaultEquationBehaviour {
 
 	@Override
 	public int getLineCommandEquationForm() {
-		return GeoLine.EQUATION_IMPLICIT;
+		return -1; // use value from construction defaults
 	}
 }

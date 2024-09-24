@@ -498,8 +498,8 @@ public class ConstructionDefaults implements SettingListener {
 		line.setObjColor(getLineColor());
 		// line.setLineThickness(getDefaultLineThickness());
 		line.setDefaultGeoType(DEFAULT_LINE);
-		// TODO it looks like this is currently not used anywhere
-		// TODO what about GeoSegment etc?
+		// note: this default equation form also applies to subclasses of GeoLine (GeoRay,
+		// GeoSegment, etc)
 		line.setMode(GeoLine.EQUATION_IMPLICIT);
 		setDefaultLineStyle(line);
 		defaultGeoElements.put(DEFAULT_LINE, line);

@@ -849,7 +849,7 @@ public class Equation extends ValidExpression implements EquationValue {
 	}
 
 	@Override
-	public boolean setTypeFromXML(String style, String parameter) {
+	public boolean setEquationStyleFromXML(String style, String parameter) {
 		return false;
 	}
 

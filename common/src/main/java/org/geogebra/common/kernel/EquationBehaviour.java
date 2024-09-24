@@ -1,23 +1,22 @@
 package org.geogebra.common.kernel;
 
 /**
- * The equation forms and visibility settings to be used for lines and other objects, as
- * created by different sources.
+ * The equation forms to be used for lines and other objects, as created by different sources.
+ * <p/>
+ * Note: The equation form for {@link org.geogebra.common.kernel.geos.GeoLine GeoLine} and
+ * subclasses is initalized from the construction defaults (via the call to
+ * {@code setConstructionDefaults()} in the {@code GeoLine} constructor). By default, the
+ * equation style in the construction defaults for {@code GeoLine} and subclasses is set to
+ * {@code EQUATION_IMPLICIT}, but this default setting may be overridden (in the Classic app).
  *
- * @See <a href="https://docs.google.com/spreadsheets/d/1nL071WJP2qu-n1LafYGLoKbcrz486PTYd8q7KgnvGhA/edit?gid=1442218852#gid=1442218852">This spreadsheet"</a>.
+ * @See <a href="https://docs.google.com/spreadsheets/d/1nL071WJP2qu-n1LafYGLoKbcrz486PTYd8q7KgnvGhA/edit?gid=1442218852#gid=1442218852">Equation forms matrix"</a>.
  */
 public interface EquationBehaviour {
 
 	/**
-	 * The default equation form for all lines. This default form may be overwritten by
-	 * one of the special cases below.
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
-	 */
-	int getDefaultLineEquationForm();
-
-	/**
 	 * The equation form for lines created from user input (linear equations).
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
+	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if the equation form
+	 * should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getLinearAlgebraInputEquationForm();
 
@@ -29,14 +28,16 @@ public interface EquationBehaviour {
 
 	/**
 	 * The equation form for lines created from a (Line) command or tool.
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
+	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if the equation form
+	 * should be taken from the construction defaults for lines (see note in header).
 	 * @see org.geogebra.common.kernel.algos.AlgoJoinPoints
 	 */
 	int getLineCommandEquationForm();
 
 	/**
 	 * The equation form for Rays created from a (Ray) command or tool.
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
+	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if the equation form
+	 * 	 * should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getRayCommandEquationForm();
 
@@ -45,7 +46,8 @@ public interface EquationBehaviour {
 
 	/**
 	 * The equation form for lines created from FitLine() commands.
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if not applicable.
+	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 the equation form
+	 * 	 * should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getFitLineCommandEquationForm();
 
@@ -64,7 +66,7 @@ public interface EquationBehaviour {
 	 * @param element
 	 * @return
 	 */
-	// TODO e.g. "For Rays, Conics, Implicit Equations and Functions created with a command
+	// TODO "For Rays, Conics, Implicit Equations and Functions created with a command
 	//  or tool we do not show the calculated equation / In the Algebra View no output row is shown"
 	//  -> this information needs to be saved at the time the element is created
 //	boolean showAlgebraViewOuputRow(GeoElement element);

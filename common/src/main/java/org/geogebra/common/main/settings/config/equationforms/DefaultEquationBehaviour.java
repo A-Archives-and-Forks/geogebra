@@ -13,11 +13,6 @@ import org.geogebra.common.kernel.geos.GeoLine;
 public abstract class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
-	public int getDefaultLineEquationForm() {
-		return GeoLine.EQUATION_IMPLICIT;
-	}
-
-	@Override
 	public int getLinearAlgebraInputEquationForm() {
 		return GeoLine.EQUATION_USER;
 	}
