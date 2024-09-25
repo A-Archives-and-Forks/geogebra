@@ -44,7 +44,7 @@ public final class RationalizableFraction {
 
 	private static boolean isMultipliedByInteger(ExpressionNode node) {
 		return node.isOperation(Operation.MULTIPLY) && node.getLeft().isLeaf()
-				&& isInteger(node.getLeftTree());
+				&& isIntegerEvaluation(node.getLeftTree());
 	}
 
 	private static int getSquareRootCount(ExpressionValue node) {
@@ -54,7 +54,7 @@ public final class RationalizableFraction {
 	}
 
 	private static boolean isSubtreeSupported(ExpressionNode node) {
-		return (node.isLeaf() && isInteger(node))
+		return (node.isLeaf() && isIntegerEvaluation(node))
 				|| node.inspect(
 						v -> isSquareRootOfPositiveInteger(node) || isPlusMinusInteger(node));
 	}
@@ -67,19 +67,19 @@ public final class RationalizableFraction {
 				|| isSquareRootPlusMinusInteger(node.getRightTree(), node.getLeftTree());
 	}
 
-	private static boolean isInteger(ExpressionNode node) {
-		return getValueIfTrivial(node) != null;
+	private static boolean isIntegerEvaluation(ExpressionNode node) {
+		return evaluateAsInteger(node) != null;
 	}
 
 	private static boolean isSquareRootPlusMinusInteger(ExpressionNode node1, ExpressionNode node2) {
-		return node1.isOperation(Operation.SQRT) && isInteger(node2);
+		return node1.isOperation(Operation.SQRT) && isIntegerEvaluation(node2);
 	}
 
 	private static boolean isSquareRootOfPositiveInteger(ExpressionNode node) {
 		if (!node.isOperation(Operation.SQRT)) {
 			return false;
 		}
-		Integer value = getValueIfTrivial(node.getLeftTree());
+		Integer value = evaluateAsInteger(node.getLeftTree());
 		return value != null && value >= 0;
 	}
 
@@ -93,13 +93,13 @@ public final class RationalizableFraction {
 			return null;
 		}
 		
-		Integer v = getValueIfTrivial(node);
+		Integer v = evaluateAsInteger(node);
 		Kernel kernel = node.getKernel();
 		if (v != null) {
 			return new MyDouble(kernel, v).wrap();
 		}
 
-		Integer denominatorValue = getValueIfTrivial(node.getRightTree());
+		Integer denominatorValue = evaluateAsInteger(node.getRightTree());
 		if (denominatorValue != null) {
 			return denominatorValue == 1
 			? new ExpressionNode(node.getLeftTree())
@@ -122,7 +122,7 @@ public final class RationalizableFraction {
 		return false;
 	}
 
-	public static Integer getValueIfTrivial(ExpressionNode node) {
+	public static Integer evaluateAsInteger(ExpressionNode node) {
 		double v = node.evaluateDouble();
 		return DoubleUtil.isEqual(v,  (int) v)? (int) v : null;
 

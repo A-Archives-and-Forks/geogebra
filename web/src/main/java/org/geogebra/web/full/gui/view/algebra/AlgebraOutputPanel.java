@@ -45,8 +45,10 @@ public class AlgebraOutputPanel extends FlowPanel {
 	}
 
 	/**
-	 * @param text prefix
-	 * @param isLaTeX whether output is LaTeX
+	 * @param text
+	 *            prefix
+	 * @param isLaTeX
+	 *            whether output is LaTeX
 	 */
 	void addPrefixLabel(String text, boolean isLaTeX) {
 		final Label label = new Label(text);
@@ -84,6 +86,7 @@ public class AlgebraOutputPanel extends FlowPanel {
 	 */
 	public static ToggleButton createSymbolicButton(FlowPanel parent,
 			final GeoElement geo) {
+
 		ToggleButton btnSymbolic = getSymbolicButtonIfExists(parent);
 
 		if (btnSymbolic == null) {
@@ -211,9 +214,12 @@ public class AlgebraOutputPanel extends FlowPanel {
 	*/
 
 	/**
-	 * @param text preview text
-	 * @param previewGeo preview geo
-	 * @param fontSize size in pixels
+	 * @param text
+	 *            preview text
+	 * @param previewGeo
+	 *            preview geo
+	 * @param fontSize
+	 *            size in pixels
 	 */
 	public void showLaTeXPreview(String text, GeoElementND previewGeo,
 			int fontSize) {

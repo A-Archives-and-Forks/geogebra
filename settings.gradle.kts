@@ -5,22 +5,21 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 include("common")
-
-
 include("ggbjdk")
 include("common-jre")
 include("xr-base")
-include("desktop")
 
+include("desktop")
 include("jogl2")
 include("giac-jni")
-include("web-common")
 
+include("web-common")
 include("web")
 include("web-dev")
-include("renderer-base")
 
+include("renderer-base")
 include("renderer-desktop")
 include("renderer-web")
 include("editor-base")

@@ -34,11 +34,10 @@ import org.geogebra.common.util.SymbolicUtil;
  */
 public class AlgebraItem {
 
-
-
 	public enum CASOutputType {
 		NUMERIC, SYMBOLIC
 	}
+
 	/**
 	 * @param geo
 	 *            element
@@ -67,7 +66,6 @@ public class AlgebraItem {
 		if (!(geo instanceof HasSymbolicMode)) {
 			return false;
 		}
-
 		if (geo instanceof GeoSymbolic) {
 			GeoSymbolic symbolic = (GeoSymbolic) geo;
 			if (symbolic.shouldWrapInNumeric()) {
@@ -79,6 +77,7 @@ public class AlgebraItem {
 		if (geo.getParentAlgorithm() instanceof AlgoSolve) {
 			return !allRHSareIntegers((GeoList) geo);
 		}
+
 		if (geo.isGeoNumeric()) {
 			ExpressionNode def = geo.getDefinition() == null ? null
 					: geo.getDefinition().asFraction();
