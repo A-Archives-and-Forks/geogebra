@@ -74,10 +74,10 @@ public class AlgebraItem {
 				return SymbolicUtil.isSymbolicSolveDiffers(symbolic);
 			}
 		}
+
 		if (geo.getParentAlgorithm() instanceof AlgoSolve) {
 			return !allRHSareIntegers((GeoList) geo);
 		}
-
 		if (geo.isGeoNumeric()) {
 			ExpressionNode def = geo.getDefinition() == null ? null
 					: geo.getDefinition().asFraction();

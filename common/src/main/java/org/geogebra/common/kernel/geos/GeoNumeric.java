@@ -2219,13 +2219,6 @@ public class GeoNumeric extends GeoElement
 			}
 		}
 
-//		if (symbolicMode) {
-//			ExpressionNode result = RationalizableFraction.rationalize(getDefinition());
-//			return result != null
-//					? result.toOutputValueString(tpl)
-//					: "";
-//		}
-
 		return super.getFormulaString(tpl, substituteNumbers);
 	}
 
