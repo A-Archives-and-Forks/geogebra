@@ -2981,8 +2981,11 @@ public class AlgebraProcessor {
 		if (isExplicit) {
 			line.setToExplicit();
 		}
-		// TODO APPS-5867 "When manually entered, Lines, Conics, Implicit Equations and
-		//  Functions are restricted to “Input Form”." in standalone Graphing
+		// APPS-5867
+		int equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
+		if (equationForm != -1) {
+			line.setEquationForm(equationForm);
+		}
 
 		line.showUndefinedInAlgebraView(true);
 		setEquationLabelAndVisualStyle(line, label, info);
@@ -3072,10 +3075,14 @@ public class AlgebraProcessor {
 				|| conic.getType() == GeoConicNDConstants.CONIC_CIRCLE) {
 			conic.setToSpecific();
 		}
-		// TODO APPS-5867 "When manually entered, Lines, Conics, Implicit Equations and
-		//  Functions are restricted to “Input Form”." in standalone Graphing
 		conic.setDefinition(def);
 		setEquationLabelAndVisualStyle(conic, label, info);
+
+		// APPS-5867
+		int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
+		if (equationForm != -1) {
+			conic.setEquationForm(equationForm);
+		}
 
 		return array(conic);
 	}

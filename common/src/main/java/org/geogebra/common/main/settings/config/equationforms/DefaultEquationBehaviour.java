@@ -1,6 +1,7 @@
 package org.geogebra.common.main.settings.config.equationforms;
 
 import org.geogebra.common.kernel.EquationBehaviour;
+import org.geogebra.common.kernel.geos.GeoConic;
 import org.geogebra.common.kernel.geos.GeoLine;
 
 /**
@@ -19,7 +20,7 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getConicAlgebraInputEquationForm() {
-		return GeoLine.EQUATION_USER;
+		return GeoConic.EQUATION_USER;
 	}
 
 	@Override

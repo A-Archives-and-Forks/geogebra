@@ -52,7 +52,7 @@ public class ForceInputFormTest extends BaseUnitTest {
         GeoElement loadedLineWithCommand = lookup("lineCmd");
 
         Assert.assertEquals(GeoLine.EQUATION_USER, loadedLine.getToStringMode());
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, loadedLineWithCommand.getToStringMode());
+        Assert.assertEquals(GeoLine.EQUATION_PARAMETRIC, loadedLineWithCommand.getToStringMode());
     }
 
     @Test
@@ -61,14 +61,16 @@ public class ForceInputFormTest extends BaseUnitTest {
 
         GeoElementFactory factory = getElementFactory();
         GeoLine geoLine = factory.createGeoLine();
-        GeoConic parabola = (GeoConic) factory.create("y=xx");
+		GeoLine geoLineWithCommand = factory.createGeoLineWithCommand();
+		GeoConic parabola = (GeoConic) factory.create("y=xx");
         GeoConic hyperbola = (GeoConic) factory.create("yy-xx=1");
         GeoRay geoRay = factory.createGeoRay();
 
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoLine.getToStringMode());
-        Assert.assertEquals(GeoConic.EQUATION_EXPLICIT, parabola.getToStringMode());
-        Assert.assertEquals(GeoConic.EQUATION_IMPLICIT, hyperbola.getToStringMode());
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoRay.getToStringMode());
+        Assert.assertEquals(GeoLine.EQUATION_USER, geoLine.getToStringMode());
+		Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoLineWithCommand.getToStringMode());
+		Assert.assertEquals(GeoConic.EQUATION_USER, parabola.getToStringMode());
+        Assert.assertEquals(GeoConic.EQUATION_USER, hyperbola.getToStringMode());
+        Assert.assertEquals(GeoLine.EQUATION_USER, geoRay.getToStringMode());
     }
 
 	@Test
