@@ -41,8 +41,28 @@ public final class RationalizableFraction {
 
 	private static boolean isSubtreeSupported(ExpressionNode node) {
 		return node.isLeaf() || node.inspect(
-				v -> v.isOperation(Operation.SQRT) || v.isOperation(Operation.PLUS)
-						|| v.isOperation(Operation.MINUS));
+				v -> isSquareRootOfPositiveInteger(node) || isPlusMinusInteger(node));
+	}
+
+	private static boolean isPlusMinusInteger(ExpressionNode node) {
+		if (!(node.isOperation(Operation.PLUS) || node.isOperation(Operation.MINUS))) {
+			return false;
+		}
+		return isSquareRootPlusMinusInteger(node.getLeftTree(), node.getRightTree())
+				|| isSquareRootPlusMinusInteger(node.getRightTree(), node.getLeftTree());
+	}
+
+	private static boolean isSquareRootPlusMinusInteger(ExpressionNode node1, ExpressionNode node2) {
+		return node1.isOperation(Operation.SQRT)
+				&& getValueIfTrivial(node2) != null;
+	}
+
+	private static boolean isSquareRootOfPositiveInteger(ExpressionNode node) {
+		if (!node.isOperation(Operation.SQRT)) {
+			return false;
+		}
+		Integer value = getValueIfTrivial(node.getLeftTree());
+		return value != null && value >= 0;
 	}
 
 	/**
@@ -84,8 +104,8 @@ public final class RationalizableFraction {
 		return false;
 	}
 
-	public static Integer getValueIfTrivial(ExpressionNode num) {
-		double v = num.evaluateDouble();
+	public static Integer getValueIfTrivial(ExpressionNode node) {
+		double v = node.evaluateDouble();
 		return DoubleUtil.isEqual(v,  (int) v)? (int) v : null;
 
 

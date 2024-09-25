@@ -8,7 +8,6 @@ import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RationalizableFractionTest extends BaseUnitTest {
@@ -34,6 +33,15 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldBeUnsupported("1 / (sqrt(2) + sqrt(3))");
 		shouldBeUnsupported("(sqrt(3) + sqrt(2) + 1) / sqrt(2)");
 		shouldBeUnsupported("(sqrt(3) + sqrt(2)) / sqrt(2)");
+		shouldBeUnsupported("1 / sqrt(2.5)");
+		shouldBeUnsupported("sqrt(2.5) / sqrt(2.5)");
+		shouldBeUnsupported("sqrt(1 / 4)");
+		shouldBeUnsupported("sqrt(1 / 4) / sqrt(2)");
+		shouldBeUnsupported("(sqrt(2.5) + 1) / sqrt(2.5)");
+		shouldBeUnsupported("sqrt(2.5) / (sqrt(2.5) + 1)");
+		shouldBeUnsupported("1 / (sqrt(4) + 1.5)");
+		shouldBeUnsupported("1 / (1.5 + sqrt(4))");
+		shouldBeUnsupported("1 / sqrt(-2)");
 	}
 
 	private void shouldBeUnsupported(String definition) {
@@ -126,7 +134,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("sqrt(3) / sqrt(1)", "sqrt(3)");
 	}
 
-	@Ignore
 	@Test
 	public void testCancelGCDs() {
 //		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
