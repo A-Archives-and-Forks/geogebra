@@ -20,6 +20,7 @@ package org.geogebra.common.kernel.algos;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoConic;
@@ -51,6 +52,8 @@ public class AlgoCircleTwoPoints extends AlgoSphereNDTwoPoints
 	public AlgoCircleTwoPoints(Construction cons, GeoPoint M, GeoPoint P) {
 		super(cons, M, P);
 		setIncidence();
+
+		// TODO APPS-5867?
 	}
 
 	private void setIncidence() {

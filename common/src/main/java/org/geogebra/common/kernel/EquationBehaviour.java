@@ -3,7 +3,7 @@ package org.geogebra.common.kernel;
 /**
  * The equation forms to be used for lines and other objects, as created by different sources.
  * <p/>
- * Note: The equation form for {@link org.geogebra.common.kernel.geos.GeoLine GeoLine} and
+ * @implNote The equation form for {@link org.geogebra.common.kernel.geos.GeoLine GeoLine} and
  * subclasses is initalized from the construction defaults (via the call to
  * {@code setConstructionDefaults()} in the {@code GeoLine} constructor). By default, the
  * equation style in the construction defaults for {@code GeoLine} and subclasses is set to
@@ -15,24 +15,16 @@ public interface EquationBehaviour {
 
 	/**
 	 * The equation form for lines created from user input (linear equations).
-	 * @return one of the EQUATION_* constants defined in GeoLine, or -1 if the equation form
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation form
 	 * should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getLinearAlgebraInputEquationForm();
 
 	/**
-	 * The equation form for conics created from user input.
-	 * @return one of the {@code EQUATION_...} constants defined in GeoConicND, or -1 if ...
-	 *  TODO specify condition
-	 */
-	int getConicAlgebraInputEquationForm();
-
-	// TODO APPS-5867: Lines, Conics, *Implicit Equations and Functions* are restricted to
-	//  “Input Form” in standalone Graphing
-
-	/**
 	 * The equation form for lines created from a (Line) command or tool.
-	 * @return one of the {@code EQUATION_...} constants defined in GeoLine, or -1 if the equation
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
 	 * form should be taken from the construction defaults for lines (see note in header).
 	 *
 	 * @see org.geogebra.common.kernel.algos.AlgoJoinPoints
@@ -41,17 +33,38 @@ public interface EquationBehaviour {
 
 	/**
 	 * The equation form for Rays created from a (Ray) command or tool.
-	 * @return one of the {@code EQUATION_...} constants defined in GeoLine, or -1 if the equation
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
 	 * form should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getRayCommandEquationForm();
 
 	/**
 	 * The equation form for lines created from FitLine() commands.
-	 * @return one of the {@code EQUATION_...} constants defined in GeoLine, or -1 if the equation
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
 	 * form should be taken from the construction defaults for lines (see note in header).
 	 */
 	int getFitLineCommandEquationForm();
+
+	/**
+	 * The equation form for conics created from user input.
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if 
+	 *  TODO specify condition
+	 */
+	int getConicAlgebraInputEquationForm();
+
+	/**
+	 * The equation form for conics created from a (Parabola, etc) command or tool.
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if 
+	 * 	TODO specify condition
+	 */
+	int getConicCommandEquationForm();
+
+	// TODO APPS-5867: Lines, Conics, *Implicit Equations and Functions* are restricted to
+	//  “Input Form” in standalone Graphing
 
 	/**
 	 * Whether this EquationBehaviour allows the equation forms to be changed by the user.

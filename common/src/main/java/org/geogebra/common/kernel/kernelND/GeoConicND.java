@@ -1383,6 +1383,10 @@ public abstract class GeoConicND extends GeoQuadricND
 		}
 	}
 
+	public int getEquationForm() {
+		return toStringMode;
+	}
+
 	@Override
 	final public boolean isSpecificPossible() {
 		switch (type) {

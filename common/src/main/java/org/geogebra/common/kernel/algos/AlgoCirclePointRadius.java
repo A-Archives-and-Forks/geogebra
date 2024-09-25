@@ -21,6 +21,7 @@ package org.geogebra.common.kernel.algos;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianViewInterfaceSlim;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoConic;
@@ -52,14 +53,16 @@ public class AlgoCirclePointRadius extends AlgoSphereNDPointRadius implements
 	 * @param r
 	 *            radius
 	 */
-	public AlgoCirclePointRadius(Construction cons, GeoPoint M,
-			GeoNumberValue r) {
+	public AlgoCirclePointRadius(Construction cons, GeoPoint M, GeoNumberValue r) {
 		super(cons, M, r);
+
+		// TODO APPS-5867?
 	}
 
 	AlgoCirclePointRadius(Construction cons, GeoPoint M, GeoSegment rgeo) {
-
 		super(cons, M, rgeo);
+
+		// TODO APPS-5867?
 	}
 
 	@Override
