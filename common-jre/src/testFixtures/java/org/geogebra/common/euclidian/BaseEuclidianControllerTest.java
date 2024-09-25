@@ -12,6 +12,7 @@ import org.geogebra.common.jre.headless.AppCommon;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoImage;
+import org.geogebra.common.main.settings.config.AppConfigGraphing3D;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.test.TestEvent;
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class BaseEuclidianControllerTest extends BaseUnitTest {
 
 	@Override
 	public AppCommon createAppCommon() {
-		return AppCommonFactory.create3D();
+		return AppCommonFactory.create3D(new AppConfigGraphing3D());
 	}
 
 	/**
