@@ -18,6 +18,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldBeSupported("1 / (1 - sqrt(2))");
 		shouldBeSupported("sqrt(3) / sqrt(2)");
 		shouldBeSupported("(sqrt(3) + 1) / sqrt(2)");
+		shouldBeSupported("(3 (sqrt(3) + 1)) / sqrt(2)");
 		shouldBeSupported("(sqrt(3) + 1) / (sqrt(2) - 1)");
 	}
 
@@ -42,6 +43,9 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldBeUnsupported("1 / (sqrt(4) + 1.5)");
 		shouldBeUnsupported("1 / (1.5 + sqrt(4))");
 		shouldBeUnsupported("1 / sqrt(-2)");
+		shouldBeUnsupported("2.3 / sqrt(2)");
+		shouldBeUnsupported("((1 / 2) (sqrt(3) + 1)) / sqrt(2)");
+		shouldBeUnsupported("(3.2 (sqrt(3) + 1)) / sqrt(2)");
 	}
 
 	private void shouldBeUnsupported(String definition) {
@@ -100,11 +104,11 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("(-3 * sqrt(3)) / sqrt(3)", "-3");
 		rationalizationShouldBe("(3 * sqrt(3)) / -sqrt(3)", "-3");
 		rationalizationShouldBe("(-3 * sqrt(3)) / -sqrt(3)", "3");
+		rationalizationShouldBe("(-3 (sqrt(3) + 2)) / (sqrt(3) + 2)", "-3");
 	}
 
 	@Test
 	public void name() {
-		rationalizationShouldBe("-(sqrt(3) + 2) / (sqrt(3) + 2)", "-1");
 
 	}
 

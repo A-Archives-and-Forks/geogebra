@@ -37,7 +37,7 @@ public class AlgebraItem {
 
 
 	public enum CASOutputType {
-		NUMERIC, SYMBOLIC;
+		NUMERIC, SYMBOLIC
 	}
 	/**
 	 * @param geo
@@ -76,7 +76,6 @@ public class AlgebraItem {
 				return SymbolicUtil.isSymbolicSolveDiffers(symbolic);
 			}
 		}
-
 		if (geo.getParentAlgorithm() instanceof AlgoSolve) {
 			return !allRHSareIntegers((GeoList) geo);
 		}

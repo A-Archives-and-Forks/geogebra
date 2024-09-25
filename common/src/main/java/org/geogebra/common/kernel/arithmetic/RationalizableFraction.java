@@ -42,8 +42,9 @@ public final class RationalizableFraction {
 				: leftTree;
 	}
 
-	private static boolean isMultipliedByInteger(ExpressionNode leftTree) {
-		return leftTree.isOperation(Operation.MULTIPLY) && leftTree.getLeft().isLeaf();
+	private static boolean isMultipliedByInteger(ExpressionNode node) {
+		return node.isOperation(Operation.MULTIPLY) && node.getLeft().isLeaf()
+				&& isInteger(node.getLeftTree());
 	}
 
 	private static int getSquareRootCount(ExpressionValue node) {
@@ -53,8 +54,9 @@ public final class RationalizableFraction {
 	}
 
 	private static boolean isSubtreeSupported(ExpressionNode node) {
-		return node.isLeaf() || node.inspect(
-				v -> isSquareRootOfPositiveInteger(node) || isPlusMinusInteger(node));
+		return (node.isLeaf() && isInteger(node))
+				|| node.inspect(
+						v -> isSquareRootOfPositiveInteger(node) || isPlusMinusInteger(node));
 	}
 
 	private static boolean isPlusMinusInteger(ExpressionNode node) {
@@ -65,9 +67,12 @@ public final class RationalizableFraction {
 				|| isSquareRootPlusMinusInteger(node.getRightTree(), node.getLeftTree());
 	}
 
+	private static boolean isInteger(ExpressionNode node) {
+		return getValueIfTrivial(node) != null;
+	}
+
 	private static boolean isSquareRootPlusMinusInteger(ExpressionNode node1, ExpressionNode node2) {
-		return node1.isOperation(Operation.SQRT)
-				&& getValueIfTrivial(node2) != null;
+		return node1.isOperation(Operation.SQRT) && isInteger(node2);
 	}
 
 	private static boolean isSquareRootOfPositiveInteger(ExpressionNode node) {
