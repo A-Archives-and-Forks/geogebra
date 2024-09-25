@@ -30,7 +30,20 @@ public final class RationalizableFraction {
 			return false;
 		}
 
-		return isSubtreeSupported(root.getLeftTree()) && isSubtreeSupported(root.getRightTree());
+		ExpressionNode numerator = stripFromIntegerMultiplication(root.getLeftTree());
+		ExpressionNode denominator = stripFromIntegerMultiplication(root.getRightTree());
+
+		return isSubtreeSupported(numerator) && isSubtreeSupported(denominator);
+	}
+
+	private static ExpressionNode stripFromIntegerMultiplication(ExpressionNode leftTree) {
+		return isMultipliedByInteger(leftTree)
+				? leftTree.getRightTree()
+				: leftTree;
+	}
+
+	private static boolean isMultipliedByInteger(ExpressionNode leftTree) {
+		return leftTree.isOperation(Operation.MULTIPLY) && leftTree.getLeft().isLeaf();
 	}
 
 	private static int getSquareRootCount(ExpressionValue node) {

@@ -84,7 +84,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testFractionIsOne() {
+	public void testFractionIsInteger() {
 		rationalizationShouldBe("sqrt(3) / sqrt(3)", "1");
 		rationalizationShouldBe("(2 + sqrt(3)) / (2 + sqrt(3))", "1");
 		rationalizationShouldBe("(sqrt(3) + 2) / (sqrt(3) + 2)", "1");
@@ -95,14 +95,16 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("(sqrt(3) + 2) / -(sqrt(3) + 2)", "-1");
 		rationalizationShouldBe("-(sqrt(3) + 2) / -(sqrt(3) + 2)", "1");
 		rationalizationShouldBe("(3 * sqrt(2)) / sqrt(18)", "1");
-	}
-
-	@Test
-	public void name() {
+		rationalizationShouldBe("-sqrt(3) / sqrt(3)", "-1");
 		rationalizationShouldBe("(3 * sqrt(3)) / sqrt(3)", "3");
 		rationalizationShouldBe("(-3 * sqrt(3)) / sqrt(3)", "-3");
 		rationalizationShouldBe("(3 * sqrt(3)) / -sqrt(3)", "-3");
 		rationalizationShouldBe("(-3 * sqrt(3)) / -sqrt(3)", "3");
+	}
+
+	@Test
+	public void name() {
+		rationalizationShouldBe("-(sqrt(3) + 2) / (sqrt(3) + 2)", "-1");
 
 	}
 
@@ -119,12 +121,11 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	private void rationalizationShouldBe(String definition, String expected) {
 		rationalizationShouldBe(definition, expected, StringTemplate.defaultTemplate);
 	}
-
 	private void rationalizationShouldBe(String definition, String expected, StringTemplate tpl) {
 		GeoNumeric num = add(definition);
 		num.setSymbolicMode(true, true);
 		ExpressionNode resolution = RationalizableFraction.getResolution(num.getDefinition());
-		assertNotNull(resolution);
+		assertNotNull("resolution is null, " + definition + " is not supported", resolution);
 		assertEquals(expected, resolution.toString(tpl));
 	}
 
