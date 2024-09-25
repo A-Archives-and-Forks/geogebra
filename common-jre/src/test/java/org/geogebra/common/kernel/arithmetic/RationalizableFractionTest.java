@@ -136,8 +136,8 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void testCancelGCDs() {
-//		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
-//		rationalizationShouldBe("4 / (sqrt(5) - 1)", "sqrt(5) + 1");
-		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 * sqrt(5) + 1");
+		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
+		rationalizationShouldBe("4 / (sqrt(5) - 1)", "sqrt(5) + 1");
+		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
 	}
 }

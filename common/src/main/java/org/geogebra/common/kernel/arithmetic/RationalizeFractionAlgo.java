@@ -18,10 +18,10 @@ final class RationalizeFractionAlgo {
 
 	public ExpressionNode compute() {
 		ExpressionNode result = compute0();
-		return result.isOperation(Operation.DIVIDE) ? cancelGCDs(result) : result;
+		return result.isOperation(Operation.DIVIDE) ? cancelGCDs(result, kernel) : result;
 	}
 
-	private static ExpressionNode cancelGCDs(ExpressionNode node) {
+	private static ExpressionNode cancelGCDs(ExpressionNode node, Kernel kernel) {
 		ExpressionNode numerator = node.getLeftTree();
 		ExpressionNode denominator = node.getRightTree();
 		boolean numeratorLeaf = numerator.isLeaf();
@@ -37,8 +37,16 @@ final class RationalizeFractionAlgo {
 				if (DoubleUtil.isEqual(gcdLeft, evalCanceled)) {
 					return numerator.getRightTree();
 				} else if (DoubleUtil.isEqual(gcdRight, evalCanceled)) {
-					return numerator.getLeftTree();
-				} else {
+					if (DoubleUtil.isEqual(evalCanceled, evalRight)) {
+						return numerator.getLeftTree();
+					} else {
+						double v = evalRight / evalCanceled;
+						return new ExpressionNode(kernel,
+								new MyDouble(kernel,v),
+								numerator.getOperation(),
+								node.getLeftTree().getLeftTree()
+						);
+					}
 				}
 			}
 		}
