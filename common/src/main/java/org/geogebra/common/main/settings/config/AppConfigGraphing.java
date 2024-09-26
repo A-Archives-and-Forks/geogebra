@@ -28,8 +28,7 @@ import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppKeyboardType;
 import org.geogebra.common.main.settings.LabelVisibility;
-import org.geogebra.common.main.settings.config.equationforms.EquationBehaviourGraphing;
-import org.geogebra.common.main.settings.updater.SettingsUpdater;
+import org.geogebra.common.main.settings.config.equationforms.EquationBehaviourStandaloneGraphing;
 import org.geogebra.common.main.syntax.suggestionfilter.GraphingSyntaxFilter;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
 import org.geogebra.common.properties.factory.DefaultPropertiesFactory;
@@ -307,7 +306,7 @@ public class AppConfigGraphing extends AbstractAppConfig {
 	@Nonnull
 	@Override
 	public EquationBehaviour getEquationBehaviour() {
-		return new EquationBehaviourGraphing();
+		return new EquationBehaviourStandaloneGraphing();
 	}
 
 	@Override

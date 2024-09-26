@@ -24,6 +24,7 @@ import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.geos.GeoPoint;
 import org.geogebra.common.kernel.geos.GeoRay;
 import org.geogebra.common.kernel.geos.GeoVec3D;
@@ -65,7 +66,7 @@ public class AlgoJoinPointsRay extends AlgoElement
 		// APPS-5867
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
-			ray.setEquationForm(equationBehaviour.getRayCommandEquationForm());
+			ray.setEquationForm(equationBehaviour.getLineCommandEquationForm());
 		}
 	}
 

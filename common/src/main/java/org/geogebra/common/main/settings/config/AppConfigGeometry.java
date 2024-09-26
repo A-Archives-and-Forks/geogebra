@@ -5,13 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.toolcategorization.AppType;
 import org.geogebra.common.io.layout.DockPanelData;
 import org.geogebra.common.io.layout.Perspective;
-import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
@@ -25,7 +23,6 @@ import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppKeyboardType;
 import org.geogebra.common.main.settings.LabelVisibility;
-import org.geogebra.common.main.settings.config.equationforms.EquationBehaviourGeometry;
 import org.geogebra.common.main.settings.updater.GeometrySettingsUpdater;
 import org.geogebra.common.main.settings.updater.SettingsUpdater;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
@@ -305,12 +302,6 @@ public class AppConfigGeometry extends AbstractAppConfig {
 	@Override
 	public ParserFunctionsFactory createParserFunctionsFactory() {
 		return ParserFunctionsFactory.createParserFunctionsFactory();
-	}
-
-	@Nonnull
-	@Override
-	public EquationBehaviour getEquationBehaviour() {
-		return new EquationBehaviourGeometry();
 	}
 
 	@Override

@@ -2982,15 +2982,15 @@ public class AlgebraProcessor {
 			line.setToExplicit();
 		}
 
+		line.showUndefinedInAlgebraView(true);
+		line.setDefinition(def);
+		setEquationLabelAndVisualStyle(line, label, info);
+
 		// APPS-5867
 		int equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
 		if (equationForm != -1) {
 			line.setEquationForm(equationForm);
 		}
-
-		line.showUndefinedInAlgebraView(true);
-		line.setDefinition(def);
-		setEquationLabelAndVisualStyle(line, label, info);
 
 		return array(line);
 	}
@@ -3076,14 +3076,17 @@ public class AlgebraProcessor {
 		} else if (isSpecific
 				|| conic.getType() == GeoConicNDConstants.CONIC_CIRCLE) {
 			conic.setToSpecific();
+		} else {
+			conic.setToUser();
 		}
+		conic.setDefinition(def);
+		setEquationLabelAndVisualStyle(conic, label, info);
+
 		// APPS-5867
 		int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
 		if (equationForm != -1) {
 			conic.setEquationForm(equationForm);
 		}
-		conic.setDefinition(def);
-		setEquationLabelAndVisualStyle(conic, label, info);
 
 		return array(conic);
 	}

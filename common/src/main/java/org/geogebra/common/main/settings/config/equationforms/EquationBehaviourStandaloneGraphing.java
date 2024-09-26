@@ -8,7 +8,7 @@ import org.geogebra.common.kernel.kernelND.GeoConicND;
  *
  * @See <a href="https://geogebra-jira.atlassian.net/wiki/spaces/A/pages/836141057/Standalone+Graphing">Standalone Graphing Wiki page</a>
  */
-public final class EquationBehaviourGraphing extends DefaultEquationBehaviour {
+public final class EquationBehaviourStandaloneGraphing extends DefaultEquationBehaviour {
 
 	@Override
 	public int getLinearAlgebraInputEquationForm() {
@@ -16,8 +16,18 @@ public final class EquationBehaviourGraphing extends DefaultEquationBehaviour {
 	}
 
 	@Override
+	public int getLineCommandEquationForm() {
+		return GeoLine.EQUATION_EXPLICIT;
+	}
+
+	@Override
 	public int getConicAlgebraInputEquationForm() {
-		return GeoConicND.EQUATION_USER;
+		return -1;//GeoConicND.EQUATION_USER;
+	}
+
+	@Override
+	public int getConicCommandEquationForm() {
+		return -1;//GeoConicND.EQUATION_IMPLICIT;
 	}
 
 	@Override

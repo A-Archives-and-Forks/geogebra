@@ -56,7 +56,7 @@ public class AlgoFitLineY extends AlgoElement {
 		// APPS-5867
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
-			g.setEquationForm(equationBehaviour.getFitLineCommandEquationForm());
+			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());
 		}
 	}
 

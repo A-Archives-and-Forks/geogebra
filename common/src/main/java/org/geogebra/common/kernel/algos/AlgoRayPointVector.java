@@ -50,7 +50,7 @@ public class AlgoRayPointVector extends AlgoElement {
 		// APPS-5867
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
-			ray.setEquationForm(equationBehaviour.getRayCommandEquationForm());
+			ray.setEquationForm(equationBehaviour.getLineCommandEquationForm());
 		}
 	}
 
