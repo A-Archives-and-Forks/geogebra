@@ -16,7 +16,7 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getLinearAlgebraInputEquationForm() {
-		return GeoLine.EQUATION_USER;
+		return -1;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getConicAlgebraInputEquationForm() {
-		return GeoConicND.EQUATION_USER;
+		return -1;
 	}
 
 	@Override
