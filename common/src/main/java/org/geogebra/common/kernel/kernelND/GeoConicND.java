@@ -1369,11 +1369,11 @@ public abstract class GeoConicND extends GeoQuadricND
 			return; // ignore value for "undefined" (see EquationForms)
 		}
 		switch (equationForm) {
-		case EQUATION_SPECIFIC:
-		case EQUATION_EXPLICIT:
 		case EQUATION_IMPLICIT:
-		case EQUATION_USER:
+		case EQUATION_EXPLICIT:
+		case EQUATION_SPECIFIC:
 		case EQUATION_PARAMETRIC:
+		case EQUATION_USER:
 		case EQUATION_VERTEX:
 		case EQUATION_CONICFORM:
 			toStringMode = equationForm;

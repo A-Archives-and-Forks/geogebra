@@ -2977,17 +2977,19 @@ public class AlgebraProcessor {
 		} else {
 			line = dependentLine(equ);
 		}
-		line.setDefinition(def);
-		if (isExplicit) {
-			line.setToExplicit();
-		}
+
 		// APPS-5867
 		int equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
 		if (equationForm != -1) {
 			line.setEquationForm(equationForm);
 		}
 
+		if (isExplicit) {
+			line.setToExplicit();
+		}
+
 		line.showUndefinedInAlgebraView(true);
+		line.setDefinition(def);
 		setEquationLabelAndVisualStyle(line, label, info);
 
 		return array(line);
@@ -3069,6 +3071,12 @@ public class AlgebraProcessor {
 			conic = dependentConic(equ);
 		}
 
+		// APPS-5867
+		int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
+		if (equationForm != -1) {
+			conic.setEquationForm(equationForm);
+		}
+
 		if (isExplicit) {
 			conic.setToExplicit();
 		} else if (isSpecific
@@ -3077,12 +3085,6 @@ public class AlgebraProcessor {
 		}
 		conic.setDefinition(def);
 		setEquationLabelAndVisualStyle(conic, label, info);
-
-		// APPS-5867
-		int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
-		if (equationForm != -1) {
-			conic.setEquationForm(equationForm);
-		}
 
 		return array(conic);
 	}
