@@ -1955,6 +1955,7 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 
 	@Override
 	public void setToUser() {
+		// TODO APPS-5867 does GeoLine.* make sense for a 2D surface?
 		toStringMode = GeoLine.EQUATION_USER;
 	}
 
@@ -1971,11 +1972,13 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 
 	@Override
 	public boolean isInputForm() {
+		// TODO APPS-5867 does GeoLine.* make sense for a curve?
 		return getToStringMode() == GeoLine.EQUATION_USER;
 	}
 
 	@Override
 	public void setToImplicit() {
+		// TODO APPS-5867 does GeoLine.* make sense for a curve?
 		toStringMode = GeoLine.EQUATION_IMPLICIT;
 	}
 

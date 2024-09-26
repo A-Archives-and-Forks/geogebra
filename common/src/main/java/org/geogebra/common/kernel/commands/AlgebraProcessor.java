@@ -2978,14 +2978,14 @@ public class AlgebraProcessor {
 			line = dependentLine(equ);
 		}
 
+		if (isExplicit) {
+			line.setToExplicit();
+		}
+
 		// APPS-5867
 		int equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
 		if (equationForm != -1) {
 			line.setEquationForm(equationForm);
-		}
-
-		if (isExplicit) {
-			line.setToExplicit();
 		}
 
 		line.showUndefinedInAlgebraView(true);
@@ -3012,7 +3012,7 @@ public class AlgebraProcessor {
 					EuclidianStyleConstants.OBJSTYLE_DEFAULT_LINE_OPACITY_EQUATION_GEOMETRY);
 		}
 		if ((info.isForceUserEquation()
-				|| !app.getSettings().getCasSettings().isEnabled())
+				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 why?
 				&& line instanceof EquationValue) {
 			((EquationValue) line).setToUser();
 		}
@@ -3071,17 +3071,16 @@ public class AlgebraProcessor {
 			conic = dependentConic(equ);
 		}
 
-		// APPS-5867
-		int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
-		if (equationForm != -1) {
-			conic.setEquationForm(equationForm);
-		}
-
 		if (isExplicit) {
 			conic.setToExplicit();
 		} else if (isSpecific
 				|| conic.getType() == GeoConicNDConstants.CONIC_CIRCLE) {
 			conic.setToSpecific();
+		}
+		// APPS-5867
+		int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
+		if (equationForm != -1) {
+			conic.setEquationForm(equationForm);
 		}
 		conic.setDefinition(def);
 		setEquationLabelAndVisualStyle(conic, label, info);

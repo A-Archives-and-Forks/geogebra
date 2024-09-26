@@ -471,11 +471,13 @@ public class GeoPlane3D extends GeoElement3D
 
 	@Override
 	final public void setToUser() {
+		// TODO APPS-5867 does GeoLine.* make sense for a 3D plane?
 		setMode(GeoLine.EQUATION_USER);
 	}
 
 	@Override
 	final public void setToImplicit() {
+		// TODO APPS-5867 does GeoLine.* make sense for a 3D plane?
 		setMode(GeoLine.EQUATION_IMPLICIT);
 	}
 

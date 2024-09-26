@@ -21,7 +21,7 @@ public class EvalInfo {
 	private boolean autocreateSliders = true;
 	private boolean autoAddDegree = false;
 	private boolean symbolic = false;
-	private boolean forceUserEquation;
+	private boolean forceUserEquation; // TODO APPS-5867 interaction with EquationBehaviour?
 	private boolean updateRandom = true;
 	private boolean copyingPlainVariables = false;
 	private boolean allowTypeChange = true;

@@ -1199,7 +1199,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 		// style of equation, coordinates, ...
 		if (getGeoClassType() == geo.getGeoClassType()
 				&& (app.getSettings() == null
-						|| app.getSettings()
+						|| app.getSettings() // TODO APPS-5867 what is this condition?
 								.getCasSettings().isEnabled())) {
 			toStringMode = geo.toStringMode;
 		}

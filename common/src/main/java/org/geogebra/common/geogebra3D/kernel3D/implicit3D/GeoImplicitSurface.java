@@ -962,6 +962,7 @@ public class GeoImplicitSurface extends GeoElement3D
 
 	@Override
 	final public void setToUser() {
+		// TODO APPS-5867 does GeoLine.* make sense for a 3D surface?
 		toStringMode = GeoLine.EQUATION_USER;
 	}
 
