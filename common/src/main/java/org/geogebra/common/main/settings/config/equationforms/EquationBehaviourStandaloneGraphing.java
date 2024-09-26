@@ -22,12 +22,12 @@ public final class EquationBehaviourStandaloneGraphing extends DefaultEquationBe
 
 	@Override
 	public int getConicAlgebraInputEquationForm() {
-		return -1;//GeoConicND.EQUATION_USER;
+		return GeoConicND.EQUATION_USER;
 	}
 
 	@Override
 	public int getConicCommandEquationForm() {
-		return -1;//GeoConicND.EQUATION_IMPLICIT;
+		return -1;//GeoConicND.EQUATION_USER;
 	}
 
 	@Override

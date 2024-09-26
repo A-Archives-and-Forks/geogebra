@@ -3012,7 +3012,7 @@ public class AlgebraProcessor {
 					EuclidianStyleConstants.OBJSTYLE_DEFAULT_LINE_OPACITY_EQUATION_GEOMETRY);
 		}
 		if ((info.isForceUserEquation()
-				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 why?
+				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 condition needs a comment
 				&& line instanceof EquationValue) {
 			((EquationValue) line).setToUser();
 		}
