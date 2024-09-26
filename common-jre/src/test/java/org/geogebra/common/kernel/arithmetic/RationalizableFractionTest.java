@@ -125,6 +125,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	private void rationalizationShouldBe(String definition, String expected) {
 		rationalizationShouldBe(definition, expected, StringTemplate.defaultTemplate);
 	}
+
 	private void rationalizationShouldBe(String definition, String expected, StringTemplate tpl) {
 		GeoNumeric num = add(definition);
 		num.setSymbolicMode(true, true);

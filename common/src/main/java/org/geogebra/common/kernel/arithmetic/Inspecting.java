@@ -357,46 +357,8 @@ public interface Inspecting {
 			return false;
 		}
 
+
 	}
-
-	/**
-	 * Checks and counts the given operator in the expression.
-	 */
-	public enum OperationChecker implements Inspecting {
-		/** singleton instance */
-		INSTANCE;
-		private Operation operation;
-		private int count = 0;
-
-		/**
-		 *
-		 * @param operation to count.
-		 * @return the checker instance.
-		 */
-		public static OperationChecker get(Operation operation) {
-			INSTANCE.operation = operation;
-			INSTANCE.count = 0;
-			return INSTANCE;
-		}
-
-		@Override
-		public boolean check(ExpressionValue v) {
-			if (v.isOperation(operation)) {
-				count++;
-			}
-
-			return false;
-		}
-
-		public int getCount() {
-			return count;
-		}
-
-		public void reset() {
-			count = 0;
-		}
-	}
-
 	/**
 	 * @author csilla check whether the expression contains only "-" (needed for
 	 *         Theorem proving)
@@ -404,6 +366,7 @@ public interface Inspecting {
 	public enum MinusChecker implements Inspecting {
 		/** singleton instance */
 		INSTANCE;
+
 		@Override
 		public boolean check(ExpressionValue v) {
 			if (v instanceof GeoDummyVariable) {
@@ -425,7 +388,6 @@ public interface Inspecting {
 		}
 
 	}
-
 	/**
 	 * Returns true if any of the expression leaf is undefined.
 	 */
@@ -435,4 +397,5 @@ public interface Inspecting {
 			return v instanceof NumberValue && !((NumberValue) v).isDefined();
 		}
 	};
+
 }

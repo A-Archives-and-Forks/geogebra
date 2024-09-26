@@ -1,11 +1,13 @@
 package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.arithmetic.Inspecting.OperationChecker;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 
 public final class RationalizableFraction {
+
+	private static OperationCountChecker sqrtCountChecker =
+			new OperationCountChecker(Operation.SQRT);
 
 	/**
 	 *
@@ -46,9 +48,9 @@ public final class RationalizableFraction {
 	}
 
 	private static int getSquareRootCount(ExpressionValue node) {
-		OperationChecker operationChecker = OperationChecker.get(Operation.SQRT);
-		node.inspect(operationChecker);
-		return operationChecker.getCount();
+		sqrtCountChecker.reset();
+		node.inspect(sqrtCountChecker);
+		return sqrtCountChecker.getCount();
 	}
 
 	private static boolean isSubtreeSupported(ExpressionNode node) {
