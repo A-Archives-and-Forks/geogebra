@@ -2481,7 +2481,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *            whether fonts should be reset
 	 */
 	public void setFontSize(int points, boolean update) {
-		FontSettingsUpdater fontSettingsUpdater = getSettingsUpdater().getFontSettingsUpdater();
+		FontSettingsUpdater fontSettingsUpdater = getFontSettingsUpdater();
 		if (update) {
 			fontSettingsUpdater.setAppFontSizeAndUpdateViews(points);
 		} else {
@@ -2502,7 +2502,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *            GUI font size
 	 */
 	public void setGUIFontSize(int size) {
-		getSettingsUpdater().getFontSettingsUpdater().setGUIFontSizeAndUpdate(size);
+		getFontSettingsUpdater().setGUIFontSizeAndUpdate(size);
 	}
 
 	/**
@@ -4956,6 +4956,10 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return settingsUpdater;
 	}
 
+	public FontSettingsUpdater getFontSettingsUpdater() {
+		return getSettingsUpdater().getFontSettingsUpdater();
+	}
+
 	/**
 	 * make sure we create a new settings updater according the new appConfig
 	 * @return setting updater
@@ -4967,7 +4971,9 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	protected SettingsUpdaterBuilder newSettingsUpdaterBuilder() {
-		return new SettingsUpdaterBuilder(this);
+		SettingsUpdaterBuilder builder = new SettingsUpdaterBuilder(this);
+		builder.setPrototype(getConfig().createSettingsUpdater());
+		return builder;
 	}
 
 	/**
