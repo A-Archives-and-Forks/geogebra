@@ -17,7 +17,7 @@ final class RationalizeFractionAlgo {
 	}
 
 	public ExpressionNode compute() {
-		ExpressionNode result = compute0();
+		ExpressionNode result = doRationalize();
 		return result.isOperation(Operation.DIVIDE) ? cancelGCDs(result, kernel) : result;
 	}
 
@@ -41,10 +41,8 @@ final class RationalizeFractionAlgo {
 						return numerator.getLeftTree();
 					} else {
 						double v = evalRight / evalCanceled;
-						return new ExpressionNode(kernel,
-								new MyDouble(kernel,v),
-								numerator.getOperation(),
-								node.getLeftTree().getLeftTree()
+						return new ExpressionNode(kernel, new MyDouble(kernel, v),
+								numerator.getOperation(), node.getLeftTree().getLeftTree()
 						);
 					}
 				}
@@ -53,7 +51,7 @@ final class RationalizeFractionAlgo {
 		return node;
 	}
 
-	public ExpressionNode compute0() {
+	private ExpressionNode doRationalize() {
 		if (numerator.isLeaf()) {
 			return rationalizeAsLeafNumerator();
 		}
@@ -94,8 +92,6 @@ final class RationalizeFractionAlgo {
 					numerator.multiplyR(denominator),
 					Operation.DIVIDE, denominator.getLeft());
 		}
-
-
 		return factorize();
 	}
 
@@ -150,7 +146,8 @@ final class RationalizeFractionAlgo {
 				denominator.getLeft());
 	}
 
-	private static boolean bothHaveSquareRoot(ExpressionNode numerator, ExpressionNode denominator) {
+	private static boolean bothHaveSquareRoot(ExpressionNode numerator,
+			ExpressionNode denominator) {
 		return numerator.isOperation(Operation.SQRT) && denominator.isOperation(Operation.SQRT);
 	}
 

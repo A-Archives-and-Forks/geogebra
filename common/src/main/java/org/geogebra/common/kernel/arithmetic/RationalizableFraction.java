@@ -2,8 +2,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.Inspecting.OperationChecker;
-import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 
@@ -11,7 +9,7 @@ public final class RationalizableFraction {
 
 	/**
 	 *
-	 * @param geo to check
+	 * @param root node to check
 	 * @return if geo is a rationalizable fraction and supported by this algo.
 	 */
 	public static boolean isSupported(ExpressionNode root) {
@@ -71,7 +69,8 @@ public final class RationalizableFraction {
 		return evaluateAsInteger(node) != null;
 	}
 
-	private static boolean isSquareRootPlusMinusInteger(ExpressionNode node1, ExpressionNode node2) {
+	private static boolean isSquareRootPlusMinusInteger(ExpressionNode node1,
+			ExpressionNode node2) {
 		return node1.isOperation(Operation.SQRT) && isIntegerEvaluation(node2);
 	}
 
@@ -113,19 +112,8 @@ public final class RationalizableFraction {
 		return algo.compute();
 	}
 
-	public static boolean isNonTrivial(GeoElement geo) {
-		if (geo.isGeoNumeric()) {
-			double v = ((GeoNumeric) geo).evaluateDouble();
-
-			return !DoubleUtil.isEqual(Math.abs(v), (int) v);
-		};
-		return false;
-	}
-
-	public static Integer evaluateAsInteger(ExpressionNode node) {
+	private static Integer evaluateAsInteger(ExpressionNode node) {
 		double v = node.evaluateDouble();
-		return DoubleUtil.isEqual(v,  (int) v)? (int) v : null;
-
-
+		return DoubleUtil.isEqual(v,  (int) v) ? (int) v : null;
 	}
 }

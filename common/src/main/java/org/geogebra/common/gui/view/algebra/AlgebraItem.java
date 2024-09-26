@@ -129,6 +129,11 @@ public class AlgebraItem {
 				&& value.getDefinition().isFraction();
 	}
 
+	/**
+	 *
+	 * @param geo - element
+	 * @return whether geo is a fraction that can be rationalized
+	 */
 	public static boolean isRationalizableFraction(GeoElement geo) {
 		return geo instanceof GeoNumeric && geo.getDefinition() != null
 				&& geo.getDefinition().isRationalizableFraction();
@@ -408,7 +413,7 @@ public class AlgebraItem {
 	 * @return whether we should show symbolic switch for the geo
 	 */
 	public static boolean shouldShowSymbolicOutputButton(GeoElement geo) {
-		return isSymbolicDiffers(geo) && !isTextItem(geo);
+		return geo != null && isSymbolicDiffers(geo) && !isTextItem(geo);
 	}
 
 	/**
