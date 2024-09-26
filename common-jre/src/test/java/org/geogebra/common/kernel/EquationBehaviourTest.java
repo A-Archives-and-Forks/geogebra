@@ -141,15 +141,12 @@ public class EquationBehaviourTest extends BaseUnitTest {
 		GeoLine algebraLine = new GeoLine(getConstruction());
 		assertEquals(GeoLine.EQUATION_IMPLICIT, algebraLine.getEquationForm());
 
-		// Line created with tool
+		// Line created with Line command from two points
 		GeoPoint pointA = new GeoPoint(getConstruction(), 0, 0, 0);
 		GeoPoint pointB = new GeoPoint(getConstruction(), 1, 1, 0);
 		AlgoJoinPoints algoJoinPoints = new AlgoJoinPoints(getConstruction(), pointA, pointB);
 		GeoLine toolLine = algoJoinPoints.getLine();
 		assertEquals(GeoLine.EQUATION_IMPLICIT, toolLine.getEquationForm());
-
-		// Ray created with tool
-		// TODO APPS-5867
 	}
 
 	@Test
