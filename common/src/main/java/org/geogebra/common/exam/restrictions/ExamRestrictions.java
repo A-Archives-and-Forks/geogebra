@@ -80,6 +80,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			return new IBExamRestrictions();
 		case NIEDERSACHSEN:
 			return new NiedersachsenExamRestrictions();
+		case REALSCHULE:
+			return new ReaulschuleExamRestrictions();
 		case VLAANDEREN:
 			return new VlaanderenExamRestrictions();
 		case MMS:
@@ -139,31 +141,6 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 		this.toolsFilter = toolsFilter == null
 				? new ToolCollectionSetFilter(EuclidianConstants.MODE_IMAGE) : toolsFilter;
 		this.frozenProperties = frozenProperties != null ? frozenProperties : Set.of();
-	}
-
-	protected ExamRestrictions(@Nonnull ExamType examType,
-			@Nullable Set<SuiteSubApp> disabledSubApps,
-			@Nullable SuiteSubApp defaultSubApp,
-			@Nullable Set<ExamFeatureRestriction> featureRestrictions,
-			@Nullable Set<ExpressionFilter> inputExpressionFilters,
-			@Nullable Set<ExpressionFilter> outputExpressionFilters,
-			@Nullable Set<CommandFilter> commandFilters,
-			@Nullable Set<CommandArgumentFilter> commandArgumentFilters,
-			@Nullable SyntaxFilter syntaxFilter,
-			@Nullable ToolCollectionFilter toolsFilter,
-			@Nullable Set<String> frozenProperties) {
-		this(examType,
-				disabledSubApps,
-				defaultSubApp,
-				featureRestrictions,
-				inputExpressionFilters,
-				outputExpressionFilters,
-				commandFilters,
-				commandArgumentFilters,
-				null,
-				syntaxFilter,
-				toolsFilter,
-				frozenProperties);
 	}
 
 	/**

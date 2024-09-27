@@ -37,6 +37,7 @@ final class TestExamRestrictions extends ExamRestrictions {
 				null,
 				TestExamRestrictions.createCommandFilters(),
 				TestExamRestrictions.createCommandArgumentFilter(),
+				null,
 				TestExamRestrictions.createSyntaxFilter(),
 				TestExamRestrictions.createToolCollectionFilter(),
 				Set.of("AngleUnit"));

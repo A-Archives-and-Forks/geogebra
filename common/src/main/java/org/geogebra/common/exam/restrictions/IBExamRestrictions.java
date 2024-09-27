@@ -361,6 +361,7 @@ public final class IBExamRestrictions extends ExamRestrictions {
 				null,
 				IBExamRestrictions.createCommandFilters(),
 				IBExamRestrictions.createCommandArgumentFilters(),
+				null,
 				IBExamRestrictions.createSyntaxFilter(),
 				IBExamRestrictions.createToolCollectionFilter(),
 				null);
