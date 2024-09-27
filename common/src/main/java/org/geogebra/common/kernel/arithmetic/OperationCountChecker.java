@@ -11,7 +11,6 @@ public class OperationCountChecker implements Inspecting {
 
 	/**
 	 * @param operation to count.
-	 * @return the checker instance.
 	 */
 	public OperationCountChecker(Operation operation) {
 		this.operation = operation;

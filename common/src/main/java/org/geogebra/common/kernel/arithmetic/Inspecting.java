@@ -356,9 +356,8 @@ public interface Inspecting {
 			}
 			return false;
 		}
-
-
 	}
+
 	/**
 	 * @author csilla check whether the expression contains only "-" (needed for
 	 *         Theorem proving)
@@ -388,6 +387,7 @@ public interface Inspecting {
 		}
 
 	}
+
 	/**
 	 * Returns true if any of the expression leaf is undefined.
 	 */
