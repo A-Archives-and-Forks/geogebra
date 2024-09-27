@@ -3208,6 +3208,12 @@ public class AlgebraProcessor {
 		// ELSE: resolve variables and evaluate expressionnode
 		n.resolveVariables(info);
 
+		// Check for allowed expressions again, as resolving variables might end up creating
+		// expressions that otherwise are not allowed. See APPS-5138
+		if (!isExpressionAllowed(n, inputExpressionFilters)) {
+			return null;
+		}
+
 		if (n.isLeaf() && n.getLeft().isExpressionNode()) {
 			// we changed f' to f'(x) -> clean double wrap
 
@@ -3843,13 +3849,8 @@ public class AlgebraProcessor {
 		if (cmd == null) {
 			return syntax.getCommandSyntax(internalCommandName, dim);
 		}
-		if (!this.cmdDispatcher.isAllowedByCommandFilters(cmd)) {
+		if (!cmdDispatcher.isAllowedByCommandFilters(cmd)) {
 			return null;
-		}
-		// IntegralBetween gives all syntaxes. Typing Integral or NIntegral
-		// gives suggestions for NIntegral
-		if (cmd == Commands.Integral) {
-			return syntax.getCommandSyntaxCAS("NIntegral");
 		}
 		if (noCASfilter == null) {
 			noCASfilter = CommandFilterFactory.createNoCasCommandFilter();
