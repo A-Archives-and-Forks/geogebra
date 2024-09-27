@@ -2313,7 +2313,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 				return getMenuBarPanel(this, applicationPanel);
 			}
 
-			getSettingsUpdater().getFontSettingsUpdater().resetFonts();
+			getFontSettingsUpdater().resetFonts();
 			// Standard case: return application panel
 			return applicationPanel;
 		}

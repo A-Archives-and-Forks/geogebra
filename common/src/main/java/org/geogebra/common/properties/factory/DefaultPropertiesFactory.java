@@ -63,7 +63,7 @@ public class DefaultPropertiesFactory implements PropertiesFactory {
 						new FontSizeProperty(
 								localization,
 								settings.getFontSettings(),
-								app.getSettingsUpdater().getFontSettingsUpdater()),
+								app.getFontSettingsUpdater()),
 						new LanguageProperty(app, localization)));
 	}
 
