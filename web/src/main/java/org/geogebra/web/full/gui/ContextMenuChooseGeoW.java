@@ -1,5 +1,8 @@
 package org.geogebra.web.full.gui;
 
+import static org.geogebra.common.main.FeatureFlag.G3D_SELECT_META;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -8,7 +11,6 @@ import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.geos.FromMeta;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.web.html5.gui.menu.AriaMenuBar;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
@@ -113,7 +115,7 @@ public class ContextMenuChooseGeoW extends ContextMenuGeoElementW {
 			TreeSet<GeoElement> metaElements) {
 		for (GeoElement meta : ((FromMeta) geo1).getMetas()) {
 			if (!metaElements.contains(meta) && (meta != geoSelected
-					|| !app.isPreviewEnabled(FeaturePreview.G3D_SELECT_META))) {
+					|| !isFeatureEnabled(G3D_SELECT_META))) {
 				tmpAnotherMenuItemList.add(meta);
 			}
 		}

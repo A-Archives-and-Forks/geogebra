@@ -1,5 +1,8 @@
 package org.geogebra.common.jre.headless;
 
+import static org.geogebra.common.main.FeatureFlag.ALL_LANGUAGES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -8,7 +11,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.geogebra.common.jre.main.LocalizationJre;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 
 /**
  * Common Localization class, used for testing.
@@ -48,8 +51,7 @@ public class LocalizationCommon extends LocalizationJre {
 
 	@Override
 	protected ArrayList<Locale> getSupportedLocales() {
-		return getSupportedLocales(
-				app != null && app.isPreviewEnabled(FeaturePreview.ALL_LANGUAGES));
+		return getSupportedLocales(isFeatureEnabled(ALL_LANGUAGES));
 	}
 
 	@Override

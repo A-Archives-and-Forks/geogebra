@@ -1,5 +1,9 @@
 package org.geogebra.common.main;
 
+import static org.geogebra.common.main.FeatureFlag.ADJUST_WIDGETS;
+import static org.geogebra.common.main.FeatureFlag.TUBE_BETA;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -132,6 +136,7 @@ import org.geogebra.common.main.undo.UndoableDeletionExecutor;
 import org.geogebra.common.media.VideoManager;
 import org.geogebra.common.move.ggtapi.models.Material;
 import org.geogebra.common.move.ggtapi.operations.LogInOperation;
+import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventDispatcher;
@@ -3710,16 +3715,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return false;
 	}
 
-	/**
-	 * Test if featue preview is enabled.
-	 *
-	 * @param featurePreview feature preview
-	 * @return true if the feature preview is enabled.
-	 */
-	public final boolean isPreviewEnabled(FeaturePreview featurePreview) {
-		return featurePreview.isEnabled() && prerelease;
-	}
-
 	public boolean isUnbundled() {
 		return false;
 	}
@@ -4273,7 +4268,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public String getURLforID(String id) {
 		String url;
-		if (isPreviewEnabled(FeaturePreview.TUBE_BETA)) {
+		if (isFeatureEnabled(TUBE_BETA)) {
 			url = GeoGebraConstants.GEOGEBRA_WEBSITE_BETA;
 		} else {
 			url = GeoGebraConstants.GEOGEBRA_WEBSITE;
@@ -4384,7 +4379,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *            whether to reset the stored offsets
 	 */
 	public void adjustScreen(boolean reset) {
-		if (!kernel.getApplication().isPreviewEnabled(FeaturePreview.ADJUST_WIDGETS)) {
+		if (isFeatureEnabled(ADJUST_WIDGETS)) {
 			return;
 		}
 		if (adjustScreen == null) {

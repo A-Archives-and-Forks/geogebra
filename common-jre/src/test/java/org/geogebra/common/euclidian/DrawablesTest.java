@@ -1,5 +1,7 @@
 package org.geogebra.common.euclidian;
 
+import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -35,7 +37,7 @@ import org.geogebra.common.kernel.geos.Traceable;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.main.AppCommon3D;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.test.LocalizationCommonUTF;
 import org.junit.Assert;
@@ -112,7 +114,7 @@ public class DrawablesTest extends BaseUnitTest {
 		for (GeoClass type : GeoClass.values()) {
 			Assert.assertTrue(type + "", types.contains(type)
 					|| (GeoClass.IMPLICIT_SURFACE_3D == type
-							&& !getApp().isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES))
+							&& !isFeatureEnabled(IMPLICIT_SURFACES))
 					|| GeoClass.SURFACECARTESIAN == type
 					|| GeoClass.CAS_CELL == type || GeoClass.SPACE == type
 					|| GeoClass.DEFAULT == type

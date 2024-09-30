@@ -1,6 +1,6 @@
 package org.geogebra.common.main;
 
-public enum FeaturePreview {
+public enum FeatureFlag {
 	ALL_LANGUAGES,
 	TUBE_BETA,
 	// when moved to stable, move ImplicitSurface[] from TABLE_ENGLISH
@@ -34,15 +34,15 @@ public enum FeaturePreview {
 
 	private final boolean isEnabled;
 
-	FeaturePreview() {
+	FeatureFlag() {
 		this(true);
 	}
 
-	FeaturePreview(boolean isEnabled) {
+	FeatureFlag(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
 
-	boolean isEnabled() {
+	public boolean isEnabled() {
 		return isEnabled;
 	}
 }

@@ -1,5 +1,8 @@
 package org.geogebra.common.kernel.commands;
 
+import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.advanced.CmdAffineRatio;
 import org.geogebra.common.kernel.advanced.CmdApplyMatrix;
@@ -77,7 +80,7 @@ import org.geogebra.common.kernel.advanced.CmdUnion;
 import org.geogebra.common.kernel.advanced.CmdUnique;
 import org.geogebra.common.kernel.advanced.CmdVerticalText;
 import org.geogebra.common.kernel.advanced.CmdZip;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 
 /**
  * Factory for command processors that are not used very often
@@ -141,8 +144,7 @@ public class AdvancedCommandProcessorFactory implements CommandProcessorFactory 
 		case ImplicitCurve:
 			return new CmdImplicitPoly(kernel);
 		case ImplicitSurface:
-			return !kernel.getApplication().isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES)
-					? null : new CmdImplicitSurface(kernel);
+			return isFeatureEnabled(IMPLICIT_SURFACES) ? new CmdImplicitSurface(kernel) : null;
 		case Roots:
 			return new CmdRoots(kernel);
 		case AffineRatio:

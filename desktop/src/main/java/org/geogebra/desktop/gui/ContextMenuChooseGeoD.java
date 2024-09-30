@@ -1,5 +1,8 @@
 package org.geogebra.desktop.gui;
 
+import static org.geogebra.common.main.FeatureFlag.G3D_SELECT_META;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -18,7 +21,6 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.euclidian.Hits;
 import org.geogebra.common.kernel.geos.FromMeta;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.desktop.main.AppD;
 
@@ -97,7 +99,7 @@ public class ContextMenuChooseGeoD extends ContextMenuGeoElementD {
 			if (geo.getMetasLength() > 0) {
 				for (GeoElement meta : ((FromMeta) geo).getMetas()) {
 					if (!metas.contains(meta)
-							&& (meta != geoSelected || !app.isPreviewEnabled(FeaturePreview.G3D_SELECT_META))) {
+							&& (meta != geoSelected || !isFeatureEnabled(G3D_SELECT_META))) {
 						addGeo(meta);
 					}
 				}

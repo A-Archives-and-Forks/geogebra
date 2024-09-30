@@ -1,5 +1,8 @@
 package org.geogebra.desktop.gui.menubar;
 
+import static org.geogebra.common.main.FeatureFlag.MOB_EXPORT_STL;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -14,7 +17,6 @@ import javax.swing.KeyStroke;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.FormatCollada;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.FormatColladaHTML;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.FormatSTL;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.util.FileExtensions;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.desktop.export.AnimationExportDialogD;
@@ -151,7 +153,7 @@ class FileMenuD extends BaseMenu {
 
 		submenu.add(exportPgfAction);
 		submenu.add(exportAsymptoteAction);
-		if (app.isPreviewEnabled(FeaturePreview.MOB_EXPORT_STL)) {
+		if (isFeatureEnabled(MOB_EXPORT_STL)) {
 			submenu.add(exportSTLaction);
 		}
 		if (app.is3D()) {
@@ -473,7 +475,7 @@ class FileMenuD extends BaseMenu {
 			}
 		};
 
-		if (app.isPreviewEnabled(FeaturePreview.MOB_EXPORT_STL)) {
+		if (isFeatureEnabled(MOB_EXPORT_STL)) {
 			exportSTLaction = new AbstractAction("STL" + Unicode.ELLIPSIS,
 					app.getEmptyIcon()) {
 				private static final long serialVersionUID = 1L;

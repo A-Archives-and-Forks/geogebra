@@ -1,6 +1,8 @@
 package org.geogebra.web.shared.ggtapi;
 
-import org.geogebra.common.main.FeaturePreview;
+import static org.geogebra.common.main.FeatureFlag.TUBE_BETA;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import org.geogebra.common.move.ggtapi.models.MarvlService;
 import org.geogebra.common.move.ggtapi.models.MaterialRestAPI;
 import org.geogebra.common.move.ggtapi.models.MowService;
@@ -73,7 +75,7 @@ public class BackendAPIFactory {
 
 	private GeoGebraTubeAPIW newTubeAPI() {
 		return new GeoGebraTubeAPIW(app.getClientInfo(),
-				app.isPreviewEnabled(FeaturePreview.TUBE_BETA),
+				isFeatureEnabled(TUBE_BETA),
 				articleElement);
 	}
 }

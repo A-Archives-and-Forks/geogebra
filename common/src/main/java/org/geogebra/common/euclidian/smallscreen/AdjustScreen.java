@@ -1,5 +1,8 @@
 package org.geogebra.common.euclidian.smallscreen;
 
+import static org.geogebra.common.main.FeatureFlag.ADJUST_WIDGETS;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +15,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInputBox;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.util.DoubleUtil;
 
@@ -216,8 +219,7 @@ public class AdjustScreen {
 		int fileHeight = viewApp.getSettings()
 				.getEuclidian(view.getEuclidianViewNo()).getFileHeight();
 
-		if (!viewApp.isPreviewEnabled(FeaturePreview.ADJUST_WIDGETS) || fileWidth == 0
-				|| fileHeight == 0) {
+		if (!isFeatureEnabled(ADJUST_WIDGETS) || fileWidth == 0 || fileHeight == 0) {
 			return false;
 		}
 

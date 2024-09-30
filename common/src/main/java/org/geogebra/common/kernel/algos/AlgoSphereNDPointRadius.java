@@ -18,6 +18,9 @@ the Free Software Foundation.
 
 package org.geogebra.common.kernel.algos;
 
+import static org.geogebra.common.main.FeatureFlag.GEOMETRIC_DISCOVERY;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -27,7 +30,7 @@ import org.geogebra.common.kernel.geos.GeoNumberValue;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.kernel.kernelND.GeoQuadricND;
 import org.geogebra.common.kernel.kernelND.GeoSegmentND;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 
 /**
  * 
@@ -71,7 +74,7 @@ public abstract class AlgoSphereNDPointRadius extends AlgoElement {
 
 		compute();
 
-		if (kernel.getApplication().isPreviewEnabled(FeaturePreview.GEOMETRIC_DISCOVERY)) {
+		if (isFeatureEnabled(GEOMETRIC_DISCOVERY)) {
 			if (r.getLabelSimple() != null || r.getParentAlgorithm() instanceof AlgoRadius) {
 				autoColor();
 			}

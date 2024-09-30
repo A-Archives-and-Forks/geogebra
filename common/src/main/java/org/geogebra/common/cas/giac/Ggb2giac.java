@@ -1,10 +1,13 @@
 package org.geogebra.common.cas.giac;
 
+import static org.geogebra.common.main.FeatureFlag.SOLVE_QUARTIC;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 
 import com.himamis.retex.editor.share.util.Unicode;
 
@@ -1560,7 +1563,7 @@ public class Ggb2giac {
 		// http://en.wikipedia.org/wiki/Quartic_function
 
 		// GGB-1635
-		if (app.isPreviewEnabled(FeaturePreview.SOLVE_QUARTIC)) {
+		if (isFeatureEnabled(SOLVE_QUARTIC)) {
 			p("SolveQuartic.1", "[" + "[ggbsqans:={}]," + "[ggbfun:=%0],"
 					+ "[ggbcoeffs:=coeffs(ggbfun)]," + "[a:=ggbcoeffs[0]],"
 					+ "[b:=ggbcoeffs[1]]," + "[c:=ggbcoeffs[2]],"

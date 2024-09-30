@@ -1,21 +1,29 @@
 package org.geogebra.common.exam;
 
+import static java.util.Comparator.comparing;
 import static org.geogebra.common.GeoGebraConstants.CAS_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.G3D_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.GEOMETRY_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.GRAPHING_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.PROBABILITY_APPCODE;
+import static org.geogebra.common.main.FeatureFlag.CVTE_EXAM;
+import static org.geogebra.common.main.FeatureFlag.IB_EXAM;
+import static org.geogebra.common.main.FeatureFlag.MMS_EXAM;
+import static org.geogebra.common.main.FeatureFlag.REALSCHULE_EXAM;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppConfig;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
 
@@ -235,39 +243,29 @@ public enum ExamType {
 		if (!config.getAppCode().equals(GeoGebraConstants.SUITE_APPCODE)) {
 			return Collections.emptyList();
 		}
-		List<ExamType> examTypes = new ArrayList<>();
-		examTypes.add(GENERIC);
-		if (app.isPreviewEnabled(FeaturePreview.REALSCHULE_EXAM)) {
-			examTypes.add(REALSCHULE);
-		}
-		if (app.isPreviewEnabled(FeaturePreview.CVTE_EXAM)) {
-			examTypes.add(CVTE);
-		}
-		if (app.isPreviewEnabled(FeaturePreview.MMS_EXAM)) {
-			examTypes.add(MMS);
-		}
-		if (app.isPreviewEnabled(FeaturePreview.IB_EXAM)) {
-			examTypes.add(IB);
-		}
-		examTypes.add(NIEDERSACHSEN);
-		examTypes.add(VLAANDEREN);
-		examTypes.add(BAYERN_CAS);
 
-		Localization localization = app.getLocalization();
-		examTypes.sort(new Comparator<ExamType>() {
-			@Override
-			public int compare(ExamType o1, ExamType o2) {
-				if (o1 == ExamType.GENERIC) {
-					return -1;
-				} else if (o2 == ExamType.GENERIC) {
-					return 1;
-				} else {
-					return o1.getDisplayName(localization, config)
-							.compareTo(o2.getDisplayName(localization, config));
-				}
-			}
-		});
-		return examTypes;
+		ArrayList<ExamType> examTypes = Arrays.stream(ExamType.values()).collect(Collectors.toCollection(ArrayList::new));
+		if (!isFeatureEnabled(REALSCHULE_EXAM)) {
+			examTypes.remove(REALSCHULE);
+		}
+		if (!isFeatureEnabled(CVTE_EXAM)) {
+			examTypes.remove(CVTE);
+		}
+		if (!isFeatureEnabled(MMS_EXAM)) {
+			examTypes.remove(MMS);
+		}
+		if (!isFeatureEnabled(IB_EXAM)) {
+			examTypes.remove(IB);
+		}
+
+		// Sort exam types by display name, ignoring the GENERIC type, which is always first
+		ArrayList<ExamType> sortedExamTypes = new ArrayList<>();
+		sortedExamTypes.add(GENERIC);
+		sortedExamTypes.addAll(examTypes.subList(1, examTypes.size()).stream().sorted(
+				comparing(examType -> examType.getDisplayName(app.getLocalization(), config))
+		).collect(Collectors.toList()));
+
+		return sortedExamTypes;
 	}
 
 	public abstract String getDisplayName(Localization loc, AppConfig config);

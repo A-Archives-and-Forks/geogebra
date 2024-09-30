@@ -1,5 +1,8 @@
 package org.geogebra.desktop.gui.view.data;
 
+import static org.geogebra.common.main.FeatureFlag.LOG_AXES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -33,7 +36,6 @@ import org.geogebra.common.gui.view.data.DataVariable.GroupType;
 import org.geogebra.common.gui.view.data.StatPanelSettings;
 import org.geogebra.common.gui.view.spreadsheet.SpreadsheetViewInterface;
 import org.geogebra.common.kernel.arithmetic.NumberValue;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.desktop.gui.inputfield.MyTextFieldD;
 import org.geogebra.desktop.gui.util.LayoutUtil;
 import org.geogebra.desktop.main.AppD;
@@ -545,7 +547,7 @@ public class OptionsPanelD extends JPanel implements PropertyChangeListener,
 		Box vBox = Box.createVerticalBox();
 		vBox.add(graphOptionsPanel);
 		vBox.add(dimPanel);
-		if (app.isPreviewEnabled(FeaturePreview.LOG_AXES)) {
+		if (isFeatureEnabled(LOG_AXES)) {
 			vBox.add(coordPanel);
 		}
 

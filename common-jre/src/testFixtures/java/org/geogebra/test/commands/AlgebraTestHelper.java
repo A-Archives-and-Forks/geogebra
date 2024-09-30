@@ -1,5 +1,7 @@
 package org.geogebra.test.commands;
 
+import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,7 +17,6 @@ import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.test.TestErrorHandler;
 import org.geogebra.test.matcher.MultipleResultsMatcher;
@@ -252,7 +253,7 @@ public class AlgebraTestHelper {
 		return a == Commands.MatrixPlot || a == Commands.DensityPlot
 				|| a == Commands.Polyhedron
 				|| (a == Commands.ImplicitSurface
-				&& !app.isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES));
+				&& !isFeatureEnabled(IMPLICIT_SURFACES));
 	}
 
 }

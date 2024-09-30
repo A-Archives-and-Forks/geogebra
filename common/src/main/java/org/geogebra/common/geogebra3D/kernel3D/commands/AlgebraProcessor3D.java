@@ -12,6 +12,9 @@ the Free Software Foundation.
 
 package org.geogebra.common.geogebra3D.kernel3D.commands;
 
+import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import org.geogebra.common.geogebra3D.kernel3D.geos.GeoPlane3D;
 import org.geogebra.common.geogebra3D.kernel3D.geos.GeoQuadric3D;
 import org.geogebra.common.geogebra3D.kernel3D.geos.GeoVec4D;
@@ -31,7 +34,7 @@ import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.commands.ParametricProcessor;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.kernelND.GeoQuadricNDConstants;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.util.StringUtil;
 
 /**
@@ -255,8 +258,7 @@ public class AlgebraProcessor3D extends AlgebraProcessor {
 	public GeoElement[] processImplicitPoly(Equation equ,
 			ExpressionNode definition, EvalInfo info, ExpressionValue evaluatedDef) {
 
-		if (app.isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES) || equ.isForcedQuadric()
-				|| equ.isForcedPlane()) {
+		if (isFeatureEnabled(IMPLICIT_SURFACES) || equ.isForcedQuadric() || equ.isForcedPlane()) {
 			Polynomial lhs = equ.getNormalForm();
 			boolean isIndependent = !equ.isFunctionDependent()
 					&& lhs.isConstant(info) && !equ.hasVariableDegree();

@@ -1,5 +1,8 @@
 package org.geogebra.common.main;
 
+import static org.geogebra.common.main.FeatureFlag.TUBE_BETA;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.awt.GBufferedImage;
 import org.geogebra.common.kernel.Construction;
@@ -29,7 +32,7 @@ public class HTML5Export {
 		// make sure translation files loaded OK
 		sb.append("<meta charset=\"utf-8\"/>\n");
 
-		if (app.isPreviewEnabled(FeaturePreview.TUBE_BETA)) {
+		if (isFeatureEnabled(TUBE_BETA)) {
 			sb.append(
 					"<script src=\"https://beta.geogebra.org/scripts/deployggb.js\"></script>\n\n");
 

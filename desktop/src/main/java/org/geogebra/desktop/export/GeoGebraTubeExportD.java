@@ -1,5 +1,8 @@
 package org.geogebra.desktop.export;
 
+import static org.geogebra.common.main.FeatureFlag.TUBE_BETA;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.io.BufferedReader;
@@ -21,7 +24,6 @@ import javax.swing.JProgressBar;
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.desktop.gui.dialog.Dialog;
@@ -136,7 +138,7 @@ public class GeoGebraTubeExportD {
 
 			progressBar.setIndeterminate(true);
 
-			url = new URL(getUploadURL(app));
+			url = new URL(getUploadURL());
 
 			urlConn = (HttpURLConnection) url.openConnection();
 			urlConn.setDoInput(true);
@@ -230,7 +232,7 @@ public class GeoGebraTubeExportD {
 								+ output.toString());
 					} else {
 
-						String createMaterialURL = getUploadURL(app) + "/"
+						String createMaterialURL = getUploadURL() + "/"
 								+ results.getUID();
 
 						// Add the login token to the URL if a user is logged in
@@ -382,12 +384,10 @@ public class GeoGebraTubeExportD {
 	}
 
 	/**
-	 * @param app0
-	 *            determines whether we need TUBE_BETA flag
 	 * @return base upload URL for GeoGebraTube
 	 */
-	public String getUploadURL(App app0) {
-		if (app0.isPreviewEnabled(FeaturePreview.TUBE_BETA)) {
+	public String getUploadURL() {
+		if (isFeatureEnabled(TUBE_BETA)) {
 			return GeoGebraConstants.uploadURLBeta;
 		}
 

@@ -1,5 +1,8 @@
 package org.geogebra.common.geogebra3D.euclidian3D;
 
+import static org.geogebra.common.main.FeatureFlag.G3D_SELECT_META;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -14,7 +17,7 @@ import org.geogebra.common.kernel.geos.FromMeta;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoElement.HitType;
 import org.geogebra.common.kernel.kernelND.GeoConicND;
-import org.geogebra.common.main.FeaturePreview;
+import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.util.debug.Log;
 
 /**
@@ -260,8 +263,7 @@ public class Hits3D extends Hits {
 
 	private void addToHits(Drawable3D d, Hits hits) {
 		GeoElement geo = d.getGeoElement();
-		if (geo.getMetasLength() > 0 && geo.getKernel().getApplication()
-				.isPreviewEnabled(FeaturePreview.G3D_SELECT_META)) {
+		if (geo.getMetasLength() > 0 && isFeatureEnabled(G3D_SELECT_META)) {
 			hits.addAll(Arrays.asList(((FromMeta) geo).getMetas()));
 		}
 		hits.add(geo);

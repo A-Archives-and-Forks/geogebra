@@ -1,5 +1,8 @@
 package org.geogebra.web.full.gui.view.data;
 
+import static org.geogebra.common.main.FeatureFlag.LOG_AXES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
+
 import java.util.Arrays;
 
 import org.geogebra.common.gui.view.data.DataAnalysisModel;
@@ -9,7 +12,6 @@ import org.geogebra.common.gui.view.data.DataVariable.GroupType;
 import org.geogebra.common.gui.view.data.StatPanelSettings;
 import org.geogebra.common.gui.view.spreadsheet.SpreadsheetViewInterface;
 import org.geogebra.common.kernel.arithmetic.NumberValue;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.gui.components.ComponentCheckbox;
@@ -478,7 +480,7 @@ public class OptionsPanelW extends FlowPanel
 		graphPanel = new FlowPanel();
 		graphPanel.add(graphOptionsPanel);
 		graphPanel.add(dimPanel);
-		if (app.isPreviewEnabled(FeaturePreview.LOG_AXES)) {
+		if (isFeatureEnabled(LOG_AXES)) {
 			cbLogAxes.addItem("Standard To Standard");
 			cbLogAxes.addItem("Logarithmic To Standard");
 			cbLogAxes.addItem("Standard To Logarithmic");

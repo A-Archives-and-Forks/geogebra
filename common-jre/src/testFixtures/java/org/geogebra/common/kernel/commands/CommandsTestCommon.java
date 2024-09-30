@@ -2,6 +2,8 @@ package org.geogebra.common.kernel.commands;
 
 import static com.himamis.retex.editor.share.util.Unicode.DEGREE_STRING;
 import static org.geogebra.common.BaseUnitTest.isDefined;
+import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 import static org.geogebra.test.TestStringUtil.unicode;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +38,6 @@ import org.geogebra.common.kernel.kernelND.GeoConicND;
 import org.geogebra.common.kernel.kernelND.SurfaceEvaluable;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppCommon3D;
-import org.geogebra.common.main.FeaturePreview;
 import org.geogebra.common.main.GeoGebraColorConstants;
 import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.common.util.ImageManager;
@@ -1925,7 +1926,7 @@ public class CommandsTestCommon {
 
 	@Test
 	public void cmdImplicitSurface() {
-		if (app.isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES)) {
+		if (isFeatureEnabled(IMPLICIT_SURFACES)) {
 			t("ImplicitSurface[sin(x)+sin(y)+sin(z)]",
 					"sin(x) + sin(y) + sin(z) = 0");
 		}
@@ -2032,7 +2033,7 @@ public class CommandsTestCommon {
 				false, "(1, 1)");
 		intersect("Segment((0,0),(0,5))", "x^2+y^2+z^2=4",
 				false, "(?, ?, ?)", "(0, 2, 0)");
-		if (app.isPreviewEnabled(FeaturePreview.IMPLICIT_SURFACES)) {
+		if (isFeatureEnabled(IMPLICIT_SURFACES)) {
 			intersect("x^4+y^4+z^4=2", "x=y", false, "(-1, -1, 0)",
 					"(1, 1, 0)");
 		}
