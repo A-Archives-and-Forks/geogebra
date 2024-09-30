@@ -498,8 +498,8 @@ public class ConstructionDefaults implements SettingListener {
 		line.setObjColor(getLineColor());
 		// line.setLineThickness(getDefaultLineThickness());
 		line.setDefaultGeoType(DEFAULT_LINE);
-		// note: this default equation form also applies to subclasses of GeoLine (GeoRay,
-		// GeoSegment, etc)
+		// note: at runtime (i.e., after createDefaultGeoElements() finishes), this default
+		// equation form also applies to subclasses of GeoLine (GeoRay, GeoSegment, etc)
 		line.setMode(GeoLine.EQUATION_IMPLICIT);
 		setDefaultLineStyle(line);
 		defaultGeoElements.put(DEFAULT_LINE, line);
@@ -522,7 +522,7 @@ public class ConstructionDefaults implements SettingListener {
 		setDefaultLineStyle(seg);
 		defaultGeoElements.put(DEFAULT_SEGMENT, seg);
 
-		// segment
+		// ray
 		GeoRay ray = new GeoRay(cons);
 		ray.setLocalVariableLabel("Segment");
 		ray.setObjColor(getLineColor());

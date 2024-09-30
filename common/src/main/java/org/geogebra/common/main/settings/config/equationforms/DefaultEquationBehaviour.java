@@ -25,6 +25,11 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 	}
 
 	@Override
+	public int getFitLineCommandEquationForm() {
+		return GeoLine.EQUATION_EXPLICIT;
+	}
+
+	@Override
 	public int getRayCommandEquationForm() {
 		return -1;
 	}

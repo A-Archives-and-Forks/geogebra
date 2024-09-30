@@ -80,8 +80,7 @@ public class AlgoJoinPoints extends AlgoElement
 		compute();
 		addIncidence();
 
-		g.setEquationForm(GeoLine.EQUATION_EXPLICIT);
-
+		// note: GeoLine's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());

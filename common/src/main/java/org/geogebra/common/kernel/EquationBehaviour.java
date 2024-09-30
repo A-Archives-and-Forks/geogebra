@@ -42,6 +42,16 @@ public interface EquationBehaviour {
 	int getLineCommandEquationForm();
 
 	/**
+	 * Customize the equation form for lines created from a FitLine command.
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
+	 * form should be taken from the construction defaults for lines (see note in header).
+	 *
+	 * @see org.geogebra.common.kernel.algos.AlgoJoinPoints
+	 */
+	int getFitLineCommandEquationForm();
+
+	/**
 	 * Customize the equation form for rays created from a command or tool.
 	 * @return one of the {@code EQUATION_} constants defined in
 	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation

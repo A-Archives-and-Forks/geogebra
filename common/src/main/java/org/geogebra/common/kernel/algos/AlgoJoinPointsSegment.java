@@ -109,8 +109,7 @@ public class AlgoJoinPointsSegment extends AlgoElement
 		compute();
 		setIncidence();
 
-		s.setEquationForm(GeoLine.EQUATION_IMPLICIT);
-
+		// note: GeoSegment's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			s.setEquationForm(equationBehaviour.getLineCommandEquationForm());

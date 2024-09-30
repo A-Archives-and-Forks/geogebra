@@ -48,7 +48,7 @@ public class AlgoRayPointVector extends AlgoElement {
 		compute();
 		setIncidence();
 
-		ray.setEquationForm(GeoLine.EQUATION_EXPLICIT);
+		// note: GeoRay's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			ray.setEquationForm(equationBehaviour.getLineCommandEquationForm());

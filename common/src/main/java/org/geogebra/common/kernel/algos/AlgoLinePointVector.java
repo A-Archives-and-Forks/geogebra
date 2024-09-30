@@ -65,7 +65,7 @@ public class AlgoLinePointVector extends AlgoElement {
 		g.setLabel(label);
 		addIncidence();
 
-		g.setEquationForm(GeoLine.EQUATION_EXPLICIT);
+		// note: GeoLine's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());
