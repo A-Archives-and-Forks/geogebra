@@ -2980,8 +2980,6 @@ public class AlgebraProcessor {
 
 		if (isExplicit) {
 			line.setToExplicit();
-		} else {
-			line.setToUser();
 		}
 
 		line.showUndefinedInAlgebraView(true);
@@ -3076,8 +3074,6 @@ public class AlgebraProcessor {
 		} else if (isSpecific
 				|| conic.getType() == GeoConicNDConstants.CONIC_CIRCLE) {
 			conic.setToSpecific();
-		} else {
-			conic.setToUser();
 		}
 		conic.setDefinition(def);
 		setEquationLabelAndVisualStyle(conic, label, info);

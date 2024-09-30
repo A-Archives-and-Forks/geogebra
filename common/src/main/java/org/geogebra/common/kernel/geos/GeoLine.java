@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.geogebra.common.kernel.Construction;
-import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
 import org.geogebra.common.kernel.Path;
@@ -1839,14 +1838,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	/**
 	 * Sets the equation style (aka equation form) for a line loaded from XML.
-	 * <p/>
-	 * This method may be called in two scenarios:
-	 * <ul>
-	 * <li>When loading the attributes of a regular construction element of type "line".
-	 * <li>When loading construction defaults for lines (from geogebra_defaults2d.xml). In this
-	 *   case, the {@code GeoLine} is the one kept in
-	 *   {@link org.geogebra.common.kernel.ConstructionDefaults ConstructionDefaults}.
-	 * </ul>
+	 *
 	 * @param style
 	 *            equation style (aka equation form)
 	 * @param parameter
