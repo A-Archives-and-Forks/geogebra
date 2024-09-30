@@ -52,8 +52,6 @@ public class AlgoCircleTwoPoints extends AlgoSphereNDTwoPoints
 	public AlgoCircleTwoPoints(Construction cons, GeoPoint M, GeoPoint P) {
 		super(cons, M, P);
 		setIncidence();
-
-		// TODO APPS-5867?
 	}
 
 	private void setIncidence() {

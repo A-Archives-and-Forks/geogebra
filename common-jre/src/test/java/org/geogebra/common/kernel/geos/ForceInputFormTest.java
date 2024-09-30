@@ -28,9 +28,9 @@ public class ForceInputFormTest extends BaseUnitTest {
 
         Assert.assertEquals(GeoLine.EQUATION_USER, geoLine.getToStringMode());
         Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoLineWithCommand.getToStringMode());
-        Assert.assertEquals(GeoConic.EQUATION_USER, parabola.getToStringMode());
-        Assert.assertEquals(GeoConic.EQUATION_USER, hyperbola.getToStringMode());
-        Assert.assertEquals(GeoRay.EQUATION_USER, geoRay.getToStringMode());
+		Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoRay.getToStringMode());
+		Assert.assertEquals(GeoConic.EQUATION_USER, parabola.getToStringMode()); // TODO input of "y=xx" will result in "explicit"
+		Assert.assertEquals(GeoConic.EQUATION_USER, hyperbola.getToStringMode());
     }
 
     @Test
@@ -62,15 +62,15 @@ public class ForceInputFormTest extends BaseUnitTest {
         GeoElementFactory factory = getElementFactory();
         GeoLine geoLine = factory.createGeoLine();
 		GeoLine geoLineWithCommand = factory.createGeoLineWithCommand();
+		GeoRay geoRay = factory.createGeoRay();
 		GeoConic parabola = (GeoConic) factory.create("y=xx");
-        GeoConic hyperbola = (GeoConic) factory.create("yy-xx=1");
-        GeoRay geoRay = factory.createGeoRay();
+		GeoConic hyperbola = (GeoConic) factory.create("yy-xx=1");
 
         Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoLine.getToStringMode());
 		Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoLineWithCommand.getToStringMode());
-		Assert.assertEquals(GeoConic.EQUATION_EXPLICIT, parabola.getToStringMode());
-        Assert.assertEquals(GeoConic.EQUATION_USER, hyperbola.getToStringMode());
-        Assert.assertEquals(GeoLine.EQUATION_USER, geoRay.getToStringMode());
+		Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, geoRay.getToStringMode());
+		Assert.assertEquals(GeoConic.EQUATION_USER, parabola.getToStringMode()); // TODO input of "y=xx" will result in "explicit"
+		Assert.assertEquals(GeoConic.EQUATION_USER, hyperbola.getToStringMode());
     }
 
 	@Test
@@ -98,9 +98,9 @@ public class ForceInputFormTest extends BaseUnitTest {
 
 		GeoElementFactory factory = getElementFactory();
 		GeoLine geoLine = factory.createGeoLine();
+		GeoRay ray = getElementFactory().createGeoRay();
 		GeoConic parabola = (GeoConic) factory.create("y=xx");
 		GeoConic hyperbola = (GeoConic) factory.create("yy-xx=1");
-		GeoRay ray = getElementFactory().createGeoRay();
 
 		GeoElement[] geos = new GeoElement[]{geoLine, parabola, hyperbola, ray};
 

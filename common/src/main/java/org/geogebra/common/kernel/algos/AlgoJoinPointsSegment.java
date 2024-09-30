@@ -26,9 +26,11 @@ import java.util.HashSet;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianViewInterfaceSlim;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.geos.GeoPoint;
 import org.geogebra.common.kernel.geos.GeoPolygon;
 import org.geogebra.common.kernel.geos.GeoSegment;
@@ -106,6 +108,13 @@ public class AlgoJoinPointsSegment extends AlgoElement
 		// compute line through P, Q
 		compute();
 		setIncidence();
+
+		s.setEquationForm(GeoLine.EQUATION_IMPLICIT);
+
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour != null) {
+			s.setEquationForm(equationBehaviour.getLineCommandEquationForm());
+		}
 	}
 
 	private void setIncidence() {

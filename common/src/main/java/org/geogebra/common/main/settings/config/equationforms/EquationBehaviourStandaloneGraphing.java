@@ -21,8 +21,13 @@ public final class EquationBehaviourStandaloneGraphing extends DefaultEquationBe
 	}
 
 	@Override
+	public int getRayCommandEquationForm() {
+		return GeoLine.EQUATION_USER;
+	}
+
+	@Override
 	public int getConicAlgebraInputEquationForm() {
-		return GeoConicND.EQUATION_USER;
+		return -1;//GeoConicND.EQUATION_USER;
 	}
 
 	@Override

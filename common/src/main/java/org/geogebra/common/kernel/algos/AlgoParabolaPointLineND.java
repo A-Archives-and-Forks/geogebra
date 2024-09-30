@@ -24,6 +24,7 @@ import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.kernelND.GeoConicND;
 import org.geogebra.common.kernel.kernelND.GeoLineND;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
@@ -72,7 +73,7 @@ public abstract class AlgoParabolaPointLineND extends AlgoElement {
 
 		compute();
 
-		// APPS-5867
+		parabola.setEquationForm(GeoConicND.EQUATION_IMPLICIT);
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			parabola.setEquationForm(equationBehaviour.getConicCommandEquationForm());

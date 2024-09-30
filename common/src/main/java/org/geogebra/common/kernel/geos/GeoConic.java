@@ -64,9 +64,6 @@ public class GeoConic extends GeoConicND implements ConicMirrorable,
 	 * ( A[0] A[3] A[4] ) matrix = ( A[3] A[1] A[5] ) ( A[4] A[5] A[2] )
 	 */
 
-	// TODO APPS-5867: check all GeoConicND-creating code (algos, etc) and set
-	//  the equation form where applicable (see AlgoJoinPoints)
-
 	/**
 	 * Creates a conic
 	 * 

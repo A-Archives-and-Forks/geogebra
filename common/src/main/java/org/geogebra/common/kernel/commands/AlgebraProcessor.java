@@ -2980,13 +2980,14 @@ public class AlgebraProcessor {
 
 		if (isExplicit) {
 			line.setToExplicit();
+		} else {
+			line.setToUser();
 		}
 
 		line.showUndefinedInAlgebraView(true);
 		line.setDefinition(def);
 		setEquationLabelAndVisualStyle(line, label, info);
 
-		// APPS-5867
 		int equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
 		if (equationForm != -1) {
 			line.setEquationForm(equationForm);
@@ -3012,7 +3013,7 @@ public class AlgebraProcessor {
 					EuclidianStyleConstants.OBJSTYLE_DEFAULT_LINE_OPACITY_EQUATION_GEOMETRY);
 		}
 		if ((info.isForceUserEquation()
-				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 condition needs a comment
+				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 condition needs explanation
 				&& line instanceof EquationValue) {
 			((EquationValue) line).setToUser();
 		}
@@ -3066,7 +3067,6 @@ public class AlgebraProcessor {
 
 			double[] coeffs = { a, b, c, d, e, f };
 			conic = new GeoConic(cons, coeffs);
-
 		} else {
 			conic = dependentConic(equ);
 		}
@@ -3082,7 +3082,6 @@ public class AlgebraProcessor {
 		conic.setDefinition(def);
 		setEquationLabelAndVisualStyle(conic, label, info);
 
-		// APPS-5867
 		int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
 		if (equationForm != -1) {
 			conic.setEquationForm(equationForm);

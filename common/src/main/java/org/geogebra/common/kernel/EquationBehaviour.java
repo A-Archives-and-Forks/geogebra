@@ -24,7 +24,7 @@ import org.geogebra.common.kernel.commands.EvalInfo;
 public interface EquationBehaviour {
 
 	/**
-	 * Customize the equation form for linear equations (lines created from user input).
+	 * Customize the equation form for lines created from linear equations (e.g., "y = x").
 	 * @return one of the {@code EQUATION_} constants defined in
 	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation form
 	 * should be taken from the construction defaults for lines (see note in header).
@@ -32,7 +32,7 @@ public interface EquationBehaviour {
 	int getLinearAlgebraInputEquationForm();
 
 	/**
-	 * Customize the equation form for lines (rays, segments) created from a command or tool.
+	 * Customize the equation form for lines created from a command or tool.
 	 * @return one of the {@code EQUATION_} constants defined in
 	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
 	 * form should be taken from the construction defaults for lines (see note in header).
@@ -42,18 +42,28 @@ public interface EquationBehaviour {
 	int getLineCommandEquationForm();
 
 	/**
-	 * Customize the equation form for conics created from user input.
+	 * Customize the equation form for rays created from a command or tool.
 	 * @return one of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if 
-	 *  TODO specify condition
+	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
+	 * form should be taken from the construction defaults for lines (see note in header).
+	 *
+	 * @see org.geogebra.common.kernel.algos.AlgoJoinPointsRay
+	 */
+	int getRayCommandEquationForm();
+
+	/**
+	 * Customize the equation form for conics created from user input (e.g., "y = xx").
+	 * @return one of the {@code EQUATION_} constants defined in
+	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if the
+	 * default equation form should be used.
 	 */
 	int getConicAlgebraInputEquationForm();
 
 	/**
 	 * Customize the equation form for conics created from a (Parabola, etc) command or tool.
 	 * @return one of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if 
-	 * 	TODO specify condition
+	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if the
+	 * default equation form should be used.
 	 */
 	int getConicCommandEquationForm();
 

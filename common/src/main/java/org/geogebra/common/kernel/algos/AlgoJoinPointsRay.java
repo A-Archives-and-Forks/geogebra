@@ -63,7 +63,8 @@ public class AlgoJoinPointsRay extends AlgoElement
 		ray.setLabel(label);
 		addIncidence();
 
-		// APPS-5867
+		ray.setEquationForm(GeoLine.EQUATION_EXPLICIT);
+
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			ray.setEquationForm(equationBehaviour.getLineCommandEquationForm());

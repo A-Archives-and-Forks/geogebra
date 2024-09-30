@@ -55,14 +55,10 @@ public class AlgoCirclePointRadius extends AlgoSphereNDPointRadius implements
 	 */
 	public AlgoCirclePointRadius(Construction cons, GeoPoint M, GeoNumberValue r) {
 		super(cons, M, r);
-
-		// TODO APPS-5867?
 	}
 
 	AlgoCirclePointRadius(Construction cons, GeoPoint M, GeoSegment rgeo) {
 		super(cons, M, rgeo);
-
-		// TODO APPS-5867?
 	}
 
 	@Override

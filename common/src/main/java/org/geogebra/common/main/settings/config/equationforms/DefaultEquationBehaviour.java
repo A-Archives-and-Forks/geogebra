@@ -6,7 +6,7 @@ import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.kernelND.GeoConicND;
 
 /**
- * Equation behavior that doesn't apply any restrictions.
+ * Equation behavior that doesn't apply any customization to the default equation forms.
  *
  * @apiNote Subclass and override for app-specific differences.
  *
@@ -21,6 +21,11 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getLineCommandEquationForm() {
+		return -1;
+	}
+
+	@Override
+	public int getRayCommandEquationForm() {
 		return -1;
 	}
 

@@ -53,7 +53,7 @@ public class AlgoFitLineY extends AlgoElement {
 
 		compute();
 
-		// APPS-5867
+		g.setEquationForm(GeoLine.EQUATION_EXPLICIT);
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());

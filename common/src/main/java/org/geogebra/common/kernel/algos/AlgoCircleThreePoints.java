@@ -106,12 +106,6 @@ public class AlgoCircleThreePoints extends AlgoElement
 
 		compute();
 		setIncidence();
-
-		// APPS-5867
-		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
-		if (equationBehaviour != null) {
-			circle.setEquationForm(equationBehaviour.getConicCommandEquationForm());
-		}
 	}
 
 	private void setIncidence() {

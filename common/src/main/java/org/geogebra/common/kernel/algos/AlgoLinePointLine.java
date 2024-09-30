@@ -26,6 +26,7 @@ import java.util.HashSet;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -68,6 +69,12 @@ public class AlgoLinePointLine extends AlgoElement
 
 		g.setLabel(label);
 		addIncidence();
+
+		g.setEquationForm(GeoLine.EQUATION_EXPLICIT);
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour != null) {
+			g.setEquationForm(equationBehaviour.getLineCommandEquationForm());
+		}
 	}
 
 	/**

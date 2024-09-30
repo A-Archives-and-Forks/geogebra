@@ -51,8 +51,6 @@ public abstract class AlgoSphereNDTwoPoints extends AlgoElement {
 		setInputOutput(); // for AlgoElement
 
 		compute();
-
-		// TODO APPS-5867?
 	}
 
 	abstract protected GeoQuadricND createSphereND(Construction cons1);
