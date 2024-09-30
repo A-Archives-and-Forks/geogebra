@@ -26,16 +26,6 @@ public final class EquationBehaviourStandaloneGraphing extends DefaultEquationBe
 	}
 
 	@Override
-	public int getConicAlgebraInputEquationForm() {
-		return -1;
-	}
-
-	@Override
-	public int getConicCommandEquationForm() {
-		return -1;//GeoConicND.EQUATION_USER;
-	}
-
-	@Override
 	public boolean allowsChangingEquationFormsByUser() {
 		return false;
 	}

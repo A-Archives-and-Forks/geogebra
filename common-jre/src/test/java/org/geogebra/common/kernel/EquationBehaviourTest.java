@@ -136,7 +136,7 @@ public class EquationBehaviourTest extends BaseUnitTest {
 
 	@Test
 	public void testClassicLineEquationBehaviour() {
-		getApp().setDefaultConfig(); // Default = Classic
+		getApp().setDefaultConfig(); // default app config = Classic
 
 		GeoLine algebraLine = new GeoLine(getConstruction());
 		assertEquals(GeoLine.EQUATION_IMPLICIT, algebraLine.getEquationForm());
