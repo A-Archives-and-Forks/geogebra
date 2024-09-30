@@ -111,7 +111,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 	private void addDeleteButton() {
 		IconButton deleteButton = new IconButton(getApp(),
-				() -> getApp().splitAndDeleteSelectedObjects(),
+				() -> {
+					getApp().closePopups();
+					getApp().splitAndDeleteSelectedObjects();
+				},
 				MaterialDesignResources.INSTANCE.delete_black(), "Delete");
 		styleAndRegisterButton(deleteButton);
 	}

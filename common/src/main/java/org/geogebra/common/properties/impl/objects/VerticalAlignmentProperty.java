@@ -29,7 +29,7 @@ public class VerticalAlignmentProperty extends AbstractEnumeratedProperty<Vertic
 	 */
 	public VerticalAlignmentProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "stylebar.VericalAlign");
+		super(localization, "stylebar.VerticalAlign");
 		delegate = new AlignmentPropertyDelegate(element);
 		setValues(VerticalAlignment.TOP,
 				VerticalAlignment.MIDDLE,
