@@ -8,9 +8,12 @@ import org.geogebra.common.kernel.matrix.Coords;
 import org.geogebra.common.util.DoubleUtil;
 
 /**
+ * Adaptive QuadTree algorithm that refines plot and segment checking depth
+ * (or even gives up) if the work load is high.
+ *
  * @author GSoCImplicitCurve-2015
  */
-class WebExperimentalQuadTree extends QuadTree {
+class AdaptiveQuadTree extends QuadTree {
 	private static final int RES_COARSE = 8;
 	private static final int MAX_SPLIT = 40;
 	private final GeoImplicitCurve curve;
@@ -43,7 +46,7 @@ class WebExperimentalQuadTree extends QuadTree {
 		}
 	}
 
-	public WebExperimentalQuadTree(GeoImplicitCurve curve) {
+	public AdaptiveQuadTree(GeoImplicitCurve curve) {
 		super(curve);
 		this.curve = curve;
 	}

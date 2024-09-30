@@ -93,20 +93,20 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 
 	void createEdges() {
 		edges.put(EdgeKind.TOP, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getX1(), boundingBox.getX2(),
-				boundingBox.getY1(), EdgeKind.TOP));
+				boundingBox.x1(), boundingBox.x2(),
+				boundingBox.y1(), EdgeKind.TOP));
 
 		edges.put(EdgeKind.LEFT, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getY1(), boundingBox.getY2(),
-				boundingBox.getX1(), EdgeKind.LEFT));
+				boundingBox.y1(), boundingBox.y2(),
+				boundingBox.x1(), EdgeKind.LEFT));
 
 		edges.put(EdgeKind.BOTTOM, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getX1(), boundingBox.getX2(),
-				boundingBox.getY2(), EdgeKind.BOTTOM));
+				boundingBox.x1(), boundingBox.x2(),
+				boundingBox.y2(), EdgeKind.BOTTOM));
 
 		edges.put(EdgeKind.RIGHT, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getY1(), boundingBox.getY2(),
-				boundingBox.getX2(), EdgeKind.RIGHT));
+				boundingBox.y1(), boundingBox.y2(),
+				boundingBox.x2(), EdgeKind.RIGHT));
 	}
 
 	@Override

@@ -148,16 +148,16 @@ public final class BernsteinPlotCellEdge implements Splittable<BernsteinPlotCell
 	}
 
 	private boolean isVerticalEqual(GPoint2D p, double eps) {
-		return DoubleUtil.isEqual(p.x, parent.boundingBox.getX1(), eps)
-				&& DoubleUtil.isEqual(p.y, parent.boundingBox.getY2(), eps)
-				|| DoubleUtil.isEqual(p.x, parent.boundingBox.getX2(), eps)
-				&& DoubleUtil.isEqual(p.y, parent.boundingBox.getY2(), eps);
+		return DoubleUtil.isEqual(p.x, parent.boundingBox.x1(), eps)
+				&& DoubleUtil.isEqual(p.y, parent.boundingBox.y2(), eps)
+				|| DoubleUtil.isEqual(p.x, parent.boundingBox.x2(), eps)
+				&& DoubleUtil.isEqual(p.y, parent.boundingBox.y2(), eps);
 	}
 
 	private boolean isHorizontalEqual(GPoint2D p, double eps) {
-		return DoubleUtil.isEqual(p.x, parent.boundingBox.getX1(), eps)
-				&& DoubleUtil.isEqual(p.y, parent.boundingBox.getY1(), eps)
-				|| DoubleUtil.isEqual(p.x, parent.boundingBox.getX2(), eps)
-				&& DoubleUtil.isEqual(p.y, parent.boundingBox.getY1(), eps) ;
+		return DoubleUtil.isEqual(p.x, parent.boundingBox.x1(), eps)
+				&& DoubleUtil.isEqual(p.y, parent.boundingBox.y1(), eps)
+				|| DoubleUtil.isEqual(p.x, parent.boundingBox.x2(), eps)
+				&& DoubleUtil.isEqual(p.y, parent.boundingBox.y1(), eps) ;
 	}
 }

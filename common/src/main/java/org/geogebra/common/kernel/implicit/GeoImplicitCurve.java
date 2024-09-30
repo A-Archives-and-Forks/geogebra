@@ -90,7 +90,7 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 	/**
 	 * Underlying drawing algorithm
 	 */
-	protected final QuadTree quadTree = new WebExperimentalQuadTree(this);
+	protected final QuadTree quadTree = new AdaptiveQuadTree(this);
 
 	private final double[] evalArray = new double[2];
 	private final double[] derEvalArray = new double[2];
@@ -2214,7 +2214,7 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 	}
 
 	public static void setFastDrawThreshold(int threshold) {
-		WebExperimentalQuadTree.setFastDrawThreshold(threshold);
+		AdaptiveQuadTree.setFastDrawThreshold(threshold);
 	}
 
 	@Override

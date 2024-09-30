@@ -187,7 +187,7 @@ public enum EdgeConfig {
 	}
 
 	public static EdgeConfig fromFlag(int config) {
-		return map.get(config);
+		return map.getOrDefault(config, T_INV);
 	}
 
 	public int flag() {

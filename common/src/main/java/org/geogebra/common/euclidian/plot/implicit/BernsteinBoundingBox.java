@@ -74,19 +74,19 @@ public class BernsteinBoundingBox implements Splittable<BernsteinBoundingBox> {
 				+ '}';
 	}
 
-	public double getX1() {
+	public double x1() {
 		return x1;
 	}
 
-	public double getY1() {
+	public double y1() {
 		return y1;
 	}
 
-	public double getX2() {
+	public double x2() {
 		return x2;
 	}
 
-	public double getY2() {
+	public double y2() {
 		return y2;
 	}
 

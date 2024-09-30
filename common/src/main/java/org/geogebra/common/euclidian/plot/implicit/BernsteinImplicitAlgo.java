@@ -90,8 +90,8 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	}
 
 	private boolean isBoxSmallEnough(BernsteinBoundingBox box) {
-		double width = bounds.toScreenCoordXd(box.getX2()) - bounds.toScreenCoordXd(box.getX1());
-		double height = bounds.toScreenCoordYd(box.getY1()) - bounds.toScreenCoordYd(box.getY2());
+		double width = bounds.toScreenCoordXd(box.x2()) - bounds.toScreenCoordXd(box.x1());
+		double height = bounds.toScreenCoordYd(box.y1()) - bounds.toScreenCoordYd(box.y2());
 		return width < SMALLEST_BOX_IN_PIXELS
 				|| height < SMALLEST_BOX_IN_PIXELS;
 	}
@@ -151,9 +151,9 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	}
 
 	private void putToGrid(BernsteinPlotCell cell) {
-		int column = (int) Math.round(bounds.toScreenCoordXd(cell.boundingBox.getX1())
+		int column = (int) Math.round(bounds.toScreenCoordXd(cell.boundingBox.x1())
 				/ SMALLEST_BOX_IN_PIXELS);
-		int row =  (int) Math.round(bounds.toScreenCoordYd(cell.boundingBox.getY1())
+		int row =  (int) Math.round(bounds.toScreenCoordYd(cell.boundingBox.y1())
 				/ SMALLEST_BOX_IN_PIXELS);
 		grid.put(cell, row, column);
 
