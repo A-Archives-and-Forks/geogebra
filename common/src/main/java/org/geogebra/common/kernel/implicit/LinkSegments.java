@@ -8,7 +8,6 @@ import java.util.ListIterator;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.util.DoubleUtil;
 public class LinkSegments {
-	private final GeoImplicitCurve geoImplicitCurve;
 	private List<MyPoint> locusPoints;
 	private MyPoint[] pts = new MyPoint[2];
 	private PointList p1;
@@ -23,15 +22,14 @@ public class LinkSegments {
 	 */
 	public int listThreshold = 48;
 
-	public LinkSegments(GeoImplicitCurve geoImplicitCurve, ArrayList<MyPoint> locusPoints) {
-
-		this.geoImplicitCurve = geoImplicitCurve;
+	public LinkSegments(ArrayList<MyPoint> locusPoints) {
 		this.locusPoints = locusPoints;
 	}
 
-	public int add(PlotRect r, int factor) {
-		EdgeConfig status = create(r, factor);
-		if (status == EdgeConfig.VALID) {
+	public int add(PlotRect r, EdgeConfigProvider provider) {
+		EdgeConfig config = provider.create(r);
+		pts = provider.getPoints();
+		if (config == EdgeConfig.VALID) {
 			if (pts[0].x > pts[1].x) {
 				temp = pts[0];
 				pts[0] = pts[1];
@@ -70,7 +68,7 @@ public class LinkSegments {
 				abortList();
 			}
 		}
-		return status.flag();
+		return config.flag();
 	}
 
 
@@ -78,38 +76,6 @@ public class LinkSegments {
 		return DoubleUtil.isEqual(q1.x, q2.x, 1e-10)
 				&& DoubleUtil.isEqual(q1.y, q2.y, 1e-10);
 	}
-
-	public EdgeConfig create(PlotRect r, int factor) {
-		EdgeConfig gridType = EdgeConfig.fromFlag(config(r));
-		if (gridType == EdgeConfig.T0101 || gridType == EdgeConfig.T_INV) {
-			return gridType;
-		}
-
-		double q1 = 0.0, q2 = 0.0;
-
-		pts = gridType.getPoints(r);
-		if (pts == null) {
-			return EdgeConfig.EMPTY;
-		}
-
-		q1 = gridType.getQ1(r);
-		q2 = gridType.getQ2(r);
-
-		// check continuity of the function between P1 and P2
-		double p = Math.abs(this.geoImplicitCurve
-				.evaluateImplicitCurve(pts[0].x, pts[0].y, factor));
-		double q = Math.abs(this.geoImplicitCurve
-				.evaluateImplicitCurve(pts[1].x, pts[1].y, factor));
-		if (p <= q1 && q <= q2) {
-			return EdgeConfig.VALID;
-		}
-		return EdgeConfig.EMPTY;
-	}
-
-	private static double minAbs(double a, double b) {
-		return Math.min(Math.abs(a), Math.abs(b));
-	}
-
 
 	public void abortList() {
 		itr1 = openList.listIterator();
@@ -128,32 +94,6 @@ public class LinkSegments {
 
 	public void abort() {
 		abortList();
-	}
-
-	public int config(PlotRect r) {
-		int config = 0;
-		for (int i = 0; i < 4; i++) {
-			config = (config << 1) | sign(r.cornerAt(i));
-		}
-		return config >= 8 ? (~config) & 0xf : config;
-	}
-
-
-	/**
-	 *
-	 * @param val
-	 *            value to check
-	 * @return the sign depending on the value. if value is infinity or NaN it
-	 *         returns T_INV, otherwise it returns 1 for +ve value 0 otherwise
-	 */
-	public int sign(double val) {
-		if (Double.isInfinite(val) || Double.isNaN(val)) {
-			return CornerConfig.T_INV;
-		} else if (val > 0.0) {
-			return 1;
-		} else {
-			return 0;
-		}
 	}
 
 	public void setListThreshold(int threshold) {

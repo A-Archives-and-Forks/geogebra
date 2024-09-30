@@ -184,10 +184,12 @@ class AdaptiveQuadTree extends QuadTree {
 			createTree(r, depth + 1, factor);
 			return;
 		}
+
+		EdgeConfigProvider configProvider = EdgeConfigProviderFactory.create(curve, factor);
 		int e = edgeConfig(r);
 		if (grid[r.y][r.x].singular || e != EMPTY) {
 			if (depth >= plotDepth) {
-				if (segments().add(r, factor) == T0101) {
+				if (segments().add(r, configProvider) == T0101) {
 					createTree(r, depth + 1, factor);
 					return;
 				}

@@ -26,7 +26,7 @@ abstract class QuadTree {
 
 	public QuadTree(GeoImplicitCurve geoImplicitCurve) {
 		this.geoImplicitCurve = geoImplicitCurve;
-		segments = new LinkSegments(geoImplicitCurve, locusPoints);
+		segments = new LinkSegments(locusPoints);
 
 	}
 
