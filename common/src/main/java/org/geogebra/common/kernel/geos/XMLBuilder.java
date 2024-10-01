@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GPoint2D;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.NumberValue;
 import org.geogebra.common.kernel.geos.GeoAngle.AngleStyle;
@@ -206,21 +207,21 @@ public class XMLBuilder {
 	public static void appendEquationTypeLine(StringBuilder sb, int toStringMode,
 			String parameter) {
 		switch (toStringMode) {
-		case GeoLine.EQUATION_PARAMETRIC:
+		case EquationForm.Linear.PARAMETRIC:
 			sb.append("\t<eqnStyle style=\"parametric\" parameter=\"");
 			sb.append(parameter);
 			sb.append("\"/>\n");
 			break;
-		case GeoLine.EQUATION_IMPLICIT:
+		case EquationForm.Linear.IMPLICIT:
 			appendType(sb, "implicit");
 			break;
-		case GeoLine.EQUATION_EXPLICIT:
+		case EquationForm.Linear.EXPLICIT:
 			appendType(sb, "explicit");
 			break;
-		case GeoLine.EQUATION_GENERAL:
+		case EquationForm.Linear.GENERAL:
 			appendType(sb, "general");
 			break;
-		case GeoLine.EQUATION_USER:
+		case EquationForm.Linear.USER:
 			appendType(sb, "user");
 			break;
 		default:
@@ -254,23 +255,22 @@ public class XMLBuilder {
 			int toStringMode, String parameter) {
 		// implicit or specific mode
 		switch (toStringMode) {
-		case GeoConicND.EQUATION_SPECIFIC:
+		case EquationForm.Quadric.SPECIFIC:
 			XMLBuilder.appendType(sb, "specific");
 			break;
-
-		case GeoConicND.EQUATION_EXPLICIT:
+		case EquationForm.Quadric.EXPLICIT:
 			XMLBuilder.appendType(sb, "explicit");
 			break;
-		case GeoConicND.EQUATION_USER:
+		case EquationForm.Quadric.USER:
 			XMLBuilder.appendType(sb, "user");
 			break;
-		case GeoConicND.EQUATION_VERTEX:
+		case EquationForm.Quadric.VERTEX:
 			XMLBuilder.appendType(sb, "vertex");
 			break;
-		case GeoConicND.EQUATION_CONICFORM:
+		case EquationForm.Quadric.CONICFORM:
 			XMLBuilder.appendType(sb, "conic");
 			break;
-		case GeoConicND.EQUATION_PARAMETRIC:
+		case EquationForm.Quadric.PARAMETRIC:
 			sb.append("\t<eqnStyle style=\"parametric\"/>\n");
 			break;
 

@@ -1,7 +1,6 @@
 package org.geogebra.common.main.settings.config.equationforms;
 
-import org.geogebra.common.kernel.geos.GeoLine;
-import org.geogebra.common.kernel.kernelND.GeoConicND;
+import org.geogebra.common.kernel.EquationForm;
 
 /**
  * Equation behaviour for the standalone Graphing app.
@@ -12,17 +11,17 @@ public final class EquationBehaviourStandaloneGraphing extends DefaultEquationBe
 
 	@Override
 	public int getLinearAlgebraInputEquationForm() {
-		return GeoLine.EQUATION_USER;
+		return EquationForm.Linear.USER;
 	}
 
 	@Override
 	public int getLineCommandEquationForm() {
-		return GeoLine.EQUATION_EXPLICIT;
+		return EquationForm.Linear.EXPLICIT;
 	}
 
 	@Override
 	public int getRayCommandEquationForm() {
-		return GeoLine.EQUATION_USER;
+		return EquationForm.Linear.USER;
 	}
 
 	@Override

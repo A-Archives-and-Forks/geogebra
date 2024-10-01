@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import org.geogebra.common.awt.GAffineTransform;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.EquationSolver;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
@@ -77,21 +78,6 @@ public abstract class GeoConicND extends GeoQuadricND
 	protected static final double MAX_COEFFICIENT_SIZE = 100000;
 	/** avoid very large and small coefficients for numerical stability */
 	protected static final double MIN_COEFFICIENT_SIZE = 1;
-
-	/** mode for equations like ax^2+bxy+cy^2+dx+ey+f=0 */
-	public static final int EQUATION_IMPLICIT = 0;
-	/** mode for equations like y=ax^2+bx+c */
-	public static final int EQUATION_EXPLICIT = 1;
-	/** mode for equations like (x-m)^2/a^2+(y-n)^2/b^2=1 */
-	public static final int EQUATION_SPECIFIC = 2;
-	/** X=(1,1)+(sin(t),cos(t)) */
-	public static final int EQUATION_PARAMETRIC = 3;
-	/** user defined equation form */
-	public static final int EQUATION_USER = 4;
-	/** vertex form **/
-	public static final int EQUATION_VERTEX = 5;
-	/** conic form **/
-	public static final int EQUATION_CONICFORM = 6;
 
 	/** variable strings for default output */
 	final private static String[] vars = { "x\u00b2", "x y", "y\u00b2", "x",
@@ -167,7 +153,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	 *            dimension
 	 */
 	public GeoConicND(Construction c, int dimension) {
-		this(c, dimension, false, EQUATION_IMPLICIT);
+		this(c, dimension, false, EquationForm.Quadric.IMPLICIT);
 	}
 
 	/**
@@ -180,7 +166,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	 * @param isIntersection
 	 *            if this is an intersection curve
 	 * @param stringMode
-	 *            toStringMode, one of EQUATION_* constants
+	 *            toStringMode, one of EquationForm.Quadric.* constants
 	 */
 	public GeoConicND(Construction c, int dimension, boolean isIntersection,
 			int stringMode) {
@@ -1323,12 +1309,12 @@ public abstract class GeoConicND extends GeoQuadricND
 
 	/** Changes equation mode to Implicit */
 	final public void setToImplicit() {
-		setMode(EQUATION_IMPLICIT);
+		setMode(EquationForm.Quadric.IMPLICIT);
 	}
 
 	/** Changes equation mode to Explicit */
 	final public void setToExplicit() {
-		setMode(EQUATION_EXPLICIT);
+		setMode(EquationForm.Quadric.EXPLICIT);
 	}
 
 	/**
@@ -1338,23 +1324,23 @@ public abstract class GeoConicND extends GeoQuadricND
 	 *            new parameter name
 	 */
 	final public void setToParametric(String parameter) {
-		setMode(EQUATION_PARAMETRIC);
+		setMode(EquationForm.Quadric.PARAMETRIC);
 		this.parameter = parameter;
 	}
 
 	/** Changes equation mode to User/Input */
 	final public void setToUser() {
-		setMode(EQUATION_USER);
+		setMode(EquationForm.Quadric.USER);
 	}
 
 	/** Changes equation mode to Vertex form */
 	final public void setToVertexform() {
-		setMode(EQUATION_VERTEX);
+		setMode(EquationForm.Quadric.VERTEX);
 	}
 
 	/** Changes equation mode to Conic form */
 	final public void setToConicform() {
-		setMode(EQUATION_CONICFORM);
+		setMode(EquationForm.Quadric.CONICFORM);
 	}
 
 	final public void setMode(int mode) {
@@ -1366,13 +1352,13 @@ public abstract class GeoConicND extends GeoQuadricND
 			return; // ignore value for "undefined" (see EquationForms)
 		}
 		switch (equationForm) {
-		case EQUATION_IMPLICIT:
-		case EQUATION_EXPLICIT:
-		case EQUATION_SPECIFIC:
-		case EQUATION_PARAMETRIC:
-		case EQUATION_USER:
-		case EQUATION_VERTEX:
-		case EQUATION_CONICFORM:
+		case EquationForm.Quadric.IMPLICIT:
+		case EquationForm.Quadric.EXPLICIT:
+		case EquationForm.Quadric.SPECIFIC:
+		case EquationForm.Quadric.PARAMETRIC:
+		case EquationForm.Quadric.USER:
+		case EquationForm.Quadric.VERTEX:
+		case EquationForm.Quadric.CONICFORM:
 			toStringMode = equationForm;
 			break;
 		default:
@@ -1632,11 +1618,11 @@ public abstract class GeoConicND extends GeoQuadricND
 			sb.append("=0");
 			return sb;
 		}
-		if (getToStringMode() == GeoConicND.EQUATION_PARAMETRIC) {
+		if (getToStringMode() == EquationForm.Quadric.PARAMETRIC) {
 			return this.buildParametricValueString(tpl, 2);
 		}
 		if (getDefinition() != null
-				&& getToStringMode() == GeoConicND.EQUATION_USER) {
+				&& getToStringMode() == EquationForm.Quadric.USER) {
 			return sbToValueString.append(getDefinition().toValueString(tpl));
 		}
 		if (type == CONIC_LINE) {
@@ -1661,7 +1647,7 @@ public abstract class GeoConicND extends GeoQuadricND
 		}
 
 		switch (getToStringMode()) {
-		case EQUATION_SPECIFIC:
+		case EquationForm.Quadric.SPECIFIC:
 			if (!isSpecificPossible()) {
 				return kernel.buildImplicitEquation(coeffs, myVars,
 						true, false, tpl, true);
@@ -1802,17 +1788,17 @@ public abstract class GeoConicND extends GeoQuadricND
 
 			}
 
-		case EQUATION_EXPLICIT:
+		case EquationForm.Quadric.EXPLICIT:
 			if (isExplicitPossible()) {
 				return kernel.buildExplicitConicEquation(coeffs, myVars, 4, tpl);
 			}
 
-		case EQUATION_VERTEX:
+		case EquationForm.Quadric.VERTEX:
 			if (isVertexformPossible()) {
 				return kernel.buildVertexformEquation(coeffs, myVars, tpl);
 			}
 
-		case EQUATION_CONICFORM:
+		case EquationForm.Quadric.CONICFORM:
 			if (isConicformPossible()) {
 				return kernel.buildConicformEquation(coeffs, myVars, tpl);
 			}

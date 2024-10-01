@@ -11,6 +11,7 @@ import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianController;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.dialog.options.model.LineEqnModel;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.DescriptionMode;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -72,7 +73,7 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitLine.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("y = 0.4x + 2"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitLine.getDescriptionMode());
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, fitLine.getToStringMode());
+        Assert.assertEquals(EquationForm.Linear.EXPLICIT, fitLine.getToStringMode());
     }
 
     @Test
@@ -81,7 +82,7 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitLineY.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("y = x"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitLineY.getDescriptionMode());
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, fitLineY.getToStringMode());
+        Assert.assertEquals(EquationForm.Linear.EXPLICIT, fitLineY.getToStringMode());
     }
 
     @Test
@@ -94,7 +95,7 @@ public class FitTests extends BaseUnitTest {
         String outputString = loadedFitLine.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("y = x"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, loadedFitLine.getDescriptionMode());
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, loadedFitLine.getToStringMode());
+        Assert.assertEquals(EquationForm.Linear.EXPLICIT, loadedFitLine.getToStringMode());
     }
 
     @Test
@@ -105,7 +106,7 @@ public class FitTests extends BaseUnitTest {
         String outputString = fitLineX.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("y = 0.5666666666667x + 1.6666666666667"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, fitLineX.getDescriptionMode());
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, fitLineX.getToStringMode());
+        Assert.assertEquals(EquationForm.Linear.EXPLICIT, fitLineX.getToStringMode());
     }
 
     @Test
@@ -119,7 +120,7 @@ public class FitTests extends BaseUnitTest {
         String outputString = loadedFitLine.toOutputValueString(StringTemplate.editTemplate);
         assertThat(outputString, equalTo("y = 0.5666666666667x + 1.6666666666667"));
         Assert.assertEquals(DescriptionMode.DEFINITION_VALUE, loadedFitLine.getDescriptionMode());
-        Assert.assertEquals(GeoLine.EQUATION_EXPLICIT, loadedFitLine.getToStringMode());
+        Assert.assertEquals(EquationForm.Linear.EXPLICIT, loadedFitLine.getToStringMode());
     }
 
     @Test

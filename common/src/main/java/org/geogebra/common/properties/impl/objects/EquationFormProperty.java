@@ -1,7 +1,7 @@
 package org.geogebra.common.properties.impl.objects;
 
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.geos.GeoVec3D;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
@@ -21,8 +21,9 @@ public class EquationFormProperty extends AbstractNamedEnumeratedProperty<Intege
 			throws NotApplicablePropertyException {
 		super(localization, "Equation");
 		delegate = new EquationFormDelegate(element);
-		setValues(GeoLine.EQUATION_IMPLICIT, GeoLine.EQUATION_EXPLICIT, GeoLine.EQUATION_PARAMETRIC,
-				GeoLine.EQUATION_GENERAL, GeoLine.EQUATION_USER);
+		setValues(EquationForm.Linear.IMPLICIT, EquationForm.Linear.EXPLICIT,
+				EquationForm.Linear.PARAMETRIC, EquationForm.Linear.GENERAL,
+				EquationForm.Linear.USER);
 		setValueNames("ImplicitLineEquation", "ExplicitLineEquation", "ParametricForm",
 				"GeneralLineEquation", "InputForm");
 	}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.geogebra.common.euclidianForPlane.EuclidianViewForPlaneCompanionInterface;
 import org.geogebra.common.geogebra3D.kernel3D.transform.MirrorableAtPlane;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
 import org.geogebra.common.kernel.RegionParameters;
@@ -456,7 +457,7 @@ public class GeoPlane3D extends GeoElement3D
 		}
 		// we need to keep 0z in equation to be sure that y+0z=1 will be loaded
 		// as a plane
-		if (getToStringMode() == GeoLine.EQUATION_USER
+		if (getToStringMode() == EquationForm.Linear.USER
 				&& getDefinition() != null) {
 			return getDefinition().toValueString(tpl);
 		}
@@ -471,14 +472,12 @@ public class GeoPlane3D extends GeoElement3D
 
 	@Override
 	final public void setToUser() {
-		// TODO APPS-5867 does GeoLine.* make sense for a 3D plane?
-		setMode(GeoLine.EQUATION_USER);
+		setMode(EquationForm.Linear.USER);
 	}
 
 	@Override
 	final public void setToImplicit() {
-		// TODO APPS-5867 does GeoLine.* make sense for a 3D plane?
-		setMode(GeoLine.EQUATION_IMPLICIT);
+		setMode(EquationForm.Linear.IMPLICIT);
 	}
 
 	/**
@@ -913,13 +912,13 @@ public class GeoPlane3D extends GeoElement3D
 
 	@Override
 	public boolean isLaTeXDrawableGeo() {
-		return getToStringMode() == GeoLine.EQUATION_USER;
+		return getToStringMode() == EquationForm.Linear.USER;
 	}
 
 	@Override
 	public boolean setEquationStyleFromXML(String style, String parameter) {
 		if ("implicit".equals(style)) {
-			toStringMode = GeoLine.EQUATION_IMPLICIT;
+			toStringMode = EquationForm.Linear.IMPLICIT;
 		} else if ("user".equals(style)) {
 			setToUser();
 		} else {

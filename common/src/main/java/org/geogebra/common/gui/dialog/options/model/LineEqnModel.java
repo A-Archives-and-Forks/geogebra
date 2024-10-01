@@ -3,6 +3,7 @@ package org.geogebra.common.gui.dialog.options.model;
 import java.util.Arrays;
 import java.util.List;
 
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.arithmetic.EquationValue;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoLine;
@@ -19,9 +20,9 @@ public class LineEqnModel extends MultipleOptionsModel {
 	public LineEqnModel(App app) {
 		super(app);
 
-		eqnValues = Arrays.asList(GeoLine.EQUATION_IMPLICIT,
-				GeoLine.EQUATION_EXPLICIT, GeoLine.EQUATION_PARAMETRIC,
-				GeoLine.EQUATION_GENERAL, GeoLine.EQUATION_USER);
+		eqnValues = Arrays.asList(EquationForm.Linear.IMPLICIT,
+				EquationForm.Linear.EXPLICIT, EquationForm.Linear.PARAMETRIC,
+				EquationForm.Linear.GENERAL, EquationForm.Linear.USER);
 
 	}
 

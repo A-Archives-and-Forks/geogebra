@@ -13,6 +13,7 @@ the Free Software Foundation.
 package org.geogebra.common.kernel.algos;
 
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionNodeConstants.StringType;
@@ -107,10 +108,10 @@ public class AlgoDependentGeoCopy extends AlgoElement implements DependentAlgo {
 		if (tpl.hasType(StringType.GEOGEBRA_XML) && !origGeo.isLabelSet()
 				&& origGeo instanceof GeoLine
 				&& origGeo
-						.getToStringMode() == GeoLine.EQUATION_PARAMETRIC) {
-			((GeoLine) origGeo).setMode(GeoLine.EQUATION_EXPLICIT);
+						.getToStringMode() == EquationForm.Linear.PARAMETRIC) {
+			((GeoLine) origGeo).setMode(EquationForm.Linear.EXPLICIT);
 			String ret = origGeo.getLabel(tpl);
-			((GeoLine) origGeo).setMode(GeoLine.EQUATION_PARAMETRIC);
+			((GeoLine) origGeo).setMode(EquationForm.Linear.PARAMETRIC);
 			return ret;
 		}
 		// we use the expression as it may add $ signs

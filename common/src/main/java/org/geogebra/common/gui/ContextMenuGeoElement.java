@@ -11,6 +11,7 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.euclidian.Hits;
 import org.geogebra.common.euclidian.draw.DrawInline;
 import org.geogebra.common.euclidian.draw.HasTextFormat;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.arithmetic.Equation;
 import org.geogebra.common.kernel.arithmetic.EquationValue;
 import org.geogebra.common.kernel.geos.AbsoluteScreenLocateable;
@@ -112,7 +113,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.EQUATION_IMPLICIT);
+				line1.setMode(EquationForm.Linear.IMPLICIT);
 				line1.updateRepaint();
 			}
 		}
@@ -129,7 +130,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.EQUATION_EXPLICIT);
+				line1.setMode(EquationForm.Linear.EXPLICIT);
 				line1.updateRepaint();
 			}
 		}
@@ -146,7 +147,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.EQUATION_GENERAL);
+				line1.setMode(EquationForm.Linear.GENERAL);
 				line1.updateRepaint();
 			}
 		}
@@ -163,7 +164,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(GeoLine.EQUATION_PARAMETRIC);
+				line1.setMode(EquationForm.Linear.PARAMETRIC);
 				line1.updateRepaint();
 			}
 		}
@@ -741,15 +742,15 @@ public abstract class ContextMenuGeoElement {
 		if (Equation.isAlgebraEquation(geo)) {
 			if (geo.isGeoLine()) {
 				return geo
-						.getToStringMode() != GeoLine.EQUATION_USER;
+						.getToStringMode() != EquationForm.Linear.USER;
 			}
 			if (geo.isGeoPlane()) {
 				return geo
-						.getToStringMode() != GeoLine.EQUATION_USER;
+						.getToStringMode() != EquationForm.Linear.USER;
 			}
 			if (geo.isGeoConic() || geo.isGeoQuadric()) {
 				return geo
-						.getToStringMode() != GeoConicND.EQUATION_USER;
+						.getToStringMode() != EquationForm.Quadric.USER;
 			}
 			if (geo instanceof GeoImplicit) {
 				return !((GeoImplicit) geo).isInputForm();

@@ -10,6 +10,7 @@ import org.geogebra.common.geogebra3D.euclidian3D.draw.DrawConic3D;
 import org.geogebra.common.geogebra3D.kernel3D.algos.AlgoDependentQuadric3D;
 import org.geogebra.common.geogebra3D.kernel3D.transform.MirrorableAtPlane;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.EquationSolver;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
@@ -1866,7 +1867,7 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 
 	@Override
 	final public void setToUser() {
-		toStringMode = GeoConicND.EQUATION_USER;
+		toStringMode = EquationForm.Quadric.USER;
 	}
 
 	/**
@@ -1897,12 +1898,12 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 		}
 		StringBuilder sbToValueString = new StringBuilder();
 		if (getDefinition() != null
-				&& (getToStringMode() == GeoConicND.EQUATION_USER)) {
+				&& (getToStringMode() == EquationForm.Quadric.USER)) {
 			return sbToValueString.append(getDefinition().toString(tpl));
 		}
 		switch (type) {
 		case QUADRIC_SPHERE:
-			if (getToStringMode() == GeoConicND.EQUATION_IMPLICIT) {
+			if (getToStringMode() == EquationForm.Quadric.IMPLICIT) {
 				return buildImplicitEquation(tpl);
 			}
 			buildSphereNDString(sbToValueString, tpl);
@@ -3468,7 +3469,7 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 		if ("implicit".equals(style)) {
 			setToImplicit();
 		} else if ("specific".equals(style)) {
-			toStringMode = GeoConicND.EQUATION_SPECIFIC;
+			toStringMode = EquationForm.Quadric.SPECIFIC;
 		} else if ("user".equals(style)) {
 			setToUser();
 		} else {
@@ -3479,7 +3480,7 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 
 	@Override
 	public void setToImplicit() {
-		toStringMode = GeoConicND.EQUATION_IMPLICIT;
+		toStringMode = EquationForm.Quadric.IMPLICIT;
 	}
 
 	@Override

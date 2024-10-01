@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
 import org.geogebra.common.kernel.Path;
@@ -79,20 +80,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		Mirrorable, Dilateable, GeoLineND, MatrixTransformable,
 		GeoFunctionable, Transformable, GeoEvaluatable, SymbolicParametersAlgo,
 		SymbolicParametersBotanaAlgo, EquationValue, Lineable2D, Functional {
-
-	// modes
-	/** implicit equation */
-	public static final int EQUATION_IMPLICIT = 0; // a x + b y = c
-	/** explicit equation */
-	public static final int EQUATION_EXPLICIT = 1; // y = m x + b
-	/** parametric equation */
-	public static final int EQUATION_PARAMETRIC = 2;
-	/** non-canonical implicit equation (not used anywhere) */
-//	public static final int EQUATION_IMPLICIT_NON_CANONICAL = 3; // a x + b y = -c
-	/** general form **/
-	public static final int EQUATION_GENERAL = 4; // a x + b y + c = 0 (GGB-1212)
-	/** user input **/
-	public static final int EQUATION_USER = 5;
 
 	private boolean showUndefinedInAlgebraView = false;
 
@@ -871,34 +858,34 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 */
 	@Override
 	final public void setToParametric(String parameter) {
-		setEquationForm(GeoLine.EQUATION_PARAMETRIC);
+		setEquationForm(EquationForm.Linear.PARAMETRIC);
 		this.parameter = parameter;
 	}
 
 	/** change equation mode to explicit */
 	@Override
 	final public void setToExplicit() {
-		setEquationForm(EQUATION_EXPLICIT);
+		setEquationForm(EquationForm.Linear.EXPLICIT);
 	}
 
 	/** set equation mode to implicit */
 	@Override
 	final public void setToImplicit() {
-		setEquationForm(EQUATION_IMPLICIT);
+		setEquationForm(EquationForm.Linear.IMPLICIT);
 	}
 
 	@Override
 	final public void setToUser() {
-		setEquationForm(EQUATION_USER);
+		setEquationForm(EquationForm.Linear.USER);
 	}
 
 	@Override
 	final public void setToGeneral() {
-		setEquationForm(EQUATION_GENERAL);
+		setEquationForm(EquationForm.Linear.GENERAL);
 	}
 
 	/**
-	 * Code like {@code line.setMode(GeoLine.EQUATION_...)} is used in a few places,
+	 * Code like {@code line.setMode(EquationForm.Linear....)} is used in a few places,
 	 * so we have this override here to forward to {@link #setEquationForm(int)}.
 	 */
 	@Override
@@ -911,11 +898,11 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			return; // ignore value for "undefined" (see EquationForms)
 		}
 		switch (equationForm) {
-		case EQUATION_IMPLICIT:
-		case EQUATION_EXPLICIT:
-		case EQUATION_PARAMETRIC:
-		case EQUATION_GENERAL:
-		case EQUATION_USER:
+		case EquationForm.Linear.IMPLICIT:
+		case EquationForm.Linear.EXPLICIT:
+		case EquationForm.Linear.PARAMETRIC:
+		case EquationForm.Linear.GENERAL:
+		case EquationForm.Linear.USER:
 			this.toStringMode = equationForm;
 			break;
 		default:
@@ -984,8 +971,8 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		double[] g = new double[3];
 
 		if (!coefficientsDefined() || (DoubleUtil.isZero(x) && DoubleUtil.isZero(y)
-				&& toStringMode != EQUATION_USER)) {
-			if (toStringMode == EQUATION_PARAMETRIC) {
+				&& toStringMode != EquationForm.Linear.USER)) {
+			if (toStringMode == EquationForm.Linear.PARAMETRIC) {
 				return "X" + tpl.getEqualsWithSpace() + "(?, ?)";
 			} else {
 				// eg list = {x = ?}
@@ -994,13 +981,13 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		}
 
 		switch (toStringMode) {
-		case EQUATION_EXPLICIT: // /EQUATION
+		case EquationForm.Linear.EXPLICIT: // /EQUATION
 			g[0] = x;
 			g[1] = y;
 			g[2] = z;
 			return kernel.buildExplicitEquation(g, vars, tpl, true).toString();
 
-		case EQUATION_PARAMETRIC:
+		case EquationForm.Linear.PARAMETRIC:
 			getInhomPointOnLine(P); // point
 			StringBuilder sbBuildValueStr = getSbToString();
 			GeoCasCell casCell = getCorrespondingCasCell();
@@ -1021,7 +1008,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			sbBuildValueStr.append(")");
 			return sbBuildValueStr.toString();
 
-		case EQUATION_GENERAL:
+		case EquationForm.Linear.GENERAL:
 			g[0] = x;
 			g[1] = y;
 			g[2] = z;
@@ -1030,12 +1017,12 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			}
 			return kernel.buildImplicitEquation(g, vars,
 					false, false, tpl, false).toString();
-		case EQUATION_USER:
+		case EquationForm.Linear.USER:
 			if (getDefinition() != null) {
 				return getDefinition().toValueString(tpl);
 			}
 			return buildImplicitEquation(g, tpl);
-		default: // EQUATION_IMPLICIT
+		default: // EquationForm.Linear.IMPLICIT
 			return buildImplicitEquation(g, tpl);
 		}
 	}
@@ -1708,12 +1695,12 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	@Override
 	public boolean isParametric() {
-		return toStringMode == GeoLine.EQUATION_PARAMETRIC;
+		return toStringMode == EquationForm.Linear.PARAMETRIC;
 	}
 
 	@Override
 	public ValueType getValueType() {
-		return toStringMode == GeoLine.EQUATION_PARAMETRIC ? ValueType.PARAMETRIC2D
+		return toStringMode == EquationForm.Linear.PARAMETRIC ? ValueType.PARAMETRIC2D
 				: ValueType.EQUATION;
 	}
 
@@ -1776,7 +1763,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	@Override
 	public boolean isLaTeXDrawableGeo() {
-		return toStringMode == GeoLine.EQUATION_USER
+		return toStringMode == EquationForm.Linear.USER
 				&& getDefinition() != null;
 	}
 
@@ -1828,7 +1815,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	@Override
 	public DescriptionMode getDescriptionMode() {
-		if (toStringMode == GeoLine.EQUATION_USER
+		if (toStringMode == EquationForm.Linear.USER
 				&& (isIndependent() || (getParentAlgorithm().getClassName() == Algos.Expression
 				&& isAllowedToShowValue()))) {
 			return DescriptionMode.VALUE;

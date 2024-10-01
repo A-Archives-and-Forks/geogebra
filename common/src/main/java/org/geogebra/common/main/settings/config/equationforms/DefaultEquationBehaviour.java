@@ -1,8 +1,7 @@
 package org.geogebra.common.main.settings.config.equationforms;
 
 import org.geogebra.common.kernel.EquationBehaviour;
-import org.geogebra.common.kernel.geos.GeoConic;
-import org.geogebra.common.kernel.geos.GeoLine;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.kernelND.GeoConicND;
 
 /**
@@ -21,12 +20,12 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getLineCommandEquationForm() {
-		return GeoLine.EQUATION_EXPLICIT;
+		return EquationForm.Linear.EXPLICIT;
 	}
 
 	@Override
 	public int getFitLineCommandEquationForm() {
-		return GeoLine.EQUATION_EXPLICIT;
+		return EquationForm.Linear.EXPLICIT;
 	}
 
 	@Override
@@ -36,12 +35,12 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getConicAlgebraInputEquationForm() {
-		return GeoConicND.EQUATION_USER;
+		return EquationForm.Quadric.USER;
 	}
 
 	@Override
 	public int getConicCommandEquationForm() {
-		return GeoConicND.EQUATION_IMPLICIT;
+		return EquationForm.Quadric.IMPLICIT;
 	}
 
 	@Override
