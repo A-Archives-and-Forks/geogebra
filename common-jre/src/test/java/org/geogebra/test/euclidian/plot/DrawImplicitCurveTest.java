@@ -38,12 +38,12 @@ public class DrawImplicitCurveTest extends BaseUnitTest {
 		drawImplicitCurve.update();
 		drawImplicitCurve.draw(view.getGraphicsForPen());
 		if (save) {
-			saveLog(plotterMock, "implicitPath2.txt");
+			saveLog(plotterMock, "implicitPath.txt");
 			return;
 		}
 
 		try {
-			String expected = load("implicitPath2.txt").trim();
+			String expected = load("implicitPath.txt").trim();
 			assertEquals(expected, plotterMock.result());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
