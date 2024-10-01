@@ -1,6 +1,6 @@
 package org.geogebra.common.euclidian.plot;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.math3.util.Cloner;
 import org.geogebra.common.kernel.MyPoint;
@@ -20,7 +20,7 @@ public class CurvePlotterUtils {
 	 * @return last point drawn
 	 */
 	static public double[] draw(PathPlotter gp,
-			ArrayList<? extends MyPoint> pointList, CoordSys transformSys) {
+			List<? extends MyPoint> pointList, CoordSys transformSys) {
 		double[] coords = gp.newDoubleArray();
 		int size = pointList.size();
 		if (!gp.supports(transformSys) || size == 0) {

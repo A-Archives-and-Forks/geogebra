@@ -62,7 +62,7 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	private void createBernsteinPlotter() {
 		bernsteinPlotter = new BernsteinPlotter(geo, new EuclidianViewBoundsImp(view),
-				new GeneralPathClippedForCurvePlotter(view));
+				new GeneralPathClippedForCurvePlotter(view), implicitCurve.getTransformedCoordSys());
 
 		view.getEuclidianController()
 				.addZoomerAnimationListener(bernsteinPlotter, geo);

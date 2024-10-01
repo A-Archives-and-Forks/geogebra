@@ -1,11 +1,17 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.awt.GPoint2D;
+import org.geogebra.common.euclidian.plot.CurvePlotterUtils;
 import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
+import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.matrix.CoordSys;
 
 public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	public static final boolean VISUAL_DEBUG_ENABLED = true;
@@ -13,24 +19,25 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	public static final double SMALLEST_EDGE_IN_PIXELS = 2;
 	private final EuclidianViewBounds bounds;
 	private final GeneralPathClippedForCurvePlotter gp;
+	private final CoordSys transformedCoordSys;
 
 	private final VisualDebug<BernsteinPlotCell> visualDebug;
 	private final PlotterAlgo algo;
-	private final CellGrid<BernsteinPlotCell> grid;
+	private final List<MyPoint> points = new ArrayList<>();
+	private final List<BernsteinPlotCell> cells = new ArrayList<>();
 
 	/**
-	 *
 	 * @param curve to draw
 	 * @param bounds {@link EuclidianViewBounds}
 	 * @param gp {@link GeneralPathClippedForCurvePlotter}
+	 * @param transformedCoordSys
 	 */
 	public BernsteinPlotter(GeoElement curve, EuclidianViewBounds bounds,
-			GeneralPathClippedForCurvePlotter gp) {
+			GeneralPathClippedForCurvePlotter gp, CoordSys transformedCoordSys) {
 		this.bounds = bounds;
 		this.gp = gp;
-		grid = new BernsteinCellGrid();
-		algo = new BernsteinImplicitAlgo(grid, bounds, curve);
-
+		this.transformedCoordSys = transformedCoordSys;
+		algo = new BernsteinImplicitAlgo(bounds, curve, points, cells);
 		if (VISUAL_DEBUG_ENABLED) {
 			visualDebug = new BernsteinPlotterVisualDebug(bounds);
 		}
@@ -51,7 +58,7 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 		algo.compute();
 
 		if (VISUAL_DEBUG_ENABLED) {
-			visualDebug.setData(grid.toList());
+			visualDebug.setData(cells);
 		}
 	}
 
@@ -59,14 +66,9 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 		gp.reset();
 
 		g2.setColor(GColor.BLUE);
-
-		for (BernsteinPlotCell cell : grid.toList()) {
-			drawPointToScreen(cell.center());
-		}
-
+		CurvePlotterUtils.draw(gp, points, transformedCoordSys);
 		g2.draw(gp);
-		gp.reset();
-
+		gp.endPlot();
 	}
 
 	private void drawPointToScreen(GPoint2D p) {
@@ -76,6 +78,6 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	}
 
 	public int plotCellCount() {
-		return grid.toList().size();
+		return points.size();
 	}
 }

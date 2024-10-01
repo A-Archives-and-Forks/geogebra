@@ -1,8 +1,5 @@
 package org.geogebra.common.kernel.implicit;
 
-import static org.geogebra.common.kernel.implicit.CornerConfig.EMPTY;
-import static org.geogebra.common.kernel.implicit.CornerConfig.T0101;
-
 import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.kernel.matrix.Coords;
 import org.geogebra.common.util.DoubleUtil;
@@ -134,7 +131,7 @@ class AdaptiveQuadTree extends QuadTree {
 	private void plotGid(int factor) {
 		for (int i = 0; i < sh; i++) {
 			for (int j = 0; j < sw; j++) {
-				if (grid[i][j].status != EMPTY) {
+				if (grid[i][j].status != EdgeConfig.EMPTY.flag()) {
 					plot(grid[i][j], 0, factor);
 				}
 			}
@@ -187,9 +184,9 @@ class AdaptiveQuadTree extends QuadTree {
 
 		EdgeConfigProvider configProvider = EdgeConfigProviderFactory.create(curve, factor);
 		int e = edgeConfig(r);
-		if (grid[r.y][r.x].singular || e != EMPTY) {
+		if (grid[r.y][r.x].singular || e != EdgeConfig.EMPTY.flag()) {
 			if (depth >= plotDepth) {
-				if (segments().add(r, configProvider) == T0101) {
+				if (segments().add(r, configProvider) == EdgeConfig.T0101.flag()) {
 					createTree(r, depth + 1, factor);
 					return;
 				}
@@ -213,7 +210,7 @@ class AdaptiveQuadTree extends QuadTree {
 	}
 
 	private void nonempty(int ry, int rx) {
-		if (grid[ry][rx].status == EMPTY) {
+		if (grid[ry][rx].status == EdgeConfig.EMPTY.flag()) {
 			grid[ry][rx].status = 1;
 		}
 	}

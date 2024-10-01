@@ -1,6 +1,5 @@
 package org.geogebra.common.kernel.implicit;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -22,7 +21,7 @@ public class LinkSegments {
 	 */
 	public int listThreshold = 48;
 
-	public LinkSegments(ArrayList<MyPoint> locusPoints) {
+	public LinkSegments(List<MyPoint> locusPoints) {
 		this.locusPoints = locusPoints;
 	}
 

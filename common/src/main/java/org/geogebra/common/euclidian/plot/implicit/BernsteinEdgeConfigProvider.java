@@ -1,15 +1,16 @@
-package org.geogebra.common.kernel.implicit;
+package org.geogebra.common.euclidian.plot.implicit;
 
 import org.geogebra.common.kernel.MyPoint;
+import org.geogebra.common.kernel.implicit.EdgeConfig;
+import org.geogebra.common.kernel.implicit.EdgeConfigProvider;
+import org.geogebra.common.kernel.implicit.PlotRect;
 
-public class QuadTreeEdgeConfigProvider implements EdgeConfigProvider {
-	private final GeoImplicitCurve curve;
-	private final int factor;
+public class BernsteinEdgeConfigProvider implements EdgeConfigProvider {
+	private final BernsteinPlotCell cell;
 	private MyPoint[] pts;
 
-	public QuadTreeEdgeConfigProvider(GeoImplicitCurve curve, int factor) {
-		this.curve = curve;
-		this.factor = factor;
+	public BernsteinEdgeConfigProvider(BernsteinPlotCell cell) {
+		this.cell = cell;
 	}
 
 	@Override
@@ -30,10 +31,8 @@ public class QuadTreeEdgeConfigProvider implements EdgeConfigProvider {
 		q2 = gridType.getQ2(r);
 
 		// check continuity of the function between P1 and P2
-		double p = Math.abs(curve
-				.evaluateImplicitCurve(pts[0].x, pts[0].y, factor));
-		double q = Math.abs(curve
-				.evaluateImplicitCurve(pts[1].x, pts[1].y, factor));
+		double p = Math.abs(cell.polynomial.evaluate(pts[0].x, pts[0].y));
+		double q = Math.abs(cell.polynomial.evaluate(pts[1].x, pts[1].y));
 		if (p <= q1 && q <= q2) {
 			return EdgeConfig.VALID;
 		}
@@ -70,6 +69,5 @@ public class QuadTreeEdgeConfigProvider implements EdgeConfigProvider {
 			return 0;
 		}
 	}
-
 
 }

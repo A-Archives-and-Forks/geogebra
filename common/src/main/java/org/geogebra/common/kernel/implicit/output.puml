@@ -1,47 +1,41 @@
 @startuml
 skinparam classAttributeIconSize 0
-class PointList{
-start : MyPoint
-end : MyPoint
-pts : LinkedList<MyPoint>
-+ PointList(start : MyPoint, end : MyPoint)
-+ mergeTo(pl : PointList) : void
-+ extendBack(p : MyPoint) : void
-+ extendFront(p : MyPoint) : void
+class LinkSegments{
+- geoImplicitCurve : GeoImplicitCurve
+- locusPoints : List<MyPoint>
+- pts : MyPoint[]
+- p1 : PointList
+- p2 : PointList
+- temp : MyPoint
+- itr1 : ListIterator<PointList>
+- itr2 : ListIterator<PointList>
+- openList : LinkedList<PointList>
++ listThreshold : int
++ LinkSegments(geoImplicitCurve : GeoImplicitCurve, locusPoints : ArrayList<MyPoint>)
++ add(r : PlotRect, factor : int) : int
+- {static} equal(q1 : MyPoint, q2 : MyPoint) : boolean
++ create(r : PlotRect, factor : int) : EdgeConfig
+- {static} minAbs(a : double, b : double) : double
++ abortList() : void
++ updatePoints(locusPoints : List<MyPoint>) : void
++ abort() : void
++ config(r : PlotRect) : int
++ sign(val : double) : int
++ setListThreshold(threshold : int) : void
 }
-class AlgoImplicitPolyFunction{
-- function : GeoFunctionNVar
-- implicitPoly : GeoImplicit
-+ AlgoImplicitPolyFunction(c : Construction, label : String, func : GeoFunctionNVar)
-+ compute() : void
-# setInputOutput() : void
-+ getClassName() : Commands
-+ getImplicitPoly() : GeoImplicit
-}
-AlgoImplicitPolyFunction --|> AlgoElement
-class Rect{
-evals : double[]
-x : int
-y : int
-shares : int
-status : int
-fx : double
-fy : double
-singular : boolean
-coords : Coords
-+ Rect(x : int, y : int, fx : double, fy : double, singular : boolean)
-+ split(geoImplicitCurve : GeoImplicitCurve, factor : int) : Rect[]
-+ x1() : double
-+ x2() : double
-+ y1() : double
-+ y2() : double
-}
-class Timer{
-+ now : long
-+ elapse : long
-+ {static} newTimer() : Timer
-+ reset() : void
-+ record() : void
+class PolynomialUtils{
++ {static} polynomialDivision(cp : double[], cd : double[]) : double[]
++ {static} polynomialDivision(p : PolynomialFunction, d : PolynomialFunction) : PolynomialFunction
++ {static} getDegree(p : PolynomialFunction) : int
++ {static} getDegree(c : double[]) : int
++ {static} getLeadingCoeff(c : double[]) : double
++ {static} getLeadingCoeff(p : PolynomialFunction) : double
++ {static} eval(c : double[], x : double) : double
++ {static} coeffMinDeg(coeff : double[][]) : double[][]
++ {static} rootPolishing(pair : double[], p1 : GeoImplicit, line : double[]) : boolean
++ {static} rootPolishing(pair : double[], p1 : GeoImplicit, p2 : GeoImplicit) : boolean
+- {static} rootPolishing(pair : double[], p1 : GeoImplicit, p2 : GeoImplicit, line : double[]) : boolean
++ {static} checkNumericCoeff(coeff : ExpressionValue[][], simplify : boolean) : boolean
 }
 class AlgoIntersectImplicitpolys{
 - p1 : GeoImplicit
@@ -63,6 +57,166 @@ class AlgoIntersectImplicitpolys{
 + addSolutionHint(point : GeoPoint) : void
 }
 AlgoIntersectImplicitpolys --|> AlgoSimpleRootsPolynomial
+class AlgoDependentImplicitPoly{
+- coeff : ExpressionValue[][]
+- geoElement : GeoElementND
+- dependentFromFunctions : Set<FunctionNVar>
+- equation : Equation
+- equationExpanded : Equation
++ AlgoDependentImplicitPoly(c : Construction, equ : Equation, definition : ExpressionNode, simplify : boolean)
++ AlgoDependentImplicitPoly(c : Construction, equ : Equation, definition : ExpressionNode, simplify : boolean, evaluatedDef : ExpressionValue)
+- expandEquation() : void
++ compute() : void
+# replaceGeoElement(newElem : GeoElementND) : void
++ getEquation() : Equation
+- compute(first : boolean) : void
+- setLine() : void
+- setConic() : void
+# addAllFunctionalDescendents(algo : AlgoElement, set : Set<FunctionNVar>, algos : Set<AlgoElement>) : void
+# setInputOutput() : void
++ getClassName() : Algos
++ getGeo() : GeoElement
++ toString(tpl : StringTemplate) : String
+# toExpString(tpl : StringTemplate) : String
++ {static} equationWithLabel(geo : GeoElementND, tpl : StringTemplate) : String
+}
+AlgoDependentImplicitPoly --|> AlgoElement
+class AlgoTangentImplicitpoly{
+- p : GeoImplicit
+- ip : GeoPoint[]
+- tangents : OutputHandler<GeoLine>
+- algoIntersect : AlgoIntersect
+- labels : String[]
+- algoTangentPoly : AlgoTangentHelper
+# AlgoTangentImplicitpoly(c : Construction, labels : String[], p : GeoImplicit)
++ AlgoTangentImplicitpoly(c : Construction, labels : String[], p : GeoImplicit, R : GeoPointND)
++ AlgoTangentImplicitpoly(c : Construction, labels : String[], p : GeoImplicit, g : GeoLineND)
+# setInputOutput() : void
++ compute() : void
++ getClassName() : Commands
++ getRelatedModeID() : int
++ getTangents() : GeoLine[]
++ setLabels(labels : String[]) : void
++ getTangentPoints() : GeoPoint[]
++ getTangentPoint(geo : GeoElement, line : GeoLine) : GeoPointND
+}
+AlgoTangentImplicitpoly ..|> TangentAlgo
+AlgoTangentImplicitpoly --|> AlgoElement
+class AlgoImplicitPolyFunction{
+- function : GeoFunctionNVar
+- implicitPoly : GeoImplicit
++ AlgoImplicitPolyFunction(c : Construction, label : String, func : GeoFunctionNVar)
++ compute() : void
+# setInputOutput() : void
++ getClassName() : Commands
++ getImplicitPoly() : GeoImplicit
+}
+AlgoImplicitPolyFunction --|> AlgoElement
+class AlgoIntersectImplicitpolyPolyLine{
+# implicitPolynomial : GeoImplicit
+# poly : GeoPoly
+# outputPoints : OutputHandler<GeoPoint>
+# hasLabels : boolean
+# polyclosed : boolean
+# numOfOutputPoints : int
+# polyPointCount : int
+# segCountOfPoly : int
+# intersectCoords : ArrayList<Coords>
+- tempSegEndPoints : GeoPoint[]
+- tempSeg : GeoSegment
+- tx : PolynomialFunction
+- ty : PolynomialFunction
+- eqnSolver : EquationSolverInterface
++ AlgoIntersectImplicitpolyPolyLine(cons : Construction, labels : String[], implicitPolynomial : GeoImplicit, poly : GeoPoly, polyClosed : boolean)
++ AlgoIntersectImplicitpolyPolyLine(cons : Construction, implicitPolynomial : GeoImplicit, poly : GeoPoly, polyClosed : boolean)
++ getIntersectionPoints() : GeoPoint[]
+# getLastDefinedIntersectionPoints() : GeoPoint[]
+# setInputOutput() : void
++ compute() : void
++ getClassName() : GetCommand
++ getRelatedModeID() : int
+- computePolyLineIntersection(tempSeg2 : GeoSegment, intersectCoords2 : ArrayList<Coords>) : void
++ {static} lineIntersect(coeff : double[][], tx : PolynomialFunction, ty : PolynomialFunction) : PolynomialFunction
+- setRootsPolynomialWithinRange(intersectCoords2 : ArrayList<Coords>, rootsPoly : PolynomialFunction, min : double, max : double) : void
+- {static} distancePairSq(p1 : Coords, p2 : Coords) : double
+- initElements() : void
++ setLabels(labels : String[]) : void
+# createOutputPoints() : OutputHandler<GeoPoint>
++ getImplicitPolynomial() : GeoImplicit
++ getPoly() : GeoPoly
++ isPolyclosed() : boolean
+}
+AlgoIntersectImplicitpolyPolyLine --|> AlgoIntersect
+class AlgoImplicitPolyTangentLine{
+- poly : GeoImplicit
+- line : GeoLineND
+- tangentPoly : GeoImplicit
++ AlgoImplicitPolyTangentLine(c : Construction, poly : GeoImplicit, line : GeoLineND)
++ compute() : void
+# setInputOutput() : void
++ getClassName() : Commands
++ getTangentCurve() : GeoImplicit
++ getVec() : GeoElement
++ vecDefined() : boolean
++ getTangents(ip : GeoPoint[], tangents : OutputHandler<GeoLine>) : void
++ getTangentPoint(geo : GeoElement, l : GeoLine) : GeoPointND
+}
+AlgoImplicitPolyTangentLine ..|> AlgoTangentHelper
+AlgoImplicitPolyTangentLine --|> AlgoElement
+class AdaptiveQuadTree{
+- {static} RES_COARSE : int
+- {static} MAX_SPLIT : int
+- curve : GeoImplicitCurve
+- plotDepth : int
+- segmentCheckDepth : int
+- sw : int
+- sh : int
+- grid : Rect[][]
+- timer : Timer
+- {static} fastDrawThreshold : int
++ AdaptiveQuadTree(curve : GeoImplicitCurve)
++ {static} setFastDrawThreshold(threshold : int) : void
++ updatePath() : void
+- plotGid(factor : int) : void
+- refineOnHighWorkload() : void
+- giveUpOnExtremeWorkload() : boolean
++ createTree(r : Rect, depth : int, factor : int) : void
++ plot(r : Rect, depth : int, factor : int) : void
+- nonempty(ry : int, rx : int) : void
++ polishPointOnPath(pt : GeoPointND) : void
+- onScreen(v : double, mn : double, mx : double) : double
+}
+AdaptiveQuadTree --|> QuadTree
+class ImplicitIntersectionFinder{
++ {static} SAMPLE_SIZE_2D : int
++ {static} OUTPUT_SIZE : int
+- {static} EPS : double
+- {static} ROOT_ACCURACY : double
+- {static} ACCURACY : double
+- {static} DECAY_RATE : double
+- {static} MOMENT_RATE : double
+- {static} MIN_LAMBDA : double
+- ImplicitIntersectionFinder()
++ {static} findIntersections(fun1 : FunctionNVar, fun2 : FunctionNVar, xMin : double, yMin : double, xMax : double, yMax : double, samples : int, outputs : int, vals : List<double[]>) : void
+{static} intersections(f : FunctionNVar[], params : double[], guess : List<Coords>, outputs : int, vals : List<double[]>) : void
+{static} insert(pair : double[], pairs : List<double[]>) : void
++ {static} intersects(fn1 : FunctionNVar, fn2 : FunctionNVar, params : double[], guess : List<Coords>, outputs : int, vals : List<double[]>) : void
+- {static} finiteDiffX(func : FunctionNVar, x : double, y : double) : double
+- {static} finiteDiffY(func : FunctionNVar, x : double, y : double) : double
+}
+class CornerConfig{
++ {static} T0000 : int
++ {static} T0001 : int
++ {static} T0010 : int
++ {static} T0011 : int
++ {static} T0100 : int
++ {static} T0101 : int
++ {static} T0110 : int
++ {static} T0111 : int
++ {static} T_INV : int
++ {static} EMPTY : int
++ {static} VALID : int
+}
 class GeoImplicitCurve{
 {static} MASK : int[]
 - expression : FunctionNVar
@@ -84,7 +238,6 @@ class GeoImplicitCurve{
 - calcPath : boolean
 - updatePathNeeded : boolean
 - expanded : Equation
-- {static} fastDrawThreshold : long
 - {static} XY_VARIABLES : String[]
 - {static} SIMPLIFY_CONST : Traversing
 + GeoImplicitCurve(c : Construction)
@@ -227,22 +380,6 @@ GeoImplicitCurve ..|> Rotatable
 GeoImplicitCurve ..|> GeoImplicit
 GeoImplicitCurve ..|> ReplaceChildrenByValues
 GeoImplicitCurve --|> GeoElement
-class AlgoImplicitPolyTangentLine{
-- poly : GeoImplicit
-- line : GeoLineND
-- tangentPoly : GeoImplicit
-+ AlgoImplicitPolyTangentLine(c : Construction, poly : GeoImplicit, line : GeoLineND)
-+ compute() : void
-# setInputOutput() : void
-+ getClassName() : Commands
-+ getTangentCurve() : GeoImplicit
-+ getVec() : GeoElement
-+ vecDefined() : boolean
-+ getTangents(ip : GeoPoint[], tangents : OutputHandler<GeoLine>) : void
-+ getTangentPoint(geo : GeoElement, l : GeoLine) : GeoPointND
-}
-AlgoImplicitPolyTangentLine ..|> AlgoTangentHelper
-AlgoImplicitPolyTangentLine --|> AlgoElement
 class AlgoImplicitPolyTangentCurve{
 - poly : GeoImplicit
 - point : GeoPointND
@@ -260,6 +397,56 @@ class AlgoImplicitPolyTangentCurve{
 }
 AlgoImplicitPolyTangentCurve ..|> AlgoTangentHelper
 AlgoImplicitPolyTangentCurve --|> AlgoElement
+class Rect{
+evals : double[]
+x : int
+y : int
+shares : int
+status : int
+fx : double
+fy : double
+singular : boolean
+coords : Coords
++ Rect(x : int, y : int, fx : double, fy : double, singular : boolean)
++ split(geoImplicitCurve : GeoImplicitCurve, factor : int) : Rect[]
++ x1() : double
++ x2() : double
++ y1() : double
++ equals(obj : Object) : boolean
++ y2() : double
++ topLeft() : double
++ topRight() : double
++ bottomLeft() : double
++ bottomRight() : double
++ cornerAt(i : int) : double
+}
+Rect ..|> PlotRect
+class QuadTree{
+- geoImplicitCurve : GeoImplicitCurve
+# x : double
+# y : double
+# w : double
+# h : double
+# scaleX : double
+# scaleY : double
+# locusPoints : ArrayList<MyPoint>
+- segments : LinkSegments
++ QuadTree(geoImplicitCurve : GeoImplicitCurve)
++ updatePath(startX : double, startY : double, width : double, height : double, slX : double, slY : double, locus : GeoLocus) : void
++ polishPointOnPath(pt : GeoPointND) : void
++ edgeConfig(r : Rect) : int
+- {static} intersect(c1 : double, c2 : double) : int
++ {abstract} updatePath() : void
++ segments() : LinkSegments
+setListThreshold(threshold : int) : void
+}
+class Timer{
++ now : long
++ elapse : long
++ {static} newTimer() : Timer
++ reset() : void
++ record() : void
+}
 class AlgoIntersectImplicitpolyParametric{
 - tx : PolynomialFunction
 - ty : PolynomialFunction
@@ -278,112 +465,6 @@ class AlgoIntersectImplicitpolyParametric{
 + getRelatedModeID() : int
 }
 AlgoIntersectImplicitpolyParametric --|> AlgoSimpleRootsPolynomial
-class WebExperimentalQuadTree{
-- {static} RES_COARSE : int
-- {static} MAX_SPLIT : int
-- plotDepth : int
-- segmentCheckDepth : int
-- sw : int
-- sh : int
-- grid : Rect[][]
-- timer : Timer
-+ WebExperimentalQuadTree()
-+ updatePath() : void
-+ createTree(r : Rect, depth : int, factor : int) : void
-+ plot(r : Rect, depth : int, factor : int) : void
-- nonempty(ry : int, rx : int) : void
-+ polishPointOnPath(pt : GeoPointND) : void
-- onScreen(v : double, mn : double, mx : double) : double
-}
-WebExperimentalQuadTree --|> QuadTree
-class AlgoImplicitPolyThroughPoints{
-- P : GeoList
-- implicitPoly : GeoImplicit
-+ AlgoImplicitPolyThroughPoints(cons : Construction, label : String, p : GeoList)
-+ getImplicitPoly() : GeoImplicit
-+ getP() : GeoList
-# setInputOutput() : void
-+ compute() : void
-+ getClassName() : Commands
-}
-AlgoImplicitPolyThroughPoints --|> AlgoElement
-class PolynomialUtils{
-+ {static} polynomialDivision(cp : double[], cd : double[]) : double[]
-+ {static} polynomialDivision(p : PolynomialFunction, d : PolynomialFunction) : PolynomialFunction
-+ {static} getDegree(p : PolynomialFunction) : int
-+ {static} getDegree(c : double[]) : int
-+ {static} getLeadingCoeff(c : double[]) : double
-+ {static} getLeadingCoeff(p : PolynomialFunction) : double
-+ {static} eval(c : double[], x : double) : double
-+ {static} coeffMinDeg(coeff : double[][]) : double[][]
-+ {static} rootPolishing(pair : double[], p1 : GeoImplicit, line : double[]) : boolean
-+ {static} rootPolishing(pair : double[], p1 : GeoImplicit, p2 : GeoImplicit) : boolean
-- {static} rootPolishing(pair : double[], p1 : GeoImplicit, p2 : GeoImplicit, line : double[]) : boolean
-+ {static} checkNumericCoeff(coeff : ExpressionValue[][], simplify : boolean) : boolean
-}
-class AlgoTangentImplicitpoly{
-- p : GeoImplicit
-- ip : GeoPoint[]
-- tangents : OutputHandler<GeoLine>
-- algoIntersect : AlgoIntersect
-- labels : String[]
-- algoTangentPoly : AlgoTangentHelper
-# AlgoTangentImplicitpoly(c : Construction, labels : String[], p : GeoImplicit)
-+ AlgoTangentImplicitpoly(c : Construction, labels : String[], p : GeoImplicit, R : GeoPointND)
-+ AlgoTangentImplicitpoly(c : Construction, labels : String[], p : GeoImplicit, g : GeoLineND)
-# setInputOutput() : void
-+ compute() : void
-+ getClassName() : Commands
-+ getRelatedModeID() : int
-+ getTangents() : GeoLine[]
-+ setLabels(labels : String[]) : void
-+ getTangentPoints() : GeoPoint[]
-+ getTangentPoint(geo : GeoElement, line : GeoLine) : GeoPointND
-}
-AlgoTangentImplicitpoly ..|> TangentAlgo
-AlgoTangentImplicitpoly --|> AlgoElement
-class QuadTree{
-- geoImplicitCurve : GeoImplicitCurve
-+ {static} T0000 : int
-+ {static} T0001 : int
-+ {static} T0010 : int
-+ {static} T0011 : int
-+ {static} T0100 : int
-+ {static} T0101 : int
-+ {static} T0110 : int
-+ {static} T0111 : int
-+ {static} T_INV : int
-+ {static} EMPTY : int
-+ {static} VALID : int
-+ LIST_THRESHOLD : int
-# x : double
-# y : double
-# w : double
-# h : double
-# scaleX : double
-# scaleY : double
-# locusPoints : ArrayList<MyPoint>
-- openList : LinkedList<PointList>
-- pts : MyPoint[]
-- p1 : PointList
-- p2 : PointList
-- temp : MyPoint
-- itr1 : ListIterator<PointList>
-- itr2 : ListIterator<PointList>
-+ QuadTree(geoImplicitCurve : GeoImplicitCurve)
-+ config(r : Rect) : int
-+ sign(val : double) : int
-+ abortList() : void
-- {static} equal(q1 : MyPoint, q2 : MyPoint) : boolean
-+ addSegment(r : Rect, factor : int) : int
-+ createSegment(r : Rect, factor : int) : int
-- {static} minAbs(a : double, b : double) : double
-+ updatePath(startX : double, startY : double, width : double, height : double, slX : double, slY : double, locus : GeoLocus) : void
-+ polishPointOnPath(pt : GeoPointND) : void
-+ edgeConfig(r : Rect) : int
-- {static} intersect(c1 : double, c2 : double) : int
-+ {abstract} updatePath() : void
-}
 class AlgoAsymptoteImplicitPoly{
 - ip : GeoImplicit
 - g : GeoList
@@ -396,100 +477,65 @@ class AlgoAsymptoteImplicitPoly{
 + compute() : void
 }
 AlgoAsymptoteImplicitPoly --|> AlgoElement
-class AlgoIntersectImplicitpolyPolyLine{
-# implicitPolynomial : GeoImplicit
-# poly : GeoPoly
-# outputPoints : OutputHandler<GeoPoint>
-# hasLabels : boolean
-# polyclosed : boolean
-# numOfOutputPoints : int
-# polyPointCount : int
-# segCountOfPoly : int
-# intersectCoords : ArrayList<Coords>
-- tempSegEndPoints : GeoPoint[]
-- tempSeg : GeoSegment
-- tx : PolynomialFunction
-- ty : PolynomialFunction
-- eqnSolver : EquationSolverInterface
-+ AlgoIntersectImplicitpolyPolyLine(cons : Construction, labels : String[], implicitPolynomial : GeoImplicit, poly : GeoPoly, polyClosed : boolean)
-+ AlgoIntersectImplicitpolyPolyLine(cons : Construction, implicitPolynomial : GeoImplicit, poly : GeoPoly, polyClosed : boolean)
-+ getIntersectionPoints() : GeoPoint[]
-# getLastDefinedIntersectionPoints() : GeoPoint[]
+class AlgoImplicitPolyThroughPoints{
+- P : GeoList
+- implicitPoly : GeoImplicit
++ AlgoImplicitPolyThroughPoints(cons : Construction, label : String, p : GeoList)
++ getImplicitPoly() : GeoImplicit
++ getP() : GeoList
 # setInputOutput() : void
 + compute() : void
-+ getClassName() : GetCommand
-+ getRelatedModeID() : int
-- computePolyLineIntersection(tempSeg2 : GeoSegment, intersectCoords2 : ArrayList<Coords>) : void
-+ {static} lineIntersect(coeff : double[][], tx : PolynomialFunction, ty : PolynomialFunction) : PolynomialFunction
-- setRootsPolynomialWithinRange(intersectCoords2 : ArrayList<Coords>, rootsPoly : PolynomialFunction, min : double, max : double) : void
-- {static} distancePairSq(p1 : Coords, p2 : Coords) : double
-- initElements() : void
-+ setLabels(labels : String[]) : void
-# createOutputPoints() : OutputHandler<GeoPoint>
-+ getImplicitPolynomial() : GeoImplicit
-+ getPoly() : GeoPoly
-+ isPolyclosed() : boolean
++ getClassName() : Commands
 }
-AlgoIntersectImplicitpolyPolyLine --|> AlgoIntersect
-class AlgoDependentImplicitPoly{
-- coeff : ExpressionValue[][]
-- geoElement : GeoElementND
-- dependentFromFunctions : Set<FunctionNVar>
-- equation : Equation
-- equationExpanded : Equation
-+ AlgoDependentImplicitPoly(c : Construction, equ : Equation, definition : ExpressionNode, simplify : boolean)
-+ AlgoDependentImplicitPoly(c : Construction, equ : Equation, definition : ExpressionNode, simplify : boolean, evaluatedDef : ExpressionValue)
-- expandEquation() : void
-+ compute() : void
-# replaceGeoElement(newElem : GeoElementND) : void
-+ getEquation() : Equation
-- compute(first : boolean) : void
-- setLine() : void
-- setConic() : void
-# addAllFunctionalDescendents(algo : AlgoElement, set : Set<FunctionNVar>, algos : Set<AlgoElement>) : void
-# setInputOutput() : void
-+ getClassName() : Algos
-+ getGeo() : GeoElement
-+ toString(tpl : StringTemplate) : String
-# toExpString(tpl : StringTemplate) : String
-+ {static} equationWithLabel(geo : GeoElementND, tpl : StringTemplate) : String
+AlgoImplicitPolyThroughPoints --|> AlgoElement
+class PointList{
+start : MyPoint
+end : MyPoint
+pts : LinkedList<MyPoint>
++ PointList(start : MyPoint, end : MyPoint)
++ mergeTo(pl : PointList) : void
++ extendBack(p : MyPoint) : void
++ extendFront(p : MyPoint) : void
 }
-AlgoDependentImplicitPoly --|> AlgoElement
-class ImplicitIntersectionFinder{
-+ {static} SAMPLE_SIZE_2D : int
-+ {static} OUTPUT_SIZE : int
-- {static} EPS : double
-- {static} ROOT_ACCURACY : double
-- {static} ACCURACY : double
-- {static} DECAY_RATE : double
-- {static} MOMENT_RATE : double
-- {static} MIN_LAMBDA : double
-- ImplicitIntersectionFinder()
-+ {static} findIntersections(fun1 : FunctionNVar, fun2 : FunctionNVar, xMin : double, yMin : double, xMax : double, yMax : double, samples : int, outputs : int, vals : List<double[]>) : void
-{static} intersections(f : FunctionNVar[], params : double[], guess : List<Coords>, outputs : int, vals : List<double[]>) : void
-{static} insert(pair : double[], pairs : List<double[]>) : void
-+ {static} intersects(fn1 : FunctionNVar, fn2 : FunctionNVar, params : double[], guess : List<Coords>, outputs : int, vals : List<double[]>) : void
-- {static} finiteDiffX(func : FunctionNVar, x : double, y : double) : double
-- {static} finiteDiffY(func : FunctionNVar, x : double, y : double) : double
-}
-AlgoImplicitPolyFunction--"- implicitPoly" GeoImplicit
+LinkSegments--"- geoImplicitCurve" GeoImplicitCurve
+LinkSegments--"- p1" PointList
+LinkSegments--"- p2" PointList
 AlgoIntersectImplicitpolys--"- p1" GeoImplicit
 AlgoIntersectImplicitpolys--"- p2" GeoImplicit
-GeoImplicitCurve--"# quadTree" QuadTree
-AlgoImplicitPolyTangentLine--"- poly" GeoImplicit
-AlgoImplicitPolyTangentLine--"- tangentPoly" GeoImplicit
-AlgoImplicitPolyTangentCurve--"- poly" GeoImplicit
-AlgoImplicitPolyTangentCurve--"- tangentPoly" GeoImplicit
-AlgoIntersectImplicitpolyParametric--"- p" GeoImplicit
-WebExperimentalQuadTree--"- timer" Timer
-AlgoImplicitPolyThroughPoints--"- implicitPoly" GeoImplicit
 AlgoTangentImplicitpoly--"- p" GeoImplicit
 AlgoTangentImplicitpoly--"- algoTangentPoly" AlgoTangentHelper
-QuadTree--"- geoImplicitCurve" GeoImplicitCurve
-QuadTree--"- p1" PointList
-QuadTree--"- p2" PointList
-AlgoAsymptoteImplicitPoly--"- ip" GeoImplicit
+AlgoImplicitPolyFunction--"- implicitPoly" GeoImplicit
 AlgoIntersectImplicitpolyPolyLine--"# implicitPolynomial" GeoImplicit
+AlgoImplicitPolyTangentLine--"- poly" GeoImplicit
+AlgoImplicitPolyTangentLine--"- tangentPoly" GeoImplicit
+AdaptiveQuadTree--"- curve" GeoImplicitCurve
+AdaptiveQuadTree--"- timer" Timer
+GeoImplicitCurve--"# quadTree" QuadTree
+AlgoImplicitPolyTangentCurve--"- poly" GeoImplicit
+AlgoImplicitPolyTangentCurve--"- tangentPoly" GeoImplicit
+QuadTree--"- geoImplicitCurve" GeoImplicitCurve
+QuadTree--"- segments" LinkSegments
+AlgoIntersectImplicitpolyParametric--"- p" GeoImplicit
+AlgoAsymptoteImplicitPoly--"- ip" GeoImplicit
+AlgoImplicitPolyThroughPoints--"- implicitPoly" GeoImplicit
+interface AlgoTangentHelper{
+getTangentCurve() : GeoImplicit
+getVec() : GeoElement
+vecDefined() : boolean
+getTangents(ip : GeoPoint[], tangents : OutputHandler<GeoLine>) : void
+getTangentPoint(geo : GeoElement, line : GeoLine) : GeoPointND
+}
+interface PlotRect{
+x1() : double
+y1() : double
+x2() : double
+y2() : double
+topLeft() : double
+topRight() : double
+bottomLeft() : double
+bottomRight() : double
+cornerAt(i : int) : double
+}
 interface GeoImplicit{
 getCoeff() : double[][]
 setCoeff(coeff : double[][]) : void
@@ -520,11 +566,17 @@ setExpanded(equationExpanded : Equation) : void
 }
 GeoImplicit --|> Path
 GeoImplicit --|> EquationValue
-interface AlgoTangentHelper{
-getTangentCurve() : GeoImplicit
-getVec() : GeoElement
-vecDefined() : boolean
-getTangents(ip : GeoPoint[], tangents : OutputHandler<GeoLine>) : void
-getTangentPoint(geo : GeoElement, line : GeoLine) : GeoPointND
+enum EdgeConfig{
+T0000
+T0001
+T0010
+T0011
+T0100
+T0101
+T0110
+T0111
+T_INV
+EMPTY
+VALID
 }
 @enduml
