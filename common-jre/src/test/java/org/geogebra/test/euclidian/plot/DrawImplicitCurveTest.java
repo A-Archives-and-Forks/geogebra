@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,8 +18,8 @@ import org.junit.Test;
 
 public class DrawImplicitCurveTest extends BaseUnitTest {
 
-	public static final String SRC_TEST_RESOURCES = "src/test/resources";
-	private boolean save = false;
+	public static final String REFERENCE_FILE = "src/test/resources/implicitPath.txt";
+	private static final boolean SAVE_REFERENCE = false;
 
 	@Test
 	public void testImplicitCurvesPlotTheSame() {
@@ -37,13 +36,13 @@ public class DrawImplicitCurveTest extends BaseUnitTest {
 		geo.setEuclidianVisible(true);
 		drawImplicitCurve.update();
 		drawImplicitCurve.draw(view.getGraphicsForPen());
-		if (save) {
-			saveLog(plotterMock, "implicitPath.txt");
+		if (SAVE_REFERENCE) {
+			saveLog(plotterMock);
 			return;
 		}
 
 		try {
-			String expected = load("implicitPath.txt").trim();
+			String expected = load().trim();
 			assertEquals(expected, plotterMock.result());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -51,17 +50,17 @@ public class DrawImplicitCurveTest extends BaseUnitTest {
 
 	}
 
-	private static void saveLog(PathPlotterMock plotterMock, String file) {
-		try (PrintWriter out = new PrintWriter(SRC_TEST_RESOURCES + "/" + file)) {
+	private static void saveLog(PathPlotterMock plotterMock) {
+		try (PrintWriter out = new PrintWriter(REFERENCE_FILE)) {
 			out.println(plotterMock.result());
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private String load(String filename) throws IOException {
-		Path filePath = Paths.get(SRC_TEST_RESOURCES, filename);
-		return new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
+	private String load() throws IOException {
+		Path filePath = Paths.get(REFERENCE_FILE);
+		return Files.readString(filePath);
 	}
 
 }
