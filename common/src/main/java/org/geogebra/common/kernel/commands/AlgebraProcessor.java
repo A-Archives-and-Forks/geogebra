@@ -3025,7 +3025,6 @@ public class AlgebraProcessor {
 			if (equationForm != -1) {
 				((GeoConic) line).setEquationForm(equationForm);
 			}
-
 		}
 
 		if (info.isLabelOutput()) {

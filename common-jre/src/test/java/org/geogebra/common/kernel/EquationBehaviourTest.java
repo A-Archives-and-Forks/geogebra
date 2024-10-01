@@ -123,7 +123,9 @@ public class EquationBehaviourTest extends BaseUnitTest {
 		GeoPoint center = new GeoPoint(getConstruction(), 0, 1, 0);
 		GeoPoint a = new GeoPoint(getConstruction(), -1, 0, 0);
 		GeoPoint b = new GeoPoint(getConstruction(), 1, 0, 0);
-		GeoLine line = lineThrough(a, b);
+		AlgoJoinPoints algoJoinPoints = new AlgoJoinPoints(getConstruction(), a, b);
+		GeoLine line = algoJoinPoints.getLine();
+
 		AlgoParabolaPointLine algoParabola = new AlgoParabolaPointLine(getConstruction(),
 				"parabola", center, line);
 		GeoConicND parabola = algoParabola.getParabola();
@@ -166,10 +168,5 @@ public class EquationBehaviourTest extends BaseUnitTest {
 		AlgoJoinPoints algoJoinPoints = new AlgoJoinPoints(getConstruction(), pointA, pointB);
 		GeoLine toolLine = algoJoinPoints.getLine();
 		assertEquals(EquationForm.Linear.GENERAL, toolLine.getEquationForm());
-	}
-
-	private GeoLine lineThrough(GeoPoint a, GeoPoint b) {
-		AlgoJoinPoints algoJoinPoints = new AlgoJoinPoints(getConstruction(), a, b);
-		return algoJoinPoints.getLine();
 	}
 }
