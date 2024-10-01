@@ -1,5 +1,9 @@
 package org.geogebra.common.ownership;
 
+import static org.geogebra.common.Build.DEV;
+import static org.geogebra.common.Build.RELEASE;
+
+import org.geogebra.common.Build;
 import org.geogebra.common.exam.ExamController;
 import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.properties.PropertiesRegistry;
@@ -27,7 +31,7 @@ public final class GlobalScope {
 	// intentionally assignable (for testing)
 	public static ExamController examController = new ExamController(propertiesRegistry);
 
-	private static final boolean isRelease = true;
+	private static final Build build = RELEASE;
 
 	/**
 	 * Prevent instantiation.
@@ -36,6 +40,6 @@ public final class GlobalScope {
 	}
 
 	public static boolean isFeatureEnabled(FeatureFlag featureFlag) {
-		return featureFlag.isEnabled() && !isRelease;
+		return featureFlag.isEnabled() && build == DEV;
 	}
 }
