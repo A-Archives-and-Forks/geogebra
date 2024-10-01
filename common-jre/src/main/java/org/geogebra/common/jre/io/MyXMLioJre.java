@@ -218,7 +218,6 @@ public abstract class MyXMLioJre extends MyXMLio {
 		// process defaults (after construction for labeling styles)
 		if (defaults2dXmlFileBuffer != null) {
 			kernel.getConstruction().setFileLoading(true);
-			String defaults = new String(defaults2dXmlFileBuffer);
 			processXMLBuffer(defaults2dXmlFileBuffer, false, true);
 			kernel.getConstruction().setFileLoading(false);
 		}

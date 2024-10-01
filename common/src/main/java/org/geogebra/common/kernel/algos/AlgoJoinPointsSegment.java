@@ -106,13 +106,14 @@ public class AlgoJoinPointsSegment extends AlgoElement
 
 		// compute line through P, Q
 		compute();
-		setIncidence();
 
 		// note: GeoSegment's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
 			s.setEquationForm(equationBehaviour.getLineCommandEquationForm());
 		}
+
+		setIncidence();
 	}
 
 	private void setIncidence() {
