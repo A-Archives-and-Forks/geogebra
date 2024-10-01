@@ -4259,7 +4259,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 	 */
 	protected void initSignInEventFlow() {
 		// Inizialize the login operation -- stub only, no sign in UI in desktop
-		loginOperation = new LoginOperationD(this);
+		loginOperation = new LoginOperationD();
 	}
 
 	@Override

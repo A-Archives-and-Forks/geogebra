@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.FeatureFlag;
 
 import com.himamis.retex.editor.share.util.Unicode;
 

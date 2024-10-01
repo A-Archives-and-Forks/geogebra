@@ -76,7 +76,7 @@ public class AppDNoGui extends AppCommon implements AppDI {
 		setPrerelease(!"false".equals(prop));
 
 		UtilFactory.setPrototypeIfNull(new UtilFactoryD());
-		loginOperation = new LoginOperationD(this);
+		loginOperation = new LoginOperationD();
 		setCASFactory(new LoggingCASFactoryD());
 	}
 

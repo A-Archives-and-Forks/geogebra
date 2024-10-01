@@ -17,7 +17,6 @@ import org.geogebra.common.kernel.geos.FromMeta;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoElement.HitType;
 import org.geogebra.common.kernel.kernelND.GeoConicND;
-import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.util.debug.Log;
 
 /**

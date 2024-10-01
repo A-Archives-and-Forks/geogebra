@@ -13,7 +13,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.lang.Language;

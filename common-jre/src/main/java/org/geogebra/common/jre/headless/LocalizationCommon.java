@@ -11,7 +11,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.geogebra.common.jre.main.LocalizationJre;
-import org.geogebra.common.main.FeatureFlag;
 
 /**
  * Common Localization class, used for testing.

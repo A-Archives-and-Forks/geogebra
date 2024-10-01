@@ -15,7 +15,6 @@ import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,6 @@ import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppConfig;
-import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
 
@@ -244,7 +242,8 @@ public enum ExamType {
 			return Collections.emptyList();
 		}
 
-		ArrayList<ExamType> examTypes = Arrays.stream(ExamType.values()).collect(Collectors.toCollection(ArrayList::new));
+		ArrayList<ExamType> examTypes = Arrays.stream(ExamType.values())
+				.collect(Collectors.toCollection(ArrayList::new));
 		if (!isFeatureEnabled(REALSCHULE_EXAM)) {
 			examTypes.remove(REALSCHULE);
 		}
