@@ -1,6 +1,6 @@
 package org.geogebra.desktop.gui;
 
-import static org.geogebra.common.main.FeatureFlag.G3D_SELECT_META;
+import static org.geogebra.common.main.PreviewFeature.G3D_SELECT_META;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.awt.Point;

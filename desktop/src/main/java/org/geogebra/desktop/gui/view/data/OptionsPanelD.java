@@ -1,6 +1,6 @@
 package org.geogebra.desktop.gui.view.data;
 
-import static org.geogebra.common.main.FeatureFlag.LOG_AXES;
+import static org.geogebra.common.main.PreviewFeature.LOG_AXES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.awt.BorderLayout;

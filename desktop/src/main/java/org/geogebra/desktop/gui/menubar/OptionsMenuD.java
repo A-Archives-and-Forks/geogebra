@@ -1,6 +1,6 @@
 package org.geogebra.desktop.gui.menubar;
 
-import static org.geogebra.common.main.FeatureFlag.ALL_LANGUAGES;
+import static org.geogebra.common.main.PreviewFeature.ALL_LANGUAGES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.awt.Font;

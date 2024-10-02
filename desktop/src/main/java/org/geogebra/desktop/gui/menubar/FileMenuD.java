@@ -1,6 +1,6 @@
 package org.geogebra.desktop.gui.menubar;
 
-import static org.geogebra.common.main.FeatureFlag.MOB_EXPORT_STL;
+import static org.geogebra.common.main.PreviewFeature.MOB_EXPORT_STL;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.awt.event.ActionEvent;

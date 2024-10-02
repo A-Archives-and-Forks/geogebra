@@ -1,6 +1,6 @@
 package org.geogebra.web.shared.ggtapi;
 
-import static org.geogebra.common.main.FeatureFlag.TUBE_BETA;
+import static org.geogebra.common.main.PreviewFeature.TUBE_BETA;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import org.geogebra.common.move.ggtapi.models.MarvlService;

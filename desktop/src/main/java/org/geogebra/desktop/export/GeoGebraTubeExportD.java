@@ -1,6 +1,6 @@
 package org.geogebra.desktop.export;
 
-import static org.geogebra.common.main.FeatureFlag.TUBE_BETA;
+import static org.geogebra.common.main.PreviewFeature.TUBE_BETA;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.awt.BorderLayout;
