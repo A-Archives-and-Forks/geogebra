@@ -18,7 +18,7 @@ the Free Software Foundation.
 
 package org.geogebra.common.kernel.algos;
 
-import static org.geogebra.common.main.FeatureFlag.GEOMETRIC_DISCOVERY;
+import static org.geogebra.common.main.PreviewFeature.GEOMETRIC_DISCOVERY;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.Iterator;
@@ -30,7 +30,6 @@ import org.geogebra.common.kernel.geos.GeoNumberValue;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.kernel.kernelND.GeoQuadricND;
 import org.geogebra.common.kernel.kernelND.GeoSegmentND;
-import org.geogebra.common.main.FeatureFlag;
 
 /**
  * 

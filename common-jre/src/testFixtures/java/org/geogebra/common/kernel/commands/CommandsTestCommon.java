@@ -2,7 +2,7 @@ package org.geogebra.common.kernel.commands;
 
 import static com.himamis.retex.editor.share.util.Unicode.DEGREE_STRING;
 import static org.geogebra.common.BaseUnitTest.isDefined;
-import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.main.PreviewFeature.IMPLICIT_SURFACES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 import static org.geogebra.test.TestStringUtil.unicode;
 import static org.hamcrest.CoreMatchers.not;

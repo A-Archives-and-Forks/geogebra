@@ -12,7 +12,7 @@ the Free Software Foundation.
 
 package org.geogebra.common.geogebra3D.kernel3D.commands;
 
-import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.main.PreviewFeature.IMPLICIT_SURFACES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import org.geogebra.common.geogebra3D.kernel3D.geos.GeoPlane3D;

@@ -1,6 +1,6 @@
 package org.geogebra.common.geogebra3D.kernel3D.implicit3D;
 
-import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.main.PreviewFeature.IMPLICIT_SURFACES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.ArrayList;

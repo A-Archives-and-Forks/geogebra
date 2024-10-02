@@ -1,6 +1,9 @@
 package org.geogebra.common.main;
 
-public enum FeatureFlag {
+/**
+ * Features behind a feature flag used in development to turn features on or off.
+ */
+public enum PreviewFeature {
 	ALL_LANGUAGES,
 	TUBE_BETA,
 	// when moved to stable, move ImplicitSurface[] from TABLE_ENGLISH
@@ -32,17 +35,17 @@ public enum FeatureFlag {
 	/** APPS-5740 */
 	REALSCHULE_EXAM;
 
-	private final boolean isEnabled;
+	/**
+	 * Indicated whether the given {@code PreviewFeature} is
+	 * enabled ({@code true}) or disabled ({@code false})
+	 */
+	public final boolean isEnabled;
 
-	FeatureFlag() {
+	PreviewFeature() {
 		this(true);
 	}
 
-	FeatureFlag(boolean isEnabled) {
+	PreviewFeature(boolean isEnabled) {
 		this.isEnabled = isEnabled;
-	}
-
-	public boolean isEnabled() {
-		return isEnabled;
 	}
 }

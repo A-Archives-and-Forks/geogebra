@@ -1,6 +1,6 @@
 package org.geogebra.common.kernel;
 
-import static org.geogebra.common.main.FeatureFlag.MOB_PREVIEW_WHEN_EDITING;
+import static org.geogebra.common.main.PreviewFeature.MOB_PREVIEW_WHEN_EDITING;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import javax.annotation.CheckForNull;
@@ -12,7 +12,6 @@ import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
-import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.main.error.ErrorHelper;

@@ -1,6 +1,6 @@
 package org.geogebra.common.cas.giac;
 
-import static org.geogebra.common.main.FeatureFlag.SOLVE_QUARTIC;
+import static org.geogebra.common.main.PreviewFeature.SOLVE_QUARTIC;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.Map;

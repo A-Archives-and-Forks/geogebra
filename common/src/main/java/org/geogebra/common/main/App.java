@@ -1,7 +1,7 @@
 package org.geogebra.common.main;
 
-import static org.geogebra.common.main.FeatureFlag.ADJUST_WIDGETS;
-import static org.geogebra.common.main.FeatureFlag.TUBE_BETA;
+import static org.geogebra.common.main.PreviewFeature.ADJUST_WIDGETS;
+import static org.geogebra.common.main.PreviewFeature.TUBE_BETA;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.ArrayList;
@@ -136,7 +136,6 @@ import org.geogebra.common.main.undo.UndoableDeletionExecutor;
 import org.geogebra.common.media.VideoManager;
 import org.geogebra.common.move.ggtapi.models.Material;
 import org.geogebra.common.move.ggtapi.operations.LogInOperation;
-import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventDispatcher;

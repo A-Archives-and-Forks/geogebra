@@ -6,10 +6,10 @@ import static org.geogebra.common.GeoGebraConstants.G3D_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.GEOMETRY_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.GRAPHING_APPCODE;
 import static org.geogebra.common.GeoGebraConstants.PROBABILITY_APPCODE;
-import static org.geogebra.common.main.FeatureFlag.CVTE_EXAM;
-import static org.geogebra.common.main.FeatureFlag.IB_EXAM;
-import static org.geogebra.common.main.FeatureFlag.MMS_EXAM;
-import static org.geogebra.common.main.FeatureFlag.REALSCHULE_EXAM;
+import static org.geogebra.common.main.PreviewFeature.CVTE_EXAM;
+import static org.geogebra.common.main.PreviewFeature.IB_EXAM;
+import static org.geogebra.common.main.PreviewFeature.MMS_EXAM;
+import static org.geogebra.common.main.PreviewFeature.REALSCHULE_EXAM;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.ArrayList;
@@ -258,13 +258,12 @@ public enum ExamType {
 		}
 
 		// Sort exam types by display name, ignoring the GENERIC type, which is always first
-		ArrayList<ExamType> sortedExamTypes = new ArrayList<>();
-		sortedExamTypes.add(GENERIC);
-		sortedExamTypes.addAll(examTypes.subList(1, examTypes.size()).stream().sorted(
-				comparing(examType -> examType.getDisplayName(app.getLocalization(), config))
-		).collect(Collectors.toList()));
+		examTypes.remove(GENERIC);
+		examTypes.sort(comparing(examType ->
+				examType.getDisplayName(app.getLocalization(), config)));
+		examTypes.add(0, GENERIC);
 
-		return sortedExamTypes;
+		return examTypes;
 	}
 
 	public abstract String getDisplayName(Localization loc, AppConfig config);

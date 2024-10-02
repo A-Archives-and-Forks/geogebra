@@ -1,14 +1,13 @@
 package org.geogebra.common.properties.impl.general;
 
 import static java.util.Map.entry;
-import static org.geogebra.common.main.FeatureFlag.ALL_LANGUAGES;
+import static org.geogebra.common.main.PreviewFeature.ALL_LANGUAGES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
@@ -35,10 +34,10 @@ public class LanguageProperty extends AbstractNamedEnumeratedProperty<String> {
     public LanguageProperty(App app, Localization localization) {
         super(localization, "Language");
         this.app = app;
-        setupValues(app, localization);
+        setupValues(localization);
     }
 
-    private void setupValues(App app, Localization localization) {
+    private void setupValues(Localization localization) {
         Language[] languages = localization.getSupportedLanguages(isFeatureEnabled(ALL_LANGUAGES));
         setNamedValues(Arrays.stream(languages)
                 .map(language -> entry(language.toLanguageTag(), language.name))

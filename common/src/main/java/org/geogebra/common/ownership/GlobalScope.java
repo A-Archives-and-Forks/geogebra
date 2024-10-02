@@ -1,11 +1,7 @@
 package org.geogebra.common.ownership;
 
-import static org.geogebra.common.Build.DEV;
-import static org.geogebra.common.Build.RELEASE;
-
-import org.geogebra.common.Build;
 import org.geogebra.common.exam.ExamController;
-import org.geogebra.common.main.FeatureFlag;
+import org.geogebra.common.main.PreviewFeature;
 import org.geogebra.common.properties.PropertiesRegistry;
 import org.geogebra.common.properties.impl.DefaultPropertiesRegistry;
 
@@ -31,7 +27,11 @@ public final class GlobalScope {
 	// intentionally assignable (for testing)
 	public static ExamController examController = new ExamController(propertiesRegistry);
 
-	private static final Build build = RELEASE;
+	/**
+	 * Flag indicating whether the current build is in production or in development.
+	 * When {@code true}, certain features may be disabled to prevent their usage in production.
+	 */
+	private static final boolean isReleaseBuild = false;
 
 	/**
 	 * Prevent instantiation.
@@ -39,7 +39,14 @@ public final class GlobalScope {
 	private GlobalScope() {
 	}
 
-	public static boolean isFeatureEnabled(FeatureFlag featureFlag) {
-		return featureFlag.isEnabled() && build == DEV;
+	/**
+	 * Checks whether a given feature is enabled, considering the build type.
+	 *
+	 * @param previewFeature The feature to check.
+	 * @return {@code true} if the feature is enabled
+	 * and the build is in development, {@code false} otherwise.
+	 */
+	public static boolean isFeatureEnabled(PreviewFeature previewFeature) {
+		return previewFeature.isEnabled && !isReleaseBuild;
 	}
 }

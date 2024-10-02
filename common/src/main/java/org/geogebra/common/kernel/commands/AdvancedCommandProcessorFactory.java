@@ -1,6 +1,6 @@
 package org.geogebra.common.kernel.commands;
 
-import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.main.PreviewFeature.IMPLICIT_SURFACES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import org.geogebra.common.kernel.Kernel;
@@ -80,7 +80,6 @@ import org.geogebra.common.kernel.advanced.CmdUnion;
 import org.geogebra.common.kernel.advanced.CmdUnique;
 import org.geogebra.common.kernel.advanced.CmdVerticalText;
 import org.geogebra.common.kernel.advanced.CmdZip;
-import org.geogebra.common.main.FeatureFlag;
 
 /**
  * Factory for command processors that are not used very often

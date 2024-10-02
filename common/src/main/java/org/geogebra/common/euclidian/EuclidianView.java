@@ -1,6 +1,6 @@
 package org.geogebra.common.euclidian;
 
-import static org.geogebra.common.main.FeatureFlag.ADJUST_WIDGETS;
+import static org.geogebra.common.main.PreviewFeature.ADJUST_WIDGETS;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 
 import java.util.ArrayList;

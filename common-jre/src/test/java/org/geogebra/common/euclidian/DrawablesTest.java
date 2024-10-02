@@ -1,6 +1,6 @@
 package org.geogebra.common.euclidian;
 
-import static org.geogebra.common.main.FeatureFlag.IMPLICIT_SURFACES;
+import static org.geogebra.common.main.PreviewFeature.IMPLICIT_SURFACES;
 import static org.geogebra.common.ownership.GlobalScope.isFeatureEnabled;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,7 +37,6 @@ import org.geogebra.common.kernel.geos.Traceable;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.main.AppCommon3D;
-import org.geogebra.common.main.FeatureFlag;
 import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.test.LocalizationCommonUTF;
 import org.junit.Assert;
