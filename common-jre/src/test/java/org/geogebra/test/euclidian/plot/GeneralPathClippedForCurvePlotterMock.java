@@ -74,11 +74,18 @@ class GeneralPathClippedForCurvePlotterMock
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj instanceof GeneralPathClippedForCurvePlotterMock) {
+			return false;
+		}
 		return plotterMock.equals(obj);
 	}
 
 	@Override
 	public int hashCode() {
 		return plotterMock.hashCode();
+	}
+
+	public void setDelimiter(String delimiter) {
+		plotterMock.setDelimiter(delimiter);
 	}
 }

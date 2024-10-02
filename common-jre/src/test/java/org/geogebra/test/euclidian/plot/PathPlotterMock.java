@@ -14,8 +14,9 @@ import org.geogebra.common.kernel.matrix.CoordSys;
 import org.geogebra.common.util.StringUtil;
 
 public class PathPlotterMock implements PathPlotter {
-	private List<String> log = new ArrayList<>();
+	private final List<String> log = new ArrayList<>();
 	NumberFormat nf = new NumberFormat("#.###", 5);
+	private String delimiter = "|";
 
 	@Override
 	public void drawTo(double[] pos, SegmentType lineTo) {
@@ -72,7 +73,7 @@ public class PathPlotterMock implements PathPlotter {
 	}
 
 	String result() {
-		return StringUtil.join("|", log);
+		return StringUtil.join(delimiter, log);
 	}
 
 	@Override
@@ -100,5 +101,9 @@ public class PathPlotterMock implements PathPlotter {
 
 	public String filter(Predicate<String> test) {
 		return log.stream().filter(test).collect(Collectors.joining(","));
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
 	}
 }

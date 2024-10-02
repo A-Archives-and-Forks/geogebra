@@ -34,7 +34,7 @@ public class DrawImplicitCurve extends DrawLocus {
 	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
 	private CoordSystemAnimatedPlotter bernsteinPlotter;
 	private final GeoImplicit implicitCurve;
-	private final boolean isBernsteinBasedPlotter;
+	private final boolean bernsteinBasedPlotter;
 	private GeneralPathClippedForCurvePlotter gp;
 
 	// private int fillSign; //0=>no filling, only curve -1=>fill the negativ
@@ -49,15 +49,28 @@ public class DrawImplicitCurve extends DrawLocus {
 	 *            implicit Curvenomial
 	 */
 	public DrawImplicitCurve(EuclidianView view, GeoImplicit implicitCurve) {
+		this(view, implicitCurve,BERNSTEIN_BASED_PLOTTER
+				&& BernsteinPolynomialConverter.iSupported(implicitCurve.toGeoElement()));
+	}
+
+	/**
+	 * Creates new drawable for implicit Curvenomial
+	 *
+	 * @param view
+	 *            view
+	 * @param implicitCurve
+	 *            implicit Curvenomial
+	 */
+	public DrawImplicitCurve(EuclidianView view, GeoImplicit implicitCurve,
+			boolean bernsteinBasedPlotter) {
 		super(view, implicitCurve.getLocus(),
 				implicitCurve.getTransformedCoordSys());
 		this.view = view;
 		this.implicitCurve = implicitCurve;
 		this.geo = implicitCurve.toGeoElement();
-		isBernsteinBasedPlotter = BERNSTEIN_BASED_PLOTTER
-				&& BernsteinPolynomialConverter.iSupported(geo);
+		this.bernsteinBasedPlotter = bernsteinBasedPlotter;
 
-		if (isBernsteinBasedPlotter) {
+		if (this.bernsteinBasedPlotter) {
 			createBernsteinPlotter();
 		} else {
 			update();
@@ -75,7 +88,7 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	@Override
 	protected void drawLocus(GGraphics2D g2) {
-		if (isBernsteinBasedPlotter) {
+		if (bernsteinBasedPlotter) {
 			bernsteinPlotter.draw(g2);
 			drawPath(g2, gp);
 		} else {
@@ -108,7 +121,7 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	@Override
 	protected void updateAlgos() {
-		if (isBernsteinBasedPlotter) {
+		if (bernsteinBasedPlotter) {
 			return;
 		}
 		implicitCurve.getLocus();
@@ -116,7 +129,7 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	@Override
 	protected void buildGeneralPath(ArrayList<? extends MyPoint> pointList) {
-		if (isBernsteinBasedPlotter) {
+		if (bernsteinBasedPlotter) {
 			lazyCreateGeneralPath();
 			setLabelPosition(pointList);
 		} else {
