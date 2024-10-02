@@ -26,6 +26,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private final List<BernsteinPlotCell> cells;
 	private final BernsteinPolynomialConverter converter;
 	private final LinkSegments segments;
+	private BernsteinPolynomial polynomial;
 
 	/**
 	 * @param grid {@link CellGrid}
@@ -58,7 +59,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 
 	private BernsteinPlotCell createRootCell() {
 		BoundsRectangle limits = new BoundsRectangle(bounds);
-		BernsteinPolynomial polynomial = converter.from(curve, limits);
+		polynomial = converter.from(curve, limits);
 		BernsteinBoundingBox box = new BernsteinBoundingBox(limits);
 		return new BernsteinPlotCell(box, polynomial);
 	}
@@ -101,7 +102,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		BernsteinEdgeConfigProvider provider =
 				new BernsteinEdgeConfigProvider(currentCell);
 		BernsteinPlotRect rect =
-				new BernsteinPlotRect(currentCell.boundingBox, currentCell.polynomial);
+				new BernsteinPlotRect(currentCell.boundingBox, polynomial);
 		segments.add(rect, provider);
 	}
 

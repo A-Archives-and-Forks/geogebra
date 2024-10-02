@@ -53,7 +53,6 @@ public class QuadTreeEdgeConfigProvider implements EdgeConfigProvider {
 		return config >= 8 ? (~config) & 0xf : config;
 	}
 
-
 	/**
 	 *
 	 * @param val
@@ -70,6 +69,4 @@ public class QuadTreeEdgeConfigProvider implements EdgeConfigProvider {
 			return 0;
 		}
 	}
-
-
 }

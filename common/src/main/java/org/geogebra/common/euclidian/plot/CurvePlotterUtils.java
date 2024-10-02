@@ -23,7 +23,8 @@ public class CurvePlotterUtils {
 			List<? extends MyPoint> pointList, CoordSys transformSys) {
 		double[] coords = gp.newDoubleArray();
 		int size = pointList.size();
-		if (!gp.supports(transformSys) || size == 0) {
+		boolean supports = gp.supports(transformSys);
+		if (!supports || size == 0) {
 			return coords;
 		}
 		// this is for making sure that there is no lineto from nothing

@@ -12,6 +12,8 @@ the Free Software Foundation.
 
 package org.geogebra.common.euclidian.draw;
 
+import java.util.ArrayList;
+
 import org.geogebra.common.awt.GArea;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.EuclidianView;
@@ -20,6 +22,7 @@ import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter;
 import org.geogebra.common.euclidian.plot.implicit.CoordSystemAnimatedPlotter;
 import org.geogebra.common.factories.AwtFactory;
+import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
 
@@ -32,6 +35,7 @@ public class DrawImplicitCurve extends DrawLocus {
 	private CoordSystemAnimatedPlotter bernsteinPlotter;
 	private final GeoImplicit implicitCurve;
 	private final boolean isBernsteinBasedPlotter;
+	private GeneralPathClippedForCurvePlotter gp;
 
 	// private int fillSign; //0=>no filling, only curve -1=>fill the negativ
 	// part, 1=>fill positiv part
@@ -61,8 +65,9 @@ public class DrawImplicitCurve extends DrawLocus {
 	}
 
 	private void createBernsteinPlotter() {
+		gp = new GeneralPathClippedForCurvePlotter(view);
 		bernsteinPlotter = new BernsteinPlotter(geo, new EuclidianViewBoundsImp(view),
-				new GeneralPathClippedForCurvePlotter(view), implicitCurve.getTransformedCoordSys());
+				gp, implicitCurve.getTransformedCoordSys());
 
 		view.getEuclidianController()
 				.addZoomerAnimationListener(bernsteinPlotter, geo);
@@ -72,6 +77,7 @@ public class DrawImplicitCurve extends DrawLocus {
 	protected void drawLocus(GGraphics2D g2) {
 		if (isBernsteinBasedPlotter) {
 			bernsteinPlotter.draw(g2);
+			drawPath(g2, gp);
 		} else {
 			super.drawLocus(g2);
 		}
@@ -106,5 +112,15 @@ public class DrawImplicitCurve extends DrawLocus {
 			return;
 		}
 		implicitCurve.getLocus();
+	}
+
+	@Override
+	protected void buildGeneralPath(ArrayList<? extends MyPoint> pointList) {
+		if (isBernsteinBasedPlotter) {
+			lazyCreateGeneralPath();
+			setLabelPosition(pointList);
+		} else {
+			super.buildGeneralPath(pointList);
+		}
 	}
 }
