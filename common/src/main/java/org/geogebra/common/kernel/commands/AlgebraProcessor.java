@@ -2990,45 +2990,45 @@ public class AlgebraProcessor {
 	}
 
 	/**
-	 * @param line
+	 * @param geo
 	 *            line or conic
 	 * @param label
 	 *            new label
 	 * @param info
 	 *            evaluation flags
 	 */
-	protected void setEquationLabelAndVisualStyle(GeoElementND line,
+	protected void setEquationLabelAndVisualStyle(GeoElementND geo,
 			String label, EvalInfo info) {
 		if (kernel.getApplication().isUnbundledGraphing()) {
-			line.setObjColor(line.getAutoColorScheme()
+			geo.setObjColor(geo.getAutoColorScheme()
 					.getNext(!cons.getKernel().isSilentMode()));
-			line.setLineOpacity(
+			geo.setLineOpacity(
 					EuclidianStyleConstants.OBJSTYLE_DEFAULT_LINE_OPACITY_EQUATION_GEOMETRY);
 		}
 		if ((info.isForceUserEquation()
 				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 condition needs explanation
-				&& line instanceof EquationValue) {
-			((EquationValue) line).setToUser();
+				&& geo instanceof EquationValue) {
+			((EquationValue) geo).setToUser();
 		}
 
-		if (line.isFunctionOrEquationFromUser()) {
-			line.setFixed(true);
+		if (geo.isFunctionOrEquationFromUser()) {
+			geo.setFixed(true);
 		}
 
-		if (line instanceof GeoLine) {
+		if (geo instanceof GeoLine) {
 			int equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
 			if (equationForm != -1) {
-				((GeoLine) line).setEquationForm(equationForm);
+				((GeoLine) geo).setEquationForm(equationForm);
 			}
-		} else if (line instanceof GeoConic) {
+		} else if (geo instanceof GeoConic) {
 			int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
 			if (equationForm != -1) {
-				((GeoConic) line).setEquationForm(equationForm);
+				((GeoConic) geo).setEquationForm(equationForm);
 			}
 		}
 
 		if (info.isLabelOutput()) {
-			line.setLabel(label);
+			geo.setLabel(label);
 		}
 	}
 
