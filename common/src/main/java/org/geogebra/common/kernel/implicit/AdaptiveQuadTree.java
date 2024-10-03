@@ -182,7 +182,7 @@ class AdaptiveQuadTree extends QuadTree {
 			return;
 		}
 
-		EdgeConfigProvider configProvider = new QuadTreeEdgeConfigProvider(curve, factor);
+		PlotRectConfigProvider configProvider = new QuadTreeRectConfigProvider(curve, factor);
 		int e = edgeConfig(r);
 		if (grid[r.y][r.x].singular || e != EdgeConfig.EMPTY.flag()) {
 			if (depth >= plotDepth) {

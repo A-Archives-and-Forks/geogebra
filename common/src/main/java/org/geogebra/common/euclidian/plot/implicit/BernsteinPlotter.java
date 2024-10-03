@@ -47,7 +47,7 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	@Override
 	public void draw(GGraphics2D g2) {
 		if (VISUAL_DEBUG_ENABLED) {
-			visualDebug.draw(g2);
+//			visualDebug.draw(g2);
 		}
 
 		updateOnDemand();
@@ -56,11 +56,12 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 
 	@Override
 	public void update() {
+		cells.clear();
 		points.clear();
 		algo.compute();
 
 		if (VISUAL_DEBUG_ENABLED) {
-			//visualDebug.setData(cells);
+			visualDebug.setData(cells);
 		}
 	}
 

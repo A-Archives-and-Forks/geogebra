@@ -16,7 +16,6 @@ import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.implicit.LinkSegments;
-import org.geogebra.common.util.debug.Log;
 
 public class BernsteinImplicitAlgo implements PlotterAlgo {
 
@@ -48,7 +47,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	public void compute() {
 		List<BernsteinPlotCell> cells = initialSplit(createRootCell());
 		cells.forEach(this::findSolutions);
-		Log.debug("done");
+		segments.flush();
 	}
 
 	private List<BernsteinPlotCell> initialSplit(BernsteinPlotCell rootCell) {
@@ -98,12 +97,13 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	}
 
 	private void addToOutput(BernsteinPlotCell currentCell) {
-		cells.add(currentCell);
-		BernsteinEdgeConfigProvider provider =
-				new BernsteinEdgeConfigProvider(currentCell);
+		BernsteinPlotRectConfigProvider provider =
+				new BernsteinPlotRectConfigProvider(currentCell);
 		BernsteinPlotRect rect =
 				new BernsteinPlotRect(currentCell.boundingBox, polynomial);
+//		currentCell.setEdgeConfig(EdgeConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect)));
 		segments.add(rect, provider);
+		cells.add(currentCell);
 	}
 
 	private boolean isBoxSmallEnough(BernsteinBoundingBox box) {

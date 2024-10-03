@@ -15,17 +15,17 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.euclidian.draw.DrawImplicitCurve;
 import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DrawImplicitCurveTest extends BaseUnitTest {
 
-	public static final String REFERENCE_FILE = "src/test/resources/concentric_original.txt";
-	private static final boolean SAVE_REFERENCE = true;
+	public static final String REFERENCE_FILE = "src/test/resources/implicitPath.txt";
+	private static final boolean SAVE_REFERENCE = false;
 
 	@Test
 	public void testImplicitCurvesPlotTheSame() {
-		GeoImplicit geo = add("(x^(2)+y^(2)-1) (x^(2)+y^(2)-4)+1=0");
-//		GeoImplicit geo = add("sin(x+y)-cos(x y)+1=0");
+		GeoImplicit geo = add("sin(x+y)-cos(x y)+1=0");
 		final EuclidianView view = getApp().getActiveEuclidianView();
 		final PathPlotterMock plotterMock = new PathPlotterMock();
 
@@ -68,13 +68,16 @@ public class DrawImplicitCurveTest extends BaseUnitTest {
 		return Files.readString(filePath);
 	}
 
+	@Ignore
 	@Test
 	public void testDrawDiff() {
-		GeoImplicit geo = add("(x^(2)+y^(2)-1) (x^(2)+y^(2)-4)+1=0");
+		GeoImplicit geo = add("(x^2 + y^2 -1) (x^2 +y^2 - 4) +1=0");
 		final EuclidianView view = getApp().getActiveEuclidianView();
 
 		DrawImplicitCurve drawImplicitCurve = new DrawImplicitCurve(view, geo);
+		geo.setEuclidianVisible(true);
 		drawImplicitCurve.update();
+		drawImplicitCurve.draw(view.getGraphicsForPen());
 		fail();
 	}
 }

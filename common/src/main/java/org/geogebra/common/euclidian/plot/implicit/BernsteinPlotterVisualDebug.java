@@ -57,6 +57,8 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 		g2.setColor(GColor.BLACK.deriveWithAlpha(25));
 
 		g2.drawRect(x, y, width, height);
+		g2.setColor(GColor.BLACK);
+		//g2.drawString(cell.getEdgeConfig().toString(), x, y - width / 2);
 	}
 
 	/**

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.SegmentType;
 
-public enum EdgeConfig {
+public enum EdgeConfig implements PlotRectConfig {
 	/**
 	 * All corners are inside / outside
 	 */
@@ -186,24 +186,44 @@ public enum EdgeConfig {
 		this.flag = flag;
 	}
 
-	public static EdgeConfig fromFlag(int config) {
-		return map.getOrDefault(config, T_INV);
-	}
-
+	@Override
 	public int flag() {
 		return flag;
 	}
 
+	@Override
 	public MyPoint[] getPoints(PlotRect r) {
 		return null;
 	}
 
+	@Override
 	public double getQ1(PlotRect r) {
 		return 0;
 	}
 
+	@Override
 	public double getQ2(PlotRect r) {
 		return 0;
+	}
+
+	@Override
+	public boolean isValid() {
+		return this == VALID;
+	}
+
+	@Override
+	public boolean isInvalid() {
+		return this == T_INV;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this == EMPTY;
+	}
+
+
+	public static EdgeConfig fromFlag(int config) {
+		return map.getOrDefault(config, T_INV);
 	}
 
 	private static double minAbs(double a, double b) {

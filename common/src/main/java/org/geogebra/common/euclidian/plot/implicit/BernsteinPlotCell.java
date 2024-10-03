@@ -7,6 +7,7 @@ import java.util.Map;
 import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.arithmetic.Splittable;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
+import org.geogebra.common.kernel.implicit.EdgeConfig;
 
 /**
  * BernsteinPlotCell is the basic building block of the algorithm.
@@ -21,6 +22,7 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 	final BernsteinPolynomial polynomial;
 	private final BernsteinPlotCellKind kind;
 	private final Map<EdgeKind, BernsteinPlotCellEdge> edges = new HashMap<>();
+	private EdgeConfig edgeConfig;
 
 	/**
 	 *
@@ -120,5 +122,13 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 
 	public boolean mightHaveSolution() {
 		return kind != BernsteinPlotCellKind.CELL2;
+	}
+
+	public EdgeConfig getEdgeConfig() {
+		return edgeConfig;
+	}
+
+	public void setEdgeConfig(EdgeConfig edgeConfig) {
+		this.edgeConfig = edgeConfig;
 	}
 }

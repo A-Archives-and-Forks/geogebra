@@ -58,7 +58,7 @@ abstract class QuadTree {
 		this.locusPoints = locus.getPoints();
 		segments.updatePoints(locusPoints);
 		this.updatePath();
-		segments.abort();
+		segments.flush();
 	}
 
 	/**
