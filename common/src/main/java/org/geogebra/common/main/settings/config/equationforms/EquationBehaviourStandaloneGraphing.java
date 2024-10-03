@@ -25,6 +25,16 @@ public final class EquationBehaviourStandaloneGraphing extends DefaultEquationBe
 	}
 
 	@Override
+	public int getConicAlgebraInputEquationForm() {
+		return EquationForm.Quadric.USER;
+	}
+
+	@Override
+	public int getConicCommandEquationForm() {
+		return EquationForm.Quadric.USER;
+	}
+
+	@Override
 	public boolean allowsChangingEquationFormsByUser() {
 		return false;
 	}

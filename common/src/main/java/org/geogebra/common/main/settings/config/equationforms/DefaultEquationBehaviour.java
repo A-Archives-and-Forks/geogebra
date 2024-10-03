@@ -20,7 +20,7 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getLineCommandEquationForm() {
-		return EquationForm.Linear.EXPLICIT;
+		return -1;
 	}
 
 	@Override
@@ -35,12 +35,12 @@ public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
 	public int getConicAlgebraInputEquationForm() {
-		return EquationForm.Quadric.USER;
+		return -1;
 	}
 
 	@Override
 	public int getConicCommandEquationForm() {
-		return EquationForm.Quadric.IMPLICIT;
+		return -1;
 	}
 
 	@Override

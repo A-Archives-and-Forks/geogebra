@@ -29,7 +29,6 @@ import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.AppKeyboardType;
 import org.geogebra.common.main.settings.LabelVisibility;
 import org.geogebra.common.main.settings.config.equationforms.DefaultEquationBehaviour;
-import org.geogebra.common.main.settings.config.equationforms.EquationBehaviourClassic;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
 import org.geogebra.common.properties.factory.DefaultPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesFactory;
@@ -313,7 +312,7 @@ public class AppConfigDefault extends AbstractAppConfig {
 
 	@Override
 	public EquationBehaviour getEquationBehaviour() {
-		return new EquationBehaviourClassic();
+		return new DefaultEquationBehaviour();
 	}
 
 	@Override
