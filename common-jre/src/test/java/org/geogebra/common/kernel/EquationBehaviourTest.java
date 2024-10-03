@@ -113,11 +113,11 @@ public class EquationBehaviourTest extends BaseUnitTest {
 
 	@Test
 	public void testUnrestrictedGraphingConicEquationBehaviour() {
-		getApp().setGraphingConfig();
+		getApp().setUnrestrictedGraphingConfig();
 
 		// Parabola created from equation
 		GeoConic algebraParabola = (GeoConic) getElementFactory().create("y=xx");
-		assertEquals(EquationForm.Quadric.USER, algebraParabola.getEquationForm());
+		assertEquals(EquationForm.Quadric.EXPLICIT, algebraParabola.getEquationForm());
 
 		// Parabola created from point and line
 		GeoPoint center = new GeoPoint(getConstruction(), 0, 1, 0);
