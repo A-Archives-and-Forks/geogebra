@@ -1,7 +1,6 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
 import org.geogebra.common.kernel.MyPoint;
-import org.geogebra.common.kernel.implicit.EdgeConfig;
 import org.geogebra.common.kernel.implicit.PlotRect;
 import org.geogebra.common.kernel.implicit.PlotRectConfig;
 import org.geogebra.common.kernel.implicit.PlotRectConfigProvider;
@@ -14,12 +13,8 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	}
 
 	@Override
-	protected double limitOf(MyPoint point) {
-		return Math.abs(cell.polynomial.evaluate(point.x, point.y));
-	}
-	@Override
 	protected PlotRectConfig getConfigFromPlotRect(PlotRect r) {
-		return EdgeConfig.fromFlag(config(r));
+		return BernsteinEdgeConfig.fromFlag(config(r));
 	}
 
 	private int config(PlotRect r) {
@@ -39,7 +34,7 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	 */
 	private int sign(double val) {
 		if (Double.isInfinite(val) || Double.isNaN(val)) {
-			return EdgeConfig.T_INV.flag();
+			return BernsteinEdgeConfig.T_INV.flag();
 		} else if (val > 0.0) {
 			return 1;
 		} else {
@@ -49,12 +44,12 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	public PlotRectConfig valid() {
-		return EdgeConfig.VALID;
+		return BernsteinEdgeConfig.VALID;
 	}
 
 	@Override
 	public PlotRectConfig empty() {
-		return EdgeConfig.EMPTY;
+		return BernsteinEdgeConfig.EMPTY;
 	}
 
 	@Override
@@ -64,11 +59,11 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	protected boolean isConfigFinal(PlotRectConfig config) {
-		return config == EdgeConfig.T0101 || config.isInvalid();
+		return config == BernsteinEdgeConfig.T0101 || config.isInvalid();
 	}
 
 	@Override
-	protected boolean checkContinouty(double q1, double q2) {
+	protected boolean checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points) {
 		return true;
 	}
 }

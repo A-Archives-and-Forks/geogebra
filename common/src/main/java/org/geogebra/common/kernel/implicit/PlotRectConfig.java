@@ -7,10 +7,10 @@ public interface PlotRectConfig {
 	int flag();
 
 	MyPoint[] getPoints(PlotRect r);
-
-	double getQ1(PlotRect r);
-
-	double getQ2(PlotRect r);
+//
+//	double getQ1(PlotRect r);
+//
+//	double getQ2(PlotRect r);
 
 	boolean isValid();
 

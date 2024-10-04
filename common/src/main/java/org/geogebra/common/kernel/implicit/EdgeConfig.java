@@ -196,12 +196,10 @@ public enum EdgeConfig implements PlotRectConfig {
 		return null;
 	}
 
-	@Override
 	public double getQ1(PlotRect r) {
 		return 0;
 	}
 
-	@Override
 	public double getQ2(PlotRect r) {
 		return 0;
 	}

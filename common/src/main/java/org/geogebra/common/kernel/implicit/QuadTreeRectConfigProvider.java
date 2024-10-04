@@ -11,8 +11,14 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 		this.factor = factor;
 	}
 
-	@Override
-	protected double limitOf(MyPoint point) {
+
+	protected boolean checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points) {
+		EdgeConfig edgeConfig = (EdgeConfig) config;
+		return limitOf(points[0]) <= edgeConfig.getQ1(plotRect)
+				&& limitOf(points[1]) <= edgeConfig.getQ2(plotRect);
+	}
+
+	private double limitOf(MyPoint point) {
 		return Math.abs(curve.evaluateImplicitCurve(point.x, point.y, factor));
 	}
 

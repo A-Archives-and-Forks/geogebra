@@ -16,20 +16,12 @@ public abstract class PlotRectConfigProvider {
 			return empty();
 		}
 
-		double q1 = config.getQ1(r);
-		double q2 = config.getQ2(r);
-
-		return checkContinouty(q1, q2) ? valid() : empty();
-//		return valid();
+		return checkContinouty(config, r, pts) ? valid() : empty();
 	}
 
 	protected abstract boolean isConfigFinal(PlotRectConfig gridType);
 
-	protected boolean checkContinouty(double q1, double q2) {
-		return limitOf(pts[0]) <= q1 && limitOf(pts[1]) <= q2;
-	}
-
-	protected abstract double limitOf(MyPoint point);
+	protected abstract boolean checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points);
 
 	protected abstract PlotRectConfig getConfigFromPlotRect(PlotRect r);
 
