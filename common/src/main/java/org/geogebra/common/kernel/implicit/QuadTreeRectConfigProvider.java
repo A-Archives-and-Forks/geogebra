@@ -11,11 +11,13 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 		this.factor = factor;
 	}
 
-
-	protected boolean checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points) {
+	@Override
+	protected PlotRectConfig checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points) {
 		EdgeConfig edgeConfig = (EdgeConfig) config;
 		return limitOf(points[0]) <= edgeConfig.getQ1(plotRect)
-				&& limitOf(points[1]) <= edgeConfig.getQ2(plotRect);
+				&& limitOf(points[1]) <= edgeConfig.getQ2(plotRect)
+				? EdgeConfig.VALID
+				: EdgeConfig.EMPTY;
 	}
 
 	private double limitOf(MyPoint point) {
@@ -25,6 +27,11 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 	@Override
 	protected PlotRectConfig getConfigFromPlotRect(PlotRect r) {
 		return EdgeConfig.fromFlag(config(r));
+	}
+
+	@Override
+	protected PlotRectConfig empty() {
+		return EdgeConfig.EMPTY;
 	}
 
 	private int config(PlotRect r) {
@@ -50,16 +57,6 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 		} else {
 			return 0;
 		}
-	}
-
-	@Override
-	public PlotRectConfig valid() {
-		return EdgeConfig.VALID;
-	}
-
-	@Override
-	public PlotRectConfig empty() {
-		return EdgeConfig.EMPTY;
 	}
 
 	@Override

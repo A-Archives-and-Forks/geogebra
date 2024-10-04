@@ -16,21 +16,18 @@ public abstract class PlotRectConfigProvider {
 			return empty();
 		}
 
-		return checkContinouty(config, r, pts) ? valid() : empty();
+		return checkContinouty(config, r, pts);
 	}
 
 	protected abstract boolean isConfigFinal(PlotRectConfig gridType);
 
-	protected abstract boolean checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points);
+	protected abstract PlotRectConfig checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points);
 
 	protected abstract PlotRectConfig getConfigFromPlotRect(PlotRect r);
 
 	MyPoint[] getPoints() {
 		return pts;
 	}
-	
-	protected abstract PlotRectConfig valid();
 	protected abstract PlotRectConfig empty();
-
 	public abstract int listThreshold();
 }

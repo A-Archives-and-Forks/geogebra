@@ -17,6 +17,11 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 		return BernsteinEdgeConfig.fromFlag(config(r));
 	}
 
+	@Override
+	protected PlotRectConfig empty() {
+		return BernsteinEdgeConfig.EMPTY;
+	}
+
 	private int config(PlotRect r) {
 		int config = 0;
 		for (int i = 0; i < 4; i++) {
@@ -43,16 +48,6 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	}
 
 	@Override
-	public PlotRectConfig valid() {
-		return BernsteinEdgeConfig.VALID;
-	}
-
-	@Override
-	public PlotRectConfig empty() {
-		return BernsteinEdgeConfig.EMPTY;
-	}
-
-	@Override
 	public int listThreshold() {
 		return 100000;
 	}
@@ -63,7 +58,7 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	}
 
 	@Override
-	protected boolean checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points) {
-		return true;
+	protected PlotRectConfig checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points) {
+		return BernsteinEdgeConfig.VALID;
 	}
 }
