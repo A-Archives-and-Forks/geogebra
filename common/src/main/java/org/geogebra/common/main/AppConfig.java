@@ -227,6 +227,7 @@ public interface AppConfig extends Serializable {
 	 *
 	 * @return operation argument filter
 	 */
+	@CheckForNull
 	OperationArgumentFilter createOperationArgumentFilter();
 
 	/**
@@ -361,5 +362,11 @@ public interface AppConfig extends Serializable {
 
 	boolean hasOneVarStatistics();
 
+	/**
+	 * @return true, if app has spreadsheet view
+	 */
+	boolean hasSpreadsheetView();
+
 	boolean hasDataImport();
+
 }
