@@ -74,7 +74,6 @@ public class AppCommon extends App {
 	private DialogManagerNoGui dialogManager;
 	private DefaultSettings defaultSettings;
 	private SpreadsheetTableModel tableModel;
-	private AppConfig config;
 	private CASFactory casFactory = new CASFactoryDummy();
 	private boolean appletFlag = false;
 	private ImageManager imageManager;
@@ -95,7 +94,7 @@ public class AppCommon extends App {
 	 */
 	public AppCommon(LocalizationJre loc, AwtFactory awtFactory, AppConfig appConfig) {
 		super(Platform.ANDROID);
-		config = appConfig;
+		this.appConfig = appConfig;
 		AwtFactory.setPrototypeIfNull(awtFactory);
 		initFactories();
 		initKernel();
@@ -653,16 +652,11 @@ public class AppCommon extends App {
 		dialogManager = clear ? null : new DialogManagerNoGui(this, inputs);
 	}
 
-	@Override
-	public AppConfig getConfig() {
-		return config;
-	}
-
 	/**
 	 * For testing only
 	 */
 	public void setConfig(AppConfig config) {
-		this.config = config;
+		this.appConfig = config;
 		this.kernel.setEquationBehaviour(config.getEquationBehaviour());
 	}
 
