@@ -242,8 +242,7 @@ public enum ExamType {
 			return Collections.emptyList();
 		}
 
-		ArrayList<ExamType> examTypes = Arrays.stream(ExamType.values())
-				.collect(Collectors.toCollection(ArrayList::new));
+		ArrayList<ExamType> examTypes = new ArrayList<>(Arrays.asList(ExamType.values()));
 		if (!isFeatureEnabled(REALSCHULE_EXAM)) {
 			examTypes.remove(REALSCHULE);
 		}
