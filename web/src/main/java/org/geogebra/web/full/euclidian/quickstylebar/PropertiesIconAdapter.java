@@ -3,7 +3,9 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.resources.SVGResource;
@@ -100,6 +102,11 @@ public class PropertiesIconAdapter {
 				&& ((RangePropertyCollection<?, ?>) property).getProperties()[0]
 				instanceof ImageOpacityProperty) {
 			return MaterialDesignResources.INSTANCE.opacity_black();
+		} else if (property instanceof BooleanPropertyCollection<?>) {
+			if (((BooleanPropertyCollection<?>) property).getProperties()[0]
+					instanceof BoldProperty) {
+				return MaterialDesignResources.INSTANCE.text_bold_black();
+			}
 		}
 		return MaterialDesignResources.INSTANCE.stylebar_empty();
 	}

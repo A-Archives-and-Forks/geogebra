@@ -19,6 +19,7 @@ import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCo
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
+import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
 import org.geogebra.common.properties.impl.objects.EquationFormProperty;
@@ -159,6 +160,25 @@ public class GeoElementPropertiesFactory {
 			}
 			return new BooleanPropertyCollection<>(
 					fixObjectProperties.toArray(new IsFixedObjectProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns with a Boolean property that formats bold the texts, or null if not applicable
+	 * @param localization localization
+	 * @param elements elements
+	 * @return bold property or null
+	 */
+	public static BooleanProperty createBoldProperty(Localization localization,
+			List<GeoElement> elements) {
+		try {
+			List<BoldProperty> boldProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				boldProperties.add(new BoldProperty(localization, element));
+			}
+			return new BooleanPropertyCollection<>(boldProperties.toArray(new BoldProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
@@ -349,6 +369,8 @@ public class GeoElementPropertiesFactory {
 			return null;
 		}
 	}
+
+
 
 	/**
 	 * Returns an IconsEnumeratedProperty controlling the segment end style or null

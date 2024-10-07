@@ -8,7 +8,7 @@ import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.AbstractEnumeratedProperty;
-import org.geogebra.common.properties.impl.objects.delegate.AlignmentPropertyDelegate;
+import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 
@@ -30,7 +30,7 @@ public class VerticalAlignmentProperty extends AbstractEnumeratedProperty<Vertic
 	public VerticalAlignmentProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
 		super(localization, "stylebar.VerticalAlign");
-		delegate = new AlignmentPropertyDelegate(element);
+		delegate = new TextFormatterDelegate(element);
 		setValues(VerticalAlignment.TOP,
 				VerticalAlignment.MIDDLE,
 				VerticalAlignment.BOTTOM);

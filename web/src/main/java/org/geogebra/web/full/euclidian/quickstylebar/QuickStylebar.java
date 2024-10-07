@@ -10,7 +10,9 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.properties.Property;
+import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
 import org.geogebra.web.full.css.MaterialDesignResources;
@@ -78,6 +80,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				.createSegmentEndProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", true, segmentEndProperty);
 
+		Property boldProperty = GeoElementPropertiesFactory.createBoldProperty(
+				getApp().getLocalization(), activeGeoList);
+		addPropertyButton(activeGeoList.get(0), boldProperty);
+
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), null, true, horizontalAlignmentProperty);
@@ -90,6 +96,23 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		addDeleteButton();
 		addContextMenuButton();
+	}
+
+	private void addPropertyButton(GeoElement geo, Property... properties) {
+		if (properties.length == 0 || properties[0] == null) {
+			return;
+		}
+		Property firstProperty = properties[0];
+
+		IconButton toggleButton = new IconButton(getApp(), null,
+				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName());
+		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat("bold", false));
+		toggleButton.addFastClickHandler((source -> {
+			boolean isSelected = toggleButton.isActive();
+			((BooleanProperty) firstProperty).setValue(!isSelected);
+			toggleButton.setActive(!isSelected);
+		}));
+		styleAndRegisterButton(toggleButton);
 	}
 
 	private void addPropertyPopupButton(GeoElement geo, String className,
