@@ -15,6 +15,11 @@ public class ItalicProperty extends AbstractValuedProperty<Boolean>
 		implements BooleanProperty {
 	private final GeoElementDelegate delegate;
 
+	/**
+	 * Italic property
+	 * @param localization localization
+	 * @param element element
+	 */
 	public ItalicProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
 		super(localization, "Italic");

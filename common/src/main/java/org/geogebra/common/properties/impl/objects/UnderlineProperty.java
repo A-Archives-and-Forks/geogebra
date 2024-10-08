@@ -15,6 +15,11 @@ public class UnderlineProperty extends AbstractValuedProperty<Boolean>
 		implements BooleanProperty {
 	private final GeoElementDelegate delegate;
 
+	/**
+	 * Underline property
+	 * @param localization localization
+	 * @param element element
+	 */
 	public UnderlineProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
 		super(localization, "Underline");

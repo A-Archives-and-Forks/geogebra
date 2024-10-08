@@ -412,8 +412,6 @@ public class GeoElementPropertiesFactory {
 		}
 	}
 
-
-
 	/**
 	 * Returns an IconsEnumeratedProperty controlling the segment end style or null
 	 * if not applicable.

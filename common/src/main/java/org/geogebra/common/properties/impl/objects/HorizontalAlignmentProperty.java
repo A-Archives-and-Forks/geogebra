@@ -8,9 +8,9 @@ import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.AbstractEnumeratedProperty;
-import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
+import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 
 public class HorizontalAlignmentProperty extends AbstractEnumeratedProperty<HorizontalAlignment>
 		implements IconsEnumeratedProperty<HorizontalAlignment> {

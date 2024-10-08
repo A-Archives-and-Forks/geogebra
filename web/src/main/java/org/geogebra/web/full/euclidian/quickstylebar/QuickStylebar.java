@@ -118,12 +118,12 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				PropertiesIconAdapter.getIcon(property), property.getName());
 		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat(textFormat,
 				false));
-		toggleButton.addFastClickHandler((source -> {
+		toggleButton.addFastClickHandler(source -> {
 			boolean isSelected = toggleButton.isActive();
 			((BooleanProperty) property).setValue(!isSelected);
 			toggleButton.setActive(!isSelected);
 			getApp().storeUndoInfo();
-		}));
+		});
 		styleAndRegisterButton(toggleButton);
 	}
 

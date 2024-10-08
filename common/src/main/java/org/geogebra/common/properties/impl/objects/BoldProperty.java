@@ -7,14 +7,19 @@ import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.impl.AbstractValuedProperty;
-import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
+import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 
 public class BoldProperty extends AbstractValuedProperty<Boolean>
 		implements BooleanProperty {
 	private final GeoElementDelegate delegate;
 
+	/**
+	 * Bold property
+	 * @param localization localization
+	 * @param element element
+	 */
 	public BoldProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
 		super(localization, "Bold");
