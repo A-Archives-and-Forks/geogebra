@@ -82,7 +82,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property boldProperty = GeoElementPropertiesFactory.createBoldProperty(
 				getApp().getLocalization(), activeGeoList);
-		addPropertyButton(activeGeoList.get(0), boldProperty);
+		addPropertyButton(activeGeoList.get(0), "bold", boldProperty);
+
+		Property italicProperty = GeoElementPropertiesFactory.createItalicProperty(
+				getApp().getLocalization(), activeGeoList);
+		addPropertyButton(activeGeoList.get(0), "italic", italicProperty);
+
+		Property underlineProperty = GeoElementPropertiesFactory.createUnderlineProperty(
+				getApp().getLocalization(), activeGeoList);
+		addPropertyButton(activeGeoList.get(0), "underline", underlineProperty);
 
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
@@ -92,13 +100,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), null, true, verticalAlignmentProperty);
 
-		addDivider();
+		if (getElement().hasChildNodes()) {
+			addDivider();
+		}
 
 		addDeleteButton();
 		addContextMenuButton();
 	}
 
-	private void addPropertyButton(GeoElement geo, Property... properties) {
+	private void addPropertyButton(GeoElement geo, String textType, Property... properties) {
 		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
@@ -106,7 +116,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		IconButton toggleButton = new IconButton(getApp(), null,
 				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName());
-		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat("bold", false));
+		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat(textType, false));
 		toggleButton.addFastClickHandler((source -> {
 			boolean isSelected = toggleButton.isActive();
 			((BooleanProperty) firstProperty).setValue(!isSelected);

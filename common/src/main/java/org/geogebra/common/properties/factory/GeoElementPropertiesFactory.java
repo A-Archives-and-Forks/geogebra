@@ -27,6 +27,7 @@ import org.geogebra.common.properties.impl.objects.FillingStyleProperty;
 import org.geogebra.common.properties.impl.objects.HorizontalAlignmentProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
+import org.geogebra.common.properties.impl.objects.ItalicProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
 import org.geogebra.common.properties.impl.objects.MinProperty;
@@ -42,6 +43,7 @@ import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 import org.geogebra.common.properties.impl.objects.ShowTraceProperty;
 import org.geogebra.common.properties.impl.objects.SlopeSizeProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
+import org.geogebra.common.properties.impl.objects.UnderlineProperty;
 import org.geogebra.common.properties.impl.objects.VerticalAlignmentProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 
@@ -179,6 +181,46 @@ public class GeoElementPropertiesFactory {
 				boldProperties.add(new BoldProperty(localization, element));
 			}
 			return new BooleanPropertyCollection<>(boldProperties.toArray(new BoldProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns with a Boolean property that formats italic the texts, or null if not applicable
+	 * @param localization localization
+	 * @param elements elements
+	 * @return italic property or null
+	 */
+	public static BooleanProperty createItalicProperty(Localization localization,
+			List<GeoElement> elements) {
+		try {
+			List<ItalicProperty> italicProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				italicProperties.add(new ItalicProperty(localization, element));
+			}
+			return new BooleanPropertyCollection<>(italicProperties
+					.toArray(new ItalicProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns with a Boolean property that formats underlined the texts, or null if not applicable
+	 * @param localization localization
+	 * @param elements elements
+	 * @return underline property or null
+	 */
+	public static BooleanProperty createUnderlineProperty(Localization localization,
+			List<GeoElement> elements) {
+		try {
+			List<UnderlineProperty> underlineProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				underlineProperties.add(new UnderlineProperty(localization, element));
+			}
+			return new BooleanPropertyCollection<>(underlineProperties
+					.toArray(new UnderlineProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

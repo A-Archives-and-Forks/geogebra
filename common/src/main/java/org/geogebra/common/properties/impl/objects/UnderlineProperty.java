@@ -7,17 +7,17 @@ import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.impl.AbstractValuedProperty;
-import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
+import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 
-public class BoldProperty extends AbstractValuedProperty<Boolean>
+public class UnderlineProperty extends AbstractValuedProperty<Boolean>
 		implements BooleanProperty {
 	private final GeoElementDelegate delegate;
 
-	public BoldProperty(Localization localization, GeoElement element)
+	public UnderlineProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "Bold");
+		super(localization, "Underline");
 		delegate = new TextFormatterDelegate(element);
 	}
 
@@ -25,14 +25,14 @@ public class BoldProperty extends AbstractValuedProperty<Boolean>
 	protected void doSetValue(Boolean value) {
 		HasTextFormatter element = (HasTextFormatter) delegate.getElement();
 		if (getLocalization() != null && !value.equals(element.getFormatter()
-				.getFormat("bold", false))) {
-			element.getFormatter().format("bold", value);
+				.getFormat("underline", false))) {
+			element.getFormatter().format("underline", value);
 		}
 		((GeoElement) element).updateVisualStyle(GProperty.COMBINED);
 	}
 
 	@Override
 	public Boolean getValue() {
-		return ((HasTextFormat) delegate.getElement()).getFormat("bold", false);
+		return ((HasTextFormat) delegate.getElement()).getFormat("underline", false);
 	}
 }

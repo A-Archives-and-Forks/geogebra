@@ -7,6 +7,8 @@ import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
+import org.geogebra.common.properties.impl.objects.ItalicProperty;
+import org.geogebra.common.properties.impl.objects.UnderlineProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.resources.SVGResource;
 
@@ -106,6 +108,12 @@ public class PropertiesIconAdapter {
 			if (((BooleanPropertyCollection<?>) property).getProperties()[0]
 					instanceof BoldProperty) {
 				return MaterialDesignResources.INSTANCE.text_bold_black();
+			} else if (((BooleanPropertyCollection<?>) property).getProperties()[0]
+					instanceof ItalicProperty) {
+				return MaterialDesignResources.INSTANCE.text_italic_black();
+			} else if (((BooleanPropertyCollection<?>) property).getProperties()[0]
+					instanceof UnderlineProperty) {
+				return MaterialDesignResources.INSTANCE.text_underline_black();
 			}
 		}
 		return MaterialDesignResources.INSTANCE.stylebar_empty();

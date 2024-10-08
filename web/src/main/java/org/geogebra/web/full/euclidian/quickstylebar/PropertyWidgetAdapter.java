@@ -58,7 +58,7 @@ public class PropertyWidgetAdapter {
 			enumeratedPropertyIconButton.setActive(finalI == iconProperty.getIndex());
 			buttonListComponent.add(enumeratedPropertyIconButton);
 			enumeratedPropertyButtons.add(enumeratedPropertyIconButton);
-			}
+		}
 
 		return buttonListComponent;
 	}
