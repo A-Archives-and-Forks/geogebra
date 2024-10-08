@@ -166,11 +166,13 @@ public class AppConfigGraphing3D extends AppConfigGraphing {
 		return false;
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedLineEquationForm() {
 		return -1;
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedConicEquationForm() {
 		return -1;

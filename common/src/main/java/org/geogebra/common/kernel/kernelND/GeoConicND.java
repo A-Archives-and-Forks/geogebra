@@ -1325,7 +1325,9 @@ public abstract class GeoConicND extends GeoQuadricND
 	 */
 	final public void setToParametric(String parameter) {
 		setMode(EquationForm.Quadric.PARAMETRIC);
-		this.parameter = parameter;
+		if (parameter != null) {
+			this.parameter = parameter;
+		}
 	}
 
 	/** Changes equation mode to User/Input */

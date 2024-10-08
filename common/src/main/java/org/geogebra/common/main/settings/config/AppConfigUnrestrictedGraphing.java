@@ -94,11 +94,13 @@ public class AppConfigUnrestrictedGraphing extends AppConfigGraphing {
 		return new DefaultEquationBehaviour();
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedLineEquationForm() {
 		return -1;
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedConicEquationForm() {
 		return -1;

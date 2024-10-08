@@ -55,6 +55,7 @@ public class AppConfigDefault extends AbstractAppConfig {
 		return "Algebra";
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getLineDisplayStyle() {
 		return -1;
@@ -315,11 +316,13 @@ public class AppConfigDefault extends AbstractAppConfig {
 		return new DefaultEquationBehaviour();
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedLineEquationForm() {
 		return -1;
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedConicEquationForm() {
 		return -1;

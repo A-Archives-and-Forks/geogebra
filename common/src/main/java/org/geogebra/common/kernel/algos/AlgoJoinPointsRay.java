@@ -62,7 +62,7 @@ public class AlgoJoinPointsRay extends AlgoElement
 		// note: GeoRay's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
-			ray.setEquationForm(equationBehaviour.getLineCommandEquationForm());
+			ray.setEquationForm(equationBehaviour.getRayCommandEquationForm());
 		}
 
 		ray.setLabel(label);

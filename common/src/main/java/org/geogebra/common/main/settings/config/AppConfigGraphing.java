@@ -309,16 +309,19 @@ public class AppConfigGraphing extends AbstractAppConfig {
 		return new EquationBehaviourStandaloneGraphing();
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getLineDisplayStyle() {
 		return EquationForm.Linear.EXPLICIT;
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedLineEquationForm() {
 		return EquationForm.Linear.USER;
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedConicEquationForm() {
 		return EquationForm.Quadric.USER;

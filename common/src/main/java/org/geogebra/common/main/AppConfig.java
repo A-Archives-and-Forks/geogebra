@@ -254,7 +254,7 @@ public interface AppConfig extends Serializable {
 	@Nonnull
 	EquationBehaviour getEquationBehaviour();
 
-	@Deprecated // replaced by getEquationForms()
+	@Deprecated // replaced by getEquationBehaviour()
 	int getLineDisplayStyle();
 
 	/**
@@ -263,7 +263,7 @@ public interface AppConfig extends Serializable {
 	 *
 	 * @return equation form or -1
 	 */
-	@Deprecated // replaced by getEquationForms()
+	@Deprecated // replaced by getEquationBehaviour()
 	int getEnforcedLineEquationForm();
 
 	/**
@@ -272,7 +272,7 @@ public interface AppConfig extends Serializable {
 	 *
 	 * @return equation form or -1
 	 */
-	@Deprecated // replaced by getEquationForms()
+	@Deprecated // replaced by getEquationBehaviour()
 	int getEnforcedConicEquationForm();
 
 	/**
@@ -280,7 +280,7 @@ public interface AppConfig extends Serializable {
 	 *
 	 * @return true if equation should be hidden in AV
 	 */
-	@Deprecated // replaced by getEquationForms()
+	@Deprecated // replaced by getEquationBehaviour()
 	boolean shouldHideEquations();
 
 	/**

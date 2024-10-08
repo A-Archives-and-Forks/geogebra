@@ -5,11 +5,11 @@ import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.commands.EvalInfo;
 
 /**
- * Provides a way to override the default behavior of line- and conic-creating
+ * Provides a way to customize (override) the default behavior of line- and conic-creating
  * code (e.g., {@link org.geogebra.common.kernel.algos.AlgoJoinPoints AlgoJoinPoints},
  * {@link org.geogebra.common.kernel.commands.AlgebraProcessor#processLine(Equation, ExpressionNode, EvalInfo) AlgebraProcessor's processLine}, etc).
  * <p/>
- * If an app (or exam type) requires certain equation forms to be enforced, return One of the
+ * If an app (or exam type) requires certain equation forms to be enforced, return one of the
  * documented valid values from the corresponding method(s).
  * <p/>
  * @apiNote If we need more fine-grained overrides, we can add methods for specific cases here.
