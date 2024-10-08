@@ -21,6 +21,7 @@ public class EvalInfoFactory {
 	 * @param withSliders whether to autocreate sliders; TODO remove this once we
 	 * @return evaluation flags for user input in AV
 	 */
+	// TODO APPS-5867 forceUserEquation is true here
 	public static EvalInfo getEvalInfoForAV(App app, boolean withSliders) {
 		return baseAVInfo
 				.withSliders(withSliders)

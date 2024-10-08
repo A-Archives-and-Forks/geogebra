@@ -122,6 +122,7 @@ public class BaseUnitTest {
 	 *            algebra input to be processed
 	 * @return resulting element
 	 */
+	// TODO APPS-5867 forceUserEquation is false here
 	protected <T extends GeoElementND> T add(String command) {
 		GeoElementND[] geoElements =
 				getAlgebraProcessor().processAlgebraCommandNoExceptionHandling(command, false,
@@ -148,7 +149,7 @@ public class BaseUnitTest {
 	 *            algebra input to be processed
 	 * @return resulting element
 	 */
-
+	// TODO APPS-5867 forceUserEquation is true here
 	protected <T extends GeoElement> T addAvInput(String command) {
 		EvalInfo info = EvalInfoFactory.getEvalInfoForAV(app, false);
 		return add(command, info);
@@ -162,17 +163,20 @@ public class BaseUnitTest {
 	 *         to the AlgebraProcessor.processAlgebraCommandNoExceptionHandling method.
 	 * @return resulting element
 	 */
+	// TODO APPS-5867 forceUserEquation may be true or false here
 	protected <T extends GeoElement> T add(String command, EvalInfo info) {
 		GeoElementND[] geoElements = getElements(command, info);
 		return getFirstElement(geoElements);
 	}
 
+	// TODO APPS-5867 forceUserEquation is false here
 	protected void t(String input, String... expected) {
 		AlgebraTestHelper.checkSyntaxSingle(input, expected,
 				getApp().getKernel().getAlgebraProcessor(),
 				StringTemplate.xmlTemplate);
 	}
 
+	// TODO APPS-5867 forceUserEquation is true here
 	protected <T extends GeoElementND> T[] getElements(String command) {
 		return getElements(command, EvalInfoFactory.getEvalInfoForAV(app, false));
 	}

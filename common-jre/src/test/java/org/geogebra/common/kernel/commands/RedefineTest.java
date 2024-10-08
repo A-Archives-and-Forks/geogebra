@@ -599,6 +599,7 @@ public class RedefineTest extends BaseUnitTest {
 
 	@Test
 	public void redefineComplexToRealFunctionFromAVShouldWork() {
+		// TODO APPS-5867 forceUserEquation is true
 		EvalInfo evalInfo = EvalInfoFactory.getEvalInfoForAV(getApp());
 		GeoElementND h = add("h(x) = x + i", evalInfo);
 		assertThat(lookup("h").getClass(), is(GeoSurfaceCartesian2D.class));

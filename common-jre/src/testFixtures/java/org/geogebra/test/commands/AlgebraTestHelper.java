@@ -39,6 +39,7 @@ public class AlgebraTestHelper {
 	 * @param app
 	 *            application
 	 */
+	// TODO APPS-5867 forceUserEquation is false here
 	public static void shouldFail(String string, String errorMsg,
 			String altErrorMsg, App app) {
 		ErrorAccumulator errorStore = new ErrorAccumulator();
@@ -129,6 +130,7 @@ public class AlgebraTestHelper {
 	 * @param tpl
 	 *            template
 	 */
+	// TODO APPS-5867 forceUserEquation is false here
 	public static void checkSyntaxSingle(String s,
 			List<Matcher<String>> expected, AlgebraProcessor proc,
 			StringTemplate tpl) {
@@ -157,6 +159,7 @@ public class AlgebraTestHelper {
 		Log.debug("+");
 	}
 
+	// TODO APPS-5867 forceUserEquation is false here
 	private static GeoElementND[] getResult(String input, AlgebraProcessor algebraProcessor) {
 		return algebraProcessor.processAlgebraCommandNoExceptionHandling(
 				input,
@@ -212,6 +215,7 @@ public class AlgebraTestHelper {
 	 * @param tpl
 	 *            template
 	 */
+	// TODO APPS-5867 forceUserEquation is false here
 	public static void checkSyntaxSingle(String input, String[] expected,
 			AlgebraProcessor proc, StringTemplate tpl) {
 		checkSyntaxSingle(input, getMatchers(expected), proc, tpl);
