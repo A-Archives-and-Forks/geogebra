@@ -105,14 +105,12 @@ public class PropertiesIconAdapter {
 				instanceof ImageOpacityProperty) {
 			return MaterialDesignResources.INSTANCE.opacity_black();
 		} else if (property instanceof BooleanPropertyCollection<?>) {
-			if (((BooleanPropertyCollection<?>) property).getProperties()[0]
-					instanceof BoldProperty) {
+			Property firstProperty = ((BooleanPropertyCollection<?>) property).getProperties()[0];
+			if (firstProperty instanceof BoldProperty) {
 				return MaterialDesignResources.INSTANCE.text_bold_black();
-			} else if (((BooleanPropertyCollection<?>) property).getProperties()[0]
-					instanceof ItalicProperty) {
+			} else if (firstProperty instanceof ItalicProperty) {
 				return MaterialDesignResources.INSTANCE.text_italic_black();
-			} else if (((BooleanPropertyCollection<?>) property).getProperties()[0]
-					instanceof UnderlineProperty) {
+			} else if (firstProperty instanceof UnderlineProperty) {
 				return MaterialDesignResources.INSTANCE.text_underline_black();
 			}
 		}

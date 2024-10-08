@@ -82,15 +82,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property boldProperty = GeoElementPropertiesFactory.createBoldProperty(
 				getApp().getLocalization(), activeGeoList);
-		addPropertyButton(activeGeoList.get(0), "bold", boldProperty);
+		addTextFormatPropertyButton(activeGeoList.get(0), "bold", boldProperty);
 
 		Property italicProperty = GeoElementPropertiesFactory.createItalicProperty(
 				getApp().getLocalization(), activeGeoList);
-		addPropertyButton(activeGeoList.get(0), "italic", italicProperty);
+		addTextFormatPropertyButton(activeGeoList.get(0), "italic", italicProperty);
 
 		Property underlineProperty = GeoElementPropertiesFactory.createUnderlineProperty(
 				getApp().getLocalization(), activeGeoList);
-		addPropertyButton(activeGeoList.get(0), "underline", underlineProperty);
+		addTextFormatPropertyButton(activeGeoList.get(0), "underline", underlineProperty);
 
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
@@ -108,19 +108,21 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addPropertyButton(GeoElement geo, String textType, Property... properties) {
-		if (properties.length == 0 || properties[0] == null) {
+	private void addTextFormatPropertyButton(GeoElement geo, String textFormat,
+			Property property) {
+		if (!(property instanceof BooleanProperty) || !(geo instanceof HasTextFormatter)) {
 			return;
 		}
-		Property firstProperty = properties[0];
 
 		IconButton toggleButton = new IconButton(getApp(), null,
-				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName());
-		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat(textType, false));
+				PropertiesIconAdapter.getIcon(property), property.getName());
+		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat(textFormat,
+				false));
 		toggleButton.addFastClickHandler((source -> {
 			boolean isSelected = toggleButton.isActive();
-			((BooleanProperty) firstProperty).setValue(!isSelected);
+			((BooleanProperty) property).setValue(!isSelected);
 			toggleButton.setActive(!isSelected);
+			getApp().storeUndoInfo();
 		}));
 		styleAndRegisterButton(toggleButton);
 	}
