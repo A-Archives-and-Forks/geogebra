@@ -71,7 +71,7 @@ import org.geogebra.web.full.gui.properties.OptionPanel;
 import org.geogebra.web.full.gui.util.ColorChooserW;
 import org.geogebra.web.full.gui.util.ComboBoxW;
 import org.geogebra.web.full.gui.util.GeoGebraIconW;
-import org.geogebra.web.full.gui.util.InlineTextFormatter;
+import org.geogebra.common.kernel.InlineTextFormatter;
 import org.geogebra.web.full.gui.util.LineStylePopup;
 import org.geogebra.web.full.gui.util.PointStylePopup;
 import org.geogebra.web.full.gui.util.PopupMenuButtonW;

@@ -3,6 +3,7 @@ package org.geogebra.common.properties.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
@@ -42,6 +43,7 @@ import org.geogebra.common.properties.impl.objects.ShowInAVProperty;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 import org.geogebra.common.properties.impl.objects.ShowTraceProperty;
 import org.geogebra.common.properties.impl.objects.SlopeSizeProperty;
+import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
 import org.geogebra.common.properties.impl.objects.UnderlineProperty;
 import org.geogebra.common.properties.impl.objects.VerticalAlignmentProperty;
@@ -407,6 +409,27 @@ public class GeoElementPropertiesFactory {
 			}
 			return new IconsEnumeratedPropertyCollection<>(
 					segmentStartProperties.toArray(new SegmentStartProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns property controlling the text font size or null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @param ev euclidian view
+	 * @return property or null
+	 */
+	public static NamedEnumeratedPropertyCollection<?, ?> createTextFontSizeProperty(
+			Localization localization, List<GeoElement> elements, EuclidianView ev) {
+		try {
+			List<TextFontSizeProperty> fontSizeProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				fontSizeProperties.add(new TextFontSizeProperty(localization, element, ev));
+			}
+			return new NamedEnumeratedPropertyCollection<>(
+					fontSizeProperties.toArray(new TextFontSizeProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

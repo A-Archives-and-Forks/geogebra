@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.properties.TextFontSize;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProperty;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
+import org.geogebra.web.full.javax.swing.GPopupMenuW;
+import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.FlowPanel;
 
@@ -77,5 +81,19 @@ public class PropertyWidgetAdapter {
 			GeoElement geo) {
 		return new SliderWithProperty(appW, property, geo.getLineType(),
 				geo.getLineThickness(), geo.getObjectColor());
+	}
+
+	/**
+	 * @param property - text font size property
+	 * @return menu based on text font size property
+	 */
+	public GPopupMenuW getMenuWidget(TextFontSizeProperty property) {
+		GPopupMenuW fontSizeMenu = new GPopupMenuW(appW);
+		for (String menuItemText : property.getValueNames()) {
+			fontSizeMenu.addItem(new AriaMenuItem(menuItemText, true,
+					() -> property.setValue(TextFontSize.valueOf(menuItemText))));
+		}
+		fontSizeMenu.setVisible(true);
+		return fontSizeMenu;
 	}
 }

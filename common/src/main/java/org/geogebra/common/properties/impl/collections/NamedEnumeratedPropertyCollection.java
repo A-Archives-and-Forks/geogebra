@@ -20,4 +20,9 @@ public class NamedEnumeratedPropertyCollection<T extends NamedEnumeratedProperty
 	public String[] getValueNames() {
 		return getFirstProperty().getValueNames();
 	}
+
+	@Override
+	public T[] getProperties() {
+		return super.getProperties();
+	}
 }

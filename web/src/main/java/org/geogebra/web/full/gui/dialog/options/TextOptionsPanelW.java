@@ -22,7 +22,7 @@ import org.geogebra.web.full.gui.dialog.text.ITextEditPanel;
 import org.geogebra.web.full.gui.dialog.text.TextPreviewPanelW;
 import org.geogebra.web.full.gui.properties.OptionPanel;
 import org.geogebra.web.full.gui.properties.PropertiesViewW;
-import org.geogebra.web.full.gui.util.InlineTextFormatter;
+import org.geogebra.common.kernel.InlineTextFormatter;
 import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
