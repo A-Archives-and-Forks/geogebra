@@ -66,13 +66,13 @@ public class EquationBehaviourTest extends BaseUnitTest {
 		GeoPoint b = new GeoPoint(getConstruction(), 1, 1, 0);
 		AlgoJoinPointsRay algoJoinPointsRay = new AlgoJoinPointsRay(getConstruction(), "ray", a, b);
 		GeoRay ray1 = algoJoinPointsRay.getRay();
-		assertEquals(EquationForm.Linear.EXPLICIT, ray1.getEquationForm());
+		assertEquals(EquationForm.Linear.USER, ray1.getEquationForm());
 
 		// Ray created with Ray command from point and vector
 		GeoVector vec = new GeoVector(getConstruction(), "vec", 1, 1, 0);
 		AlgoRayPointVector algoRayPointVector = new AlgoRayPointVector(getConstruction(), a, vec);
 		GeoRay ray2 = algoRayPointVector.getRay();
-		assertEquals(EquationForm.Linear.EXPLICIT, ray2.getEquationForm());
+		assertEquals(EquationForm.Linear.USER, ray2.getEquationForm());
 	}
 
 	// no test for Segment command in standalone Graphing (disabled)
