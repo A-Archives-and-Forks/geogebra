@@ -140,7 +140,7 @@ public class ScheduledPreviewFromInputBar implements Runnable {
 				.withScripting(false)
 				.withCAS(false)
 				.addDegree(kernel.getAngleUnitUsesDegrees())
-				.withUserEquation(true)
+//				.withUserEquation(true)
 				.withSymbolic(true)
 				.withCopyingPlainVariables(true);
 		Log.debug("preview for: " + validInput);

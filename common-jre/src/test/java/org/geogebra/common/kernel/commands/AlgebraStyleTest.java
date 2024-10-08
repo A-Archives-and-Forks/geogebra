@@ -144,7 +144,7 @@ public class AlgebraStyleTest extends BaseUnitTest {
 		checkRows("{{a}}+{{1}}", 2);
 		checkRows("{x=y}", 1);
 		checkRows("x=y", 2);
-		EvalInfo graphingFlags = new EvalInfo(true).withUserEquation(true);
+		EvalInfo graphingFlags = new EvalInfo(true);//.withUserEquation(true);
 		checkRows("x=y", 1, graphingFlags);
 		checkRows("{y=x}", 1);
 		checkRows("Sequence[100]", 2);

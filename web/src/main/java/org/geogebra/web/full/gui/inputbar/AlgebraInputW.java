@@ -261,9 +261,10 @@ public class AlgebraInputW extends FlowPanel
 
 				inputField.setIsSuggestionJustHappened(false);
 			};
-			EvalInfo info = new EvalInfo(true, true).withSliders(true)
-					.addDegree(app.getKernel().getAngleUnitUsesDegrees())
-					.withUserEquation(true);
+			EvalInfo info = new EvalInfo(true, true)
+					.withSliders(true)
+					.addDegree(app.getKernel().getAngleUnitUsesDegrees());
+//					.withUserEquation(true);
 			app.getKernel().getAlgebraProcessor()
 					.processAlgebraCommandNoExceptionHandling(input, true,
 							getErrorHandler(valid, explicit), info, callback);

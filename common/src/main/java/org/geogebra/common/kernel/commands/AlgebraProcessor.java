@@ -3019,11 +3019,16 @@ public class AlgebraProcessor {
 			geo.setLineOpacity(
 					EuclidianStyleConstants.OBJSTYLE_DEFAULT_LINE_OPACITY_EQUATION_GEOMETRY);
 		}
-		if ((info.isForceUserEquation()
-				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 condition needs explanation
-				&& geo instanceof EquationValue) {
-			((EquationValue) geo).setToUser();
+		// TODO APPS-5867 implement forceUserEquation behaviour using EquationBehaviour
+		if (geo instanceof EquationValue &&
+				!app.getSettings().getCasSettings().isEnabled()) { // TODO APPS-5867 condition needs explanation
+			int todo = 0;
 		}
+//		if ((info.isForceUserEquation()
+//				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 condition needs explanation
+//				&& geo instanceof EquationValue) {
+//			((EquationValue) geo).setToUser();
+//		}
 
 		if (geo.isFunctionOrEquationFromUser()) {
 			geo.setFixed(true);
@@ -3415,11 +3420,16 @@ public class AlgebraProcessor {
 				GeoElement[] results = processExpressionNode(en,
 						new EvalInfo(false));
 				GeoElement geo = results[0];
-				if ((info.isForceUserEquation()
-						|| !app.getSettings().getCasSettings().isEnabled())
-						&& Equation.isAlgebraEquation(geo)) {
-					((EquationValue) geo).setToUser();
+				// TODO APPS-5867 implement forceUserEquation behaviour using EquationBehaviour
+				if (Equation.isAlgebraEquation(geo) &&
+						!app.getSettings().getCasSettings().isEnabled()) {
+					int todo = 0;
 				}
+//				if ((info.isForceUserEquation()
+//						|| !app.getSettings().getCasSettings().isEnabled())
+//						&& Equation.isAlgebraEquation(geo)) {
+//					((EquationValue) geo).setToUser();
+//				}
 				// add to list
 				geoElements.add(geo);
 				if (geo.isLabelSet() || geo.isLocalVariable()
