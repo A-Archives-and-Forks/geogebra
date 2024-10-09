@@ -166,6 +166,8 @@ public class AppConfigGraphing3D extends AppConfigGraphing {
 		return false;
 	}
 
+	// TODO APPS-5867 which EquationBehaviour should apply?
+
 	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getEnforcedLineEquationForm() {
