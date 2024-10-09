@@ -472,6 +472,7 @@ public class GeoPlane3D extends GeoElement3D
 
 	@Override
 	final public void setToUser() {
+		// TODO APPS_5867 use setEquationForm
 		setMode(EquationForm.Linear.USER.rawValue);
 	}
 

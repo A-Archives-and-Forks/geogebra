@@ -81,6 +81,8 @@ public class AlgebraStyleTest extends BaseUnitTest {
 		}
 	}
 
+	// TODO change to
+	//  private static void checkDescriptionMode(String def, DescriptionMode mode) {
 	private static void checkRows(String def, int rows) {
 		EvalInfo evalInfo = new EvalInfo(true);
 		GeoElementND[] el = ap.processAlgebraCommandNoExceptionHandling(def,
@@ -92,6 +94,8 @@ public class AlgebraStyleTest extends BaseUnitTest {
 				el[0].getDescriptionMode());
 	}
 
+	// TODO change to
+	//  checkEquationValue(String def, EquationForm.Linear/Quadrid equationForm, String expectedValue)
 	private static String checkEquation(String def, int mode, String check) {
 		GeoElementND[] el = ap.processAlgebraCommandNoExceptionHandling(def,
 				false, TestErrorHandler.INSTANCE, false, null);
@@ -101,6 +105,8 @@ public class AlgebraStyleTest extends BaseUnitTest {
 		return el[0].getLabelSimple();
 	}
 
+	// TODO change to
+	//  checkEquationValueAfterReload(String def, EquationForm.Linear/Quadrid equationForm, String expectedValue)
 	private static void checkEquationReload(String def, int mode,
 			String check) {
 		String label = checkEquation(def, mode, check);
