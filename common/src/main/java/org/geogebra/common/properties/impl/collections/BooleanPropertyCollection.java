@@ -14,4 +14,5 @@ public class BooleanPropertyCollection<T extends BooleanProperty>
 	public BooleanPropertyCollection(T[] properties) {
 		super(properties);
 	}
+
 }

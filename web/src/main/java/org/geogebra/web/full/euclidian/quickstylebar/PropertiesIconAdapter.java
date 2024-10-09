@@ -3,8 +3,12 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
+import org.geogebra.common.properties.impl.objects.ItalicProperty;
+import org.geogebra.common.properties.impl.objects.UnderlineProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.resources.SVGResource;
 
@@ -96,10 +100,19 @@ public class PropertiesIconAdapter {
 					property).getValueIcons();
 			return PropertiesIconAdapter.getIcon(propertyIcons[
 					((IconsEnumeratedProperty<?>) property).getIndex()]);
-		} else if (property instanceof RangePropertyCollection<?, ?>
-				&& ((RangePropertyCollection<?, ?>) property).getProperties()[0]
+		} else if (property instanceof RangePropertyCollection<?>
+				&& ((RangePropertyCollection<?>) property).getFirstProperty()
 				instanceof ImageOpacityProperty) {
 			return MaterialDesignResources.INSTANCE.opacity_black();
+		} else if (property instanceof BooleanPropertyCollection<?>) {
+			Property firstProperty = ((BooleanPropertyCollection<?>) property).getFirstProperty();
+			if (firstProperty instanceof BoldProperty) {
+				return MaterialDesignResources.INSTANCE.text_bold_black();
+			} else if (firstProperty instanceof ItalicProperty) {
+				return MaterialDesignResources.INSTANCE.text_italic_black();
+			} else if (firstProperty instanceof UnderlineProperty) {
+				return MaterialDesignResources.INSTANCE.text_underline_black();
+			}
 		}
 		return MaterialDesignResources.INSTANCE.stylebar_empty();
 	}

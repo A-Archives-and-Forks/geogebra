@@ -5,8 +5,8 @@ import org.geogebra.common.properties.RangeProperty;
 /**
  * Handles a collection of RangeProperty objects as a single RangeProperty.
  */
-public class RangePropertyCollection<T extends RangeProperty<V>, V extends Number & Comparable<V>>
-		extends AbstractValuedPropertyCollection<T, V> implements RangeProperty<V> {
+public class RangePropertyCollection<T extends RangeProperty<Integer>>
+		extends AbstractValuedPropertyCollection<T, Integer> implements RangeProperty<Integer> {
 
 	/**
 	 * @param properties properties to handle
@@ -16,23 +16,18 @@ public class RangePropertyCollection<T extends RangeProperty<V>, V extends Numbe
 	}
 
 	@Override
-	public V getStep() {
+	public Integer getStep() {
 		return getFirstProperty().getStep();
 	}
 
 	@Override
-	public V getMin() {
+	public Integer getMin() {
 		return getFirstProperty().getMin();
 	}
 
 	@Override
-	public V getMax() {
+	public Integer getMax() {
 		return getFirstProperty().getMax();
-	}
-
-	@Override
-	public T[] getProperties() {
-		return super.getProperties();
 	}
 
 }

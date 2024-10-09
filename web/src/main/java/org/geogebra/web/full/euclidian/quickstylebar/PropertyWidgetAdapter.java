@@ -58,7 +58,7 @@ public class PropertyWidgetAdapter {
 			enumeratedPropertyIconButton.setActive(finalI == iconProperty.getIndex());
 			buttonListComponent.add(enumeratedPropertyIconButton);
 			enumeratedPropertyButtons.add(enumeratedPropertyIconButton);
-			}
+		}
 
 		return buttonListComponent;
 	}
@@ -73,7 +73,7 @@ public class PropertyWidgetAdapter {
 	 * @param geo - geo element
 	 * @return slider based on range property
 	 */
-	public SliderWithProperty getSliderWidget(RangePropertyCollection<?, ?> property,
+	public SliderWithProperty getSliderWidget(RangePropertyCollection<?> property,
 			GeoElement geo) {
 		return new SliderWithProperty(appW, property, geo.getLineType(),
 				geo.getLineThickness(), geo.getObjectColor());
