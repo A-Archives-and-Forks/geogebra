@@ -35,6 +35,7 @@ public class TopbarController {
 	 * on menu pressed
 	 */
 	public void onMenuToggle() {
+		appW.closePopups();
 		appW.hideKeyboard();
 		appW.toggleMenu();
 	}
@@ -142,6 +143,7 @@ public class TopbarController {
 	 * @param fullscreenBtn - fullscreen button
 	 */
 	public void onFullscreenExit(IconButton fullscreenBtn) {
+		appW.closePopups();
 		zoomController.onExitFullscreen(null, getFullscreenBtnSelectCB(fullscreenBtn));
 	}
 
@@ -166,11 +168,9 @@ public class TopbarController {
 	}
 
 	private void initSettingsContextMenu(IconButton anchor) {
-		if (settingsContextMenu == null) {
-			settingsContextMenu = new ContextMenuGraphicsWindowW(appW, 0, 0, false);
-			getSettingsContextMenu().setAutoHideEnabled(false);
-			getSettingsContextMenu().addCloseHandler(event -> anchor.setActive(false));
-		}
+		settingsContextMenu = new ContextMenuGraphicsWindowW(appW, 0, 0, false);
+		getSettingsContextMenu().setAutoHideEnabled(false);
+		getSettingsContextMenu().addCloseHandler(event -> anchor.setActive(false));
 	}
 
 	private void toggleSettingsContextMenu(IconButton anchor) {
