@@ -23,16 +23,17 @@ public interface EquationValue {
 	public void setToUser();
 
 	/**
-	 * @param style
-	 *            equation style (aka form)
-	 * @param parameter
-	 *            parameter name
-	 * @return whether style is valid for this objecttype
-	 */
-	public boolean setEquationStyleFromXML(String style, String parameter);
-
-	/**
 	 * Implicit (expanded) equation
 	 */
 	public void setToImplicit();
+
+	/**
+	 * Set the equation form from a string value coming from XML.
+	 * @param equationForm
+	 *            equation form (e.g., "implicit", "explicit", "user")
+	 * @param parameter
+	 *            parameter name
+	 * @return whether equation form is valid for this objecttype
+	 */
+	public boolean setEquationFormFromXML(String equationForm, String parameter);
 }

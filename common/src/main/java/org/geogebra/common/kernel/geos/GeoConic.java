@@ -755,7 +755,7 @@ public class GeoConic extends GeoConicND implements ConicMirrorable,
 	}
 
 	@Override
-	public boolean setEquationStyleFromXML(String style, String parameter) {
+	public boolean setEquationFormFromXML(String style, String parameter) {
 		if ("implicit".equals(style)) {
 			setToImplicit();
 		} else if ("specific".equals(style)) {
