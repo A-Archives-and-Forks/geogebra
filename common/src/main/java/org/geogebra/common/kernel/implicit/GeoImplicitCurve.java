@@ -703,7 +703,7 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 
 	@Override
 	public boolean isLaTeXDrawableGeo() {
-		return getToStringMode() == EquationForm.Linear.USER || coeff == null;
+		return getToStringMode() == EquationForm.Linear.USER.rawValue || coeff == null;
 	}
 
 	/**
@@ -1956,7 +1956,7 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 
 	@Override
 	public void setToUser() {
-		toStringMode = EquationForm.Linear.USER;
+		toStringMode = EquationForm.Linear.USER.rawValue;
 	}
 
 	@Override
@@ -1972,12 +1972,12 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 
 	@Override
 	public boolean isInputForm() {
-		return getToStringMode() == EquationForm.Linear.USER;
+		return getToStringMode() == EquationForm.Linear.USER.rawValue;
 	}
 
 	@Override
 	public void setToImplicit() {
-		toStringMode = EquationForm.Linear.IMPLICIT;
+		toStringMode = EquationForm.Linear.IMPLICIT.rawValue;
 	}
 
 	@Override
@@ -2446,14 +2446,14 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 
 	@Override
 	public DescriptionMode getDescriptionMode() {
-		if (toStringMode == EquationForm.Linear.USER) {
+		if (toStringMode == EquationForm.Linear.USER.rawValue) {
 			return DescriptionMode.VALUE;
 		}
 		return super.getDescriptionMode();
 	}
 
 	@Override
-	public boolean setEquationStyleFromXML(String style, String parameter) {
+	public boolean setEquationFormFromXML(String style, String parameter) {
 		return false;
 	}
 

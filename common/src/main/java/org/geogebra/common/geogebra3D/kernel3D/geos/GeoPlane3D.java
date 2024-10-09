@@ -457,7 +457,7 @@ public class GeoPlane3D extends GeoElement3D
 		}
 		// we need to keep 0z in equation to be sure that y+0z=1 will be loaded
 		// as a plane
-		if (getToStringMode() == EquationForm.Linear.USER
+		if (getToStringMode() == EquationForm.Linear.USER.rawValue
 				&& getDefinition() != null) {
 			return getDefinition().toValueString(tpl);
 		}
@@ -472,12 +472,12 @@ public class GeoPlane3D extends GeoElement3D
 
 	@Override
 	final public void setToUser() {
-		setMode(EquationForm.Linear.USER);
+		setMode(EquationForm.Linear.USER.rawValue);
 	}
 
 	@Override
 	final public void setToImplicit() {
-		setMode(EquationForm.Linear.IMPLICIT);
+		setMode(EquationForm.Linear.IMPLICIT.rawValue);
 	}
 
 	/**
@@ -912,13 +912,13 @@ public class GeoPlane3D extends GeoElement3D
 
 	@Override
 	public boolean isLaTeXDrawableGeo() {
-		return getToStringMode() == EquationForm.Linear.USER;
+		return getToStringMode() == EquationForm.Linear.USER.rawValue;
 	}
 
 	@Override
-	public boolean setEquationStyleFromXML(String style, String parameter) {
+	public boolean setEquationFormFromXML(String style, String parameter) {
 		if ("implicit".equals(style)) {
-			toStringMode = EquationForm.Linear.IMPLICIT;
+			toStringMode = EquationForm.Linear.IMPLICIT.rawValue;
 		} else if ("user".equals(style)) {
 			setToUser();
 		} else {

@@ -14,33 +14,38 @@ import org.geogebra.common.kernel.kernelND.GeoConicND;
 public class DefaultEquationBehaviour implements EquationBehaviour {
 
 	@Override
-	public int getLinearAlgebraInputEquationForm() {
-		return -1;
+	public EquationForm.Linear getLinearAlgebraInputEquationForm() {
+		return null;
 	}
 
 	@Override
-	public int getLineCommandEquationForm() {
-		return -1;
+	public EquationForm.Linear getLineCommandEquationForm() {
+		return null;
 	}
 
 	@Override
-	public int getFitLineCommandEquationForm() {
+	public EquationForm.Linear getFitLineCommandEquationForm() {
 		return EquationForm.Linear.EXPLICIT;
 	}
 
 	@Override
-	public int getRayCommandEquationForm() {
-		return -1;
+	public EquationForm.Linear getRayCommandEquationForm() {
+		return null;
 	}
 
 	@Override
-	public int getConicAlgebraInputEquationForm() {
-		return -1;
+	public EquationForm.Quadric getConicAlgebraInputEquationForm() {
+		return null;
 	}
 
 	@Override
-	public int getConicCommandEquationForm() {
-		return -1;
+	public EquationForm.Quadric getConicCommandEquationForm() {
+		return null;
+	}
+
+	@Override
+	public EquationForm.Other getOtherAlgebraInputEquationForm() {
+		return null;
 	}
 
 	@Override

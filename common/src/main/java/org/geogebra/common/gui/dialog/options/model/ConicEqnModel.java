@@ -141,33 +141,33 @@ public class ConicEqnModel extends MultipleOptionsModel {
 			mode = -1;
 		}
 		switch (mode) {
-		case EquationForm.Quadric.SPECIFIC:
+		case EquationForm.Quadric.CONST_SPECIFIC:
 			if (specificIndex > -1) {
 				getListener().setSelectedIndex(specificIndex);
 			}
 			break;
 
-		case EquationForm.Quadric.EXPLICIT:
+		case EquationForm.Quadric.CONST_EXPLICIT:
 			if (explicitIndex > -1) {
 				getListener().setSelectedIndex(explicitIndex);
 			}
 			break;
 
-		case EquationForm.Quadric.IMPLICIT:
+		case EquationForm.Quadric.CONST_IMPLICIT:
 			getListener().setSelectedIndex(implicitIndex);
 			break;
-		case EquationForm.Quadric.PARAMETRIC:
+		case EquationForm.Quadric.CONST_PARAMETRIC:
 			getListener().setSelectedIndex(parametricIndex);
 			break;
-		case EquationForm.Quadric.USER:
+		case EquationForm.Quadric.CONST_USER:
 			getListener().setSelectedIndex(userIndex);
 			break;
-		case EquationForm.Quadric.VERTEX:
+		case EquationForm.Quadric.CONST_VERTEX:
 			if (vertexformIndex > -1) {
 				getListener().setSelectedIndex(vertexformIndex);
 			}
 			break;
-		case EquationForm.Quadric.CONICFORM:
+		case EquationForm.Quadric.CONST_CONICFORM:
 			if (conicformIndex > -1) {
 				getListener().setSelectedIndex(conicformIndex);
 			}

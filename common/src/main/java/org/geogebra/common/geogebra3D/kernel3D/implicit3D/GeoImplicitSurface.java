@@ -963,11 +963,11 @@ public class GeoImplicitSurface extends GeoElement3D
 
 	@Override
 	final public void setToUser() {
-		toStringMode = EquationForm.Linear.USER;
+		toStringMode = EquationForm.Linear.USER.rawValue;
 	}
 
 	@Override
-	public boolean setEquationStyleFromXML(String style, String parameter) {
+	public boolean setEquationFormFromXML(String style, String parameter) {
 		return false;
 	}
 

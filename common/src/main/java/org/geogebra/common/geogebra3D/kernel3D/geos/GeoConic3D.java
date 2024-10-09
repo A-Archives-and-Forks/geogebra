@@ -81,7 +81,7 @@ public class GeoConic3D extends GeoConicND
 	 *            if this is an intersection curve
 	 */
 	public GeoConic3D(Construction c, boolean isIntersection) {
-		super(c, 2, isIntersection, EquationForm.Quadric.PARAMETRIC);
+		super(c, 2, isIntersection, EquationForm.Quadric.CONST_PARAMETRIC);
 	}
 
 	@Override

@@ -20,9 +20,9 @@ public class LineEqnModel extends MultipleOptionsModel {
 	public LineEqnModel(App app) {
 		super(app);
 
-		eqnValues = Arrays.asList(EquationForm.Linear.IMPLICIT,
-				EquationForm.Linear.EXPLICIT, EquationForm.Linear.PARAMETRIC,
-				EquationForm.Linear.GENERAL, EquationForm.Linear.USER);
+		eqnValues = Arrays.asList(EquationForm.Linear.IMPLICIT.rawValue,
+				EquationForm.Linear.EXPLICIT.rawValue, EquationForm.Linear.PARAMETRIC.rawValue,
+				EquationForm.Linear.GENERAL.rawValue, EquationForm.Linear.USER.rawValue);
 
 	}
 

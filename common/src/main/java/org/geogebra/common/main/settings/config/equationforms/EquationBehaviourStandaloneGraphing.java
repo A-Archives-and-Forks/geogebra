@@ -9,28 +9,34 @@ import org.geogebra.common.kernel.EquationForm;
  */
 public final class EquationBehaviourStandaloneGraphing extends DefaultEquationBehaviour {
 
+	/**
+	 * From <a href="https://geogebra-jira.atlassian.net/wiki/spaces/A/pages/836141057/Standalone+Graphing">Wiki</a>:
+	 * "When manually entered, Lines, Conics, Implicit Equations and Functions are restricted to
+	 * user/input form."
+	 * @return
+	 */
 	@Override
-	public int getLinearAlgebraInputEquationForm() {
+	public EquationForm.Linear getLinearAlgebraInputEquationForm() {
 		return EquationForm.Linear.USER;
 	}
 
 	@Override
-	public int getLineCommandEquationForm() {
+	public EquationForm.Linear getLineCommandEquationForm() {
 		return EquationForm.Linear.EXPLICIT;
 	}
 
 	@Override
-	public int getRayCommandEquationForm() {
+	public EquationForm.Linear getRayCommandEquationForm() {
 		return EquationForm.Linear.USER;
 	}
 
 	@Override
-	public int getConicAlgebraInputEquationForm() {
+	public EquationForm.Quadric getConicAlgebraInputEquationForm() {
 		return EquationForm.Quadric.USER;
 	}
 
 	@Override
-	public int getConicCommandEquationForm() {
+	public EquationForm.Quadric getConicCommandEquationForm() {
 		return EquationForm.Quadric.USER;
 	}
 

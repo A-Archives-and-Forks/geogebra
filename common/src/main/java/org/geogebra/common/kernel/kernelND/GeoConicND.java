@@ -13,6 +13,7 @@ the Free Software Foundation.
 package org.geogebra.common.kernel.kernelND;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
@@ -153,7 +154,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	 *            dimension
 	 */
 	public GeoConicND(Construction c, int dimension) {
-		this(c, dimension, false, EquationForm.Quadric.IMPLICIT);
+		this(c, dimension, false, EquationForm.Quadric.IMPLICIT.rawValue);
 	}
 
 	/**
@@ -1309,12 +1310,12 @@ public abstract class GeoConicND extends GeoQuadricND
 
 	/** Changes equation mode to Implicit */
 	final public void setToImplicit() {
-		setMode(EquationForm.Quadric.IMPLICIT);
+		setEquationForm(EquationForm.Quadric.IMPLICIT);
 	}
 
 	/** Changes equation mode to Explicit */
 	final public void setToExplicit() {
-		setMode(EquationForm.Quadric.EXPLICIT);
+		setEquationForm(EquationForm.Quadric.EXPLICIT);
 	}
 
 	/**
@@ -1324,7 +1325,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	 *            new parameter name
 	 */
 	final public void setToParametric(String parameter) {
-		setMode(EquationForm.Quadric.PARAMETRIC);
+		setEquationForm(EquationForm.Quadric.PARAMETRIC);
 		if (parameter != null) {
 			this.parameter = parameter;
 		}
@@ -1332,44 +1333,21 @@ public abstract class GeoConicND extends GeoQuadricND
 
 	/** Changes equation mode to User/Input */
 	final public void setToUser() {
-		setMode(EquationForm.Quadric.USER);
+		setEquationForm(EquationForm.Quadric.USER);
 	}
 
 	/** Changes equation mode to Vertex form */
 	final public void setToVertexform() {
-		setMode(EquationForm.Quadric.VERTEX);
+		setEquationForm(EquationForm.Quadric.VERTEX);
 	}
 
 	/** Changes equation mode to Conic form */
 	final public void setToConicform() {
-		setMode(EquationForm.Quadric.CONICFORM);
+		setEquationForm(EquationForm.Quadric.CONICFORM);
 	}
 
 	final public void setMode(int mode) {
 		setEquationForm(mode);
-	}
-
-	public void setEquationForm(int equationForm) {
-		if (equationForm == -1) {
-			return; // ignore value for "undefined" (see EquationForms)
-		}
-		switch (equationForm) {
-		case EquationForm.Quadric.IMPLICIT:
-		case EquationForm.Quadric.EXPLICIT:
-		case EquationForm.Quadric.SPECIFIC:
-		case EquationForm.Quadric.PARAMETRIC:
-		case EquationForm.Quadric.USER:
-		case EquationForm.Quadric.VERTEX:
-		case EquationForm.Quadric.CONICFORM:
-			toStringMode = equationForm;
-			break;
-		default:
-			break;
-		}
-	}
-
-	public int getEquationForm() {
-		return toStringMode;
 	}
 
 	@Override
@@ -1620,11 +1598,11 @@ public abstract class GeoConicND extends GeoQuadricND
 			sb.append("=0");
 			return sb;
 		}
-		if (getToStringMode() == EquationForm.Quadric.PARAMETRIC) {
+		if (getToStringMode() == EquationForm.Quadric.PARAMETRIC.rawValue) {
 			return this.buildParametricValueString(tpl, 2);
 		}
 		if (getDefinition() != null
-				&& getToStringMode() == EquationForm.Quadric.USER) {
+				&& getToStringMode() == EquationForm.Quadric.USER.rawValue) {
 			return sbToValueString.append(getDefinition().toValueString(tpl));
 		}
 		if (type == CONIC_LINE) {
@@ -1649,7 +1627,7 @@ public abstract class GeoConicND extends GeoQuadricND
 		}
 
 		switch (getToStringMode()) {
-		case EquationForm.Quadric.SPECIFIC:
+		case EquationForm.Quadric.CONST_SPECIFIC:
 			if (!isSpecificPossible()) {
 				return kernel.buildImplicitEquation(coeffs, myVars,
 						true, false, tpl, true);
@@ -1790,17 +1768,17 @@ public abstract class GeoConicND extends GeoQuadricND
 
 			}
 
-		case EquationForm.Quadric.EXPLICIT:
+		case EquationForm.Quadric.CONST_EXPLICIT:
 			if (isExplicitPossible()) {
 				return kernel.buildExplicitConicEquation(coeffs, myVars, 4, tpl);
 			}
 
-		case EquationForm.Quadric.VERTEX:
+		case EquationForm.Quadric.CONST_VERTEX:
 			if (isVertexformPossible()) {
 				return kernel.buildVertexformEquation(coeffs, myVars, tpl);
 			}
 
-		case EquationForm.Quadric.CONICFORM:
+		case EquationForm.Quadric.CONST_CONICFORM:
 			if (isConicformPossible()) {
 				return kernel.buildConicformEquation(coeffs, myVars, tpl);
 			}

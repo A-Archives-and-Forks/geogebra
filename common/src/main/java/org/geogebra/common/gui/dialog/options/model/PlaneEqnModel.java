@@ -16,8 +16,8 @@ public class PlaneEqnModel extends MultipleOptionsModel {
 	public PlaneEqnModel(App app) {
 		super(app);
 
-		eqnValues = Arrays.asList(EquationForm.Linear.IMPLICIT,
-				EquationForm.Linear.USER);
+		eqnValues = Arrays.asList(EquationForm.Linear.IMPLICIT.rawValue,
+				EquationForm.Linear.USER.rawValue);
 	}
 
 	@Override

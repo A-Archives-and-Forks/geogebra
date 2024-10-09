@@ -32,7 +32,7 @@ public class GeoLineTest extends BaseUnitTest {
 	public void testCoefficientRounding() {
 		GeoLine line = add("Line((0,11.25), (1,11.259))");
 		assertThat(line, hasValue("-0.01x + y = 11.25"));
-		line.setToStringMode(EquationForm.Linear.EXPLICIT);
+		line.setEquationForm(EquationForm.Linear.EXPLICIT);
 		assertThat(line, hasValue("y = 0.01x + 11.25"));
 	}
 
@@ -40,7 +40,7 @@ public class GeoLineTest extends BaseUnitTest {
 	public void testCoefficientRoundingSmall() {
 		GeoLine line = add("Line((0,11.25), (1,11.2509))");
 		assertThat(line, hasValue("0x + y = 11.25"));
-		line.setToStringMode(EquationForm.Linear.EXPLICIT);
+		line.setEquationForm(EquationForm.Linear.EXPLICIT);
 		assertThat(line, hasValue("y = 11.25"));
 	}
 

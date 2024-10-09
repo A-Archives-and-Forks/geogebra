@@ -103,15 +103,13 @@ public class AlgoDependentGeoCopy extends AlgoElement implements DependentAlgo {
 
 	@Override
 	final public String toString(StringTemplate tpl) {
-		// make sure X=(1,2)+t(3,4) does not go to XML as "expression" argument
-		// value
+		// make sure X=(1,2)+t(3,4) does not go to XML as "expression" argument value
 		if (tpl.hasType(StringType.GEOGEBRA_XML) && !origGeo.isLabelSet()
 				&& origGeo instanceof GeoLine
-				&& origGeo
-						.getToStringMode() == EquationForm.Linear.PARAMETRIC) {
-			((GeoLine) origGeo).setMode(EquationForm.Linear.EXPLICIT);
+				&& origGeo.getToStringMode() == EquationForm.Linear.PARAMETRIC.rawValue) {
+			((GeoLine) origGeo).setEquationForm(EquationForm.Linear.EXPLICIT);
 			String ret = origGeo.getLabel(tpl);
-			((GeoLine) origGeo).setMode(EquationForm.Linear.PARAMETRIC);
+			((GeoLine) origGeo).setEquationForm(EquationForm.Linear.PARAMETRIC);
 			return ret;
 		}
 		// we use the expression as it may add $ signs

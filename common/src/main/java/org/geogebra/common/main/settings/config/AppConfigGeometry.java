@@ -58,9 +58,10 @@ public class AppConfigGeometry extends AbstractAppConfig {
 		return "Algebra";
 	}
 
+	@Deprecated // replaced by getEquationBehaviour()
 	@Override
 	public int getLineDisplayStyle() {
-		return EquationForm.Linear.EXPLICIT;
+		return EquationForm.Linear.EXPLICIT.rawValue;
 	}
 
 	@Override

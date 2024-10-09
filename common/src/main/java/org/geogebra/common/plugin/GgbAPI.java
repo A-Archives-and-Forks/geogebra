@@ -1855,33 +1855,27 @@ public abstract class GgbAPI implements JavaScriptAPI {
 		GeoElement geo = kernel.lookupLabel(objName);
 
 		if (geo instanceof GeoLine) {
-
 			GeoLine line = (GeoLine) geo;
-
 			if ("parametric".equals(style)) {
-				line.setMode(EquationForm.Linear.PARAMETRIC);
+				line.setEquationForm(EquationForm.Linear.PARAMETRIC);
 			} else if ("explicit".equals(style)) {
-				line.setMode(EquationForm.Linear.EXPLICIT);
+				line.setEquationForm(EquationForm.Linear.EXPLICIT);
 			} else if ("implicit".equals(style)) {
-				line.setMode(EquationForm.Linear.IMPLICIT);
+				line.setEquationForm(EquationForm.Linear.IMPLICIT);
 			}
-
 			geo.updateRepaint();
 
 		} else if (geo instanceof GeoConic) {
-
 			GeoConic conic = (GeoConic) geo;
-
 			if ("parametric".equals(style)) {
-				conic.setToStringMode(EquationForm.Quadric.PARAMETRIC);
+				conic.setEquationForm(EquationForm.Quadric.PARAMETRIC);
 			} else if ("explicit".equals(style)) {
-				conic.setToStringMode(EquationForm.Quadric.EXPLICIT);
+				conic.setEquationForm(EquationForm.Quadric.EXPLICIT);
 			} else if ("implicit".equals(style)) {
-				conic.setToStringMode(EquationForm.Quadric.IMPLICIT);
+				conic.setEquationForm(EquationForm.Quadric.IMPLICIT);
 			} else if ("specific".equals(style)) {
-				conic.setToStringMode(EquationForm.Quadric.SPECIFIC);
+				conic.setEquationForm(EquationForm.Quadric.SPECIFIC);
 			}
-
 			geo.updateRepaint();
 		}
 	}

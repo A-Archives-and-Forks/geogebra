@@ -111,7 +111,7 @@ public abstract class GeoQuadricND extends GeoElement
 	 */
 	public GeoQuadricND(Construction c) {
 		super(c);
-		toStringMode = EquationForm.Quadric.IMPLICIT;
+		toStringMode = EquationForm.Quadric.IMPLICIT.rawValue;
 	}
 
 	/**
@@ -126,7 +126,7 @@ public abstract class GeoQuadricND extends GeoElement
 	 */
 	public GeoQuadricND(Construction c, int dimension, boolean isIntersection) {
 		this(c);
-		this.toStringMode = EquationForm.Quadric.IMPLICIT;
+		this.toStringMode = EquationForm.Quadric.IMPLICIT.rawValue;
 		this.isIntersection = isIntersection;
 		// moved from GeoElement's constructor
 		// must be called from the subclass, see
@@ -628,7 +628,7 @@ public abstract class GeoQuadricND extends GeoElement
 
 	@Override
 	public DescriptionMode getDescriptionMode() {
-		if (toStringMode == EquationForm.Quadric.USER
+		if (toStringMode == EquationForm.Quadric.USER.rawValue
 				&& (isIndependent() || getParentAlgorithm().getClassName() == Algos.Expression)) {
 			return DescriptionMode.VALUE;
 		}
@@ -683,11 +683,37 @@ public abstract class GeoQuadricND extends GeoElement
 		return null;
 	}
 
+	public void setToUser() {
+		setEquationForm(EquationForm.Quadric.USER);
+	}
+
+	public void setToImplicit() {
+		setEquationForm(EquationForm.Quadric.IMPLICIT);
+	}
+
 	/**
 	 * Make this specific eg. (x-a)^2+(y-b)^2+(z-c)^2
 	 */
-	public final void setToSpecific() {
-		toStringMode = EquationForm.Quadric.SPECIFIC;
+	public void setToSpecific() {
+		setEquationForm(EquationForm.Quadric.SPECIFIC);
+	}
+
+	public void setEquationForm(EquationForm.Quadric equationForm) {
+		setEquationForm(equationForm.rawValue);
+	}
+
+	public void setEquationForm(int equationForm) {
+		if (equationForm == -1) {
+			return; // ignore value for "undefined" (see EquationForms)
+		}
+		if (Arrays.stream(EquationForm.Quadric.values())
+				.anyMatch(form -> form.rawValue == equationForm)) {
+			this.toStringMode = equationForm;
+		}
+	}
+
+	public int getEquationForm() {
+		return toStringMode;
 	}
 
 	protected boolean hasEqualMatrix(GeoQuadricND conic) {

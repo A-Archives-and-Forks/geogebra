@@ -113,7 +113,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(EquationForm.Linear.IMPLICIT);
+				line1.setEquationForm(EquationForm.Linear.IMPLICIT);
 				line1.updateRepaint();
 			}
 		}
@@ -130,7 +130,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(EquationForm.Linear.EXPLICIT);
+				line1.setEquationForm(EquationForm.Linear.EXPLICIT);
 				line1.updateRepaint();
 			}
 		}
@@ -147,7 +147,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(EquationForm.Linear.GENERAL);
+				line1.setEquationForm(EquationForm.Linear.GENERAL);
 				line1.updateRepaint();
 			}
 		}
@@ -164,7 +164,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1 instanceof GeoLine && !(geo1 instanceof GeoSegment)) {
 				GeoLine line1 = (GeoLine) geo1;
-				line1.setMode(EquationForm.Linear.PARAMETRIC);
+				line1.setEquationForm(EquationForm.Linear.PARAMETRIC);
 				line1.updateRepaint();
 			}
 		}
@@ -741,16 +741,13 @@ public abstract class ContextMenuGeoElement {
 	public boolean needsInputFormItem(GeoElement geo) {
 		if (Equation.isAlgebraEquation(geo)) {
 			if (geo.isGeoLine()) {
-				return geo
-						.getToStringMode() != EquationForm.Linear.USER;
+				return geo.getToStringMode() != EquationForm.Linear.USER.rawValue;
 			}
 			if (geo.isGeoPlane()) {
-				return geo
-						.getToStringMode() != EquationForm.Linear.USER;
+				return geo.getToStringMode() != EquationForm.Linear.USER.rawValue;
 			}
 			if (geo.isGeoConic() || geo.isGeoQuadric()) {
-				return geo
-						.getToStringMode() != EquationForm.Quadric.USER;
+				return geo.getToStringMode() != EquationForm.Quadric.USER.rawValue;
 			}
 			if (geo instanceof GeoImplicit) {
 				return !((GeoImplicit) geo).isInputForm();

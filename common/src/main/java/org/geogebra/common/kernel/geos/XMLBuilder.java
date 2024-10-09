@@ -207,21 +207,21 @@ public class XMLBuilder {
 	public static void appendEquationTypeLine(StringBuilder sb, int toStringMode,
 			String parameter) {
 		switch (toStringMode) {
-		case EquationForm.Linear.PARAMETRIC:
+		case EquationForm.Linear.CONST_PARAMETRIC:
 			sb.append("\t<eqnStyle style=\"parametric\" parameter=\"");
 			sb.append(parameter);
 			sb.append("\"/>\n");
 			break;
-		case EquationForm.Linear.IMPLICIT:
+		case EquationForm.Linear.CONST_IMPLICIT:
 			appendType(sb, "implicit");
 			break;
-		case EquationForm.Linear.EXPLICIT:
+		case EquationForm.Linear.CONST_EXPLICIT:
 			appendType(sb, "explicit");
 			break;
-		case EquationForm.Linear.GENERAL:
+		case EquationForm.Linear.CONST_GENERAL:
 			appendType(sb, "general");
 			break;
-		case EquationForm.Linear.USER:
+		case EquationForm.Linear.CONST_USER:
 			appendType(sb, "user");
 			break;
 		default:
@@ -255,22 +255,22 @@ public class XMLBuilder {
 			int toStringMode, String parameter) {
 		// implicit or specific mode
 		switch (toStringMode) {
-		case EquationForm.Quadric.SPECIFIC:
+		case EquationForm.Quadric.CONST_SPECIFIC:
 			XMLBuilder.appendType(sb, "specific");
 			break;
-		case EquationForm.Quadric.EXPLICIT:
+		case EquationForm.Quadric.CONST_EXPLICIT:
 			XMLBuilder.appendType(sb, "explicit");
 			break;
-		case EquationForm.Quadric.USER:
+		case EquationForm.Quadric.CONST_USER:
 			XMLBuilder.appendType(sb, "user");
 			break;
-		case EquationForm.Quadric.VERTEX:
+		case EquationForm.Quadric.CONST_VERTEX:
 			XMLBuilder.appendType(sb, "vertex");
 			break;
-		case EquationForm.Quadric.CONICFORM:
+		case EquationForm.Quadric.CONST_CONICFORM:
 			XMLBuilder.appendType(sb, "conic");
 			break;
-		case EquationForm.Quadric.PARAMETRIC:
+		case EquationForm.Quadric.CONST_PARAMETRIC:
 			sb.append("\t<eqnStyle style=\"parametric\"/>\n");
 			break;
 

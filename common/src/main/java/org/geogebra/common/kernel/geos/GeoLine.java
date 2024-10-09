@@ -20,6 +20,7 @@ package org.geogebra.common.kernel.geos;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -895,20 +896,17 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		setEquationForm(mode);
 	}
 
+	public void setEquationForm(EquationForm.Linear equationForm) {
+		setEquationForm(equationForm.rawValue);
+	}
+
 	public void setEquationForm(int equationForm) {
 		if (equationForm == -1) {
 			return; // ignore value for "undefined" (see EquationForms)
 		}
-		switch (equationForm) {
-		case EquationForm.Linear.IMPLICIT:
-		case EquationForm.Linear.EXPLICIT:
-		case EquationForm.Linear.PARAMETRIC:
-		case EquationForm.Linear.GENERAL:
-		case EquationForm.Linear.USER:
+		if (Arrays.stream(EquationForm.Linear.values())
+				.anyMatch(form -> form.rawValue == equationForm)) {
 			this.toStringMode = equationForm;
-			break;
-		default:
-			break;
 		}
 	}
 
@@ -973,8 +971,8 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		double[] g = new double[3];
 
 		if (!coefficientsDefined() || (DoubleUtil.isZero(x) && DoubleUtil.isZero(y)
-				&& toStringMode != EquationForm.Linear.USER)) {
-			if (toStringMode == EquationForm.Linear.PARAMETRIC) {
+				&& toStringMode != EquationForm.Linear.USER.rawValue)) {
+			if (toStringMode == EquationForm.Linear.PARAMETRIC.rawValue) {
 				return "X" + tpl.getEqualsWithSpace() + "(?, ?)";
 			} else {
 				// eg list = {x = ?}
@@ -983,13 +981,13 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		}
 
 		switch (toStringMode) {
-		case EquationForm.Linear.EXPLICIT: // /EQUATION
+		case EquationForm.Linear.CONST_EXPLICIT: // /EQUATION
 			g[0] = x;
 			g[1] = y;
 			g[2] = z;
 			return kernel.buildExplicitEquation(g, vars, tpl, true).toString();
 
-		case EquationForm.Linear.PARAMETRIC:
+		case EquationForm.Linear.CONST_PARAMETRIC:
 			getInhomPointOnLine(P); // point
 			StringBuilder sbBuildValueStr = getSbToString();
 			GeoCasCell casCell = getCorrespondingCasCell();
@@ -1010,7 +1008,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			sbBuildValueStr.append(")");
 			return sbBuildValueStr.toString();
 
-		case EquationForm.Linear.GENERAL:
+		case EquationForm.Linear.CONST_GENERAL:
 			g[0] = x;
 			g[1] = y;
 			g[2] = z;
@@ -1019,7 +1017,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			}
 			return kernel.buildImplicitEquation(g, vars,
 					false, false, tpl, false).toString();
-		case EquationForm.Linear.USER:
+		case EquationForm.Linear.CONST_USER:
 			if (getDefinition() != null) {
 				return getDefinition().toValueString(tpl);
 			}
@@ -1697,12 +1695,12 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	@Override
 	public boolean isParametric() {
-		return toStringMode == EquationForm.Linear.PARAMETRIC;
+		return toStringMode == EquationForm.Linear.PARAMETRIC.rawValue;
 	}
 
 	@Override
 	public ValueType getValueType() {
-		return toStringMode == EquationForm.Linear.PARAMETRIC ? ValueType.PARAMETRIC2D
+		return toStringMode == EquationForm.Linear.PARAMETRIC.rawValue ? ValueType.PARAMETRIC2D
 				: ValueType.EQUATION;
 	}
 
@@ -1765,7 +1763,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	@Override
 	public boolean isLaTeXDrawableGeo() {
-		return toStringMode == EquationForm.Linear.USER
+		return toStringMode == EquationForm.Linear.USER.rawValue
 				&& getDefinition() != null;
 	}
 
@@ -1817,7 +1815,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 
 	@Override
 	public DescriptionMode getDescriptionMode() {
-		if (toStringMode == EquationForm.Linear.USER
+		if (toStringMode == EquationForm.Linear.USER.rawValue
 				&& (isIndependent() || (getParentAlgorithm().getClassName() == Algos.Expression
 				&& isAllowedToShowValue()))) {
 			return DescriptionMode.VALUE;
@@ -1835,7 +1833,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	 * @return true if style was accepted as valid, or false otherwise.
 	 */
 	@Override
-	public boolean setEquationStyleFromXML(String style, String parameter) {
+	public boolean setEquationFormFromXML(String style, String parameter) {
 		if ("implicit".equals(style)) {
 			setToImplicit();
 		} else if ("explicit".equals(style)) {

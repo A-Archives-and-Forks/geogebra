@@ -1865,11 +1865,6 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 		}
 	}
 
-	@Override
-	final public void setToUser() {
-		toStringMode = EquationForm.Quadric.USER;
-	}
-
 	/**
 	 * Set whether this line should be visible in AV when undefined
 	 * 
@@ -1898,12 +1893,12 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 		}
 		StringBuilder sbToValueString = new StringBuilder();
 		if (getDefinition() != null
-				&& (getToStringMode() == EquationForm.Quadric.USER)) {
+				&& (getToStringMode() == EquationForm.Quadric.USER.rawValue)) {
 			return sbToValueString.append(getDefinition().toString(tpl));
 		}
 		switch (type) {
 		case QUADRIC_SPHERE:
-			if (getToStringMode() == EquationForm.Quadric.IMPLICIT) {
+			if (getToStringMode() == EquationForm.Quadric.IMPLICIT.rawValue) {
 				return buildImplicitEquation(tpl);
 			}
 			buildSphereNDString(sbToValueString, tpl);
@@ -3465,22 +3460,17 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 	}
 
 	@Override
-	public boolean setEquationStyleFromXML(String style, String parameter) {
+	public boolean setEquationFormFromXML(String style, String parameter) {
 		if ("implicit".equals(style)) {
 			setToImplicit();
 		} else if ("specific".equals(style)) {
-			toStringMode = EquationForm.Quadric.SPECIFIC;
+		 	setToSpecific();
 		} else if ("user".equals(style)) {
 			setToUser();
 		} else {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public void setToImplicit() {
-		toStringMode = EquationForm.Quadric.IMPLICIT;
 	}
 
 	@Override

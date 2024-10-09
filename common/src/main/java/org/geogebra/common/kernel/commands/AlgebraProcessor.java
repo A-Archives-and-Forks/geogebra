@@ -3035,13 +3035,13 @@ public class AlgebraProcessor {
 		}
 
 		if (geo instanceof GeoLine) {
-			int equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
-			if (equationForm != -1) {
+			EquationForm.Linear equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
+			if (equationForm != null) {
 				((GeoLine) geo).setEquationForm(equationForm);
 			}
 		} else if (geo instanceof GeoConic) {
-			int equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
-			if (equationForm != -1) {
+			EquationForm.Quadric equationForm = kernel.getEquationBehaviour().getConicAlgebraInputEquationForm();
+			if (equationForm != null) {
 				((GeoConic) geo).setEquationForm(equationForm);
 			}
 		}

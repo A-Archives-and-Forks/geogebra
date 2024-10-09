@@ -24,61 +24,59 @@ import org.geogebra.common.kernel.commands.EvalInfo;
 public interface EquationBehaviour {
 
 	/**
-	 * Customize the equation form for lines created from linear equations (e.g., "y = x").
-	 * @return One of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation form
-	 * should be taken from the construction defaults for lines (see note in header).
+	 * Customize the equation form for lines, implicit equations and functions (e.g., "y = x").
+	 * @return One of the constants defined in
+	 * {@link org.geogebra.common.kernel.EquationForm.Linear}, or null if the equation form
+	 * should be taken from the construction defaults (see note in header).
+	 * @see EquationBehaviour#getConicAlgebraInputEquationForm()
+	 * @see EquationBehaviour#getOtherAlgebraInputEquationForm()
 	 */
-	int getLinearAlgebraInputEquationForm();
+	EquationForm.Linear getLinearAlgebraInputEquationForm();
 
 	/**
 	 * Customize the equation form for lines created from a command or tool.
-	 * @return One of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
-	 * form should be taken from the construction defaults for lines (see note in header).
-	 *
+	 * @return One of the constants defined in
+	 * {@link org.geogebra.common.kernel.EquationForm.Linear}, or null if the equation form
+	 * should be taken from the construction defaults (see note in header).
 	 * @see org.geogebra.common.kernel.algos.AlgoJoinPoints
 	 */
-	int getLineCommandEquationForm();
+	EquationForm.Linear getLineCommandEquationForm();
 
 	/**
 	 * Customize the equation form for lines created from a FitLine command.
-	 * @return One of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
-	 * form should be taken from the construction defaults for lines (see note in header).
-	 *
+	 * @return One of the constants defined in
+	 * {@link org.geogebra.common.kernel.EquationForm.Linear}, or null if the equation form
+	 * should be taken from the construction defaults (see note in header).
 	 * @see org.geogebra.common.kernel.algos.AlgoJoinPoints
 	 */
-	int getFitLineCommandEquationForm();
+	EquationForm.Linear getFitLineCommandEquationForm();
 
 	/**
 	 * Customize the equation form for rays created from a command or tool.
-	 * @return One of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.geos.GeoLine GeoLine}, or -1 if the equation
-	 * form should be taken from the construction defaults for lines (see note in header).
-	 *
+	 * @return One of the constants defined in
+	 * {@link org.geogebra.common.kernel.EquationForm.Linear}, or null if the equation form
+	 * should be taken from the construction defaults (see note in header).
 	 * @see org.geogebra.common.kernel.algos.AlgoJoinPointsRay
 	 */
-	int getRayCommandEquationForm();
+	EquationForm.Linear getRayCommandEquationForm();
 
 	/**
 	 * Customize the equation form for conics created from user input (e.g., "y = xx").
-	 * @return One of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if the
-	 * default equation form should be used.
+	 * @return One of the constants defined in
+	 * {@link org.geogebra.common.kernel.EquationForm.Quadric}, or null if the default equation form
+	 * should be used.
 	 */
-	int getConicAlgebraInputEquationForm();
+	EquationForm.Quadric getConicAlgebraInputEquationForm();
 
 	/**
 	 * Customize the equation form for conics created from a (Parabola, etc) command or tool.
-	 * @return One of the {@code EQUATION_} constants defined in
-	 * {@link org.geogebra.common.kernel.kernelND.GeoConicND GeoConicND}, or -1 if the
-	 * default equation form should be used.
+	 * @return One of the constants defined in
+	 * {@link org.geogebra.common.kernel.EquationForm.Quadric}, or null if the default equation form
+	 * should be used.
 	 */
-	int getConicCommandEquationForm();
+	EquationForm.Quadric getConicCommandEquationForm();
 
-	// TODO APPS-5867: Lines, Conics, *Implicit Equations and Functions* are restricted to
-	//  “Input Form” in standalone Graphing
+	EquationForm.Other getOtherAlgebraInputEquationForm();
 
 	/**
 	 * Whether this EquationBehaviour allows the equation forms to be changed by the user.

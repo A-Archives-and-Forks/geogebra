@@ -45,7 +45,6 @@ import org.geogebra.common.kernel.geos.GeoSegment;
 import org.geogebra.common.kernel.geos.Traceable;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
 import org.geogebra.common.kernel.kernelND.CoordStyle;
-import org.geogebra.common.kernel.kernelND.GeoConicND;
 import org.geogebra.common.kernel.kernelND.GeoPlaneND;
 import org.geogebra.common.kernel.kernelND.GeoQuadricND;
 import org.geogebra.common.kernel.kernelND.ViewCreator;
@@ -205,7 +204,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 		AbstractAction action;
 		StringBuilder sb = new StringBuilder();
 
-		if (mode != EquationForm.Linear.IMPLICIT) {
+		if (mode != EquationForm.Linear.IMPLICIT.rawValue) {
 			sb.setLength(0);
 			sb.append(loc.getMenu("Equation"));
 			sb.append(' ');
@@ -224,7 +223,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			addAction(action);
 		}
 
-		if (mode != EquationForm.Linear.EXPLICIT) {
+		if (mode != EquationForm.Linear.EXPLICIT.rawValue) {
 			sb.setLength(0);
 			sb.append(loc.getMenu("Equation"));
 			sb.append(' ');
@@ -243,7 +242,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			addAction(action);
 		}
 
-		if (mode != EquationForm.Linear.PARAMETRIC) {
+		if (mode != EquationForm.Linear.PARAMETRIC.rawValue) {
 			action = new AbstractAction(loc.getMenu("ParametricForm")) {
 				/**
 				 * 
@@ -258,7 +257,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			addAction(action);
 		}
 
-		if (mode != EquationForm.Linear.GENERAL) {
+		if (mode != EquationForm.Linear.GENERAL.rawValue) {
 			sb.setLength(0);
 			sb.append(loc.getMenu("Equation"));
 			sb.append(' ');
@@ -300,7 +299,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 		AbstractAction action;
 		StringBuilder sb = new StringBuilder();
 
-		if (mode != EquationForm.Quadric.IMPLICIT) {
+		if (mode != EquationForm.Quadric.IMPLICIT.rawValue) {
 			sb.append(ConicEqnModel.getImplicitEquation(conic, loc, true));
 			action = new AbstractAction(sb.toString()) {
 				/**
@@ -316,7 +315,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			addAction(action);
 		}
 
-		if (specificPossible && mode != EquationForm.Quadric.SPECIFIC) {
+		if (specificPossible && mode != EquationForm.Quadric.SPECIFIC.rawValue) {
 			// specific conic string
 			String conicEqn = conic.getSpecificEquation();
 			if (conicEqn != null) {
@@ -339,7 +338,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			}
 		}
 
-		if (explicitPossible && mode != EquationForm.Quadric.EXPLICIT) {
+		if (explicitPossible && mode != EquationForm.Quadric.EXPLICIT.rawValue) {
 			sb.setLength(0);
 			sb.append(loc.getMenu("Equation"));
 			sb.append(' ');
@@ -358,7 +357,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			addAction(action);
 		}
 
-		if (vertexformPossible && mode != EquationForm.Quadric.VERTEX) {
+		if (vertexformPossible && mode != EquationForm.Quadric.VERTEX.rawValue) {
 			sb.setLength(0);
 			sb.append(loc.getMenu("Equation"));
 			sb.append(' ');
@@ -377,7 +376,7 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 			addAction(action);
 		}
 
-		if (conicformPossible && mode != EquationForm.Quadric.CONICFORM) {
+		if (conicformPossible && mode != EquationForm.Quadric.CONICFORM.rawValue) {
 			sb.setLength(0);
 			sb.append(loc.getMenu("Equation"));
 			sb.append(' ');
