@@ -1,6 +1,5 @@
 package org.geogebra.common.properties.impl.objects;
 
-import org.geogebra.common.euclidian.draw.HasTextFormat;
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
@@ -38,6 +37,7 @@ public class UnderlineProperty extends AbstractValuedProperty<Boolean>
 
 	@Override
 	public Boolean getValue() {
-		return ((HasTextFormat) delegate.getElement()).getFormat("underline", false);
+		HasTextFormatter element = (HasTextFormatter) delegate.getElement();
+		return element.getFormatter().getFormat("underline", false);
 	}
 }
