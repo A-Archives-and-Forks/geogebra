@@ -89,9 +89,16 @@ public class PropertyWidgetAdapter {
 	 */
 	public GPopupMenuW getMenuWidget(TextFontSizeProperty property) {
 		GPopupMenuW fontSizeMenu = new GPopupMenuW(appW);
-		for (String menuItemText : property.getValueNames()) {
-			fontSizeMenu.addItem(new AriaMenuItem(menuItemText, true,
-					() -> property.setValue(TextFontSize.valueOf(menuItemText))));
+		int selectedFontIdx = property.getValue().ordinal();
+		for (int i = 0; i < property.getValueNames().length; i++) {
+			String menuItemText = property.getValueNames()[i];
+			int finalI = i;
+			AriaMenuItem item = new AriaMenuItem(menuItemText, true,
+					() -> property.setValue(TextFontSize.values()[finalI]));
+			if (selectedFontIdx == finalI) {
+				item.addStyleName("selected");
+			}
+			fontSizeMenu.addItem(item);
 		}
 		fontSizeMenu.setVisible(true);
 		return fontSizeMenu;
