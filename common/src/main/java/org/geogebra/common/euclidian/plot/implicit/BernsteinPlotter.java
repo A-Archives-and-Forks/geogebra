@@ -13,18 +13,17 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.matrix.CoordSys;
 
 public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
-	public static final boolean VISUAL_DEBUG_ENABLED = true;
-	public static final int SMALLEST_BOX_IN_PIXELS = 10;
-	public static final double SMALLEST_EDGE_IN_PIXELS = 2;
 	private final GeoElement geo;
 	private final EuclidianViewBounds bounds;
 	private final GeneralPathClippedForCurvePlotter gp;
 	private final CoordSys transformedCoordSys;
 
-	private final VisualDebug<BernsteinPlotCell> visualDebug;
+	private VisualDebug<BernsteinPlotCell> visualDebug;
 	private final PlotterAlgo algo;
 	private final List<MyPoint> points = new ArrayList<>();
 	private final List<BernsteinPlotCell> cells = new ArrayList<>();
+	private final BernsteinPlotterSettings settings = new BernsteinPlotterDebugSettings();
+//	private final BernsteinPlotterSettings settings = new BernsteinPlotterDefaultSettings();
 
 	/**
 	 * @param geo to draw
@@ -38,20 +37,20 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 		this.bounds = bounds;
 		this.gp = gp;
 		this.transformedCoordSys = transformedCoordSys;
-		algo = new BernsteinImplicitAlgo(bounds, geo, points, cells);
-		if (VISUAL_DEBUG_ENABLED) {
+		algo = new BernsteinImplicitAlgo(bounds, geo, points, cells, settings);
+		if (settings.visualDebug()) {
 			visualDebug = new BernsteinPlotterVisualDebug(bounds);
 		}
 	}
 
 	@Override
 	public void draw(GGraphics2D g2) {
-		if (VISUAL_DEBUG_ENABLED) {
-//			visualDebug.draw(g2);
+		drawResults(g2);
+		if (settings.visualDebug()) {
+			visualDebug.draw(g2);
 		}
 
 		updateOnDemand();
-		drawResults(g2);
 	}
 
 	@Override
@@ -60,16 +59,13 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 		points.clear();
 		algo.compute();
 
-		if (VISUAL_DEBUG_ENABLED) {
+		if (settings.visualDebug()) {
 			visualDebug.setData(cells);
 		}
 	}
 
 	private void drawResults(GGraphics2D g2) {
-//		gp.resetWithThickness(geo.getLineThickness());
-//		g2.setColor(geo.getObjectColor());
 		CurvePlotterUtils.draw(gp, points, transformedCoordSys);
-//		g2.draw(gp);
 	}
 
 	private void drawPointToScreen(GPoint2D p) {

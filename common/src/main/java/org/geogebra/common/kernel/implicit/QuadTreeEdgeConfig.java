@@ -6,7 +6,7 @@ import java.util.Map;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.SegmentType;
 
-public enum EdgeConfig implements PlotRectConfig {
+public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	/**
 	 * All corners are inside / outside
 	 */
@@ -141,7 +141,7 @@ public enum EdgeConfig implements PlotRectConfig {
 	/**
 	 * only top left corner is inside / outside
 	 */
-	T0111(7) {
+	T0111(7)  {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
 			return new MyPoint[] {new MyPoint(r.x1(),
@@ -174,15 +174,15 @@ public enum EdgeConfig implements PlotRectConfig {
 
 	private final int flag;
 
-	private static Map<Integer, EdgeConfig> map = new HashMap<>();
+	private static Map<Integer, QuadTreeEdgeConfig> map = new HashMap<>();
 
 	static {
-		for (EdgeConfig config: EdgeConfig.values()) {
+		for (QuadTreeEdgeConfig config: QuadTreeEdgeConfig.values()) {
 			map.put(config.flag, config);
 		}
 	}
 
-	EdgeConfig(int flag) {
+	QuadTreeEdgeConfig(int flag) {
 		this.flag = flag;
 	}
 
@@ -220,7 +220,7 @@ public enum EdgeConfig implements PlotRectConfig {
 	}
 
 
-	public static EdgeConfig fromFlag(int config) {
+	public static QuadTreeEdgeConfig fromFlag(int config) {
 		return map.getOrDefault(config, T_INV);
 	}
 

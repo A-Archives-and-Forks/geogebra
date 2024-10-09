@@ -75,7 +75,7 @@ abstract class QuadTree {
 				| (intersect(r.evals[2], r.evals[3]) << 1)
 				| (intersect(r.evals[3], r.evals[0]));
 		if (config == 15 || config == 0) {
-			return EdgeConfig.EMPTY.flag();
+			return QuadTreeEdgeConfig.EMPTY.flag();
 		}
 		return config;
 	}

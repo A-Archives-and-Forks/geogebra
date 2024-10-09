@@ -160,4 +160,8 @@ public final class BernsteinPlotCellEdge implements Splittable<BernsteinPlotCell
 				|| DoubleUtil.isEqual(p.x, parent.boundingBox.x2(), eps)
 				&& DoubleUtil.isEqual(p.y, parent.boundingBox.y1(), eps) ;
 	}
+
+	public void markSolution() {
+		parent.setEdgeSolution(kind, startPoint);
+	}
 }

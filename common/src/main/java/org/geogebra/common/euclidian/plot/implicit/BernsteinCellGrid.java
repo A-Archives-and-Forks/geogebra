@@ -1,7 +1,5 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_BOX_IN_PIXELS;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,9 +11,9 @@ public class BernsteinCellGrid implements CellGrid<BernsteinPlotCell> {
 
 	@Override
 	public void resize(EuclidianViewBounds bounds) {
-		int rows = (bounds.getHeight() / SMALLEST_BOX_IN_PIXELS) + 2;
-		int columns = (bounds.getWidth() / SMALLEST_BOX_IN_PIXELS) + 2;
-		cells = new BernsteinPlotCell[rows][columns];
+//		int rows = (bounds.getHeight() / SMALLEST_BOX_IN_PIXELS) + 2;
+//		int columns = (bounds.getWidth() / SMALLEST_BOX_IN_PIXELS) + 2;
+//		cells = new BernsteinPlotCell[rows][columns];
 	}
 
 	/**

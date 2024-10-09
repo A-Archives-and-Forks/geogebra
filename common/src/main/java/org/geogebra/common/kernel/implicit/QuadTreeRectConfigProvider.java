@@ -13,11 +13,11 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	protected PlotRectConfig checkContinouty(PlotRectConfig config, PlotRect plotRect, MyPoint[] points) {
-		EdgeConfig edgeConfig = (EdgeConfig) config;
-		return limitOf(points[0]) <= edgeConfig.getQ1(plotRect)
-				&& limitOf(points[1]) <= edgeConfig.getQ2(plotRect)
-				? EdgeConfig.VALID
-				: EdgeConfig.EMPTY;
+		QuadTreeEdgeConfig quadTreeEdgeConfig = (QuadTreeEdgeConfig) config;
+		return limitOf(points[0]) <= quadTreeEdgeConfig.getQ1(plotRect)
+				&& limitOf(points[1]) <= quadTreeEdgeConfig.getQ2(plotRect)
+				? QuadTreeEdgeConfig.VALID
+				: QuadTreeEdgeConfig.EMPTY;
 	}
 
 	private double limitOf(MyPoint point) {
@@ -26,12 +26,12 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	protected PlotRectConfig getConfigFromPlotRect(PlotRect r) {
-		return EdgeConfig.fromFlag(config(r));
+		return QuadTreeEdgeConfig.fromFlag(config(r));
 	}
 
 	@Override
 	protected PlotRectConfig empty() {
-		return EdgeConfig.EMPTY;
+		return QuadTreeEdgeConfig.EMPTY;
 	}
 
 	private int config(PlotRect r) {
@@ -51,7 +51,7 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 	 */
 	private int sign(double val) {
 		if (Double.isInfinite(val) || Double.isNaN(val)) {
-			return EdgeConfig.T_INV.flag();
+			return QuadTreeEdgeConfig.T_INV.flag();
 		} else if (val > 0.0) {
 			return 1;
 		} else {
@@ -66,6 +66,6 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	protected boolean isConfigFinal(PlotRectConfig config) {
-		return config == EdgeConfig.T0101 || config.isInvalid();
+		return config == QuadTreeEdgeConfig.T0101 || config.isInvalid();
 	}
 }

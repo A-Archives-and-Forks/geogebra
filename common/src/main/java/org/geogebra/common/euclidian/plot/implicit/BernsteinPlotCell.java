@@ -7,7 +7,7 @@ import java.util.Map;
 import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.arithmetic.Splittable;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
-import org.geogebra.common.kernel.implicit.EdgeConfig;
+import org.geogebra.common.kernel.implicit.PlotRectConfig;
 
 /**
  * BernsteinPlotCell is the basic building block of the algorithm.
@@ -22,7 +22,9 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 	final BernsteinPolynomial polynomial;
 	private final BernsteinPlotCellKind kind;
 	private final Map<EdgeKind, BernsteinPlotCellEdge> edges = new HashMap<>();
-	private EdgeConfig edgeConfig;
+	private final Map<EdgeKind, GPoint2D> edgeSolutions = new HashMap<>();
+	private PlotRectConfig rectConfig;
+
 
 	/**
 	 *
@@ -47,6 +49,18 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 	public GPoint2D center() {
 		return new GPoint2D(boundingBox.getXHalf(),
 				boundingBox.getYHalf());
+	}
+
+	public void setEdgeSolution(EdgeKind kind, GPoint2D solution) {
+		edgeSolutions.put(kind, solution);
+	}
+
+	public Map<EdgeKind, GPoint2D> getEdgeSolutions() {
+		return edgeSolutions;
+	}
+
+	public Collection<GPoint2D> getEdgeSolutionPoints() {
+		return edgeSolutions.values();
 	}
 
 	enum BernsteinPlotCellKind {
@@ -124,11 +138,11 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 		return kind != BernsteinPlotCellKind.CELL2;
 	}
 
-	public EdgeConfig getEdgeConfig() {
-		return edgeConfig;
+	public PlotRectConfig getRectConfig() {
+		return rectConfig;
 	}
 
-	public void setEdgeConfig(EdgeConfig edgeConfig) {
-		this.edgeConfig = edgeConfig;
+	public void setRectConfig(PlotRectConfig rectConfig) {
+		this.rectConfig = rectConfig;
 	}
 }

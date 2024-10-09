@@ -3,11 +3,13 @@ package org.geogebra.common.euclidian.plot.implicit;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.SegmentType;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.kernel.implicit.PlotRect;
 import org.geogebra.common.kernel.implicit.PlotRectConfig;
+import org.geogebra.common.util.debug.Log;
 
 public enum BernsteinEdgeConfig implements PlotRectConfig {
 	/**
@@ -113,7 +115,58 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 
 	EMPTY(0),
 
-	VALID(10);
+	VALID(10),
+	TOPBOTTOM(11) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			BernsteinPlotRect rect = BernsteinPlotRect.as(r);
+			logRect(rect);
+			GPoint2D p1 = rect.getSolution(EdgeKind.TOP);
+			GPoint2D p2 = rect.getSolution(EdgeKind.BOTTOM);
+			return new MyPoint[] {new MyPoint(p1.x, p1.y, SegmentType.MOVE_TO),
+					new MyPoint(p2.x, p2.y, SegmentType.LINE_TO)};
+		}
+
+	}, LEFTRIGHT(12) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+		BernsteinPlotRect rect = BernsteinPlotRect.as(r);
+		GPoint2D p1 = rect.getSolution(EdgeKind.LEFT);
+		GPoint2D p2 = rect.getSolution(EdgeKind.RIGHT);
+			return new MyPoint[] {new MyPoint(p1.x, p1.y, SegmentType.MOVE_TO),
+				new MyPoint(p2.x, p2.y, SegmentType.LINE_TO)};
+		}
+
+	},
+	X(13){
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			BernsteinPlotRect rect = BernsteinPlotRect.as(r);
+			GPoint2D top = rect.getSolution(EdgeKind.TOP);
+			GPoint2D left = rect.getSolution(EdgeKind.LEFT);
+			GPoint2D bottom = rect.getSolution(EdgeKind.BOTTOM);
+			GPoint2D right = rect.getSolution(EdgeKind.RIGHT);
+			return new MyPoint[] {new MyPoint(left.x, top.y, SegmentType.MOVE_TO),
+					new MyPoint(right.x, bottom.y, SegmentType.LINE_TO),
+			new MyPoint(right.x, top.y, SegmentType.MOVE_TO),
+			new MyPoint(left.x, bottom.y, SegmentType.LINE_TO)};
+		}
+
+	}, CENTER(14) {
+		@Override
+		public MyPoint[] getPoints(PlotRect rect) {
+			BernsteinPlotRect r = BernsteinPlotRect.as(rect);
+			double xMiddle = r.x1() + Math.abs(r.x2() - r.x1()) / 2;
+			double yMiddle = r.y1() + Math.abs(r.y2() - r.y1()) / 2;
+			return new MyPoint[] {new MyPoint(r.x1(), r.y1(), SegmentType.MOVE_TO),
+					new MyPoint(xMiddle, yMiddle, SegmentType.LINE_TO)};
+		}
+
+	};
+
+	public void logRect(BernsteinPlotRect r) {
+		Log.debug(this + " " + r.debugString());
+	}
 
 	private final int flag;
 

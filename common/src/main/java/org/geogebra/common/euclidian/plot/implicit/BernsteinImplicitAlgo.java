@@ -1,8 +1,5 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_BOX_IN_PIXELS;
-import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_EDGE_IN_PIXELS;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +20,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private final GeoElement curve;
 	private final List<MyPoint> points;
 	private final List<BernsteinPlotCell> cells;
+	private final BernsteinPlotterSettings settings;
 	private final BernsteinPolynomialConverter converter;
 	private final LinkSegments segments;
 	private BernsteinPolynomial polynomial;
@@ -32,13 +30,15 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	 * @param bounds {@link EuclidianViewBounds}
 	 * @param curve the curve geo.
 	 * @param cells
+	 * @param settings
 	 */
 	public BernsteinImplicitAlgo(EuclidianViewBounds bounds, GeoElement curve, List<MyPoint> points,
-			List<BernsteinPlotCell> cells) {
+			List<BernsteinPlotCell> cells, BernsteinPlotterSettings settings) {
 		this.bounds = bounds;
 		this.curve = curve;
 		this.points = points;
 		this.cells = cells;
+		this.settings = settings;
 		converter = new BernsteinPolynomialConverter();
 		segments = new LinkSegments(points);
 	}
@@ -100,8 +100,9 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		BernsteinPlotRectConfigProvider provider =
 				new BernsteinPlotRectConfigProvider(currentCell);
 		BernsteinPlotRect rect =
-				new BernsteinPlotRect(currentCell.boundingBox, polynomial);
-//		currentCell.setEdgeConfig(EdgeConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect)));
+				new BernsteinPlotRect(currentCell, polynomial);
+		currentCell.setRectConfig(BernsteinEdgeConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect)));
+		findSolutionsInEdges(currentCell);
 		segments.add(rect, provider);
 		cells.add(currentCell);
 	}
@@ -109,14 +110,14 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private boolean isBoxSmallEnough(BernsteinBoundingBox box) {
 		double width = bounds.toScreenCoordXd(box.x2()) - bounds.toScreenCoordXd(box.x1());
 		double height = bounds.toScreenCoordYd(box.y1()) - bounds.toScreenCoordYd(box.y2());
-		return width < SMALLEST_BOX_IN_PIXELS
-				|| height < SMALLEST_BOX_IN_PIXELS;
+		return width < settings.minBoxWidthInPixels()
+				|| height < settings.minBoxHeightInPixels();
 	}
 
 	@SuppressWarnings("unused")
-	private void findSolutionsInEdges(BernsteinPlotCell context) {
-		context.createEdges();
-		for (BernsteinPlotCellEdge edge : context.getEdges()) {
+	private void findSolutionsInEdges(BernsteinPlotCell cell) {
+		cell.createEdges();
+		for (BernsteinPlotCellEdge edge : cell.getEdges()) {
 			if (edge.mightHaveSolutions()) {
 				findSolutionsInOneEdge(edge);
 			}
@@ -126,7 +127,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private void findSolutionsInOneEdge(BernsteinPlotCellEdge startEdge) {
 		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
 		stack.push(startEdge);
-
+		BernsteinPlotCellEdge parent = startEdge;
 		while (!stack.isEmpty()) {
 			BernsteinPlotCellEdge edge = stack.pop();
 			if (edge.isDerivativeSignDiffer()) {
@@ -134,20 +135,20 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 				stack.push(split[0]);
 				stack.push(split[1]);
 			} else {
-				findSignChangeInEdge(edge);
+				findSignChangeInEdge(edge, parent);
 			}
 		}
 
 	}
 
-	private void findSignChangeInEdge(BernsteinPlotCellEdge startEdge) {
+	private void findSignChangeInEdge(BernsteinPlotCellEdge startEdge, BernsteinPlotCellEdge parent) {
 		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
 		stack.push(startEdge);
 		while (!stack.isEmpty()) {
 			BernsteinPlotCellEdge edge = stack.pop();
 			if (edge.mightHaveSolutions() && isEdgeSmallEnough(edge)) {
 				if (edge.hasIntersect()) {
-					addIntersect(edge);
+					edge.markSolution();
 				}
 				return;
 			}
@@ -162,17 +163,12 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private void addIntersect(BernsteinPlotCellEdge edge) {
-		// TODO: implement
-	}
-
 	private boolean isEdgeSmallEnough(BernsteinPlotCellEdge edge) {
 		double x1 = edge.startPoint().x;
 		double x2 = x1 + edge.length();
 		double width = edge.isHorizontal()
-				? bounds.toScreenCoordXd(x1) - bounds.toScreenCoordXd(x2)
+				? bounds.toScreenCoordXd(x2) - bounds.toScreenCoordXd(x1)
 				: bounds.toScreenCoordYd(x1) - bounds.toScreenCoordYd(x2);
-		return width < SMALLEST_EDGE_IN_PIXELS;
+		return width < settings.minEdgeWidth();
 	}
 }

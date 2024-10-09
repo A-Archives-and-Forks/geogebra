@@ -4,6 +4,7 @@ import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.implicit.PlotRect;
 import org.geogebra.common.kernel.implicit.PlotRectConfig;
 import org.geogebra.common.kernel.implicit.PlotRectConfigProvider;
+import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	private final BernsteinPlotCell cell;
@@ -14,7 +15,16 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	protected PlotRectConfig getConfigFromPlotRect(PlotRect r) {
-		return BernsteinEdgeConfig.fromFlag(config(r));
+		int config = config(r);
+		if (config == 0) {
+			BernsteinEdgeConfig extendeded = extendedConfig(BernsteinPlotRect.as(r));
+			if (!BernsteinEdgeConfig.EMPTY.equals(extendeded)) {
+				Log.debug("extended config: " + extendeded);
+			}
+			return extendeded;
+		}
+
+		return BernsteinEdgeConfig.fromFlag(config);
 	}
 
 	@Override
@@ -22,12 +32,28 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 		return BernsteinEdgeConfig.EMPTY;
 	}
 
-	private int config(PlotRect r) {
+	public static int config(PlotRect r) {
 		int config = 0;
+
 		for (int i = 0; i < 4; i++) {
 			config = (config << 1) | sign(r.cornerAt(i));
 		}
 		return config >= 8 ? (~config) & 0xf : config;
+	}
+
+	private static BernsteinEdgeConfig extendedConfig(BernsteinPlotRect r) {
+			if (r.haveSolutions(EdgeKind.TOP, EdgeKind.BOTTOM)) {
+				return BernsteinEdgeConfig.TOPBOTTOM;
+			}
+//
+//			if (r.haveSolutions(EdgeKind.LEFT, EdgeKind.RIGHT)) {
+//				return BernsteinEdgeConfig.LEFTRIGHT;
+//			}
+//			if (r.haveSolutions(EdgeKind.TOP, EdgeKind.LEFT, EdgeKind.BOTTOM, EdgeKind.RIGHT)) {
+//				return BernsteinEdgeConfig.X;
+//			}
+//		return r.hasNoSolution() ? BernsteinEdgeConfig.CENTER : BernsteinEdgeConfig.EMPTY;
+		return BernsteinEdgeConfig.EMPTY;
 	}
 
 	/**
@@ -37,7 +63,7 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	 * @return the sign depending on the value. if value is infinity or NaN it
 	 *         returns T_INV, otherwise it returns 1 for +ve value 0 otherwise
 	 */
-	private int sign(double val) {
+	private static int sign(double val) {
 		if (Double.isInfinite(val) || Double.isNaN(val)) {
 			return BernsteinEdgeConfig.T_INV.flag();
 		} else if (val > 0.0) {
