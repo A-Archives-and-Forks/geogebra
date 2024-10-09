@@ -96,7 +96,7 @@ public class PropertyWidgetAdapter {
 			AriaMenuItem item = new AriaMenuItem(menuItemText, true,
 					() -> property.setValue(TextFontSize.values()[finalI]));
 			if (selectedFontIdx == finalI) {
-				item.addStyleName("selected");
+				item.addStyleName("selectedItem");
 			}
 			fontSizeMenu.addItem(item);
 		}
