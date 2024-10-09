@@ -272,7 +272,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static RangePropertyCollection<?, ?> createThicknessProperty(Localization localization,
+	public static RangePropertyCollection<?> createThicknessProperty(Localization localization,
 			List<GeoElement> elements) {
 		try {
 			List<ThicknessProperty> thicknessProperties = new ArrayList<>();
@@ -293,7 +293,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static RangePropertyCollection<?, ?> createNotesThicknessProperty(Localization
+	public static RangePropertyCollection<?> createNotesThicknessProperty(Localization
 			localization, List<GeoElement> elements) {
 		try {
 			List<NotesThicknessProperty> thicknessProperties = new ArrayList<>();
@@ -559,7 +559,7 @@ public class GeoElementPropertiesFactory {
 		}
 	}
 
-	private static RangePropertyCollection<SlopeSizeProperty, Integer> createSlopeSizeProperty(
+	private static RangePropertyCollection<SlopeSizeProperty> createSlopeSizeProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<SlopeSizeProperty> slopeSizeProperties = new ArrayList<>();
