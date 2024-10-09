@@ -51,6 +51,7 @@ public class LineEqnModel extends MultipleOptionsModel {
 	 * @return whether to force input form
 	 */
 	public static boolean forceInputForm(App app, GeoElementND geo) {
+		// TODO APPS-5867 replace with appConfig.getEquationBehaviour()
 		boolean isEnforcedLineEquationForm =
 				geo instanceof GeoLine && app.getConfig().getEnforcedLineEquationForm() != -1;
 		boolean isEnforcedConicEquationForm =
