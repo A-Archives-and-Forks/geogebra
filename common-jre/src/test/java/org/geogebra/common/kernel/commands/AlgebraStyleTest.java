@@ -24,6 +24,7 @@ import org.geogebra.common.kernel.geos.GeoPoint;
 import org.geogebra.common.kernel.geos.GeoVector;
 import org.geogebra.common.kernel.kernelND.GeoConicND;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
+import org.geogebra.common.main.settings.config.equationforms.DefaultEquationBehaviour;
 import org.geogebra.common.util.IndexHTMLBuilder;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.test.TestErrorHandler;
@@ -147,8 +148,9 @@ public class AlgebraStyleTest extends BaseUnitTest {
 		checkRows("{{a}}+{{1}}", 2);
 		checkRows("{x=y}", 1);
 		checkRows("x=y", 2);
-		EvalInfo graphingFlags = new EvalInfo(true);//.withUserEquation(true);
-		checkRows("x=y", 1, graphingFlags);
+//		EvalInfo graphingFlags = new EvalInfo(true);//.withUserEquation(true);
+		getKernel().setEquationBehaviour(new EquationBehaviourUser());
+		checkRows("x=y", 1/*, graphingFlags*/);
 		checkRows("{y=x}", 1);
 		checkRows("Sequence[100]", 2);
 		checkRows("Line((0,0),(0,1))", 2);
@@ -862,5 +864,28 @@ public class AlgebraStyleTest extends BaseUnitTest {
 		GeoVector vec = add("v=(1;3)");
 		assertTrue("should be polar", vec.isPolar());
 		assertThat(vec.getDefinitionForEditor(), is("v=(1; 3)"));
+	}
+
+	private static class EquationBehaviourUser extends DefaultEquationBehaviour {
+
+		@Override
+		public EquationForm.Linear getLinearAlgebraInputEquationForm() {
+			return EquationForm.Linear.USER;
+		}
+
+//		@Override
+//		public EquationForm.Linear getLineCommandEquationForm() {
+//			return EquationForm.Linear.USER;
+//		}
+
+		@Override
+		public EquationForm.Quadric getConicAlgebraInputEquationForm() {
+			return EquationForm.Quadric.USER;
+		}
+
+//		@Override
+//		public EquationForm.Quadric getConicCommandEquationForm() {
+//			return EquationForm.Quadric.USER;
+//		}
 	}
 }

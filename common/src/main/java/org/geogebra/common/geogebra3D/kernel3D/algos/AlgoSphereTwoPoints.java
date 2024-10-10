@@ -47,8 +47,7 @@ public class AlgoSphereTwoPoints extends AlgoSphereNDTwoPoints {
 	@Override
 	protected GeoQuadricND createSphereND(Construction cons1) {
 		GeoQuadric3D sphere = new GeoQuadric3D(cons1);
-		// circle.addPointOnConic((GeoPoint) getP()); //TODO do this in
-		// AlgoSphereNDTwoPoints
+		// circle.addPointOnConic((GeoPoint) getP()); // TODO do this in AlgoSphereNDTwoPoints
 		return sphere;
 	}
 

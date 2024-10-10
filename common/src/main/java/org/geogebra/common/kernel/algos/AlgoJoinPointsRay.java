@@ -59,6 +59,8 @@ public class AlgoJoinPointsRay extends AlgoElement
 		// compute line through P, Q
 		compute();
 
+		addIncidence();
+
 		// note: GeoRay's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
@@ -66,7 +68,6 @@ public class AlgoJoinPointsRay extends AlgoElement
 		}
 
 		ray.setLabel(label);
-		addIncidence();
 	}
 
 	/**

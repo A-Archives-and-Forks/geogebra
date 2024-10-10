@@ -24,6 +24,8 @@ import javax.annotation.Nonnull;
 import org.geogebra.common.io.MathMLParser;
 import org.geogebra.common.kernel.CircularDefinitionException;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
+import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.KernelCAS;
 import org.geogebra.common.kernel.StringTemplate;
@@ -3019,21 +3021,24 @@ public class AlgebraProcessor {
 			geo.setLineOpacity(
 					EuclidianStyleConstants.OBJSTYLE_DEFAULT_LINE_OPACITY_EQUATION_GEOMETRY);
 		}
-		// TODO APPS-5867 implement forceUserEquation behaviour using EquationBehaviour
-		if (geo instanceof EquationValue &&
-				!app.getSettings().getCasSettings().isEnabled()) { // TODO APPS-5867 condition needs explanation
-			int todo = 0;
-		}
 //		if ((info.isForceUserEquation()
-//				|| !app.getSettings().getCasSettings().isEnabled()) // TODO APPS-5867 condition needs explanation
+//				|| !app.getSettings().getCasSettings().isEnabled())
 //				&& geo instanceof EquationValue) {
 //			((EquationValue) geo).setToUser();
 //		}
-
 		if (geo.isFunctionOrEquationFromUser()) {
 			geo.setFixed(true);
 		}
 
+		// TODO APPS-5867 also needed in processList?
+		customizeEquationForm(geo);
+
+		if (info.isLabelOutput()) {
+			geo.setLabel(label);
+		}
+	}
+
+	private void customizeEquationForm(GeoElementND geo) {
 		if (geo instanceof GeoLine) {
 			EquationForm.Linear equationForm = kernel.getEquationBehaviour().getLinearAlgebraInputEquationForm();
 			if (equationForm != null) {
@@ -3044,10 +3049,17 @@ public class AlgebraProcessor {
 			if (equationForm != null) {
 				((GeoConic) geo).setEquationForm(equationForm);
 			}
-		}
-
-		if (info.isLabelOutput()) {
-			geo.setLabel(label);
+		} else if (geo instanceof EquationValue) {
+			EquationForm.Other equationForm = kernel.getEquationBehaviour().getOtherAlgebraInputEquationForm();
+			if (equationForm != null) {
+				switch (equationForm) {
+				case USER:
+					((EquationValue) geo).setToUser();
+					break;
+				default:
+					break;
+				}
+			}
 		}
 	}
 
@@ -3421,9 +3433,8 @@ public class AlgebraProcessor {
 						new EvalInfo(false));
 				GeoElement geo = results[0];
 				// TODO APPS-5867 implement forceUserEquation behaviour using EquationBehaviour
-				if (Equation.isAlgebraEquation(geo) &&
-						!app.getSettings().getCasSettings().isEnabled()) {
-					int todo = 0;
+				if (Equation.isAlgebraEquation(geo)) {
+					customizeEquationForm(geo);
 				}
 //				if ((info.isForceUserEquation()
 //						|| !app.getSettings().getCasSettings().isEnabled())

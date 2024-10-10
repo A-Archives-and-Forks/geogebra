@@ -9,6 +9,8 @@ import org.geogebra.test.LocalizationCommonUTF;
 
 public class AppCommonFactory {
 
+	// TODO APPS-5867 all tests should use create(AppConfig) to make it clear
+	//  what configuration is used (e.g. restricted or unrestricted Graphing)
 	public static AppCommon create() {
 		return create(new AppConfigDefault());
 	}

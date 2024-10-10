@@ -62,6 +62,8 @@ public class AlgoLinePointVector extends AlgoElement {
 		// compute line through P, Q
 		compute();
 
+		addIncidence();
+
 		// note: GeoLine's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
@@ -69,7 +71,6 @@ public class AlgoLinePointVector extends AlgoElement {
 		}
 
 		g.setLabel(label);
-		addIncidence();
 	}
 
 	/**

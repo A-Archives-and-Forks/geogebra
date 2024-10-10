@@ -67,6 +67,8 @@ public class AlgoLinePointLine extends AlgoElement
 		// compute line
 		compute();
 
+		addIncidence();
+
 		// note: GeoLine's equation form is initialized from construction defaults
 		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
 		if (equationBehaviour != null) {
@@ -74,7 +76,6 @@ public class AlgoLinePointLine extends AlgoElement
 		}
 
 		g.setLabel(label);
-		addIncidence();
 	}
 
 	/**
