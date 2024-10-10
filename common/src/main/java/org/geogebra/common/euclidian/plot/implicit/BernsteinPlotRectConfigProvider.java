@@ -45,16 +45,17 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 			if (r.haveSolutions(EdgeKind.TOP, EdgeKind.BOTTOM)) {
 				return BernsteinEdgeConfig.TOPBOTTOM;
 			}
-//
-//			if (r.haveSolutions(EdgeKind.LEFT, EdgeKind.RIGHT)) {
-//				return BernsteinEdgeConfig.LEFTRIGHT;
-//			}
+
+			if (r.haveSolutions(EdgeKind.LEFT, EdgeKind.RIGHT)) {
+				return BernsteinEdgeConfig.LEFTRIGHT;
+			}
 //			if (r.haveSolutions(EdgeKind.TOP, EdgeKind.LEFT, EdgeKind.BOTTOM, EdgeKind.RIGHT)) {
 //				return BernsteinEdgeConfig.X;
 //			}
-//		return r.hasNoSolution() ? BernsteinEdgeConfig.CENTER : BernsteinEdgeConfig.EMPTY;
-		return BernsteinEdgeConfig.EMPTY;
-	}
+		return r.hasNoSolution() ? BernsteinEdgeConfig.CENTER : BernsteinEdgeConfig.EMPTY;
+//		Log.debug(r.getEdges() +"");
+//		return BernsteinEdgeConfig.EMPTY;
+		}
 
 	/**
 	 *

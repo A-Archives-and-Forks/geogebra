@@ -119,22 +119,21 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	TOPBOTTOM(11) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			BernsteinPlotRect rect = BernsteinPlotRect.as(r);
-			logRect(rect);
-			GPoint2D p1 = rect.getSolution(EdgeKind.TOP);
-			GPoint2D p2 = rect.getSolution(EdgeKind.BOTTOM);
-			return new MyPoint[] {new MyPoint(p1.x, p1.y, SegmentType.MOVE_TO),
-					new MyPoint(p2.x, p2.y, SegmentType.LINE_TO)};
+			double x1 = r.topLeft() > r.topRight() ? r.x2() : r.x1();
+			double x2 = r.bottomLeft() > r.bottomRight() ? r.x2() : r.x1();
+//			double x2 = (r.x1() + r.x2()) / 2;
+			return new MyPoint[] {new MyPoint(x1, r.y1() , SegmentType.MOVE_TO),
+					new MyPoint(x2, r.y2(), SegmentType.LINE_TO)};
+
 		}
 
 	}, LEFTRIGHT(12) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
 		BernsteinPlotRect rect = BernsteinPlotRect.as(r);
-		GPoint2D p1 = rect.getSolution(EdgeKind.LEFT);
-		GPoint2D p2 = rect.getSolution(EdgeKind.RIGHT);
-			return new MyPoint[] {new MyPoint(p1.x, p1.y, SegmentType.MOVE_TO),
-				new MyPoint(p2.x, p2.y, SegmentType.LINE_TO)};
+		double y = (r.y1() + r.y2()) / 2;
+		return new MyPoint[] {new MyPoint(r.x1(), y, SegmentType.MOVE_TO),
+				new MyPoint(r.x2(), y, SegmentType.LINE_TO)};
 		}
 
 	},

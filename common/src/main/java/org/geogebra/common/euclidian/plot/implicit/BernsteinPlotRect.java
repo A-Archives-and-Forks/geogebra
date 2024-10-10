@@ -112,4 +112,8 @@ public class BernsteinPlotRect implements PlotRect {
 	public String debugString() {
 		return "corners=" + Arrays.toString(corners) + "\n evals: " + evals;
 	}
+
+	public double getEdgeX(EdgeKind kind) {
+		return getEdges().get(kind).x;
+	}
 }
