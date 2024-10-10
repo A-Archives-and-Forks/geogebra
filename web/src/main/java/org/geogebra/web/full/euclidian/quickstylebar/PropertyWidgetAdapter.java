@@ -93,7 +93,7 @@ public class PropertyWidgetAdapter {
 		for (int i = 0; i < property.getValueNames().length; i++) {
 			String menuItemText = property.getValueNames()[i];
 			int finalI = i;
-			AriaMenuItem item = new AriaMenuItem(menuItemText, true,
+			AriaMenuItem item = new AriaMenuItem(menuItemText, null,
 					() -> property.setValue(TextFontSize.values()[finalI]));
 			if (selectedFontIdx == finalI) {
 				item.addStyleName("selectedItem");
