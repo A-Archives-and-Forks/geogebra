@@ -34,7 +34,8 @@ abstract class AbstractValuedPropertyCollection<T extends ValuedProperty<S>, S> 
 		return getFirstProperty().getRawName();
 	}
 
-	protected T getFirstProperty() {
+	// TODO make protected again, expose icon instead
+	public T getFirstProperty() {
 		return properties[0];
 	}
 

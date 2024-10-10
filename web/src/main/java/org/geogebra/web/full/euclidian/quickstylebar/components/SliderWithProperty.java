@@ -2,8 +2,6 @@ package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.properties.Property;
-import org.geogebra.common.properties.RangeProperty;
-import org.geogebra.common.properties.impl.AbstractRangeProperty;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
@@ -16,7 +14,7 @@ import org.gwtproject.user.client.ui.Label;
 
 public class SliderWithProperty extends FlowPanel {
 	private final AppW appW;
-	private final RangePropertyCollection<?, ?> property;
+	private final RangePropertyCollection<?> property;
 	private LineStylePreview preview;
 	private Label unitLabel;
 	private SliderPanelW sliderPanel;
@@ -32,7 +30,7 @@ public class SliderWithProperty extends FlowPanel {
 	 * @param rangeValue - range value
 	 * @param color - line color
 	 */
-	public SliderWithProperty(AppW appW, RangePropertyCollection<?, ?> property,
+	public SliderWithProperty(AppW appW, RangePropertyCollection<?> property,
 			int lineType, int rangeValue, GColor color) {
 		this.appW = appW;
 		this.property = property;
@@ -73,7 +71,7 @@ public class SliderWithProperty extends FlowPanel {
 	}
 
 	private Property getFirstProperty() {
-		return property.getProperties()[0];
+		return property.getFirstProperty();
 	}
 
 	private void buildSlider() {
@@ -90,19 +88,13 @@ public class SliderWithProperty extends FlowPanel {
 	}
 
 	private void setInitialValue() {
-		Integer val = (Integer) ((AbstractRangeProperty<?>) getFirstProperty()).getValue();
+		Integer val = property.getValue();
 		sliderPanel.setValue(val.doubleValue());
 		updatePreview(val, rangeValue, color);
 	}
 
 	private void onInputChange(int val) {
-		for (RangeProperty<?> prop : property.getProperties()) {
-			if (prop instanceof ThicknessProperty) {
-				((ThicknessProperty) prop).setValue(val);
-			} else if (prop instanceof ImageOpacityProperty) {
-				((ImageOpacityProperty) prop).setValue(val);
-			}
-		}
+		property.setValue(val);
 
 		setRangeValue(val);
 	}

@@ -102,12 +102,12 @@ public class PropertiesIconAdapter {
 					property).getValueIcons();
 			return PropertiesIconAdapter.getIcon(propertyIcons[
 					((IconsEnumeratedProperty<?>) property).getIndex()]);
-		} else if (property instanceof RangePropertyCollection<?, ?>
-				&& ((RangePropertyCollection<?, ?>) property).getProperties()[0]
+		} else if (property instanceof RangePropertyCollection<?>
+				&& ((RangePropertyCollection<?>) property).getFirstProperty()
 				instanceof ImageOpacityProperty) {
 			return MaterialDesignResources.INSTANCE.opacity_black();
 		} else if (property instanceof BooleanPropertyCollection<?>) {
-			Property firstProperty = ((BooleanPropertyCollection<?>) property).getProperties()[0];
+			Property firstProperty = ((BooleanPropertyCollection<?>) property).getFirstProperty();
 			if (firstProperty instanceof BoldProperty) {
 				return MaterialDesignResources.INSTANCE.text_bold_black();
 			} else if (firstProperty instanceof ItalicProperty) {

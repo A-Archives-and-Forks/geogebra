@@ -10,10 +10,10 @@ public interface GeoGebraConstants {
 	// as it is read by the build system
 	// and updated automatically by the "Version Bump" task
 	/** last build date */
-	public static final String BUILD_DATE = "17 September 2024";
+	public static final String BUILD_DATE = "09 October 2024";
 	/** complete version string */
 
-	public static final String VERSION_STRING = "5.2.858.0";
+	public static final String VERSION_STRING = "5.2.862.0";
 	/** proper noun, should NOT be translated / transliterated */
 	public static final String APPLICATION_NAME = "GeoGebra";
 
@@ -195,7 +195,7 @@ public interface GeoGebraConstants {
 	/** GeoGebraTube beta URL, used when Feature.TUBE_BETA == true */
 	public final static String GEOGEBRA_WEBSITE_BETA = "https://beta.geogebra.org/";
 
-	String GEOGEBRA_HELP_WEBSITE = "https://wiki.geogebra.org/help/";
+	String GEOGEBRA_HELP_WEBSITE = "https://geogebra.github.io/docs/manual/";
 
 	/**
 	 * minimal precision in LocusEquation: by default rounding is at least 4

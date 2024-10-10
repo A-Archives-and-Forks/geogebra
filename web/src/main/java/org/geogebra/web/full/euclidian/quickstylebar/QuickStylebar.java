@@ -1,7 +1,6 @@
 package org.geogebra.web.full.euclidian.quickstylebar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -18,7 +17,6 @@ import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
-import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperty;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
@@ -42,9 +40,6 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	private final List<IconButton> quickButtons = new ArrayList<>();
 	public final static int POPUP_MENU_DISTANCE = 8;
 	private ContextMenuGeoElementW contextMenu;
-	private BooleanPropertyCollection<?> boldProperty;
-	private BooleanPropertyCollection<?> italicProperty;
-	private BooleanPropertyCollection<?> underlineProperty;
 
 	/**
 	 * @param ev - parent view
@@ -92,15 +87,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addPropertyPopupButton(activeGeoList.get(0), "gwt-PopupPanel contextSubMenu", true,
 				fontSizeProperty);
 
-		boldProperty = (BooleanPropertyCollection<?>) GeoElementPropertiesFactory
+		BooleanProperty boldProperty = GeoElementPropertiesFactory
 				.createBoldProperty(getApp().getLocalization(), activeGeoList);
 		addTextFormatPropertyButton(activeGeoList.get(0), "bold", boldProperty);
 
-		italicProperty = (BooleanPropertyCollection<?>) GeoElementPropertiesFactory
+		BooleanProperty italicProperty = GeoElementPropertiesFactory
 				.createItalicProperty(getApp().getLocalization(), activeGeoList);
 		addTextFormatPropertyButton(activeGeoList.get(0), "italic", italicProperty);
 
-		underlineProperty = (BooleanPropertyCollection<?>) GeoElementPropertiesFactory
+		BooleanProperty underlineProperty = GeoElementPropertiesFactory
 				.createUnderlineProperty(getApp().getLocalization(), activeGeoList);
 		addTextFormatPropertyButton(activeGeoList.get(0), "underline", underlineProperty);
 
@@ -121,8 +116,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void addTextFormatPropertyButton(GeoElement geo, String textFormat,
-			Property property) {
-		if (!(property instanceof BooleanProperty) || !(geo instanceof HasTextFormatter)) {
+			BooleanProperty property) {
+		if (property == null || !(geo instanceof HasTextFormatter)) {
 			return;
 		}
 
@@ -131,39 +126,12 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat(textFormat,
 				false));
 
-		Function<ArrayList<GeoElement>, Boolean> action = null;
-		switch (textFormat) {
-		case "bold":
-			action = this::handleBold;
-			break;
-		case "italic":
-			action = this::handleItalic;
-			break;
-		case "underline":
-			action = this::handleUnderline;
-			break;
-		}
+		Function<ArrayList<GeoElement>, Boolean> action = (geos) -> {
+			property.setValue(!property.getValue());
+			return true;
+		};
 		addFastClickHandlerWithUndoAction(toggleButton, action);
 		styleAndRegisterButton(toggleButton);
-	}
-
-	private boolean handleBold(ArrayList<GeoElement> targetGeos) {
-		return applyFontStyle(boldProperty, boldProperty.getProperties()[0].getValue());
-	}
-
-	private boolean handleItalic(ArrayList<GeoElement> targetGeos) {
-		return applyFontStyle(italicProperty, italicProperty.getProperties()[0].getValue());
-	}
-
-	private boolean handleUnderline(ArrayList<GeoElement> targetGeos) {
-		return applyFontStyle(underlineProperty, underlineProperty.getProperties()[0].getValue());
-	}
-
-	private boolean applyFontStyle(BooleanPropertyCollection<?> propertyCollection,
-			boolean add) {
-		Arrays.stream(propertyCollection.getProperties()).forEach(property
-				-> property.setValue(!add));
-		return true;
 	}
 
 	protected void addFastClickHandlerWithUndoAction(IconButton btn,
