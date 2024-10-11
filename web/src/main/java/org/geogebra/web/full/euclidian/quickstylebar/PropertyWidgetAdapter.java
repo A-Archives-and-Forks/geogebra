@@ -10,6 +10,8 @@ import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProperty;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
+import org.geogebra.web.full.javax.swing.LineThicknessCheckMarkItem;
+import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.FlowPanel;
 
@@ -66,6 +68,22 @@ public class PropertyWidgetAdapter {
 	private void setIconButtonActive(IconButton enumeratedPropertyIconButton) {
 		enumeratedPropertyButtons.forEach(iconButton -> iconButton.setActive(false));
 		enumeratedPropertyIconButton.setActive(true);
+	}
+
+	public FlowPanel getBorderThicknessWidget(RangePropertyCollection<?> property,
+			GeoElement geo) {
+		FlowPanel thicknessPanel = new FlowPanel();
+		thicknessPanel.add(BaseWidgetFactory.INSTANCE.newDivider(false));
+
+		LineThicknessCheckMarkItem thin = new LineThicknessCheckMarkItem("thin", 1);
+		thicknessPanel.add(thin);
+		thin.setSelected(false);
+
+		LineThicknessCheckMarkItem thick = new LineThicknessCheckMarkItem("thick", 3);
+		thicknessPanel.add(thick);
+		thick.setSelected(false);
+
+		return thicknessPanel;
 	}
 
 	/**

@@ -316,5 +316,12 @@
 		&.segmentStyle {
 			max-width: 168px;
 		}
+
+		&.cellBorderStyle {
+			.divider {
+				height: 1px;
+				padding: 8px 0;
+			}
+		}
 	}
 }

@@ -22,6 +22,7 @@ import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderProperty;
+import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
 import org.geogebra.common.properties.impl.objects.EquationFormProperty;
 import org.geogebra.common.properties.impl.objects.FillingStyleProperty;
@@ -138,8 +139,30 @@ public class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		List<Property> properties = new ArrayList<>();
 		addPropertyIfNotNull(properties, createCellBorderStyleProperty(localization, elements));
-		//addPropertyIfNotNull(properties, createThicknessProperty(localization, elements));
+		addPropertyIfNotNull(properties, createCellBorderThicknessProperty(localization,
+				elements));
 		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
+	 * Returns an Integer RangeProperty controlling the border thickness null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static RangePropertyCollection<?> createCellBorderThicknessProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<CellBorderThicknessProperty> borderThicknessProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				borderThicknessProperties.add(new CellBorderThicknessProperty(localization,
+						element));
+			}
+			return new RangePropertyCollection<>(
+					borderThicknessProperties.toArray(new CellBorderThicknessProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
 	}
 
 	/**

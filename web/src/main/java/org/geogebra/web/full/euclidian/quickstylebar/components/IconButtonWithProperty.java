@@ -7,6 +7,8 @@ import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
+import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
@@ -87,9 +89,17 @@ public class IconButtonWithProperty extends IconButton {
 		}
 
 		if (property instanceof RangeProperty) {
-			lineThicknessSlider = widgetAdapter.getSliderWidget(
+			RangeProperty<?> firstProperty
+					= ((RangePropertyCollection<?>) property).getFirstProperty();
+			if (firstProperty instanceof NotesThicknessProperty) {
+				lineThicknessSlider = widgetAdapter.getSliderWidget(
 					(RangePropertyCollection<?>) property, geo);
-			parent.add(lineThicknessSlider);
+				parent.add(lineThicknessSlider);
+			} else if (firstProperty instanceof CellBorderThicknessProperty) {
+				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
+						(RangePropertyCollection<?>) property, geo);
+				parent.add(borderThickness);
+			}
 		}
 	}
 
