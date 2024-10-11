@@ -86,6 +86,14 @@ public class PropertiesIconAdapter {
 			return res.stylingbar_end_circle_outlined();
 		case ICON_SEGMENT_END_CIRCLE:
 			return res.stylingbar_end_circle();
+		case ICON_CELL_BORDER_ALL:
+			return res.border_all();
+		case ICON_CELL_BORDER_INNER:
+			return res.border_inner();
+		case ICON_CELL_BORDER_OUTER:
+			return res.border_outer();
+		case ICON_CELL_BORDER_NONE:
+			return res.border_clear();
 		}
 		return res.stylebar_empty();
 	}
@@ -98,8 +106,9 @@ public class PropertiesIconAdapter {
 		if (property instanceof IconsEnumeratedProperty<?>) {
 			PropertyResource[] propertyIcons = ((IconsEnumeratedProperty<?>)
 					property).getValueIcons();
-			return PropertiesIconAdapter.getIcon(propertyIcons[
-					((IconsEnumeratedProperty<?>) property).getIndex()]);
+			int selectedIndex = ((IconsEnumeratedProperty<?>) property).getIndex();
+			return selectedIndex == -1 ? PropertiesIconAdapter.getIcon(propertyIcons[0])
+					: PropertiesIconAdapter.getIcon(propertyIcons[selectedIndex]);
 		} else if (property instanceof RangePropertyCollection<?>
 				&& ((RangePropertyCollection<?>) property).getFirstProperty()
 				instanceof ImageOpacityProperty) {

@@ -82,6 +82,13 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				.createSegmentEndProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), "segmentStyle", true, segmentEndProperty);
 
+		PropertiesArray cellBorderProperty = GeoElementPropertiesFactory
+				.createCellBorderStyleProperties(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), "cellBorderStyle", true,
+				cellBorderProperty.getProperties());
+
+		addDivider();
+
 		BooleanProperty boldProperty = GeoElementPropertiesFactory
 				.createBoldProperty(getApp().getLocalization(), activeGeoList);
 		addTextFormatPropertyButton(activeGeoList.get(0), "bold", boldProperty);
@@ -102,9 +109,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), null, true, verticalAlignmentProperty);
 
-		if (getElement().hasChildNodes()) {
-			addDivider();
-		}
+		addDivider();
 
 		addDeleteButton();
 		addContextMenuButton();
@@ -167,7 +172,9 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void addDivider() {
-		add(BaseWidgetFactory.INSTANCE.newDivider(true));
+		if (getElement().hasChildNodes()) {
+			add(BaseWidgetFactory.INSTANCE.newDivider(true));
+		}
 	}
 
 	private void addDeleteButton() {
