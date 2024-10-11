@@ -676,7 +676,7 @@ public class RadioTreeItemController implements ClickHandler,
 	 * @param createSliders
 	 *            whether to create sliders
 	 */
-	public void onEnter(boolean keepFocus, boolean createSliders) {
+	public void onEnter(boolean keepFocus) {
 		// overridden in subclass
 	}
 
