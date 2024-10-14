@@ -40,6 +40,6 @@ public class CellBorderThicknessProperty extends AbstractRangeProperty<Integer> 
 
 	private InlineTableController getFormatter() {
 		GeoInlineTable table = (GeoInlineTable) delegate.getElement();
- 		return (InlineTableController) table.getFormatter();
+		return (InlineTableController) table.getFormatter();
 	}
 }
