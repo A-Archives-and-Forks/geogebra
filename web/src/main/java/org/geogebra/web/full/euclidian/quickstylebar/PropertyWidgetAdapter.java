@@ -18,11 +18,6 @@ import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
-import org.geogebra.web.full.javax.swing.GPopupMenuW;
-import org.geogebra.web.full.javax.swing.LineThicknessCheckMarkItem;
-import org.geogebra.web.html5.gui.BaseWidgetFactory;
-import org.geogebra.web.html5.gui.menu.AriaMenuItem;
-import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.FlowPanel;
 
