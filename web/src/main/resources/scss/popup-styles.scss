@@ -320,7 +320,32 @@
 		&.cellBorderStyle {
 			.divider {
 				height: 1px;
-				padding: 8px 0;
+				margin: 8px;
+			}
+
+			.lineThicknessItem {
+				display: flex;
+				height: 36px;
+				margin: 0px 8px;
+
+				.checkImg {
+					margin: 6px 16px 6px 0px;
+				}
+
+				.linePreview {
+				 	width: 100%;
+				 	background-color: neutral(900);
+
+				 	&.thin {
+						 height: 1px;
+						 margin: 18px 0px;
+					}
+
+					&.thick {
+						height: 3px;
+						margin: 17px 0px;
+					}
+				}
 			}
 		}
 	}

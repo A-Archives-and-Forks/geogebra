@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
@@ -12,6 +13,7 @@ import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProper
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.LineThicknessCheckMarkItem;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
+import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.FlowPanel;
 
@@ -75,15 +77,27 @@ public class PropertyWidgetAdapter {
 		FlowPanel thicknessPanel = new FlowPanel();
 		thicknessPanel.add(BaseWidgetFactory.INSTANCE.newDivider(false));
 
-		LineThicknessCheckMarkItem thin = new LineThicknessCheckMarkItem("thin", 1);
-		thicknessPanel.add(thin);
-		thin.setSelected(false);
-
-		LineThicknessCheckMarkItem thick = new LineThicknessCheckMarkItem("thick", 3);
-		thicknessPanel.add(thick);
-		thick.setSelected(false);
+		addThicknessCheckMarkItem(property, thicknessPanel, "thin", 1);
+		addThicknessCheckMarkItem(property, thicknessPanel, "thick", 3);
 
 		return thicknessPanel;
+	}
+
+	private void addThicknessCheckMarkItem(RangePropertyCollection<?> property,
+			FlowPanel parent, String style, int value) {
+		LineThicknessCheckMarkItem checkMarkItem = new LineThicknessCheckMarkItem(style, value);
+		parent.add(checkMarkItem);
+		checkMarkItem.setSelected(property.getValue() == value);
+
+		ClickStartHandler.init(checkMarkItem,
+				new ClickStartHandler(true, true) {
+
+					@Override
+					public void onClickStart(int x, int y, PointerEventType type) {
+						checkMarkItem.setSelected(!checkMarkItem.isSelected());
+						property.setValue(value);
+					}
+				});
 	}
 
 	/**
