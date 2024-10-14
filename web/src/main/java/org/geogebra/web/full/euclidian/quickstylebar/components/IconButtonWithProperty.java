@@ -6,12 +6,15 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.RangeProperty;
+import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
+import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
+import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.main.AppW;
@@ -100,6 +103,14 @@ public class IconButtonWithProperty extends IconButton {
 						(RangePropertyCollection<?>) property, geo);
 				parent.add(borderThickness);
 			}
+		}
+
+		if (property instanceof NamedEnumeratedPropertyCollection
+				&& ((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]
+				instanceof TextFontSizeProperty) {
+			GPopupMenuW fontSizeMenu = widgetAdapter.getMenuWidget((TextFontSizeProperty)
+					((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]);
+			parent.add(fontSizeMenu.getPopupMenu());
 		}
 	}
 
