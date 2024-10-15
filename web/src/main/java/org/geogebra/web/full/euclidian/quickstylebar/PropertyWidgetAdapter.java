@@ -81,7 +81,6 @@ public class PropertyWidgetAdapter {
 		return new BorderThicknessPanel(property);
 	}
 
-
 	/**
 	 * @param property - range property
 	 * @param geo - geo element
