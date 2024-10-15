@@ -1,5 +1,7 @@
 package org.geogebra.common.properties.impl.objects;
 
+import java.util.List;
+
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoSegment;
@@ -35,9 +37,9 @@ public class SegmentEndProperty extends AbstractEnumeratedProperty<SegmentStyle>
 			throws NotApplicablePropertyException {
 		super(localization, "stylebar.LineEndStyle");
 		delegate = new SegmentPropertyDelegate(element);
-		setValues(SegmentStyle.DEFAULT, SegmentStyle.LINE, SegmentStyle.SQUARE_OUTLINE,
+		setValues(List.of(SegmentStyle.DEFAULT, SegmentStyle.LINE, SegmentStyle.SQUARE_OUTLINE,
 				SegmentStyle.SQUARE, SegmentStyle.ARROW, SegmentStyle.ARROW_FILLED,
-				SegmentStyle.CIRCLE_OUTLINE, SegmentStyle.CIRCLE);
+				SegmentStyle.CIRCLE_OUTLINE, SegmentStyle.CIRCLE));
 	}
 
 	@Override

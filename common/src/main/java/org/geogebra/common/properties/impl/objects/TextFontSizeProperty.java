@@ -1,5 +1,14 @@
 package org.geogebra.common.properties.impl.objects;
 
+import static java.util.Map.entry;
+import static org.geogebra.common.kernel.geos.properties.TextFontSize.EXTRA_LARGE;
+import static org.geogebra.common.kernel.geos.properties.TextFontSize.EXTRA_SMALL;
+import static org.geogebra.common.kernel.geos.properties.TextFontSize.LARGE;
+import static org.geogebra.common.kernel.geos.properties.TextFontSize.MEDIUM;
+import static org.geogebra.common.kernel.geos.properties.TextFontSize.SMALL;
+import static org.geogebra.common.kernel.geos.properties.TextFontSize.VERY_LARGE;
+import static org.geogebra.common.kernel.geos.properties.TextFontSize.VERY_SMALL;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,9 +27,8 @@ import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropert
 import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 
 public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFontSize> {
-	private final List<TextFontSize> fontSizes = Arrays.asList(TextFontSize.EXTRA_SMALL,
-			TextFontSize.VERY_SMALL, TextFontSize.SMALL, TextFontSize.MEDIUM,
-			TextFontSize.LARGE, TextFontSize.VERY_LARGE, TextFontSize.EXTRA_LARGE);
+	private final List<TextFontSize> fontSizes = Arrays.asList(
+			EXTRA_SMALL, VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE, EXTRA_LARGE);
 	private final GeoElementDelegate delegate;
 	private final EuclidianView ev;
 	private final InlineTextFormatter inlineTextFormatter;
@@ -37,8 +45,16 @@ public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFo
 		delegate = new TextFormatterDelegate(element);
 		this.ev = ev;
 		inlineTextFormatter = new InlineTextFormatter();
-		setValues(fontSizes.toArray(new TextFontSize[0]));
-		setValueNames(fontSizes.stream().map(TextFontSize::getName).toArray(String[]::new));
+		setValues(fontSizes);
+		setNamedValues(List.of(
+				entry(EXTRA_SMALL, EXTRA_SMALL.getName()),
+				entry(VERY_SMALL, VERY_SMALL.getName()),
+				entry(SMALL, SMALL.getName()),
+				entry(MEDIUM, MEDIUM.getName()),
+				entry(LARGE, LARGE.getName()),
+				entry(VERY_LARGE, VERY_LARGE.getName()),
+				entry(EXTRA_LARGE, EXTRA_LARGE.getName())
+		));
 	}
 
 	@Override

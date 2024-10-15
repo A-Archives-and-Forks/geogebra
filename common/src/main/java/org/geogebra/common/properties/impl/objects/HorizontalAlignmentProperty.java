@@ -1,5 +1,7 @@
 package org.geogebra.common.properties.impl.objects;
 
+import java.util.List;
+
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
@@ -31,9 +33,9 @@ public class HorizontalAlignmentProperty extends AbstractEnumeratedProperty<Hori
 			throws NotApplicablePropertyException {
 		super(localization, "stylebar.HorizontalAlign");
 		delegate = new TextFormatterDelegate(element);
-		setValues(HorizontalAlignment.LEFT,
+		setValues(List.of(HorizontalAlignment.LEFT,
 				HorizontalAlignment.CENTER,
-				HorizontalAlignment.RIGHT);
+				HorizontalAlignment.RIGHT));
 	}
 
 	@Override

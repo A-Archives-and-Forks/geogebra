@@ -1,5 +1,7 @@
 package org.geogebra.common.properties.impl.objects;
 
+import java.util.List;
+
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.properties.FillType;
@@ -30,11 +32,11 @@ public class FillingStyleProperty extends AbstractEnumeratedProperty<FillType>
 			throws NotApplicablePropertyException {
 		super(localization, "Filling");
 		delegate = new FillingStylePropertyDelegate(element);
-		setValues(FillType.STANDARD,
+		setValues(List.of(FillType.STANDARD,
 				FillType.HATCH,
 				FillType.DOTTED,
 				FillType.CROSSHATCHED,
-				FillType.HONEYCOMB);
+				FillType.HONEYCOMB));
 	}
 
 	@Override
