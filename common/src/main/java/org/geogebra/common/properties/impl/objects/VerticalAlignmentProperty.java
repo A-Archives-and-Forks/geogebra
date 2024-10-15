@@ -1,5 +1,7 @@
 package org.geogebra.common.properties.impl.objects;
 
+import java.util.List;
+
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
@@ -31,9 +33,9 @@ public class VerticalAlignmentProperty extends AbstractEnumeratedProperty<Vertic
 			throws NotApplicablePropertyException {
 		super(localization, "stylebar.VerticalAlign");
 		delegate = new TextFormatterDelegate(element);
-		setValues(VerticalAlignment.TOP,
+		setValues(List.of(VerticalAlignment.TOP,
 				VerticalAlignment.MIDDLE,
-				VerticalAlignment.BOTTOM);
+				VerticalAlignment.BOTTOM));
 	}
 
 	@Override
