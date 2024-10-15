@@ -318,6 +318,12 @@
 		}
 
 		&.cellBorderStyle {
+			padding: 8px 0;
+
+			.buttonList {
+				padding: 0 8px;
+			}
+
 			.divider {
 				height: 1px;
 				margin: 8px;
@@ -326,7 +332,7 @@
 			.lineThicknessItem {
 				display: flex;
 				height: 36px;
-				margin: 0px 8px;
+				padding: 0px 16px;
 
 				.checkImg {
 					margin: 6px 16px 6px 0px;

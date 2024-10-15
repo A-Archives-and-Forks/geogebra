@@ -100,7 +100,7 @@ public class IconButtonWithProperty extends IconButton {
 				parent.add(lineThicknessSlider);
 			} else if (firstProperty instanceof CellBorderThicknessProperty) {
 				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
-						(RangePropertyCollection<?>) property, geo);
+						(RangePropertyCollection<?>) property);
 				parent.add(borderThickness);
 			}
 		}

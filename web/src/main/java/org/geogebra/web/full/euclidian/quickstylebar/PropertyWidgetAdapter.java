@@ -4,19 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.properties.TextFontSize;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
+import org.geogebra.web.full.euclidian.quickstylebar.components.BorderThicknessPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProperty;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
-import org.geogebra.web.full.javax.swing.LineThicknessCheckMarkItem;
-import org.geogebra.web.html5.gui.BaseWidgetFactory;
-import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.FlowPanel;
@@ -78,36 +75,12 @@ public class PropertyWidgetAdapter {
 
 	/**
 	 * @param property - cell border thickness property
-	 * @param geo - geo
 	 * @return panel for line thickness ui
 	 */
-	public FlowPanel getBorderThicknessWidget(RangePropertyCollection<?> property,
-			GeoElement geo) {
-		FlowPanel thicknessPanel = new FlowPanel();
-		thicknessPanel.add(BaseWidgetFactory.INSTANCE.newDivider(false));
-
-		addThicknessCheckMarkItem(property, thicknessPanel, "thin", 1);
-		addThicknessCheckMarkItem(property, thicknessPanel, "thick", 3);
-
-		return thicknessPanel;
+	public FlowPanel getBorderThicknessWidget(RangePropertyCollection<?> property) {
+		return new BorderThicknessPanel(property);
 	}
 
-	private void addThicknessCheckMarkItem(RangePropertyCollection<?> property,
-			FlowPanel parent, String style, int value) {
-		LineThicknessCheckMarkItem checkMarkItem = new LineThicknessCheckMarkItem(style, value);
-		parent.add(checkMarkItem);
-		checkMarkItem.setSelected(property.getValue() == value);
-
-		ClickStartHandler.init(checkMarkItem,
-				new ClickStartHandler(true, true) {
-
-					@Override
-					public void onClickStart(int x, int y, PointerEventType type) {
-						checkMarkItem.setSelected(!checkMarkItem.isSelected());
-						property.setValue(value);
-					}
-				});
-	}
 
 	/**
 	 * @param property - range property
