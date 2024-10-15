@@ -306,8 +306,12 @@
 				}
 
 				.checkImg {
+					opacity: 0;
 					margin: 6px 16px 6px 0px;
-					opacity: 0.54;
+
+					&.selected {
+						opacity: 0.54;
+					}
 				}
 
 				.linePreview {

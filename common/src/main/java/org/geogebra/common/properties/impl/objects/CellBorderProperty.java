@@ -1,5 +1,7 @@
 package org.geogebra.common.properties.impl.objects;
 
+import java.util.List;
+
 import org.geogebra.common.euclidian.inline.InlineTableController;
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -31,7 +33,7 @@ public class CellBorderProperty extends AbstractEnumeratedProperty<BorderType>
 			throws NotApplicablePropertyException {
 		super(localization, "stylebar.Borders");
 		delegate = new TablePropertyDelegate(element);
-		setValues(BorderType.ALL, BorderType.INNER, BorderType.OUTER, BorderType.NONE);
+		setValues(List.of(BorderType.ALL, BorderType.INNER, BorderType.OUTER, BorderType.NONE));
 	}
 
 	@Override
