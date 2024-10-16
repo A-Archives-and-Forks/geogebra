@@ -10,6 +10,7 @@ import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
+import org.geogebra.web.full.euclidian.quickstylebar.components.BorderThicknessPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProperty;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
@@ -70,6 +71,14 @@ public class PropertyWidgetAdapter {
 	private void setIconButtonActive(IconButton enumeratedPropertyIconButton) {
 		enumeratedPropertyButtons.forEach(iconButton -> iconButton.setActive(false));
 		enumeratedPropertyIconButton.setActive(true);
+	}
+
+	/**
+	 * @param property - cell border thickness property
+	 * @return panel for line thickness ui
+	 */
+	public FlowPanel getBorderThicknessWidget(RangePropertyCollection<?> property) {
+		return new BorderThicknessPanel(property);
 	}
 
 	/**

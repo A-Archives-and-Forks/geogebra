@@ -22,6 +22,8 @@ import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
+import org.geogebra.common.properties.impl.objects.CellBorderProperty;
+import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
 import org.geogebra.common.properties.impl.objects.EquationFormProperty;
 import org.geogebra.common.properties.impl.objects.FillingStyleProperty;
@@ -128,6 +130,62 @@ public class GeoElementPropertiesFactory {
 		addPropertyIfNotNull(properties, createLineStyleProperty(localization, elements));
 		addPropertyIfNotNull(properties, createNotesThicknessProperty(localization, elements));
 		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
+	 * Creates cell border style properties for a list of GeoElements.
+	 * @param localization localization
+	 * @param elements input elements
+	 * @return the list of properties for the GeoElement(s)
+	 */
+	public static PropertiesArray createCellBorderStyleProperties(
+			Localization localization, List<GeoElement> elements) {
+		List<Property> properties = new ArrayList<>();
+		addPropertyIfNotNull(properties, createCellBorderStyleProperty(localization, elements));
+		addPropertyIfNotNull(properties, createCellBorderThicknessProperty(localization,
+				elements));
+		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
+	 * Returns an Integer RangeProperty controlling the border thickness null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static RangePropertyCollection<?> createCellBorderThicknessProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<CellBorderThicknessProperty> borderThicknessProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				borderThicknessProperties.add(new CellBorderThicknessProperty(localization,
+						element));
+			}
+			return new RangePropertyCollection<>(
+					borderThicknessProperties.toArray(new CellBorderThicknessProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the cell border or null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedProperty createCellBorderStyleProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<CellBorderProperty> cellBorderProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				cellBorderProperties.add(new CellBorderProperty(localization, element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					cellBorderProperties.toArray(new CellBorderProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
 	}
 
 	/**
