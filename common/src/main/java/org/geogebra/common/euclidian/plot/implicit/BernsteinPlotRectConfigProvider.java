@@ -14,16 +14,7 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	protected PlotRectConfig getConfigFromPlotRect(PlotRect r) {
-		int config = config(r);
-//		if (config == 0) {
-//			BernsteinEdgeConfig extendeded = extendedConfig(BernsteinPlotRect.as(r));
-//			if (!BernsteinEdgeConfig.EMPTY.equals(extendeded)) {
-//				Log.debug("extended config: " + extendeded);
-//			}
-//			return extendeded;
-//		}
-
-		return BernsteinEdgeConfig.fromFlag(config);
+		return BernsteinEdgeConfig.fromFlag(config(r));
 	}
 
 	@Override
@@ -38,25 +29,7 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 			config = (config << 1) | sign(r.cornerAt(i));
 		}
 		return config >= 8 ? (~config) & 0xf : config;
-	}
-
-	private static BernsteinEdgeConfig extendedConfig(BernsteinPlotRect r) {
-			if (r.haveSolutions(EdgeKind.TOP, EdgeKind.BOTTOM)) {
-				return BernsteinEdgeConfig.TOPBOTTOM;
-			}
-
-			if (r.haveSolutions(EdgeKind.LEFT, EdgeKind.RIGHT)) {
-				return BernsteinEdgeConfig.LEFTRIGHT;
-			}
-//			if (r.haveSolutions(EdgeKind.TOP, EdgeKind.LEFT, EdgeKind.BOTTOM, EdgeKind.RIGHT)) {
-//				return BernsteinEdgeConfig.X;
-//			}
-		return r.hasNoSolution() ? BernsteinEdgeConfig.CENTER : BernsteinEdgeConfig.EMPTY;
-//		Log.debug(r.getEdges() +"");
-//		return BernsteinEdgeConfig.EMPTY;
-		}
-
-	/**
+	}	/**
 	 *
 	 * @param val
 	 *            value to check
@@ -80,7 +53,7 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	protected boolean isConfigFinal(PlotRectConfig config) {
-		return config == BernsteinEdgeConfig.T0101 || config.isInvalid();
+		return config.isInvalid();
 	}
 
 	@Override

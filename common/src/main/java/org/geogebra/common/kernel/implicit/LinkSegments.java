@@ -27,6 +27,18 @@ public class LinkSegments {
 			return config.flag();
 		}
 		MyPoint[] pts = provider.getPoints();
+		if (pts.length > 2) {
+			addPointPair(provider, pts[0], pts[1]);
+			addPointPair(provider, pts[2], pts[3]);
+		} else {
+			addPointPair(provider, pts[0], pts[1]);
+		}
+
+		return config.flag();
+	}
+
+	private void addPointPair(PlotRectConfigProvider provider, MyPoint p0, MyPoint p1) {
+		MyPoint[] pts = new MyPoint[]{p0, p1};
 		if (pts[0].x > pts[1].x) {
 			MyPoint temp = pts[0];
 			pts[0] = pts[1];
@@ -65,8 +77,6 @@ public class LinkSegments {
 		if (openPointLists.size() > provider.listThreshold()) {
 			flushPoints();
 		}
-
-		return config.flag();
 	}
 
 

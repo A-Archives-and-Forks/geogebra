@@ -1,12 +1,12 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
+import static org.geogebra.common.kernel.implicit.GeoImplicitCurve.interpolate;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.SegmentType;
-import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
 import org.geogebra.common.kernel.implicit.PlotRect;
 import org.geogebra.common.kernel.implicit.PlotRectConfig;
 import org.geogebra.common.util.debug.Log;
@@ -23,10 +23,10 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	T0001(1) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] { new MyPoint(r.x1(),
-					GeoImplicitCurve.interpolate(r.bottomLeft(), r.topLeft(), r.y2(),
-							r.y1()), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
+			return new MyPoint[] {
+					moveTo(r.x1(), interpolate(r.bottomLeft(), r.topLeft(), r.y2(),
+							r.y1())),
+					new MyPoint(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
 					r.y2(), SegmentType.LINE_TO)};
 		}
 	},
@@ -37,10 +37,10 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	T0010(2) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(r.x2(),
-					GeoImplicitCurve.interpolate(r.bottomRight(), r.topRight(), r.y2(),
-							r.y1()), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.bottomRight(), r.bottomLeft(), r.x2(), r.x1()),
+			return new MyPoint[] {
+					moveTo(r.x2(), interpolate(r.bottomRight(), r.topRight(), r.y2(),
+							r.y1())),
+					new MyPoint(interpolate(r.bottomRight(), r.bottomLeft(), r.x2(), r.x1()),
 					r.y2(), SegmentType.LINE_TO)};
 		}
 	},
@@ -51,10 +51,11 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	T0011(3) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(r.x1(), GeoImplicitCurve.interpolate(r.topLeft(), r.bottomLeft(), r.y1(),
-					r.y2()), SegmentType.MOVE_TO),
+			return new MyPoint[] {
+					moveTo(r.x1(), interpolate(r.topLeft(), r.bottomLeft(), r.y1(),
+							r.y2())),
 					new MyPoint(r.x2(),
-					GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2()),
+					interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2()),
 					SegmentType.LINE_TO)};
 		}
 	},
@@ -66,9 +67,9 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
 			return new MyPoint[] {
-					new MyPoint(r.x2(), GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(),
-							r.y2()), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.topRight(), r.topLeft(), r.x2(), r.x1()),
+					moveTo(r.x2(), interpolate(r.topRight(), r.bottomRight(), r.y1(),
+							r.y2())),
+					new MyPoint(interpolate(r.topRight(), r.topLeft(), r.x2(), r.x1()),
 							r.y1(), SegmentType.LINE_TO)
 			};
 		}
@@ -78,7 +79,17 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	 * opposite corners are inside / outside. NOTE: This configuration is
 	 * regarded as invalid
 	 */
-	T0101(5),
+	T0101(5) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {
+					moveTo(r.x1(), interpolate(r.topLeft(), r.bottomLeft(),r.y1(), r.y2())),
+					lineTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()), r.y1()),
+					moveTo(r.x2(), (r.y1() + r.y2()) / 2),
+					lineTo((r.x1() + r.x2()) / 2, r.y2())
+			};
+		}
+	},
 
 	/**
 	 * both the corners at the left are inside / outside
@@ -86,9 +97,10 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	T0110(6) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
-					r.y1(), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
+			return new MyPoint[] {
+					moveTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+							r.y1()),
+					new MyPoint(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
 					r.y2(), SegmentType.LINE_TO)};
 		}
 	},
@@ -99,10 +111,9 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	T0111(7) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(r.x1(),
-					GeoImplicitCurve.interpolate(r.topLeft(), r.bottomLeft(), r.y1(), r.y2()),
-					SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+			return new MyPoint[] {moveTo(r.x1(),
+					interpolate(r.topLeft(), r.bottomLeft(), r.y1(), r.y2())),
+					new MyPoint(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
 					r.y1(), SegmentType.LINE_TO)};
 		}
 	},
@@ -115,53 +126,15 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 
 	EMPTY(0),
 
-	VALID(10),
-	TOPBOTTOM(11) {
-		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			double x1 = r.topLeft() > r.topRight() ? r.x2() : r.x1();
-			double x2 = r.bottomLeft() > r.bottomRight() ? r.x2() : r.x1();
-//			double x2 = (r.x1() + r.x2()) / 2;
-			return new MyPoint[] {new MyPoint(x1, r.y1() , SegmentType.MOVE_TO),
-					new MyPoint(x2, r.y2(), SegmentType.LINE_TO)};
+	VALID(10);
 
-		}
+	private static MyPoint moveTo(double x, double y) {
+		return new MyPoint(x, y, SegmentType.MOVE_TO);
+	}
 
-	}, LEFTRIGHT(12) {
-		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-		BernsteinPlotRect rect = BernsteinPlotRect.as(r);
-		double y = (r.y1() + r.y2()) / 2;
-		return new MyPoint[] {new MyPoint(r.x1(), y, SegmentType.MOVE_TO),
-				new MyPoint(r.x2(), y, SegmentType.LINE_TO)};
-		}
-
-	},
-	X(13){
-		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			BernsteinPlotRect rect = BernsteinPlotRect.as(r);
-			GPoint2D top = rect.getSolution(EdgeKind.TOP);
-			GPoint2D left = rect.getSolution(EdgeKind.LEFT);
-			GPoint2D bottom = rect.getSolution(EdgeKind.BOTTOM);
-			GPoint2D right = rect.getSolution(EdgeKind.RIGHT);
-			return new MyPoint[] {new MyPoint(left.x, top.y, SegmentType.MOVE_TO),
-					new MyPoint(right.x, bottom.y, SegmentType.LINE_TO),
-			new MyPoint(right.x, top.y, SegmentType.MOVE_TO),
-			new MyPoint(left.x, bottom.y, SegmentType.LINE_TO)};
-		}
-
-	}, CENTER(14) {
-		@Override
-		public MyPoint[] getPoints(PlotRect rect) {
-			BernsteinPlotRect r = BernsteinPlotRect.as(rect);
-			double xMiddle = r.x1() + Math.abs(r.x2() - r.x1()) / 2;
-			double yMiddle = r.y1() + Math.abs(r.y2() - r.y1()) / 2;
-			return new MyPoint[] {new MyPoint(r.x1(), r.y1(), SegmentType.MOVE_TO),
-					new MyPoint(xMiddle, yMiddle, SegmentType.LINE_TO)};
-		}
-
-	};
+	private static MyPoint lineTo(double x, double y) {
+		return new MyPoint(x, y, SegmentType.LINE_TO);
+	}
 
 	public void logRect(BernsteinPlotRect r) {
 		Log.debug(this + " " + r.debugString());
