@@ -1,7 +1,8 @@
 package org.geogebra.common.properties.impl.objects;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.euclidian.EuclidianStyleBarStatic;
@@ -52,13 +53,7 @@ public class ElementColorProperty extends AbstractEnumeratedProperty<GColor>
 	}
 
 	private List<GColor> createColorValues() {
-		ColorValues[] colorValues = GeoColorValues.values();
-		List<GColor> colorList = new ArrayList<>();
-
-		for (ColorValues value : colorValues) {
-			colorList.add(value.getColor());
-		}
-
-		return colorList;
+		return Arrays.stream(GeoColorValues.values()).map(ColorValues::getColor)
+				.collect(Collectors.toList());
 	}
 }

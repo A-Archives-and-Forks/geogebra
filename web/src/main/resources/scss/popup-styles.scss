@@ -316,5 +316,12 @@
 		&.segmentStyle {
 			max-width: 168px;
 		}
+
+		&.colorStyle {
+			.colorPalette {
+				width: 252px;
+				height: 148px;
+			}
+		}
 	}
 }

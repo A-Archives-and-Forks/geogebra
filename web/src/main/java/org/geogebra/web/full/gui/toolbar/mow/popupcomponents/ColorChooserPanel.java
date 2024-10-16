@@ -1,12 +1,12 @@
 package org.geogebra.web.full.gui.toolbar.mow.popupcomponents;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.gui.dialog.handler.ColorChangeHandler;
-import org.geogebra.common.main.color.ColorValues;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.dialog.DialogManagerW;
 import org.geogebra.web.html5.gui.util.Dom;
@@ -25,27 +25,28 @@ public class ColorChooserPanel extends FlowPanel {
 	/**
 	 * constructor
 	 * @param appW - application
+	 * @param colorValues - color values
 	 * @param callback - callback for setting the color for object
 	 */
-	public ColorChooserPanel(AppW appW, Consumer<GColor> callback) {
+	public ColorChooserPanel(AppW appW, List<GColor> colorValues, Consumer<GColor> callback) {
 		super();
 		addStyleName("colorPalette");
 		this.callback = callback;
 		this.appW = appW;
-		buildGUI();
+		buildGUI(colorValues);
 	}
 
-	private void buildGUI() {
+	private void buildGUI(List<GColor> colorValues) {
 		colorButtons = new HashMap<>();
-		ColorValues[] colorValues = PenColorValues.values();
-		for (ColorValues color : colorValues) {
-			addColorButton(color.getColor());
-		}
-
-		addCustomColorButton();
+		colorValues.forEach(this::addColorButton);
 	}
 
 	 private void addColorButton(GColor color) {
+		if (color == null) {
+			addCustomColorButton();
+			return;
+		}
+
 		FlowPanel colorButton = new FlowPanel("button");
 		colorButton.addStyleName("colorButton");
 		if (GColor.WHITE.equals(color)) {

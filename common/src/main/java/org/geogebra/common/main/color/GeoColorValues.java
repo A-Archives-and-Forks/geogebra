@@ -23,7 +23,7 @@ public enum GeoColorValues implements ColorValues {
 	YELLOW_MEDIUM(GColor.newColorRGB(0xFFCC02)),
 	ORANGE_MEDIUM(GColor.newColorRGB(0xDB6114)),
 	RED_MEDIUM(GColor.newColorRGB(0xD32F2F)),
-	MEBIS_PURPLE_100(GColor.newColorRGB(0xADFEE)),
+	MEBIS_PURPLE_100(GColor.newColorRGB(0xEADFEE)),
 	PURPLE_100(GColor.newColorRGB(0xF3F0FF)),
 	BLUE_LIGHT(GColor.newColorRGB(0xCAD5ED)),
 	GREEN_LIGHT(GColor.newColorRGB(0xD2E4E2)),

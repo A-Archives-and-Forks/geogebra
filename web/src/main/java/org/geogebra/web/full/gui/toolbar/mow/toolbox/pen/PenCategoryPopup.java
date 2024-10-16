@@ -4,17 +4,23 @@ import static org.geogebra.common.euclidian.EuclidianConstants.MODE_ERASER;
 import static org.geogebra.common.euclidian.EuclidianConstants.MODE_HIGHLIGHTER;
 import static org.geogebra.common.euclidian.EuclidianConstants.MODE_PEN;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import org.geogebra.common.awt.GColor;
 import org.geogebra.common.main.settings.AbstractSettings;
 import org.geogebra.common.main.settings.SettingListener;
 import org.geogebra.web.full.gui.toolbar.mow.popupcomponents.ColorChooserPanel;
+import org.geogebra.web.full.gui.toolbar.mow.popupcomponents.PenColorValues;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.CategoryPopup;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.components.ComponentSlider;
 
 public class PenCategoryPopup extends CategoryPopup implements SettingListener {
+	private final static int PLUS_BUTTON_POSITION = 9;
 	private final PenCategoryController controller;
 	private ColorChooserPanel colorChooser;
 	private ComponentSlider sliderComponent;
@@ -36,7 +42,7 @@ public class PenCategoryPopup extends CategoryPopup implements SettingListener {
 	}
 
 	private void buildGui() {
-		colorChooser = new ColorChooserPanel((AppW) getApplication(), (color) -> {
+		colorChooser = new ColorChooserPanel((AppW) getApplication(), getColorList(), (color) -> {
 			int mode = getLastSelectedMode();
 			if (mode == MODE_PEN) {
 				controller.setLastPenColor(color);
@@ -50,6 +56,16 @@ public class PenCategoryPopup extends CategoryPopup implements SettingListener {
 
 		sliderComponent = new ComponentSlider((AppW) app);
 		addContent(sliderComponent);
+	}
+
+	private List<GColor> getColorList() {
+		List<GColor> penColors = Arrays.stream(PenColorValues.values()).map(
+				PenColorValues::getColor).collect(Collectors.toList());
+		List<GColor> newColorList = new ArrayList<>(penColors.size() + 1);
+		newColorList.addAll(penColors);
+		newColorList.add(PLUS_BUTTON_POSITION, null);
+
+		return newColorList;
 	}
 
 	/**
