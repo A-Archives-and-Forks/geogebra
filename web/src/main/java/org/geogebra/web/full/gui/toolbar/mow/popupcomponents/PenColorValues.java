@@ -13,7 +13,8 @@ public enum PenColorValues implements ColorValues {
 	WHITE(GColor.WHITE),
 	YELLOW(GColor.newColorRGB(0xFFCC02)),
 	ORANGE(GColor.newColorRGB(0xE07415)),
-	RED(GColor.newColorRGB(0xD3302F));
+	RED(GColor.newColorRGB(0xD3302F)),
+	CUSTOM_COLOR(null);
 
 	private final GColor color;
 

@@ -3,12 +3,14 @@ package org.geogebra.common.main.color;
 import org.geogebra.common.awt.GColor;
 
 public enum GeoColorValues implements ColorValues {
+
 	BLACK_900(GColor.newColorRGB(0x1C1C1F)),
 	BLACK_700(GColor.newColorRGB(0x6E6D73)),
 	BLACK_500(GColor.newColorRGB(0xB4B3BA)),
 	BLACK_400(GColor.newColorRGB(0xD1D0D6)),
 	BLACK_200(GColor.newColorRGB(0xF3F2F7)),
 	WHITE(GColor.WHITE),
+	CUSTOM_COLOR(null),
 	MEBIS_PURPLE_400(GColor.newColorRGB(0x723B86)),
 	PURPLE_700(GColor.newColorRGB(0x5145A8)),
 	BLUE_DARK(GColor.newColorRGB(0x143E92)),
