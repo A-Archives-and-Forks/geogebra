@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.gui.dialog.handler.ColorChangeHandler;
+import org.geogebra.common.main.color.ColorValues;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.dialog.DialogManagerW;
 import org.geogebra.web.html5.gui.util.Dom;
@@ -15,7 +16,7 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.SimplePanel;
 
 public class ColorChooserPanel extends FlowPanel {
-	private Consumer<GColor> callback;
+	private final Consumer<GColor> callback;
 	private GColor activeColor;
 	private FlowPanel activeButton;
 	private final AppW appW;
@@ -36,7 +37,7 @@ public class ColorChooserPanel extends FlowPanel {
 
 	private void buildGUI() {
 		colorButtons = new HashMap<>();
-		ColorValues[] colorValues = ColorValues.values();
+		ColorValues[] colorValues = PenColorValues.values();
 		for (ColorValues color : colorValues) {
 			addColorButton(color.getColor());
 		}
