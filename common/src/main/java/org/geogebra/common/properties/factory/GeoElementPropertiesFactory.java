@@ -33,6 +33,7 @@ import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
 import org.geogebra.common.properties.impl.objects.MinProperty;
 import org.geogebra.common.properties.impl.objects.NameProperty;
+import org.geogebra.common.properties.impl.objects.NotesColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
@@ -144,6 +145,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new ColorPropertyCollection<>(
 					colorProperties.toArray(new ElementColorProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Creates a color property for strokes and shapes
+	 * @param localization localization
+	 * @param elements elements
+	 * @return color property
+	 */
+	public static ColorProperty createNotesColorProperty(Localization localization,
+			List<GeoElement> elements) {
+		try {
+			List<NotesColorProperty> colorProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				colorProperties.add(new NotesColorProperty(localization, element));
+			}
+			return new ColorPropertyCollection<>(
+					colorProperties.toArray(new NotesColorProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

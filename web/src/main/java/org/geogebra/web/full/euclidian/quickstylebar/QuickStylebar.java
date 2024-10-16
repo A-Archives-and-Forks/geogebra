@@ -65,7 +65,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		addCropButton();
 
-		Property colorProperty = GeoElementPropertiesFactory.createColorProperty(
+		Property colorProperty = GeoElementPropertiesFactory.createNotesColorProperty(
 				getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), "colorStyle", true, colorProperty);
 

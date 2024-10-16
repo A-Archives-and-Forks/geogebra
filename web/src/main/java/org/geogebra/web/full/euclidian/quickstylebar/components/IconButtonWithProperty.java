@@ -112,6 +112,7 @@ public class IconButtonWithProperty extends IconButton {
 				if (lineThicknessSlider != null) {
 					lineThicknessSlider.setLineColor(color);
 				}
+				appW.closePopups();
 			});
 			colorPanel.updateColorSelection(geo.getObjectColor());
 			parent.add(colorPanel);
