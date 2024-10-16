@@ -181,9 +181,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	}
 
 	private void addDivider() {
-		if (getElement().hasChildNodes()) {
+		if (getElement().hasChildNodes() && !isLastElemDivider()) {
 			add(BaseWidgetFactory.INSTANCE.newDivider(true));
 		}
+	}
+
+	private boolean isLastElemDivider() {
+		String lastElemClassName = getChildren() != null
+				? getChildren().get(getChildren().size() - 1).getStyleName() : "";
+		return lastElemClassName.contains("divider");
 	}
 
 	private void addDeleteButton() {
