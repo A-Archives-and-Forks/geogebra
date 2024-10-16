@@ -57,7 +57,7 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 
 		setLineWidth(g2, 1);
 		g2.drawRect(x, y, width, height);
-//		drawConfigText(g2, cell, x, y - width / 2);
+		drawConfigText(g2, cell, x, y - width / 2);
 //		drawEdgePoints(g2, cell.getEdgeSolutions());
 	}
 

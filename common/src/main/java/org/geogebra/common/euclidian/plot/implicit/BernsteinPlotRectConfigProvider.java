@@ -4,7 +4,6 @@ import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.implicit.PlotRect;
 import org.geogebra.common.kernel.implicit.PlotRectConfig;
 import org.geogebra.common.kernel.implicit.PlotRectConfigProvider;
-import org.geogebra.common.util.debug.Log;
 
 public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	private final BernsteinPlotCell cell;
@@ -16,13 +15,13 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	@Override
 	protected PlotRectConfig getConfigFromPlotRect(PlotRect r) {
 		int config = config(r);
-		if (config == 0) {
-			BernsteinEdgeConfig extendeded = extendedConfig(BernsteinPlotRect.as(r));
-			if (!BernsteinEdgeConfig.EMPTY.equals(extendeded)) {
-				Log.debug("extended config: " + extendeded);
-			}
-			return extendeded;
-		}
+//		if (config == 0) {
+//			BernsteinEdgeConfig extendeded = extendedConfig(BernsteinPlotRect.as(r));
+//			if (!BernsteinEdgeConfig.EMPTY.equals(extendeded)) {
+//				Log.debug("extended config: " + extendeded);
+//			}
+//			return extendeded;
+//		}
 
 		return BernsteinEdgeConfig.fromFlag(config);
 	}

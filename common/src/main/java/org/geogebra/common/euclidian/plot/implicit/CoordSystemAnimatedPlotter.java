@@ -10,7 +10,7 @@ import org.geogebra.common.euclidian.CoordSystemInfo;
  */
 public abstract class CoordSystemAnimatedPlotter implements CoordSystemAnimationListener {
 
-	private boolean updateEnabled;
+	private boolean updateEnabled = true;
 
 	@Override
 	public void onZoomStop(CoordSystemInfo info) {
@@ -39,7 +39,7 @@ public abstract class CoordSystemAnimatedPlotter implements CoordSystemAnimation
 	public abstract void update();
 
 	private void enableUpdate() {
-		updateEnabled = true;
+//		updateEnabled = true;
 	}
 
 	private void disableUpdate() {

@@ -32,7 +32,7 @@ public class BernsteinImplicitAlgoTest extends BaseUnitTest {
 
 
 		};
-		bounds.setSize(800, 600);
+		bounds.setSize(1580, 1265);
 		GeoImplicitCurve curve = add("(3x^2 - y^2)^2 * y^2 - (x^2 + y^2)^4 = 0");
 		List<MyPoint> points = new ArrayList<>();
 		List<BernsteinPlotCell> cells = new ArrayList<>();
