@@ -22,8 +22,8 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	private final PlotterAlgo algo;
 	private final List<MyPoint> points = new ArrayList<>();
 	private final List<BernsteinPlotCell> cells = new ArrayList<>();
-//	private final BernsteinPlotterSettings settings = new BernsteinPlotterDebugSettings();
-	private final BernsteinPlotterSettings settings = new BernsteinPlotterDefaultSettings();
+	private final BernsteinPlotterSettings settings = new BernsteinPlotterDebugSettings();
+//	private final BernsteinPlotterSettings settings = new BernsteinPlotterDefaultSettings();
 
 	/**
 	 * @param geo to draw

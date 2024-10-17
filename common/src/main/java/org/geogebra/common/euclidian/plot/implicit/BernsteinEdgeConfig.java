@@ -93,6 +93,38 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		}
 	},
 	/**
+	 * both the corners at the left are inside / outside
+	 */
+	T0110(6) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {
+					moveTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+							r.y1()),
+					new MyPoint(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
+							r.y2(), SegmentType.LINE_TO)};
+		}
+	},
+	/**
+	 * only top left corner is inside / outside
+	 */
+	T0111(7) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {moveTo(r.x1(),
+					interpolate(r.topLeft(), r.bottomLeft(), r.y1(), r.y2())),
+					new MyPoint(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+							r.y1(), SegmentType.LINE_TO)};
+		}
+	},
+	T_1000(8) {
+
+	},
+
+	T_1001(9) {
+
+	},
+	/**
 	 * opposite corners are inside / outside. NOTE: This configuration is
 	 * regarded as invalid
 	 */
@@ -113,32 +145,27 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		}
 	},
 
-	/**
-	 * both the corners at the left are inside / outside
-	 */
-	T0110(6) {
-		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {
-					moveTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
-							r.y1()),
-					new MyPoint(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
-					r.y2(), SegmentType.LINE_TO)};
-		}
+	T_1011(11) {
+
 	},
 
-	/**
-	 * only top left corner is inside / outside
-	 */
-	T0111(7) {
-		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {moveTo(r.x1(),
-					interpolate(r.topLeft(), r.bottomLeft(), r.y1(), r.y2())),
-					new MyPoint(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
-					r.y1(), SegmentType.LINE_TO)};
-		}
+	T_1100(12) {
+
 	},
+
+	T_1101(13) {
+
+	},
+
+	T_1110(14) {
+
+	},
+
+	T_1111(15) {
+
+	},
+
+
 
 	/**
 	 * invalid configuration. expression value is undefined / infinity for at
