@@ -102,7 +102,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		BernsteinPlotRect rect =
 				new BernsteinPlotRect(currentCell, polynomial);
 		currentCell.setRectConfig(BernsteinEdgeConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect)));
-		findSolutionsInEdges(currentCell);
+//		findSolutionsInEdges(currentCell);
 		segments.add(rect, provider);
 		cells.add(currentCell);
 	}
