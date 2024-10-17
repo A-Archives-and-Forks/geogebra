@@ -23,4 +23,9 @@ public class BernsteinPlotterDebugSettings implements BernsteinPlotterSettings {
 	public int minEdgeWidth() {
 		return 2;
 	}
+
+	@Override
+	public boolean isUpdateEnabled() {
+		return false;
+	}
 }

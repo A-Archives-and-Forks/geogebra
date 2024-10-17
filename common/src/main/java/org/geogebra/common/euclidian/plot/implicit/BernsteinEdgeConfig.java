@@ -5,6 +5,7 @@ import static org.geogebra.common.kernel.implicit.GeoImplicitCurve.interpolate;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geogebra.common.awt.GColor;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.SegmentType;
 import org.geogebra.common.kernel.implicit.PlotRect;
@@ -75,19 +76,40 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		}
 	},
 
-	/**
-	 * opposite corners are inside / outside. NOTE: This configuration is
-	 * regarded as invalid
-	 */
 	T0101(5) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
 			return new MyPoint[] {
 					moveTo(r.x1(), interpolate(r.topLeft(), r.bottomLeft(),r.y1(), r.y2())),
-					lineTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()), r.y1()),
-					moveTo(r.x2(), (r.y1() + r.y2()) / 2),
-					lineTo((r.x1() + r.x2()) / 2, r.y2())
+					lineTo(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()), r.y2()),
+					moveTo(r.x2(), interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2())),
+					lineTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()), r.y1())
 			};
+		}
+
+		@Override
+		public GColor color() {
+			return GColor.DARK_RED;
+		}
+	},
+	/**
+	 * opposite corners are inside / outside. NOTE: This configuration is
+	 * regarded as invalid
+	 */
+	T1010(10) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {
+					moveTo(r.x1(), interpolate(r.topLeft(), r.bottomLeft(),r.y1(), r.y2())),
+					lineTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()), r.y1()),
+					moveTo(r.x2(), interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2())),
+					lineTo(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()), r.y2()),
+			};
+		}
+
+		@Override
+		public GColor color() {
+			return GColor.DARK_RED;
 		}
 	},
 
@@ -126,7 +148,7 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 
 	EMPTY(0),
 
-	VALID(10);
+	VALID(255);
 
 	private static MyPoint moveTo(double x, double y) {
 		return new MyPoint(x, y, SegmentType.MOVE_TO);
@@ -188,4 +210,7 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		return Math.min(Math.abs(a), Math.abs(b));
 	}
 
+	public GColor color() {
+		return GColor.BLACK;
+	}
 }

@@ -38,8 +38,8 @@ public abstract class CoordSystemAnimatedPlotter implements CoordSystemAnimation
 
 	public abstract void update();
 
-	private void enableUpdate() {
-//		updateEnabled = true;
+	protected void enableUpdate() {
+		updateEnabled = true;
 	}
 
 	private void disableUpdate() {

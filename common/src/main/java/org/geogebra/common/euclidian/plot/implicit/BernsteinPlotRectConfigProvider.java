@@ -28,6 +28,10 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 		for (int i = 0; i < 4; i++) {
 			config = (config << 1) | sign(r.cornerAt(i));
 		}
+		if (config == 10) {
+			return 10;
+		}
+
 		return config >= 8 ? (~config) & 0xf : config;
 	}	/**
 	 *

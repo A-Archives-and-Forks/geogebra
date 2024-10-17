@@ -5,4 +5,6 @@ public interface BernsteinPlotterSettings {
 	int minBoxWidthInPixels();
 	int minBoxHeightInPixels();
 	int minEdgeWidth();
+
+	boolean isUpdateEnabled();
 }

@@ -77,4 +77,11 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	public int plotCellCount() {
 		return points.size();
 	}
+
+	@Override
+	protected void enableUpdate() {
+		if (settings.isUpdateEnabled()) {
+			super.enableUpdate();
+		}
+	}
 }

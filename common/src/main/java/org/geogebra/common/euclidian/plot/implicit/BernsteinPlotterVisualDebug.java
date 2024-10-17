@@ -95,11 +95,9 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 	}
 
 	private static void drawConfigText(GGraphics2D g2, BernsteinPlotCell cell, int x, int y) {
-		PlotRectConfig config = cell.getRectConfig();
-		if (config == BernsteinEdgeConfig.T0101) {
-			g2.setColor(GColor.BLACK);
-			g2.drawString(config.toString(), x, y);
-		}
+		BernsteinEdgeConfig config = (BernsteinEdgeConfig) cell.getRectConfig();
+		g2.setColor(config.color());
+		g2.drawString(config.toString(), x, y);
 	}
 
 	private static GColor getCellColor(BernsteinPlotCell cell) {
