@@ -50,7 +50,7 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 
 	@Override
 	public int listThreshold() {
-		return 100000;
+		return 1;
 	}
 
 	@Override
