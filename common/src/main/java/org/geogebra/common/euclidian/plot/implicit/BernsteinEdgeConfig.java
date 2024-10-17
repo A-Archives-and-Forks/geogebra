@@ -117,11 +117,18 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 							r.y1(), SegmentType.LINE_TO)};
 		}
 	},
-	T_1000(8) {
-
+	T1000(8) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return T0111.getPoints(r);
+		}
 	},
 
-	T_1001(9) {
+	T1001(9) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return T0110.getPoints(r);
+		}
 
 	},
 	/**
@@ -145,24 +152,43 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		}
 	},
 
-	T_1011(11) {
+	T1011(11) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return new MyPoint[] {moveTo(r.x2(),
+					interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2())),
+					new MyPoint(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+							r.y1(), SegmentType.LINE_TO)};
+		}
 
 	},
 
-	T_1100(12) {
-
+	T1100(12) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return T0011.getPoints(r);
+		}
 	},
 
-	T_1101(13) {
-
+	T1101(13) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return T0010.getPoints(r);
+		}
 	},
 
-	T_1110(14) {
-
+	T1110(14) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return T0001.getPoints(r);
+		}
 	},
 
-	T_1111(15) {
-
+	T1111(15) {
+		@Override
+		public MyPoint[] getPoints(PlotRect r) {
+			return T0000.getPoints(r);
+		}
 	},
 
 

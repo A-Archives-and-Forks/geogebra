@@ -39,11 +39,11 @@ public class LinkSegments {
 
 	private void addPointPair(PlotRectConfigProvider provider, MyPoint p0, MyPoint p1) {
 		MyPoint[] pts = new MyPoint[]{p0, p1};
-		if (pts[0].x > pts[1].x) {
-			MyPoint temp = pts[0];
-			pts[0] = pts[1];
-			pts[1] = temp;
-		}
+//		if (pts[0].x > pts[1].x) {
+//			MyPoint temp = pts[0];
+//			pts[0] = pts[1];
+//			pts[1] = temp;
+//		}
 
 		ListIterator<PointList> itr1 = openPointLists.listIterator();
 		ListIterator<PointList> itr2 = openPointLists.listIterator();
