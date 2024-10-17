@@ -2,6 +2,7 @@ package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import static org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar.POPUP_MENU_DISTANCE;
 
+import org.geogebra.common.awt.GColor;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
@@ -29,6 +30,8 @@ public class IconButtonWithProperty extends IconButton {
 	private GPopupPanel propertyPopup;
 	private SliderWithProperty lineThicknessSlider;
 	private final PropertyWidgetAdapter widgetAdapter;
+	private ColorChooserPanel colorPanel;
+	private PopupColorHandler popupHandler;
 
 	/**
 	 * Constructor
@@ -119,10 +122,11 @@ public class IconButtonWithProperty extends IconButton {
 		}
 
 		if (property instanceof ColorPropertyCollection<?>) {
-			ColorChooserPanel colorPanel = new ColorChooserPanel(appW,
+			colorPanel = new ColorChooserPanel(appW,
 					((ColorPropertyCollection<?>) property).getValues(), color -> {
-				((ColorPropertyCollection<?>) property).setValue(color);
-				appW.closePopups();
+					if (popupHandler != null) {
+						popupHandler.fireActionPerformed(color);
+					}
 			});
 			colorPanel.updateColorSelection(geo.getObjectColor());
 			parent.add(colorPanel);
@@ -149,5 +153,16 @@ public class IconButtonWithProperty extends IconButton {
 				(int) (getAbsoluteTop() + getOffsetHeight() - appW.getAbsTop())
 						+ 2 * POPUP_MENU_DISTANCE);
 		appW.registerPopup(propertyPopup);
+	}
+
+	/**
+	 * @param popupHandler {@link PopupColorHandler}
+	 */
+	public void addPopupHandler(PopupColorHandler popupHandler) {
+		this.popupHandler = popupHandler;
+	}
+
+	public GColor getActiveColor() {
+		return colorPanel.getActiveColor();
 	}
 }

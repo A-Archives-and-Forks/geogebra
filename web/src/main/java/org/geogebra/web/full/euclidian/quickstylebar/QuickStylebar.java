@@ -17,6 +17,7 @@ import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
+import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperty;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
@@ -67,7 +68,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property colorProperty = GeoElementPropertiesFactory.createNotesColorProperty(
 				getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList.get(0), "colorStyle", true, colorProperty);
+		addColorPropertyButton(activeGeoList.get(0), colorProperty);
 
 		Property fillingStyleProperty = GeoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
@@ -124,6 +125,21 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
+	private void addColorPropertyButton(GeoElement geo, Property property) {
+		if (!(property instanceof ColorPropertyCollection<?>)) {
+			return;
+		}
+
+		IconButtonWithProperty colorButton = new IconButtonWithProperty(getApp(), "colorStyle",
+				PropertiesIconAdapter.getIcon(property), property.getName(), geo, true, property);
+		Function<ArrayList<GeoElement>, Boolean> action = (geos) -> {
+			((ColorPropertyCollection<?>) property).setValue(colorButton.getActiveColor());
+			return true;
+		};
+		setPopupHandlerWithUndoAction(colorButton, action);
+		styleAndRegisterButton(colorButton);
+	}
+
 	private void addTextFormatPropertyButton(GeoElement geo, String textFormat,
 			BooleanProperty property) {
 		if (property == null || !(geo instanceof HasTextFormatter)) {
@@ -149,6 +165,14 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			getApp().closePopups();
 			processSelectionWithUndoAction(action);
 			btn.setActive(!btn.isActive());
+		});
+	}
+
+	protected void setPopupHandlerWithUndoAction(IconButtonWithProperty iconButton,
+			Function<ArrayList<GeoElement>, Boolean> action) {
+		iconButton.addPopupHandler(w -> {
+			getApp().closePopups();
+			processSelectionWithUndoAction(action);
 		});
 	}
 

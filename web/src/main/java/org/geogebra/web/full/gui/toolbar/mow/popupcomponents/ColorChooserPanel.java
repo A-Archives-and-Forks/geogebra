@@ -180,4 +180,8 @@ public class ColorChooserPanel extends FlowPanel {
 			runCallback(selectedColor);
 		}
 	}
+
+	public GColor getActiveColor() {
+		return activeColor;
+	}
 }
