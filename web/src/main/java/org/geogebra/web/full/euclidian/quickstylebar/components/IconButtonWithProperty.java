@@ -25,6 +25,7 @@ import org.gwtproject.user.client.ui.FlowPanel;
 
 public class IconButtonWithProperty extends IconButton {
 	private final AppW appW;
+	private final GeoElement geo;
 	private GPopupPanel propertyPopup;
 	private SliderWithProperty lineThicknessSlider;
 	private final PropertyWidgetAdapter widgetAdapter;
@@ -43,10 +44,11 @@ public class IconButtonWithProperty extends IconButton {
 			GeoElement geo, boolean closePopupOnAction, Property... properties) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
+		this.geo = geo;
 		widgetAdapter = new PropertyWidgetAdapter(appW, closePopupOnAction);
 		AriaHelper.setAriaHasPopup(this);
 
-		buildGUI(geo, properties);
+		buildGUI(properties);
 		if (className != null) {
 			propertyPopup.addStyleName(className);
 		}
@@ -58,6 +60,7 @@ public class IconButtonWithProperty extends IconButton {
 			if (propertyPopup.isShowing()) {
 				propertyPopup.hide();
 			} else {
+				update();
 				showPropertyPopup();
 			}
 			AriaHelper.setAriaExpanded(this, propertyPopup.isShowing());
@@ -69,18 +72,18 @@ public class IconButtonWithProperty extends IconButton {
 		});
 	}
 
-	private void buildGUI(GeoElement geo, Property... properties) {
+	private void buildGUI(Property... properties) {
 		initPropertyPopup();
 		FlowPanel propertyPanel = new FlowPanel();
 
 		for (Property property : properties) {
-			processProperty(property, propertyPanel, geo);
+			processProperty(property, propertyPanel);
 		}
 
 		propertyPopup.add(propertyPanel);
 	}
 
-	private void processProperty(Property property, FlowPanel parent, GeoElement geo) {
+	private void processProperty(Property property, FlowPanel parent) {
 		if (property instanceof IconsEnumeratedProperty) {
 			FlowPanel enumeratedPropertyButtonPanel = widgetAdapter.getIconListPanel(
 					(IconsEnumeratedProperty<?>) property, (index) -> {
@@ -119,9 +122,6 @@ public class IconButtonWithProperty extends IconButton {
 			ColorChooserPanel colorPanel = new ColorChooserPanel(appW,
 					((ColorPropertyCollection<?>) property).getValues(), color -> {
 				((ColorPropertyCollection<?>) property).setValue(color);
-				if (lineThicknessSlider != null) {
-					lineThicknessSlider.setLineColor(color);
-				}
 				appW.closePopups();
 			});
 			colorPanel.updateColorSelection(geo.getObjectColor());
@@ -133,6 +133,12 @@ public class IconButtonWithProperty extends IconButton {
 		if (propertyPopup == null) {
 			propertyPopup = new GPopupPanel(false, appW.getAppletFrame(), appW);
 			propertyPopup.setStyleName("quickStyleBarPopup");
+		}
+	}
+
+	private void update() {
+		if (lineThicknessSlider != null) {
+			lineThicknessSlider.setLineColor(geo.getObjectColor());
 		}
 	}
 

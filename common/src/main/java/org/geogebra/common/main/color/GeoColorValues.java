@@ -43,9 +43,4 @@ public enum GeoColorValues implements ColorValues {
 	public GColor getColor() {
 		return color;
 	}
-
-	@Override
-	public ColorValues[] getValues() {
-		return values();
-	}
 }
