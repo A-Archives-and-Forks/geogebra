@@ -10,7 +10,7 @@ public class NotesColorPropertyDelegate extends AbstractGeoElementDelegate {
 
 	@Override
 	protected boolean checkIsApplicable(GeoElement element) {
-		return element.isPenStroke() || element.isGeoPolygon() || element.isGeoSegment()
-				|| element.isGeoConic();
+		return element.isPenStroke() || element.isGeoSegment()
+				|| (element.isGeoPolygon() && element.isMask());
 	}
 }
