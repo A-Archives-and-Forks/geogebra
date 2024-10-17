@@ -65,6 +65,11 @@ public class QuadTreeRectConfigProvider extends PlotRectConfigProvider {
 	}
 
 	@Override
+	public boolean canChangePointOrder() {
+		return true;
+	}
+
+	@Override
 	protected boolean isConfigFinal(PlotRectConfig config) {
 		return config == QuadTreeEdgeConfig.T0101 || config.isInvalid();
 	}

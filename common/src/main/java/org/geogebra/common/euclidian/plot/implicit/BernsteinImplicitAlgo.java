@@ -101,7 +101,9 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 				new BernsteinPlotRectConfigProvider(currentCell);
 		BernsteinPlotRect rect =
 				new BernsteinPlotRect(currentCell, polynomial);
-		currentCell.setRectConfig(BernsteinEdgeConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect)));
+		BernsteinEdgeConfig config =
+				BernsteinEdgeConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect));
+		currentCell.setRectConfig(config);
 //		findSolutionsInEdges(currentCell);
 		segments.add(rect, provider);
 		cells.add(currentCell);

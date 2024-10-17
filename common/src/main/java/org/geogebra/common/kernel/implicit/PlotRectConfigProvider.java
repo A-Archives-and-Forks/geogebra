@@ -30,4 +30,5 @@ public abstract class PlotRectConfigProvider {
 	}
 	protected abstract PlotRectConfig empty();
 	public abstract int listThreshold();
+	public abstract boolean canChangePointOrder();
 }

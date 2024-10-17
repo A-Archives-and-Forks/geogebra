@@ -54,6 +54,11 @@ public class BernsteinPlotRectConfigProvider extends PlotRectConfigProvider {
 	}
 
 	@Override
+	public boolean canChangePointOrder() {
+		return false;
+	}
+
+	@Override
 	protected boolean isConfigFinal(PlotRectConfig config) {
 		return config.isInvalid();
 	}

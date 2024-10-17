@@ -16,34 +16,40 @@ public class LinkSegments {
 	 * it would be better to adjust LIST_THRESHOLD based on platform
 	 */
 	public int listThreshold = 480;
+	private int threshold;
 
 	public LinkSegments(List<MyPoint> locusPoints) {
 		this.locusPoints = locusPoints;
 	}
 
 	public int add(PlotRect r, PlotRectConfigProvider provider) {
-		PlotRectConfig config = provider.create(r);
+		return add(provider.create(r), provider);
+	}
+
+	public int add(PlotRectConfig config, PlotRectConfigProvider provider) {
 		if (!config.isValid()) {
 			return config.flag();
 		}
 		MyPoint[] pts = provider.getPoints();
+		threshold = provider.listThreshold();
+		boolean xChange = provider.canChangePointOrder();
 		if (pts.length > 2) {
-			addPointPair(provider, pts[0], pts[1]);
-			addPointPair(provider, pts[2], pts[3]);
+			addPointPair(pts[0], pts[1], xChange);
+			addPointPair(pts[2], pts[3], xChange);
 		} else {
-			addPointPair(provider, pts[0], pts[1]);
+			addPointPair(pts[0], pts[1], xChange);
 		}
 
 		return config.flag();
 	}
 
-	private void addPointPair(PlotRectConfigProvider provider, MyPoint p0, MyPoint p1) {
+	private void addPointPair(MyPoint p0, MyPoint p1, boolean canXChange) {
 		MyPoint[] pts = new MyPoint[]{p0, p1};
-//		if (pts[0].x > pts[1].x) {
-//			MyPoint temp = pts[0];
-//			pts[0] = pts[1];
-//			pts[1] = temp;
-//		}
+		if (canXChange && pts[0].x > pts[1].x) {
+			MyPoint temp = pts[0];
+			pts[0] = pts[1];
+			pts[1] = temp;
+		}
 
 		ListIterator<PointList> itr1 = openPointLists.listIterator();
 		ListIterator<PointList> itr2 = openPointLists.listIterator();
@@ -74,7 +80,7 @@ public class LinkSegments {
 		} else {
 			openPointLists.addFirst(new PointList(pts[0], pts[1]));
 		}
-		if (openPointLists.size() > provider.listThreshold()) {
+		if (openPointLists.size() > listThreshold) {
 			flushPoints();
 		}
 	}
