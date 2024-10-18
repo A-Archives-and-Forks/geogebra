@@ -1,8 +1,9 @@
 package org.geogebra.web.full.gui.toolbar.mow.popupcomponents;
 
 import org.geogebra.common.awt.GColor;
+import org.geogebra.common.main.color.ColorValues;
 
-public enum ColorValues {
+public enum PenColorValues implements ColorValues {
 
 	BLACK(GColor.BLACK),
 	MEBIS_PURPLE(GColor.newColorRGB(0x975FA8)),
@@ -12,14 +13,16 @@ public enum ColorValues {
 	WHITE(GColor.WHITE),
 	YELLOW(GColor.newColorRGB(0xFFCC02)),
 	ORANGE(GColor.newColorRGB(0xE07415)),
-	RED(GColor.newColorRGB(0xD3302F));
+	RED(GColor.newColorRGB(0xD3302F)),
+	CUSTOM_COLOR(null);
 
 	private final GColor color;
 
-	ColorValues(GColor color) {
+	PenColorValues(GColor color) {
 		this.color = color;
 	}
 
+	@Override
 	public GColor getColor() {
 		return color;
 	}

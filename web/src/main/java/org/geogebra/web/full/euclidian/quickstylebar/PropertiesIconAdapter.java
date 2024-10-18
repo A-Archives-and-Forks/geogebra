@@ -4,6 +4,7 @@ import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
+import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
@@ -128,7 +129,10 @@ public class PropertiesIconAdapter {
 			&& ((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]
 			instanceof TextFontSizeProperty) {
 			return MaterialDesignResources.INSTANCE.text_size_black();
+		} else if (property instanceof ColorPropertyCollection) {
+			return MaterialDesignResources.INSTANCE.color_black();
 		}
+
 		return MaterialDesignResources.INSTANCE.stylebar_empty();
 	}
 }

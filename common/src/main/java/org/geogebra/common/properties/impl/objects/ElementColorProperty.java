@@ -1,6 +1,5 @@
 package org.geogebra.common.properties.impl.objects;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.geogebra.common.awt.GColor;
@@ -34,6 +33,17 @@ public class ElementColorProperty extends AbstractEnumeratedProperty<GColor>
 		setValues(createColorValues());
 	}
 
+	/**
+	 * Constructor
+	 * @param localization - localization
+	 * @param delegate - delegate
+	 */
+	public ElementColorProperty(Localization localization, GeoElementDelegate delegate) {
+		super(localization, "stylebar.Color");
+		this.delegate = delegate;
+		this.element = delegate.getElement();
+	}
+
 	@Override
 	public GColor getValue() {
 		return element.getObjectColor();
@@ -42,7 +52,7 @@ public class ElementColorProperty extends AbstractEnumeratedProperty<GColor>
 	@Override
 	public void doSetValue(GColor color) {
 		EuclidianStyleBarStatic.applyColor(color, element.getAlphaValue(), element.getApp(),
-				Arrays.asList(element));
+				List.of(element));
 	}
 
 	@Override
@@ -50,7 +60,10 @@ public class ElementColorProperty extends AbstractEnumeratedProperty<GColor>
 		return element.isEuclidianVisible() && delegate.isEnabled();
 	}
 
-	private List<GColor> createColorValues() {
+	/**
+	 * @return color values
+	 */
+	public List<GColor> createColorValues() {
 		GColor[] primColor = GeoGebraColorConstants.getPrimarySwatchColors();
 		GColor[] scolors = GeoGebraColorConstants.getMainColorSwatchColors();
 		return List.of(

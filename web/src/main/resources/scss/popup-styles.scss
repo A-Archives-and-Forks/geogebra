@@ -330,5 +330,12 @@
 				}
 			}
 		}
+
+		&.colorStyle {
+			.colorPalette {
+				width: 252px;
+				height: 148px;
+			}
+		}
 	}
 }
