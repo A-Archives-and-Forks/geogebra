@@ -2,7 +2,6 @@ package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import static org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar.POPUP_MENU_DISTANCE;
 
-import org.geogebra.common.awt.GColor;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
@@ -122,10 +121,11 @@ public class IconButtonWithProperty extends IconButton {
 		}
 
 		if (property instanceof ColorPropertyCollection<?>) {
+			ColorPropertyCollection<?> colorProperty = (ColorPropertyCollection<?>) property;
 			colorPanel = new ColorChooserPanel(appW,
-					((ColorPropertyCollection<?>) property).getValues(), color -> {
+					colorProperty.getValues(), color -> {
 					if (popupHandler != null) {
-						popupHandler.fireActionPerformed(color);
+						popupHandler.fireActionPerformed(colorProperty, color);
 					}
 			});
 			colorPanel.updateColorSelection(geo.getObjectColor());
@@ -160,9 +160,5 @@ public class IconButtonWithProperty extends IconButton {
 	 */
 	public void addPopupHandler(PopupColorHandler popupHandler) {
 		this.popupHandler = popupHandler;
-	}
-
-	public GColor getActiveColor() {
-		return colorPanel.getActiveColor();
 	}
 }

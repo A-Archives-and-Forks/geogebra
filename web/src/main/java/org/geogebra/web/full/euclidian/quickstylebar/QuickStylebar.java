@@ -2,7 +2,6 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.EuclidianConstants;
@@ -14,6 +13,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.main.undo.UpdateStyleActionStore;
 import org.geogebra.common.properties.Property;
+import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
@@ -132,11 +132,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		IconButtonWithProperty colorButton = new IconButtonWithProperty(getApp(), "colorStyle",
 				PropertiesIconAdapter.getIcon(property), property.getName(), geo, true, property);
-		Function<ArrayList<GeoElement>, Boolean> action = (geos) -> {
-			((ColorPropertyCollection<?>) property).setValue(colorButton.getActiveColor());
-			return true;
-		};
-		setPopupHandlerWithUndoAction(colorButton, action);
+
+		setPopupHandlerWithUndoAction(colorButton);
 		styleAndRegisterButton(colorButton);
 	}
 
@@ -151,42 +148,38 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		toggleButton.setActive(((HasTextFormatter) geo).getFormatter().getFormat(textFormat,
 				false));
 
-		Function<ArrayList<GeoElement>, Boolean> action = (geos) -> {
-			property.setValue(!property.getValue());
-			return true;
-		};
-		addFastClickHandlerWithUndoAction(toggleButton, action);
+		addFastClickHandlerWithUndoAction(toggleButton, property);
 		styleAndRegisterButton(toggleButton);
 	}
 
 	protected void addFastClickHandlerWithUndoAction(IconButton btn,
-			Function<ArrayList<GeoElement>, Boolean> action) {
+			BooleanProperty property) {
 		btn.addFastClickHandler(ignore -> {
 			getApp().closePopups();
-			processSelectionWithUndoAction(action);
+			processSelectionWithUndoAction(property, !btn.isActive());
 			btn.setActive(!btn.isActive());
 		});
 	}
 
-	protected void setPopupHandlerWithUndoAction(IconButtonWithProperty iconButton,
-			Function<ArrayList<GeoElement>, Boolean> action) {
-		iconButton.addPopupHandler(w -> {
+	protected void setPopupHandlerWithUndoAction(IconButtonWithProperty iconButton) {
+		iconButton.addPopupHandler((property, value) -> {
 			getApp().closePopups();
-			processSelectionWithUndoAction(action);
+			processSelectionWithUndoAction(property, value);
 		});
 	}
 
 	/**
 	 * Process selected geos and create undoable action if necessary
-	 * @param action action to be executed on geos
+	 * @param property property to be changed
+	 * @param value new value
 	 */
-	public void processSelectionWithUndoAction(Function<ArrayList<GeoElement>, Boolean> action) {
+	public <T> void processSelectionWithUndoAction(ValuedProperty<T> property, T value) {
 		ArrayList<GeoElement> activeGeoList =
 				(ArrayList<GeoElement>) stylebarPositioner.createActiveGeoList();
 		UpdateStyleActionStore store = new UpdateStyleActionStore(activeGeoList,
 				getApp().getUndoManager());
-		boolean needUndo = action.apply(activeGeoList) && store.needUndo();
-		if (needUndo) {
+		property.setValue(value);
+		if (store.needUndo()) {
 			store.storeUndo();
 		}
 	}
