@@ -3,6 +3,7 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.impl.AbstractValuedProperty;
 import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
@@ -10,6 +11,8 @@ import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.ItalicProperty;
+import org.geogebra.common.properties.impl.objects.NotesColorProperty;
+import org.geogebra.common.properties.impl.objects.NotesFontColorProperty;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.common.properties.impl.objects.UnderlineProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
@@ -130,7 +133,13 @@ public class PropertiesIconAdapter {
 			instanceof TextFontSizeProperty) {
 			return MaterialDesignResources.INSTANCE.text_size_black();
 		} else if (property instanceof ColorPropertyCollection) {
-			return MaterialDesignResources.INSTANCE.color_black();
+			AbstractValuedProperty<?> firstProperty = ((ColorPropertyCollection<?>) property)
+					.getFirstProperty();
+			if (firstProperty instanceof NotesColorProperty) {
+				return MaterialDesignResources.INSTANCE.color_black();
+			} else if (firstProperty instanceof NotesFontColorProperty) {
+				return MaterialDesignResources.INSTANCE.text_color();
+			}
 		}
 
 		return MaterialDesignResources.INSTANCE.stylebar_empty();
