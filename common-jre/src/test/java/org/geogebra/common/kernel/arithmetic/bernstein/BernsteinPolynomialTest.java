@@ -286,12 +286,27 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testSimplifiedEvaluation() {
+	public void testSimplifiedEvaluation1Var() {
 		newBernsteinPolynomialPolynomialFrom("3x^3 + 2x^2 + x - 1=0");
 		BernsteinPolynomial1Var b1var = (BernsteinPolynomial1Var) bernstein;
 		double expected = b1var.evaluate(1);
 		double[] coeffs = b1var.dividedCoeffs;
 		assertEquals(expected, coeffs[3], 0);
 		assertEquals(bernstein.evaluate(0), coeffs[0], 0);
+	}
+
+	@Test
+	public void testSimplifiedEvaluation2Var() {
+		newBernsteinPolynomialPolynomialFrom("x^6 + 2x^2y^3 + 5y^4 = 0");
+		BernsteinPolynomial2Var b2var = (BernsteinPolynomial2Var) bernstein;
+		double expected00 = b2var.evaluate(0, 0);
+		double expected10 = b2var.evaluate(1, 0);
+		double expected11 = b2var.evaluate(1, 1);
+		double expected01 = b2var.evaluate(0, 1);
+		BernsteinPolynomial[] coeffs = b2var.dividedCoeffs;
+		assertEquals(expected00, coeffs[0].evaluate(0), 0);
+		assertEquals(expected01, coeffs[0].evaluate(1), 0);
+		assertEquals(expected10, coeffs[6].evaluate(0), 0);
+		assertEquals(expected11, coeffs[6].evaluate(1), 0);
 	}
 }

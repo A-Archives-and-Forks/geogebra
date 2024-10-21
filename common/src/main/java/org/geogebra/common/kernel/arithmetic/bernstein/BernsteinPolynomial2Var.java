@@ -49,15 +49,24 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 
 	@Override
 	public double evaluate(double valueX, double valueY) {
+		createLazyDivideCoeffs();
+		if (valueX == 0) {
+			return dividedCoeffs[0].evaluate(valueY);
+		}
+
+		if (valueX == 1) {
+			return dividedCoeffs[degreeX].evaluate(valueY);
+		}
+
 		double[] partialEval = new double[degreeX + 1];
 		double[] lastPartialEval = new double[degreeX + 1];
-		double scaledX = valueX ;//scaling ? (valueX - minX) / (maxX - minX) : valueX;
+		double scaledX = valueX;
 		double scaledOneMinusX = 1 - scaledX;
 
-		createLazyDivideCoeffs();
 		for (int i = 0; i < degreeX + 1; i++) {
 			lastPartialEval[i] = dividedCoeffs[i].evaluate(valueY);
 		}
+
 		for (int i = 1; i <= degreeX + 1; i++) {
 			for (int j = degreeX - i; j >= 0; j--) {
 				partialEval[j] = scaledOneMinusX * lastPartialEval[j]
