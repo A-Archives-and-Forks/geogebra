@@ -284,4 +284,14 @@ public class BernsteinPolynomialTest extends BaseUnitTest {
 						+ " + 8(1 - y)\u00B3",
 				bernstein.substitute("x", 2).toString());
 	}
+
+	@Test
+	public void testSimplifiedEvaluation() {
+		newBernsteinPolynomialPolynomialFrom("3x^3 + 2x^2 + x - 1=0");
+		BernsteinPolynomial1Var b1var = (BernsteinPolynomial1Var) bernstein;
+		double expected = b1var.evaluate(1);
+		double[] coeffs = b1var.dividedCoeffs;
+		assertEquals(expected, coeffs[3], 0);
+		assertEquals(bernstein.evaluate(0), coeffs[0], 0);
+	}
 }

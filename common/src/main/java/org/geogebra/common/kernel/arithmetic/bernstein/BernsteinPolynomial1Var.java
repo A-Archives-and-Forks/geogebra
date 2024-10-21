@@ -44,14 +44,21 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 
 	@Override
 	public double evaluate(double value) {
+		createLazyDivideCoeffs();
+		if (value == 0) {
+			return dividedCoeffs[0];
+		}
+
+		if (value == 1) {
+			return dividedCoeffs[degree];
+		}
+
 		double[] partialEval = new double[degree + 1];
 		double[] lastPartialEval = new double[degree + 1];
-		double scaledValue = value;//(value - min) / (max - min);
+		double scaledValue = value;
 		double oneMinusScaledValue = 1 - scaledValue;
 
-		createLazyDivideCoeffs();
 		copyArrayTo(dividedCoeffs, lastPartialEval);
-
 		for (int i = 1; i <= degree + 1; i++) {
 			for (int j = degree - i; j >= 0; j--) {
 				partialEval[j] = oneMinusScaledValue * lastPartialEval[j]
