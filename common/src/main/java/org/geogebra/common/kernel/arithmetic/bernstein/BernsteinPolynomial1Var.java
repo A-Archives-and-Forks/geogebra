@@ -48,7 +48,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	public double evaluate(double value) {
 		double[] partialEval = new double[degree + 1];
 		double[] lastPartialEval = new double[degree + 1];
-		double scaledValue = (value - min) / (max - min);
+		double scaledValue = value;//(value - min) / (max - min);
 		double oneMinusScaledValue = 1 - scaledValue;
 
 		createLazyDivideCoeffs();

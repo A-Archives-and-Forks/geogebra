@@ -13,9 +13,11 @@ import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.implicit.LinkSegments;
+import org.geogebra.common.util.debug.Log;
 
 public class BernsteinImplicitAlgo implements PlotterAlgo {
 
+	public static final BoundsRectangle UNIT_SQUARE = new BoundsRectangle(0, 1, 0, 1);
 	private final EuclidianViewBounds bounds;
 	private final GeoElement curve;
 	private final List<MyPoint> points;
@@ -23,7 +25,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private final BernsteinPlotterSettings settings;
 	private final BernsteinPolynomialConverter converter;
 	private final LinkSegments segments;
-	private BernsteinPolynomial polynomial;
+	BernsteinPolynomial polynomial;
 
 	/**
 	 * @param grid {@link CellGrid}
@@ -45,6 +47,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 
 	@Override
 	public void compute() {
+		Log.debug("compute");
 		List<BernsteinPlotCell> cells = initialSplit(createRootCell());
 		cells.forEach(this::findSolutions);
 		segments.flush();
@@ -84,8 +87,17 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 				return;
 			}
 
-			if (isBoxSmallEnough(currentCell.boundingBox)) {
-				addToOutput(currentCell);
+			BernsteinPlotRectConfigProvider provider =
+					new BernsteinPlotRectConfigProvider(currentCell);
+			BernsteinPlotRect rect =
+					new BernsteinPlotRect(currentCell, polynomial);
+			BernsteinRectConfig config =
+					BernsteinRectConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect));
+
+			currentCell.setRectConfig(config);
+
+			if (isBoxSmallEnough(currentCell.boundingBox, config)) {
+				addToOutput(currentCell, rect, provider);
 			} else {
 				for (BernsteinPlotCell c : currentCell.split()) {
 					if (c.mightHaveSolution()) {
@@ -96,24 +108,23 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		}
 	}
 
-	private void addToOutput(BernsteinPlotCell currentCell) {
-		BernsteinPlotRectConfigProvider provider =
-				new BernsteinPlotRectConfigProvider(currentCell);
-		BernsteinPlotRect rect =
-				new BernsteinPlotRect(currentCell, polynomial);
-		BernsteinEdgeConfig config =
-				BernsteinEdgeConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect));
-		currentCell.setRectConfig(config);
-//		findSolutionsInEdges(currentCell);
+	private void addToOutput(BernsteinPlotCell currentCell, BernsteinPlotRect rect,
+			BernsteinPlotRectConfigProvider provider) {
+		findSolutionsInEdges(currentCell);
 		segments.add(rect, provider);
 		cells.add(currentCell);
 	}
 
-	private boolean isBoxSmallEnough(BernsteinBoundingBox box) {
+	private boolean isBoxSmallEnough(BernsteinBoundingBox box, BernsteinRectConfig config) {
 		double width = bounds.toScreenCoordXd(box.x2()) - bounds.toScreenCoordXd(box.x1());
 		double height = bounds.toScreenCoordYd(box.y1()) - bounds.toScreenCoordYd(box.y2());
-		return width < settings.minBoxWidthInPixels()
-				|| height < settings.minBoxHeightInPixels();
+		int maxWidth = settings.minBoxWidthInPixels();
+		int maxHeight = settings.minBoxHeightInPixels();
+		if (config == BernsteinRectConfig.T1111) {
+			maxWidth /= 4;
+			maxHeight /= 4;
+		}
+		return width < maxWidth	&& height < maxHeight;
 	}
 
 	@SuppressWarnings("unused")

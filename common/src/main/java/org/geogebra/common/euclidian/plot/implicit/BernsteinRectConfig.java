@@ -10,9 +10,8 @@ import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.SegmentType;
 import org.geogebra.common.kernel.implicit.PlotRect;
 import org.geogebra.common.kernel.implicit.PlotRectConfig;
-import org.geogebra.common.util.debug.Log;
 
-public enum BernsteinEdgeConfig implements PlotRectConfig {
+public enum BernsteinRectConfig implements PlotRectConfig {
 	/**
 	 * All corners are inside / outside
 	 */
@@ -87,10 +86,6 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 			};
 		}
 
-		@Override
-		public GColor color() {
-			return GColor.DARK_RED;
-		}
 	},
 	/**
 	 * both the corners at the left are inside / outside
@@ -101,8 +96,8 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 			return new MyPoint[] {
 					moveTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
 							r.y1()),
-					new MyPoint(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
-							r.y2(), SegmentType.LINE_TO)};
+					lineTo(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
+							r.y2())};
 		}
 	},
 	/**
@@ -117,6 +112,7 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 							r.y1(), SegmentType.LINE_TO)};
 		}
 	},
+
 	T1000(8) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
@@ -127,7 +123,7 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	T1001(9) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return T0110.getPoints(r);
+				return T0110.getPoints(r);
 		}
 
 	},
@@ -144,11 +140,6 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 					moveTo(r.x2(), interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2())),
 					lineTo(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()), r.y2()),
 			};
-		}
-
-		@Override
-		public GColor color() {
-			return GColor.DARK_RED;
 		}
 	},
 
@@ -173,7 +164,16 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	T1101(13) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return T0010.getPoints(r);
+			return new MyPoint[] {
+					moveTo(r.x2(), interpolate(r.bottomRight(), r.topRight(), r.y2(),
+							r.y1())),
+					new MyPoint(interpolate(r.bottomRight(), r.bottomLeft(), r.x2(), r.x1()),
+							r.y2(), SegmentType.LINE_TO)};
+		}
+
+		@Override
+		public GColor color() {
+			return GColor.DARK_RED;
 		}
 	},
 
@@ -182,6 +182,7 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		public MyPoint[] getPoints(PlotRect r) {
 			return T0001.getPoints(r);
 		}
+
 	},
 
 	T1111(15) {
@@ -211,21 +212,17 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 		return new MyPoint(x, y, SegmentType.LINE_TO);
 	}
 
-	public void logRect(BernsteinPlotRect r) {
-		Log.debug(this + " " + r.debugString());
-	}
-
 	private final int flag;
 
-	private static Map<Integer, BernsteinEdgeConfig> map = new HashMap<>();
+	private static Map<Integer, BernsteinRectConfig> map = new HashMap<>();
 
 	static {
-		for (BernsteinEdgeConfig config: BernsteinEdgeConfig.values()) {
+		for (BernsteinRectConfig config: values()) {
 			map.put(config.flag, config);
 		}
 	}
 
-	BernsteinEdgeConfig(int flag) {
+	BernsteinRectConfig(int flag) {
 		this.flag = flag;
 	}
 
@@ -255,7 +252,7 @@ public enum BernsteinEdgeConfig implements PlotRectConfig {
 	}
 
 
-	public static BernsteinEdgeConfig fromFlag(int config) {
+	public static BernsteinRectConfig fromFlag(int config) {
 		return map.getOrDefault(config, T_INV);
 	}
 

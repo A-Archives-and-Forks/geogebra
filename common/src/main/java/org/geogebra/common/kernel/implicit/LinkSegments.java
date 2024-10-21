@@ -6,6 +6,7 @@ import java.util.ListIterator;
 
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.util.DoubleUtil;
+
 public class LinkSegments {
 	private List<MyPoint> locusPoints;
 	private PointList points1;

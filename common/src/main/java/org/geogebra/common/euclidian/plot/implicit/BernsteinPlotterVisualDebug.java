@@ -57,7 +57,7 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 
 		setLineWidth(g2, 1);
 		g2.drawRect(x, y, width, height);
-		drawConfigText(g2, cell, x, y - width / 2);
+//		drawConfigText(g2, cell, x, y - width / 2);
 //		drawEdgePoints(g2, cell.getEdgeSolutions());
 	}
 
@@ -95,7 +95,7 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 	}
 
 	private static void drawConfigText(GGraphics2D g2, BernsteinPlotCell cell, int x, int y) {
-		BernsteinEdgeConfig config = (BernsteinEdgeConfig) cell.getRectConfig();
+		BernsteinRectConfig config = (BernsteinRectConfig) cell.getRectConfig();
 		g2.setColor(config.color());
 		g2.drawString(config.toString(), x, y);
 	}
