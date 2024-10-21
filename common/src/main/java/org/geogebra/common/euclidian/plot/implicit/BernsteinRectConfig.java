@@ -180,9 +180,12 @@ public enum BernsteinRectConfig implements PlotRectConfig {
 	T1110(14) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return T0001.getPoints(r);
+			return new MyPoint[] {
+					moveTo(r.x1(), interpolate(r.bottomLeft(), r.topLeft(), r.y2(),
+							r.y1())),
+					new MyPoint(interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
+					r.y2(), SegmentType.LINE_TO)};
 		}
-
 	},
 
 	T1111(15) {
@@ -200,7 +203,12 @@ public enum BernsteinRectConfig implements PlotRectConfig {
 	 */
 	T_INV(-1),
 
-	EMPTY(0),
+	EMPTY(0) {
+		@Override
+		public String toString() {
+			return "-";
+		}
+	},
 
 	VALID(255);
 

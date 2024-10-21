@@ -2,8 +2,6 @@ package org.geogebra.common.kernel.arithmetic.bernstein;
 
 import static org.geogebra.common.kernel.arithmetic.bernstein.BinomialCoefficientsSign.from1Var;
 
-import org.geogebra.common.util.MyMath;
-
 public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 	private final double min;
 	private final double max;
@@ -40,7 +38,7 @@ public final class BernsteinPolynomial1Var implements BernsteinPolynomial {
 		}
 		dividedCoeffs = new double[degree + 1];
 		for (int i = 0; i < degree + 1; i++) {
-			dividedCoeffs[i] = bernsteinCoeffs[i] / MyMath.binomial(degree, i);
+			dividedCoeffs[i] = bernsteinCoeffs[i] / BinomialCache.get(degree, i);
 		}
 	}
 

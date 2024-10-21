@@ -110,7 +110,6 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 
 	private void addToOutput(BernsteinPlotCell currentCell, BernsteinPlotRect rect,
 			BernsteinPlotRectConfigProvider provider) {
-		findSolutionsInEdges(currentCell);
 		segments.add(rect, provider);
 		cells.add(currentCell);
 	}
@@ -121,8 +120,8 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		int maxWidth = settings.minBoxWidthInPixels();
 		int maxHeight = settings.minBoxHeightInPixels();
 		if (config == BernsteinRectConfig.T1111) {
-			maxWidth /= 4;
-			maxHeight /= 4;
+			maxWidth /= 8;
+			maxHeight /= 8;
 		}
 		return width < maxWidth	&& height < maxHeight;
 	}
