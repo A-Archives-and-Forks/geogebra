@@ -191,7 +191,12 @@ public enum BernsteinRectConfig implements PlotRectConfig {
 	T1111(15) {
 		@Override
 		public MyPoint[] getPoints(PlotRect r) {
-			return T0000.getPoints(r);
+			return new MyPoint[]{
+					moveTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+							interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2())),
+					lineTo(interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+							interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2()))
+			};
 		}
 	},
 
@@ -258,7 +263,6 @@ public enum BernsteinRectConfig implements PlotRectConfig {
 	public boolean isEmpty() {
 		return this == EMPTY;
 	}
-
 
 	public static BernsteinRectConfig fromFlag(int config) {
 		return map.getOrDefault(config, T_INV);

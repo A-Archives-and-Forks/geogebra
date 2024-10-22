@@ -37,7 +37,7 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 		this.bounds = bounds;
 		this.gp = gp;
 		this.transformedCoordSys = transformedCoordSys;
-		algo = new BernsteinImplicitAlgo(bounds, geo, points, cells, settings);
+		algo = new BernsteinImplicitAlgo(bounds, geo, points, cells, settings.getAlgoSettings());
 		if (settings.visualDebug()) {
 			visualDebug = new BernsteinPlotterVisualDebug(bounds);
 		}

@@ -1,9 +1,5 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.arithmetic.Splittable;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
@@ -21,8 +17,6 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 	final BernsteinBoundingBox boundingBox;
 	final BernsteinPolynomial polynomial;
 	private final BernsteinPlotCellKind kind;
-	private final Map<EdgeKind, BernsteinPlotCellEdge> edges = new HashMap<>();
-	private final Map<EdgeKind, GPoint2D> edgeSolutions = new HashMap<>();
 	private PlotRectConfig rectConfig;
 
 
@@ -36,33 +30,12 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 
 	/**
 	 *
-	 * @return the edges of the cell.
-	 */
-	public Collection<BernsteinPlotCellEdge> getEdges() {
-		return edges.values();
-	}
-
-	/**
-	 *
 	 * @return the center point of the cell.
 	 */
 	public GPoint2D center() {
 		return new GPoint2D(boundingBox.getXHalf(),
 				boundingBox.getYHalf());
 	}
-
-	public void setEdgeSolution(EdgeKind kind, GPoint2D solution) {
-		edgeSolutions.put(kind, solution);
-	}
-
-	public Map<EdgeKind, GPoint2D> getEdgeSolutions() {
-		return edgeSolutions;
-	}
-
-	public Collection<GPoint2D> getEdgeSolutionPoints() {
-		return edgeSolutions.values();
-	}
-
 	enum BernsteinPlotCellKind {
 		CELL0,
 		CELL1,
@@ -105,24 +78,6 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 		cells[2] = new BernsteinPlotCell(boxes[2], polynomials[0][1]);
 		cells[3] = new BernsteinPlotCell(boxes[3], polynomials[1][1]);
 		return cells;
-	}
-
-	void createEdges() {
-		edges.put(EdgeKind.TOP, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.x1(), boundingBox.x2(),
-				boundingBox.y1(), EdgeKind.TOP));
-
-		edges.put(EdgeKind.LEFT, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.y1(), boundingBox.y2(),
-				boundingBox.x1(), EdgeKind.LEFT));
-
-		edges.put(EdgeKind.BOTTOM, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.x1(), boundingBox.x2(),
-				boundingBox.y2(), EdgeKind.BOTTOM));
-
-		edges.put(EdgeKind.RIGHT, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.y1(), boundingBox.y2(),
-				boundingBox.x2(), EdgeKind.RIGHT));
 	}
 
 	@Override

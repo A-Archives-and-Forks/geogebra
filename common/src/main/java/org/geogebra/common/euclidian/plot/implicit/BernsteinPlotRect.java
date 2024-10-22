@@ -1,9 +1,7 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
 import java.util.Arrays;
-import java.util.Map;
 
-import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.kernel.implicit.PlotRect;
 
@@ -11,8 +9,6 @@ public class BernsteinPlotRect implements PlotRect {
 	private final BernsteinBoundingBox box;
 	private final double[] corners = new double[4];
 	private final double[] evals = new double[4];
-	private final Map<EdgeKind, GPoint2D>
-			edgeSolutions;
 
 	public BernsteinPlotRect(BernsteinPlotCell cell, BernsteinPolynomial polyOriginal) {
 		this.box = cell.boundingBox;
@@ -21,7 +17,6 @@ public class BernsteinPlotRect implements PlotRect {
 		corners[1] = poly.evaluate(1, 0);
 		corners[2] = poly.evaluate(1, 1);
 		corners[3] = poly.evaluate(0, 1);
-		edgeSolutions = cell.getEdgeSolutions();
 	}
 
 	public static BernsteinPlotRect as(PlotRect r) {
@@ -79,9 +74,5 @@ public class BernsteinPlotRect implements PlotRect {
 				"box=" + box +
 				", corners=" + Arrays.toString(corners) +
 				'}';
-	}
-
-	public GPoint2D getEdgeSolutions(EdgeKind kind) {
-		return edgeSolutions.get(kind);
 	}
 }

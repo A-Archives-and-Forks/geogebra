@@ -22,7 +22,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	private final GeoElement curve;
 	private final List<MyPoint> points;
 	private final List<BernsteinPlotCell> cells;
-	private final BernsteinPlotterSettings settings;
+	private final BernsteinImplicitAlgoSettings settings;
 	private final BernsteinPolynomialConverter converter;
 	private final LinkSegments segments;
 	BernsteinPolynomial polynomial;
@@ -35,7 +35,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	 * @param settings
 	 */
 	public BernsteinImplicitAlgo(EuclidianViewBounds bounds, GeoElement curve, List<MyPoint> points,
-			List<BernsteinPlotCell> cells, BernsteinPlotterSettings settings) {
+			List<BernsteinPlotCell> cells, BernsteinImplicitAlgoSettings settings) {
 		this.bounds = bounds;
 		this.curve = curve;
 		this.points = points;
@@ -124,63 +124,5 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 			maxHeight /= 8;
 		}
 		return width < maxWidth	&& height < maxHeight;
-	}
-
-	@SuppressWarnings("unused")
-	private void findSolutionsInEdges(BernsteinPlotCell cell) {
-		cell.createEdges();
-		for (BernsteinPlotCellEdge edge : cell.getEdges()) {
-			if (edge.mightHaveSolutions()) {
-				findSolutionsInOneEdge(edge);
-			}
-		}
-	}
-
-	private void findSolutionsInOneEdge(BernsteinPlotCellEdge startEdge) {
-		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
-		stack.push(startEdge);
-		BernsteinPlotCellEdge parent = startEdge;
-		while (!stack.isEmpty()) {
-			BernsteinPlotCellEdge edge = stack.pop();
-			if (edge.isDerivativeSignDiffer()) {
-				BernsteinPlotCellEdge[] split = edge.split();
-				stack.push(split[0]);
-				stack.push(split[1]);
-			} else {
-				findSignChangeInEdge(edge, parent);
-			}
-		}
-
-	}
-
-	private void findSignChangeInEdge(BernsteinPlotCellEdge startEdge, BernsteinPlotCellEdge parent) {
-		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
-		stack.push(startEdge);
-		while (!stack.isEmpty()) {
-			BernsteinPlotCellEdge edge = stack.pop();
-			if (edge.mightHaveSolutions() && isEdgeSmallEnough(edge)) {
-				if (edge.hasIntersect()) {
-					edge.markSolution();
-				}
-				return;
-			}
-
-			BernsteinPlotCellEdge[] split = edge.split();
-			if (split[0].mightHaveSolutions()) {
-				stack.push(split[0]);
-			}
-			if (split[1].mightHaveSolutions()) {
-				stack.push(split[1]);
-			}
-		}
-	}
-
-	private boolean isEdgeSmallEnough(BernsteinPlotCellEdge edge) {
-		double x1 = edge.startPoint().x;
-		double x2 = x1 + edge.length();
-		double width = edge.isHorizontal()
-				? bounds.toScreenCoordXd(x2) - bounds.toScreenCoordXd(x1)
-				: bounds.toScreenCoordYd(x1) - bounds.toScreenCoordYd(x2);
-		return width < settings.minEdgeWidth();
 	}
 }

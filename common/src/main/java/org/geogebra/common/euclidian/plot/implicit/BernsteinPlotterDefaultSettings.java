@@ -7,21 +7,6 @@ public class BernsteinPlotterDefaultSettings implements BernsteinPlotterSettings
 	}
 
 	@Override
-	public int minBoxWidthInPixels() {
-		return 10;
-	}
-
-	@Override
-	public int minBoxHeightInPixels() {
-		return 10;
-	}
-
-	@Override
-	public int minEdgeWidth() {
-		return 2;
-	}
-
-	@Override
 	public boolean isUpdateEnabled() {
 		return true;
 	}
