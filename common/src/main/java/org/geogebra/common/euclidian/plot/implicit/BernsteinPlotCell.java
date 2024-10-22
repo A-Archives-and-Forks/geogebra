@@ -1,9 +1,8 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.arithmetic.Splittable;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
-import org.geogebra.common.kernel.implicit.PlotRectConfig;
+import org.geogebra.common.kernel.implicit.MarchingConfig;
 
 /**
  * BernsteinPlotCell is the basic building block of the algorithm.
@@ -14,33 +13,16 @@ import org.geogebra.common.kernel.implicit.PlotRectConfig;
  *
  */
 public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
-	final BernsteinBoundingBox boundingBox;
-	final BernsteinPolynomial polynomial;
-	private final BernsteinPlotCellKind kind;
-	private PlotRectConfig rectConfig;
-
-
-	/**
-	 *
-	 * @return kind: top, left, bottom, right,
-	 */
-	BernsteinPlotCellKind getKind() {
-		return kind;
-	}
-
-	/**
-	 *
-	 * @return the center point of the cell.
-	 */
-	public GPoint2D center() {
-		return new GPoint2D(boundingBox.getXHalf(),
-				boundingBox.getYHalf());
-	}
 	enum BernsteinPlotCellKind {
 		CELL0,
 		CELL1,
 		CELL2
 	}
+
+	final BernsteinBoundingBox boundingBox;
+	final BernsteinPolynomial polynomial;
+	private final BernsteinPlotCellKind kind;
+	private MarchingConfig marchingConfig;
 
 	/**
 	 *
@@ -51,6 +33,14 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 		boundingBox = box;
 		this.polynomial = polynomial;
 		kind = classify();
+	}
+
+	/**
+	 *
+	 * @return kind: top, left, bottom, right,
+	 */
+	BernsteinPlotCellKind getKind() {
+		return kind;
 	}
 
 	private BernsteinPlotCellKind classify() {
@@ -93,11 +83,11 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 		return kind != BernsteinPlotCellKind.CELL2;
 	}
 
-	public PlotRectConfig getRectConfig() {
-		return rectConfig;
+	public MarchingConfig getMarchingConfig() {
+		return marchingConfig;
 	}
 
-	public void setRectConfig(PlotRectConfig rectConfig) {
-		this.rectConfig = rectConfig;
+	public void setMarchingConfig(MarchingConfig marchingConfig) {
+		this.marchingConfig = marchingConfig;
 	}
 }

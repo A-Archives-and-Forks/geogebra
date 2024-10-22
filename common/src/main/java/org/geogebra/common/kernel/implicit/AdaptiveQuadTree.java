@@ -7,7 +7,6 @@ import org.geogebra.common.util.DoubleUtil;
 /**
  * Adaptive QuadTree algorithm that refines plot and segment checking depth
  * (or even gives up) if the work load is high.
- *
  * @author GSoCImplicitCurve-2015
  */
 class AdaptiveQuadTree extends QuadTree {
@@ -131,7 +130,7 @@ class AdaptiveQuadTree extends QuadTree {
 	private void plotGid(int factor) {
 		for (int i = 0; i < sh; i++) {
 			for (int j = 0; j < sw; j++) {
- 				if (grid[i][j].status != QuadTreeEdgeConfig.EMPTY.flag()) {
+				if (grid[i][j].status != QuadTreeEdgeConfig.EMPTY.flag()) {
 					plot(grid[i][j], 0, factor);
 				}
 			}
@@ -182,7 +181,7 @@ class AdaptiveQuadTree extends QuadTree {
 			return;
 		}
 
-		PlotRectConfigProvider configProvider = new QuadTreeRectConfigProvider(curve, factor);
+		MarchingConfigProvider configProvider = new QuadTreeRectConfigProvider(curve, factor);
 		int e = edgeConfig(r);
 		if (grid[r.y][r.x].singular || e != QuadTreeEdgeConfig.EMPTY.flag()) {
 			if (depth >= plotDepth) {

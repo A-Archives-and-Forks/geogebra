@@ -2,11 +2,11 @@ package org.geogebra.common.kernel.implicit;
 
 import org.geogebra.common.kernel.MyPoint;
 
-public interface PlotRectConfig {
+public interface MarchingConfig {
 
 	int flag();
 
-	MyPoint[] getPoints(PlotRect r);
+	MyPoint[] getPoints(MarchingRect r);
 
 	boolean isValid();
 

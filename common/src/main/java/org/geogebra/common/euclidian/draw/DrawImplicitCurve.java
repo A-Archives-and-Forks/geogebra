@@ -42,24 +42,18 @@ public class DrawImplicitCurve extends DrawLocus {
 
 	/**
 	 * Creates new drawable for implicit Curvenomial
-	 * 
-	 * @param view
-	 *            view
-	 * @param implicitCurve
-	 *            implicit Curvenomial
+	 * @param view view
+	 * @param implicitCurve implicit Curvenomial
 	 */
 	public DrawImplicitCurve(EuclidianView view, GeoImplicit implicitCurve) {
-		this(view, implicitCurve,BERNSTEIN_BASED_PLOTTER
+		this(view, implicitCurve, BERNSTEIN_BASED_PLOTTER
 				&& BernsteinPolynomialConverter.iSupported(implicitCurve.toGeoElement()));
 	}
 
 	/**
 	 * Creates new drawable for implicit Curvenomial
-	 *
-	 * @param view
-	 *            view
-	 * @param implicitCurve
-	 *            implicit Curvenomial
+	 * @param view view
+	 * @param implicitCurve implicit Curvenomial
 	 */
 	public DrawImplicitCurve(EuclidianView view, GeoImplicit implicitCurve,
 			boolean bernsteinBasedPlotter) {
@@ -104,7 +98,6 @@ public class DrawImplicitCurve extends DrawLocus {
 	/**
 	 * Returns the Curve to be draw (might not be equal to geo, if this is part
 	 * of bigger geo)
-	 * 
 	 * @return Curve
 	 */
 	public GeoImplicit getCurve() {

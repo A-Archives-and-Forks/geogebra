@@ -7,24 +7,23 @@ import java.util.List;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 
 public class BernsteinCellGrid implements CellGrid<BernsteinPlotCell> {
+	public static final double SMALLEST_BOX_IN_PIXELS = 5;
 	private BernsteinPlotCell[][] cells;
 
 	@Override
 	public void resize(EuclidianViewBounds bounds) {
-//		int rows = (bounds.getHeight() / SMALLEST_BOX_IN_PIXELS) + 2;
-//		int columns = (bounds.getWidth() / SMALLEST_BOX_IN_PIXELS) + 2;
-//		cells = new BernsteinPlotCell[rows][columns];
+		// TODO - implement
+		cells = new BernsteinPlotCell[1][1];
 	}
 
 	/**
-	 *
 	 * @return All cells of the grid as a flattened list
 	 */
-	 @Override
-	 public final List<BernsteinPlotCell> toList() {
-		 if (cells == null) {
-			 return Collections.emptyList();
-		 }
+	@Override
+	public final List<BernsteinPlotCell> toList() {
+		if (cells == null) {
+			return Collections.emptyList();
+		}
 
 		List<BernsteinPlotCell> list = new ArrayList<>();
 		for (int row = 0; row < cells.length; row++) {
@@ -32,7 +31,7 @@ public class BernsteinCellGrid implements CellGrid<BernsteinPlotCell> {
 			if (arow == null) {
 				continue;
 			}
-			for (int col = 0; col < arow.length ; col++) {
+			for (int col = 0; col < arow.length; col++) {
 				BernsteinPlotCell cell = arow[col];
 				if (cell != null) {
 					list.add(cell);
@@ -43,7 +42,6 @@ public class BernsteinCellGrid implements CellGrid<BernsteinPlotCell> {
 	}
 
 	/**
-	 *
 	 * @param cell the content
 	 * @param row index to put
 	 * @param column index to put

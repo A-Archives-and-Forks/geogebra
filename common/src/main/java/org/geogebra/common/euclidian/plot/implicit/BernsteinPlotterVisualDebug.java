@@ -6,19 +6,20 @@ import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.factories.AwtFactory;
-import org.geogebra.common.kernel.implicit.PlotRectConfig;
+import org.geogebra.common.kernel.implicit.MarchingConfig;
 
 /**
  * Draws visual debug on EV, cell bounds, kinds, possible solutions, edges, etc.
  * with colors.
  * This class should not be used in release!
  */
-final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell> {
+final class BernsteinPlotterVisualDebug implements VisualDebug {
 	private final EuclidianViewBounds bounds;
 	private List<BernsteinPlotCell> cells;
 
-	BernsteinPlotterVisualDebug(EuclidianViewBounds bounds) {
+	BernsteinPlotterVisualDebug(EuclidianViewBounds bounds, List<BernsteinPlotCell> cells) {
 		this.bounds = bounds;
+		this.cells = cells;
 	}
 
 	@Override
@@ -38,7 +39,7 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 	}
 
 	private void drawCell(GGraphics2D g2, BernsteinPlotCell cell) {
-		if (!needsHighlight(cell.getRectConfig())) {
+		if (!needsHighlight(cell.getMarchingConfig())) {
 			return;
 		}
 		GColor color = getCellColor(cell);
@@ -51,16 +52,15 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 
 		setLineWidth(g2, 1);
 		g2.drawRect(x, y, width, height);
-//		drawConfigText(g2, cell, x, y - width / 2);
-//		drawEdgePoints(g2, cell.getEdgeSolutions());
+		drawConfigText(g2, cell, x, y - width / 2);
 	}
 
-	private boolean needsHighlight(PlotRectConfig config) {
+	private boolean needsHighlight(MarchingConfig config) {
 		return true;
 	}
 
 	private static void drawConfigText(GGraphics2D g2, BernsteinPlotCell cell, int x, int y) {
-		BernsteinRectConfig config = (BernsteinRectConfig) cell.getRectConfig();
+		BernsteinMarchingConfig config = (BernsteinMarchingConfig) cell.getMarchingConfig();
 		g2.setColor(config.color());
 		g2.drawString(config.toString(), x, y);
 	}
@@ -76,14 +76,5 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 		default:
 			return GColor.BLACK;
 		}
-	}
-
-	/**
-	 *
-	 * @param cells to display debug information from.
-	 */
-	@Override
-	public void setData(List<BernsteinPlotCell> cells) {
-		this.cells = cells;
 	}
 }

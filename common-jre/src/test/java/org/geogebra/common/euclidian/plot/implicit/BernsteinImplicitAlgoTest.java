@@ -12,6 +12,7 @@ import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.implicit.GeoImplicitCurve;
+import org.geogebra.common.kernel.implicit.LinkSegments;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -31,15 +32,17 @@ public class BernsteinImplicitAlgoTest extends BaseUnitTest {
 		List<BernsteinPlotCell> cells = new ArrayList<>();
 		BernsteinPlotterSettings settings =
 				new BernsteinPlotterDefaultSettings();
+		LinkSegments segments = new LinkSegments(points);
 		BernsteinImplicitAlgo algo =
-				new BernsteinImplicitAlgo(bounds, curve, points, cells, settings.getAlgoSettings());
+				new BernsteinImplicitAlgo(bounds, curve, cells,
+						segments, settings.getAlgoSettings());
 		algo.compute();
 		BernsteinPlotCell cell0 = cells.get(0);
-		BernsteinPlotRect rect = new BernsteinPlotRect(cell0, null);
-		BernsteinPlotRectConfigProvider provider =
-				new BernsteinPlotRectConfigProvider(cell0);
-		BernsteinRectConfig config = provider.getConfigFromPlotRect(rect);
+		BernsteinMarchingRect rect = new BernsteinMarchingRect(cell0);
+		BernsteinMarchingConfigProvider provider =
+				new BernsteinMarchingConfigProvider(cell0);
+		BernsteinMarchingConfig config = provider.getConfigFrom(rect);
 
-		assertEquals(BernsteinRectConfig.T1100, config);
+		assertEquals(BernsteinMarchingConfig.T1100, config);
 	}
 }

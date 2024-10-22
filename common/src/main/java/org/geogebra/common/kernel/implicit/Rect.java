@@ -2,7 +2,7 @@ package org.geogebra.common.kernel.implicit;
 
 import org.geogebra.common.kernel.matrix.Coords;
 
-class Rect implements PlotRect {
+class Rect implements MarchingRect {
 	/**
 	 * 
 	 */

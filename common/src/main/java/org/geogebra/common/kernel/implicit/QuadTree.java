@@ -11,7 +11,7 @@ import org.geogebra.common.kernel.kernelND.GeoPointND;
  */
 abstract class QuadTree {
 	/**
-	 * 
+	 *
 	 */
 	private final GeoImplicitCurve geoImplicitCurve;
 
@@ -33,19 +33,12 @@ abstract class QuadTree {
 	/**
 	 * force to redraw the rectangular area bounded by (startX, startY, startX +
 	 * w, startY + h)
-	 * 
-	 * @param startX
-	 *            starting x coordinate
-	 * @param startY
-	 *            starting y coordinate
-	 * @param width
-	 *            width of the rectangular view
-	 * @param height
-	 *            height of the rectangular view
-	 * @param slX
-	 *            scaleX
-	 * @param slY
-	 *            scaleY
+	 * @param startX starting x coordinate
+	 * @param startY starting y coordinate
+	 * @param width width of the rectangular view
+	 * @param height height of the rectangular view
+	 * @param slX scaleX
+	 * @param slY scaleY
 	 */
 	public void updatePath(double startX, double startY, double width,
 			double height, double slX, double slY, GeoLocus locus) {
@@ -62,8 +55,7 @@ abstract class QuadTree {
 	}
 
 	/**
-	 * @param pt
-	 *            point to be polished
+	 * @param pt point to be polished
 	 */
 	public void polishPointOnPath(GeoPointND pt) {
 		// pt.setUndefined();
@@ -81,13 +73,10 @@ abstract class QuadTree {
 	}
 
 	/**
-	 * 
-	 * @param c1
-	 *            the value of curve at one of the square vertices
-	 * @param c2
-	 *            the value of curve at the other vertex
+	 * @param c1 the value of curve at one of the square vertices
+	 * @param c2 the value of curve at the other vertex
 	 * @return true if the edge connecting two vertices intersect with curve
-	 *         segment
+	 * segment
 	 */
 	private static int intersect(double c1, double c2) {
 		if (c1 * c2 <= 0.0) {
@@ -102,7 +91,7 @@ abstract class QuadTree {
 		return segments;
 	}
 
-	void setListThreshold(int threshold){
+	void setListThreshold(int threshold) {
 		segments.setListThreshold(threshold);
 	}
 }

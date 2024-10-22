@@ -7,20 +7,18 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
-import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.implicit.LinkSegments;
-import org.geogebra.common.util.debug.Log;
+import org.geogebra.common.kernel.implicit.MarchingConfig;
 
 public class BernsteinImplicitAlgo implements PlotterAlgo {
 
 	public static final BoundsRectangle UNIT_SQUARE = new BoundsRectangle(0, 1, 0, 1);
 	private final EuclidianViewBounds bounds;
 	private final GeoElement curve;
-	private final List<MyPoint> points;
 	private final List<BernsteinPlotCell> cells;
 	private final BernsteinImplicitAlgoSettings settings;
 	private final BernsteinPolynomialConverter converter;
@@ -28,26 +26,25 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 	BernsteinPolynomial polynomial;
 
 	/**
-	 * @param grid {@link CellGrid}
 	 * @param bounds {@link EuclidianViewBounds}
 	 * @param curve the curve geo.
-	 * @param cells
-	 * @param settings
+	 * @param cells the cells as itermediate result of the algo.
+	 * @param segments to make segments as the final result of the algo.
+	 * @param settings {@link BernsteinImplicitAlgoSettings}
 	 */
-	public BernsteinImplicitAlgo(EuclidianViewBounds bounds, GeoElement curve, List<MyPoint> points,
-			List<BernsteinPlotCell> cells, BernsteinImplicitAlgoSettings settings) {
+	public BernsteinImplicitAlgo(EuclidianViewBounds bounds, GeoElement curve,
+			List<BernsteinPlotCell> cells, LinkSegments segments,
+			BernsteinImplicitAlgoSettings settings) {
 		this.bounds = bounds;
 		this.curve = curve;
-		this.points = points;
 		this.cells = cells;
+		this.segments = segments;
 		this.settings = settings;
 		converter = new BernsteinPolynomialConverter();
-		segments = new LinkSegments(points);
 	}
 
 	@Override
 	public void compute() {
-		Log.debug("compute");
 		List<BernsteinPlotCell> cells = initialSplit(createRootCell());
 		cells.forEach(this::findSolutions);
 		segments.flush();
@@ -87,17 +84,12 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 				return;
 			}
 
-			BernsteinPlotRectConfigProvider provider =
-					new BernsteinPlotRectConfigProvider(currentCell);
-			BernsteinPlotRect rect =
-					new BernsteinPlotRect(currentCell, polynomial);
-			BernsteinRectConfig config =
-					BernsteinRectConfig.fromFlag(BernsteinPlotRectConfigProvider.config(rect));
+			BernsteinMarchingConfigProvider provider =
+					new BernsteinMarchingConfigProvider(currentCell);
 
-			currentCell.setRectConfig(config);
-
+			MarchingConfig config = cell.getMarchingConfig();
 			if (isBoxSmallEnough(currentCell.boundingBox, config)) {
-				addToOutput(currentCell, rect, provider);
+				addToOutput(currentCell, provider);
 			} else {
 				for (BernsteinPlotCell c : currentCell.split()) {
 					if (c.mightHaveSolution()) {
@@ -108,21 +100,21 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		}
 	}
 
-	private void addToOutput(BernsteinPlotCell currentCell, BernsteinPlotRect rect,
-			BernsteinPlotRectConfigProvider provider) {
-		segments.add(rect, provider);
+	private void addToOutput(BernsteinPlotCell currentCell,
+			BernsteinMarchingConfigProvider provider) {
+		segments.add(provider.getMarchingRect(), provider);
 		cells.add(currentCell);
 	}
 
-	private boolean isBoxSmallEnough(BernsteinBoundingBox box, BernsteinRectConfig config) {
+	private boolean isBoxSmallEnough(BernsteinBoundingBox box, MarchingConfig config) {
 		double width = bounds.toScreenCoordXd(box.x2()) - bounds.toScreenCoordXd(box.x1());
 		double height = bounds.toScreenCoordYd(box.y1()) - bounds.toScreenCoordYd(box.y2());
 		int maxWidth = settings.minBoxWidthInPixels();
 		int maxHeight = settings.minBoxHeightInPixels();
-		if (config == BernsteinRectConfig.T1111) {
+		if (config == BernsteinMarchingConfig.T1111) {
 			maxWidth /= 8;
 			maxHeight /= 8;
 		}
-		return width < maxWidth	&& height < maxHeight;
+		return width < maxWidth && height < maxHeight;
 	}
 }

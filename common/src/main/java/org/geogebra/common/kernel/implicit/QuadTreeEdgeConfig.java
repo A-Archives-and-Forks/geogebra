@@ -6,7 +6,7 @@ import java.util.Map;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.SegmentType;
 
-public enum QuadTreeEdgeConfig implements PlotRectConfig {
+public enum QuadTreeEdgeConfig implements MarchingConfig {
 	/**
 	 * All corners are inside / outside
 	 */
@@ -17,21 +17,23 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	 */
 	T0001(1) {
 		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] { new MyPoint(r.x1(),
+		public MyPoint[] getPoints(MarchingRect r) {
+			return new MyPoint[]{new MyPoint(r.x1(),
 					GeoImplicitCurve.interpolate(r.bottomLeft(), r.topLeft(), r.y2(),
 							r.y1()), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
-					r.y2(), SegmentType.LINE_TO)};
+					new MyPoint(
+							GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(), r.x1(),
+									r.x2()),
+							r.y2(), SegmentType.LINE_TO)};
 		}
 
 		@Override
-		public double getQ1(PlotRect r) {
+		public double getQ1(MarchingRect r) {
 			return minAbs(r.bottomLeft(), r.topLeft());
 		}
 
 		@Override
-		public double getQ2(PlotRect r) {
+		public double getQ2(MarchingRect r) {
 			return minAbs(r.bottomLeft(), r.bottomRight());
 		}
 	},
@@ -41,21 +43,23 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	 */
 	T0010(2) {
 		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(r.x2(),
+		public MyPoint[] getPoints(MarchingRect r) {
+			return new MyPoint[]{new MyPoint(r.x2(),
 					GeoImplicitCurve.interpolate(r.bottomRight(), r.topRight(), r.y2(),
 							r.y1()), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.bottomRight(), r.bottomLeft(), r.x2(), r.x1()),
-					r.y2(), SegmentType.LINE_TO)};
+					new MyPoint(
+							GeoImplicitCurve.interpolate(r.bottomRight(), r.bottomLeft(), r.x2(),
+									r.x1()),
+							r.y2(), SegmentType.LINE_TO)};
 		}
 
 		@Override
-		public double getQ1(PlotRect r) {
+		public double getQ1(MarchingRect r) {
 			return minAbs(r.bottomRight(), r.topRight());
 		}
 
 		@Override
-		public double getQ2(PlotRect r) {
+		public double getQ2(MarchingRect r) {
 			return minAbs(r.bottomRight(), r.bottomLeft());
 		}
 	},
@@ -65,21 +69,23 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	 */
 	T0011(3) {
 		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(r.x1(), GeoImplicitCurve.interpolate(r.topLeft(), r.bottomLeft(), r.y1(),
-					r.y2()), SegmentType.MOVE_TO),
+		public MyPoint[] getPoints(MarchingRect r) {
+			return new MyPoint[]{new MyPoint(r.x1(),
+					GeoImplicitCurve.interpolate(r.topLeft(), r.bottomLeft(), r.y1(),
+							r.y2()), SegmentType.MOVE_TO),
 					new MyPoint(r.x2(),
-					GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(), r.y2()),
-					SegmentType.LINE_TO)};
+							GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(),
+									r.y2()),
+							SegmentType.LINE_TO)};
 		}
 
 		@Override
-		public double getQ1(PlotRect r) {
+		public double getQ1(MarchingRect r) {
 			return minAbs(r.topLeft(), r.bottomLeft());
 		}
 
 		@Override
-		public double getQ2(PlotRect r) {
+		public double getQ2(MarchingRect r) {
 			return minAbs(r.topRight(), r.bottomRight());
 		}
 	},
@@ -89,22 +95,24 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	 */
 	T0100(4) {
 		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {
-					new MyPoint(r.x2(), GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(),
-							r.y2()), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.topRight(), r.topLeft(), r.x2(), r.x1()),
+		public MyPoint[] getPoints(MarchingRect r) {
+			return new MyPoint[]{
+					new MyPoint(r.x2(),
+							GeoImplicitCurve.interpolate(r.topRight(), r.bottomRight(), r.y1(),
+									r.y2()), SegmentType.MOVE_TO),
+					new MyPoint(
+							GeoImplicitCurve.interpolate(r.topRight(), r.topLeft(), r.x2(), r.x1()),
 							r.y1(), SegmentType.LINE_TO)
 			};
 		}
 
 		@Override
-		public double getQ1(PlotRect r) {
+		public double getQ1(MarchingRect r) {
 			return minAbs(r.topRight(), r.bottomRight());
 		}
 
 		@Override
-		public double getQ2(PlotRect r) {
+		public double getQ2(MarchingRect r) {
 			return minAbs(r.topRight(), r.topLeft());
 		}
 	},
@@ -120,20 +128,21 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	 */
 	T0110(6) {
 		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
+		public MyPoint[] getPoints(MarchingRect r) {
+			return new MyPoint[]{new MyPoint(
+					GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
 					r.y1(), SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(), r.x1(), r.x2()),
-					r.y2(), SegmentType.LINE_TO)};
+					new MyPoint(GeoImplicitCurve.interpolate(r.bottomLeft(), r.bottomRight(),
+							r.x1(), r.x2()), r.y2(), SegmentType.LINE_TO)};
 		}
 
 		@Override
-		public double getQ1(PlotRect r) {
+		public double getQ1(MarchingRect r) {
 			return minAbs(r.topLeft(), r.topRight());
 		}
 
 		@Override
-		public double getQ2(PlotRect r) {
+		public double getQ2(MarchingRect r) {
 			return minAbs(r.bottomLeft(), r.bottomRight());
 		}
 	},
@@ -141,23 +150,23 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	/**
 	 * only top left corner is inside / outside
 	 */
-	T0111(7)  {
+	T0111(7) {
 		@Override
-		public MyPoint[] getPoints(PlotRect r) {
-			return new MyPoint[] {new MyPoint(r.x1(),
+		public MyPoint[] getPoints(MarchingRect r) {
+			return new MyPoint[]{new MyPoint(r.x1(),
 					GeoImplicitCurve.interpolate(r.topLeft(), r.bottomLeft(), r.y1(), r.y2()),
 					SegmentType.MOVE_TO),
-					new MyPoint(GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(), r.x2()),
-					r.y1(), SegmentType.LINE_TO)};
+					new MyPoint(GeoImplicitCurve.interpolate(r.topLeft(), r.topRight(), r.x1(),
+							r.x2()), r.y1(), SegmentType.LINE_TO)};
 		}
 
 		@Override
-		public double getQ1(PlotRect r) {
+		public double getQ1(MarchingRect r) {
 			return minAbs(r.bottomLeft(), r.topLeft());
 		}
 
 		@Override
-		public double getQ2(PlotRect r) {
+		public double getQ2(MarchingRect r) {
 			return minAbs(r.topLeft(), r.topRight());
 		}
 	},
@@ -177,7 +186,7 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	private static Map<Integer, QuadTreeEdgeConfig> map = new HashMap<>();
 
 	static {
-		for (QuadTreeEdgeConfig config: QuadTreeEdgeConfig.values()) {
+		for (QuadTreeEdgeConfig config : QuadTreeEdgeConfig.values()) {
 			map.put(config.flag, config);
 		}
 	}
@@ -192,15 +201,15 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	}
 
 	@Override
-	public MyPoint[] getPoints(PlotRect r) {
+	public MyPoint[] getPoints(MarchingRect r) {
 		return null;
 	}
 
-	public double getQ1(PlotRect r) {
+	public double getQ1(MarchingRect r) {
 		return 0;
 	}
 
-	public double getQ2(PlotRect r) {
+	public double getQ2(MarchingRect r) {
 		return 0;
 	}
 
@@ -218,7 +227,6 @@ public enum QuadTreeEdgeConfig implements PlotRectConfig {
 	public boolean isEmpty() {
 		return this == EMPTY;
 	}
-
 
 	public static QuadTreeEdgeConfig fromFlag(int config) {
 		return map.getOrDefault(config, T_INV);

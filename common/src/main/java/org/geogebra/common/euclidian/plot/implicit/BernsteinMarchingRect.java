@@ -3,14 +3,17 @@ package org.geogebra.common.euclidian.plot.implicit;
 import java.util.Arrays;
 
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
-import org.geogebra.common.kernel.implicit.PlotRect;
+import org.geogebra.common.kernel.implicit.MarchingRect;
 
-public class BernsteinPlotRect implements PlotRect {
+public class BernsteinMarchingRect implements MarchingRect {
 	private final BernsteinBoundingBox box;
 	private final double[] corners = new double[4];
-	private final double[] evals = new double[4];
 
-	public BernsteinPlotRect(BernsteinPlotCell cell, BernsteinPolynomial polyOriginal) {
+	/**
+	 *
+	 * @param cell {@link BernsteinPlotCell}
+	 */
+	public BernsteinMarchingRect(BernsteinPlotCell cell) {
 		this.box = cell.boundingBox;
 		BernsteinPolynomial poly = cell.polynomial;
 		corners[0] = poly.evaluate(0, 0);
@@ -19,8 +22,8 @@ public class BernsteinPlotRect implements PlotRect {
 		corners[3] = poly.evaluate(0, 1);
 	}
 
-	public static BernsteinPlotRect as(PlotRect r) {
-		return (BernsteinPlotRect) r;
+	public static BernsteinMarchingRect as(MarchingRect r) {
+		return (BernsteinMarchingRect) r;
 	}
 
 	@Override
@@ -70,9 +73,11 @@ public class BernsteinPlotRect implements PlotRect {
 
 	@Override
 	public String toString() {
-		return "BernsteinPlotRect{" +
-				"box=" + box +
-				", corners=" + Arrays.toString(corners) +
-				'}';
+		return "BernsteinPlotRect{"
+				+ "box="
+				+ box
+				+ ", corners="
+				+ Arrays.toString(corners)
+				+ '}';
 	}
 }

@@ -19,15 +19,31 @@ public class LinkSegments {
 	public int listThreshold = 480;
 	private int threshold;
 
+	/**
+	 *
+	 * @param locusPoints points of the curbe as result
+	 */
 	public LinkSegments(List<MyPoint> locusPoints) {
 		this.locusPoints = locusPoints;
 	}
 
-	public int add(PlotRect r, PlotRectConfigProvider provider) {
-		return add(provider.create(r), provider);
+	/**
+	 * Add segment(s) based on the marching rectangle rect.
+	 * @param rect {@link MarchingRect}
+	 * @param provider {@link MarchingConfigProvider}
+	 * @return the configuration flag.
+	 */
+	public int add(MarchingRect rect, MarchingConfigProvider provider) {
+		return add(provider.create(rect), provider);
 	}
 
-	public int add(PlotRectConfig config, PlotRectConfigProvider provider) {
+	/**
+	 * Add segment(s) based on the marching rectangle rect.
+	 * @param config {@link MarchingConfig}
+	 * @param provider {@link MarchingConfigProvider}
+	 * @return the configuration flag.
+	 */
+	public int add(MarchingConfig config, MarchingConfigProvider provider) {
 		if (!config.isValid()) {
 			return config.flag();
 		}
@@ -86,12 +102,14 @@ public class LinkSegments {
 		}
 	}
 
-
 	private static boolean equal(MyPoint q1, MyPoint q2) {
 		return DoubleUtil.isEqual(q1.x, q2.x, 1e-10)
 				&& DoubleUtil.isEqual(q1.y, q2.y, 1e-10);
 	}
 
+	/**
+	 * Add all processed points to the curve.
+	 */
 	public void flushPoints() {
 		ListIterator<PointList> itr1 = openPointLists.listIterator();
 		while (itr1.hasNext()) {

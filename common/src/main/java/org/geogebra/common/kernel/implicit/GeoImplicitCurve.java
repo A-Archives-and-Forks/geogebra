@@ -1644,7 +1644,6 @@ public class GeoImplicitCurve extends GeoElement implements EuclidianViewCE,
 		return out;
 	}
 
-
 	@Override
 	public boolean hasLineOpacity() {
 		return true;
