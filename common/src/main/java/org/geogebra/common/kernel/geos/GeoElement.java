@@ -170,7 +170,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	/** label, value, caption, label+value */
 	public int labelMode = LABEL_DEFAULT;
 	/** cartesian, polar or complex */
-	protected int toStringMode = Kernel.COORD_CARTESIAN;
+	protected int toStringMode = Kernel.COORD_CARTESIAN; // TODO APPS-5867 this default doesn't make sense for most elements (lines, circles, etc)
 	/** default (foreground) color */
 	protected GColor objColor = GColor.BLACK;
 	/** background color */

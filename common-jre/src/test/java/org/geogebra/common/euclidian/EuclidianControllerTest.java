@@ -298,7 +298,7 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		setMode(EuclidianConstants.MODE_RAY);
 		click(0, 0);
 		click(100, 100);
-		checkContent("A = (0, 0)", "B = (2, -2)", "f: 2x + 2y = 0");
+		checkContent("A = (0, 0)", "B = (2, -2)", "f: 2x + 2y = 0"); // TODO APPS-5867 this doesn't match current Suite/Graphing behavior
 	}
 
 	@Test
@@ -391,7 +391,7 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		click(100, 100); // reflection point E
 		checkContent("A = (0, 0)", "B = (2, -2)", "A' = (4, -4)",
 				unicode(circle),
-				unicode("c': (x - 4)^2 + (y + 4)^2 = 25")); // TODO this does not match current Suite/Graphing behavior (multiplied out)
+				unicode("c': (x - 4)^2 + (y + 4)^2 = 25")); // TODO this doesn't match current Suite/Graphing behavior (multiplied out)
 	}
 
 	@Test
