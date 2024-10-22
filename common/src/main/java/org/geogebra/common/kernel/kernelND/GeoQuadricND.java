@@ -14,6 +14,9 @@ package org.geogebra.common.kernel.kernelND;
 
 import java.util.Arrays;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.Kernel;
@@ -698,22 +701,23 @@ public abstract class GeoQuadricND extends GeoElement
 		setEquationForm(EquationForm.Quadric.SPECIFIC);
 	}
 
-	public void setEquationForm(EquationForm.Quadric equationForm) {
+	public void setEquationForm(@Nullable EquationForm.Quadric equationForm) {
+		if (equationForm == null) {
+			return;
+		}
 		setEquationForm(equationForm.rawValue);
 	}
 
-	public void setEquationForm(int equationForm) {
-		if (equationForm == -1) {
-			return; // ignore value for "undefined" (see EquationForms)
-		}
-		if (Arrays.stream(EquationForm.Quadric.values())
-				.anyMatch(form -> form.rawValue == equationForm)) {
-			this.toStringMode = equationForm;
+	public void setEquationForm(int toStringMode) {
+		EquationForm.Quadric equationForm = EquationForm.Quadric.valueOf(toStringMode);
+		if (equationForm != null) {
+			this.toStringMode = toStringMode;
 		}
 	}
 
-	public int getEquationForm() {
-		return toStringMode;
+	@CheckForNull
+	public EquationForm.Quadric getEquationForm() {
+		return EquationForm.Quadric.valueOf(toStringMode);
 	}
 
 	protected boolean hasEqualMatrix(GeoQuadricND conic) {

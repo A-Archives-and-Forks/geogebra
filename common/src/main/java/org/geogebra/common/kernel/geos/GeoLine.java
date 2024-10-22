@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.EquationForm;
 import org.geogebra.common.kernel.Kernel;
@@ -896,22 +899,23 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 		setEquationForm(mode);
 	}
 
-	public void setEquationForm(EquationForm.Linear equationForm) {
+	public void setEquationForm(@Nullable EquationForm.Linear equationForm) {
+		if (equationForm == null) {
+			return;
+		}
 		setEquationForm(equationForm.rawValue);
 	}
 
-	public void setEquationForm(int equationForm) {
-		if (equationForm == -1) {
-			return; // ignore value for "undefined" (see EquationForms)
-		}
-		if (Arrays.stream(EquationForm.Linear.values())
-				.anyMatch(form -> form.rawValue == equationForm)) {
-			this.toStringMode = equationForm;
+	public void setEquationForm(int toStringMode) {
+		EquationForm.Linear equationForm = EquationForm.Linear.valueOf(toStringMode);
+		if (equationForm != null) {
+			this.toStringMode = toStringMode;
 		}
 	}
 
-	public int getEquationForm() {
-		return toStringMode;
+	@CheckForNull
+	public EquationForm.Linear getEquationForm() {
+		return EquationForm.Linear.valueOf(toStringMode);
 	}
 
 	/** output depends on mode: PARAMETRIC or EQUATION */

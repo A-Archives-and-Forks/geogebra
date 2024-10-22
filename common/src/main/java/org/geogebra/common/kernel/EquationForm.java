@@ -1,5 +1,7 @@
 package org.geogebra.common.kernel;
 
+import javax.annotation.CheckForNull;
+
 public final class EquationForm {
 
 	public enum Linear {
@@ -9,8 +11,6 @@ public final class EquationForm {
 		EXPLICIT(Linear.CONST_EXPLICIT),
 		/** parametric equation */
 		PARAMETRIC(Linear.CONST_PARAMETRIC),
-		/** skip one ordinal value so that equals() works */
-		DUMMY(-1),
 		/** general form a x + b y + c = 0 (GGB-1212) */
 		GENERAL(Linear.CONST_GENERAL),
 		/** user input form */
@@ -23,6 +23,24 @@ public final class EquationForm {
 		public static final int CONST_PARAMETRIC = 2;
 		public static final int CONST_GENERAL = 4;
 		public static final int CONST_USER = 5;
+
+		@CheckForNull
+		public static Linear valueOf(int rawValue) {
+			switch (rawValue) {
+			case CONST_IMPLICIT:
+				return IMPLICIT;
+			case CONST_EXPLICIT:
+				return EXPLICIT;
+			case CONST_PARAMETRIC:
+				return PARAMETRIC;
+			case CONST_GENERAL:
+				return GENERAL;
+			case CONST_USER:
+				return USER;
+			default:
+				return null;
+			}
+		}
 
 		public final int rawValue;
 
@@ -57,6 +75,28 @@ public final class EquationForm {
 		public static final int CONST_USER = 4;
 		public static final int CONST_VERTEX = 5;
 		public static final int CONST_CONICFORM = 6;
+
+		@CheckForNull
+		public static Quadric valueOf(int rawValue) {
+			switch (rawValue) {
+			case CONST_IMPLICIT:
+				return IMPLICIT;
+			case CONST_EXPLICIT:
+				return EXPLICIT;
+			case CONST_SPECIFIC:
+				return SPECIFIC;
+			case CONST_PARAMETRIC:
+				return PARAMETRIC;
+			case CONST_USER:
+				return USER;
+			case CONST_VERTEX:
+				return VERTEX;
+			case CONST_CONICFORM:
+				return CONICFORM;
+			default:
+				return null;
+			}
+		}
 
 		public final int rawValue;
 

@@ -1346,6 +1346,7 @@ public abstract class GeoConicND extends GeoQuadricND
 		setEquationForm(EquationForm.Quadric.CONICFORM);
 	}
 
+	// TODO APPS-5867 clean up mode/toStringMode naming inconsistencies
 	final public void setMode(int mode) {
 		setEquationForm(mode);
 	}
