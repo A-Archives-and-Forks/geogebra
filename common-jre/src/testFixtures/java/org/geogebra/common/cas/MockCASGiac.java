@@ -40,4 +40,5 @@ public class MockCASGiac extends CASgiac {
 	public void memmorize(String s) {
 		this.answers.add(s);
 	}
+
 }
