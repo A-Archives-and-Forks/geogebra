@@ -253,12 +253,14 @@ final class CvteExamRestrictions extends ExamRestrictions {
 
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
 		return Set.of(new ConicSectionShowObjectPropertyFilter(),
-				new NonLinearEquationShowObjectPropertyFilter());
+				new NonLinearEquationShowObjectPropertyFilter(),
+				new InequalityShowObjectPropertyFilter());
 	}
 
 	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
 		return Set.of(new ConicSectionVisibilitySetup(),
-				new NonLinearEquationVisibilitySetup());
+				new NonLinearEquationVisibilitySetup(),
+				new InequalityVisibilitySetup());
 	}
 
 	private static class ConicSectionShowObjectPropertyFilter implements GeoElementPropertyFilter {
@@ -288,6 +290,18 @@ final class CvteExamRestrictions extends ExamRestrictions {
 					&& !(geoElement instanceof GeoLine || geoElement instanceof GeoPlaneND)
 					// with the exception of conics
 					&& !geoElement.isGeoConic()
+			);
+		}
+	}
+
+	private static class InequalityShowObjectPropertyFilter implements GeoElementPropertyFilter {
+		@Override
+		public boolean isAllowed(Property property, GeoElement geoElement) {
+			return !(
+					// Filter the show object property
+					property instanceof ShowObjectProperty
+					// for inequalities
+					&& geoElement.isInequality()
 			);
 		}
 	}
@@ -326,6 +340,18 @@ final class CvteExamRestrictions extends ExamRestrictions {
 					// set the initial visibility to false in the euclidian view
 					geoElement.setEuclidianVisible(false);
 				}
+			}
+		}
+	}
+
+	private static class InequalityVisibilitySetup implements ConstructionElementSetup {
+		@Override
+		public void applyTo(ConstructionElement constructionElement) {
+			if (
+					constructionElement instanceof GeoElement
+					&& ((GeoElement) constructionElement).isInequality()
+			) {
+				((GeoElement) constructionElement).setEuclidianVisible(false);
 			}
 		}
 	}
