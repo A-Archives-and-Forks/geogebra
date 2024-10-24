@@ -251,7 +251,7 @@ public enum ExamType {
 		case MMS:
 		case IB:
 		case REALSCHULE:
-			return false; // TODO feature flag goes here
+			return true; // TODO feature flag goes here
 		default: return true;
 		}
 	}
