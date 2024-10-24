@@ -9,7 +9,7 @@ import org.geogebra.common.util.MyMath;
  *
  * If n or k are beyond the capacity of the cache, it fails back to MyMath.binomial(n, k) call.
  */
-public class BinomialCache {
+public final class BinomialCache {
 	public static final int MAX_N = 100;
 	public static final int MAX_K = 100;
 	private static BinomialCache INSTANCE = null;

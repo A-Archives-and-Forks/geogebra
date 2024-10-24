@@ -17,7 +17,6 @@ public class LinkSegments {
 	 * it would be better to adjust LIST_THRESHOLD based on platform
 	 */
 	public int listThreshold = 480;
-	private int threshold;
 
 	/**
 	 *
@@ -48,7 +47,7 @@ public class LinkSegments {
 			return config.flag();
 		}
 		MyPoint[] pts = provider.getPoints();
-		threshold = provider.listThreshold();
+		listThreshold = provider.listThreshold();
 		boolean xChange = provider.canChangePointOrder();
 		if (pts.length > 2) {
 			addPointPair(pts[0], pts[1], xChange);

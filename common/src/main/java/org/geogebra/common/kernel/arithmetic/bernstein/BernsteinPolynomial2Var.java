@@ -9,7 +9,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	final BernsteinPolynomial[] bernsteinCoeffs;
 	BernsteinPolynomial[] dividedCoeffs;
 	private BinomialCoefficientsSign sign;
-	private boolean scaling;
 
 	public BernsteinPolynomial2Var(BernsteinPolynomial2Var polynomial, int min, int max) {
 		this(polynomial.bernsteinCoeffs, min, max, polynomial.degreeX);
@@ -29,7 +28,6 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		this.bernsteinCoeffs = bernsteinCoeffs;
 		this.dividedCoeffs = null;
 		sign = BinomialCoefficientsSign.from2Var(bernsteinCoeffs);
-		scaling = !(minX == 0 &&  maxX == 1);
 	}
 
 	/**

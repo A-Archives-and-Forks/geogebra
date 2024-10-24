@@ -13,8 +13,6 @@ import org.geogebra.common.kernel.implicit.LinkSegments;
 import org.geogebra.common.kernel.matrix.CoordSys;
 
 public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
-	private final GeoElement geo;
-	private final EuclidianViewBounds bounds;
 	private final GeneralPathClippedForCurvePlotter gp;
 	private final CoordSys transformedCoordSys;
 
@@ -31,8 +29,6 @@ public class BernsteinPlotter extends CoordSystemAnimatedPlotter {
 	 */
 	public BernsteinPlotter(GeoElement geo, EuclidianViewBounds bounds,
 			GeneralPathClippedForCurvePlotter gp, CoordSys transformedCoordSys) {
-		this.geo = geo;
-		this.bounds = bounds;
 		this.gp = gp;
 		this.transformedCoordSys = transformedCoordSys;
 		List<BernsteinPlotCell> cells = new ArrayList<>();

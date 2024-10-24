@@ -10,11 +10,6 @@ import org.geogebra.common.kernel.kernelND.GeoPointND;
  * Base class for quadtree algorithms
  */
 abstract class QuadTree {
-	/**
-	 *
-	 */
-	private final GeoImplicitCurve geoImplicitCurve;
-
 	protected double x;
 	protected double y;
 	protected double w;
@@ -24,8 +19,7 @@ abstract class QuadTree {
 	protected ArrayList<MyPoint> locusPoints;
 	private LinkSegments segments;
 
-	public QuadTree(GeoImplicitCurve geoImplicitCurve) {
-		this.geoImplicitCurve = geoImplicitCurve;
+	public QuadTree() {
 		segments = new LinkSegments(locusPoints);
 
 	}

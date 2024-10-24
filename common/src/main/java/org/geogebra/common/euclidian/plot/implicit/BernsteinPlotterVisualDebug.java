@@ -6,7 +6,6 @@ import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
 import org.geogebra.common.factories.AwtFactory;
-import org.geogebra.common.kernel.implicit.MarchingConfig;
 
 /**
  * Draws visual debug on EV, cell bounds, kinds, possible solutions, edges, etc.
@@ -39,9 +38,6 @@ final class BernsteinPlotterVisualDebug implements VisualDebug {
 	}
 
 	private void drawCell(GGraphics2D g2, BernsteinPlotCell cell) {
-		if (!needsHighlight(cell.getMarchingConfig())) {
-			return;
-		}
 		GColor color = getCellColor(cell);
 
 		int x = (int) (bounds.toScreenCoordXd(cell.boundingBox.x1()));
@@ -50,13 +46,8 @@ final class BernsteinPlotterVisualDebug implements VisualDebug {
 		int height = (int) (bounds.toScreenCoordYd(cell.boundingBox.y2()) - y);
 		g2.setColor(color);
 
-		setLineWidth(g2, 1);
 		g2.drawRect(x, y, width, height);
 		drawConfigText(g2, cell, x, y - width / 2);
-	}
-
-	private boolean needsHighlight(MarchingConfig config) {
-		return true;
 	}
 
 	private static void drawConfigText(GGraphics2D g2, BernsteinPlotCell cell, int x, int y) {

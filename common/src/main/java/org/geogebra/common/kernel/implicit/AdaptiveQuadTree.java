@@ -43,7 +43,7 @@ class AdaptiveQuadTree extends QuadTree {
 	}
 
 	public AdaptiveQuadTree(GeoImplicitCurve curve) {
-		super(curve);
+		super();
 		this.curve = curve;
 	}
 

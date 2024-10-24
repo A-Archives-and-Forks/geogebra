@@ -215,6 +215,10 @@ public enum BernsteinMarchingConfig implements MarchingConfig {
 
 	VALID(255);
 
+	private final int flag;
+
+	private static Map<Integer, BernsteinMarchingConfig> map = new HashMap<>();
+
 	private static MyPoint moveTo(double x, double y) {
 		return new MyPoint(x, y, SegmentType.MOVE_TO);
 	}
@@ -223,9 +227,6 @@ public enum BernsteinMarchingConfig implements MarchingConfig {
 		return new MyPoint(x, y, SegmentType.LINE_TO);
 	}
 
-	private final int flag;
-
-	private static Map<Integer, BernsteinMarchingConfig> map = new HashMap<>();
 
 	static {
 		for (BernsteinMarchingConfig config : values()) {

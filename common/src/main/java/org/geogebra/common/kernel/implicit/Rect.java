@@ -1,5 +1,8 @@
 package org.geogebra.common.kernel.implicit;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import org.geogebra.common.kernel.matrix.Coords;
 
 class Rect implements MarchingRect {
@@ -79,12 +82,31 @@ class Rect implements MarchingRect {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
 	public double y2() {
 		return this.coords.val[1] + fy;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Rect rect = (Rect) o;
+		return x == rect.x && y == rect.y && shares == rect.shares && status == rect.status
+				&& Double.compare(fx, rect.fx) == 0
+				&& Double.compare(fy, rect.fy) == 0 && singular == rect.singular
+				&& Objects.deepEquals(evals, rect.evals) && Objects.equals(coords,
+				rect.coords);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(Arrays.hashCode(evals), x, y, shares, status, fx, fy, singular, coords);
 	}
 
 	@Override
