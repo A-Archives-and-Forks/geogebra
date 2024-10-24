@@ -51,11 +51,6 @@ class GeneralPathClippedForCurvePlotterMock
 	public double[] newDoubleArray() {
 		return plotterMock.newDoubleArray();
 	}
-//
-//					@Override
-//					public boolean copyCoords(MyPoint point, double[] ret, CoordSys transformSys) {
-//						return plotterMock.copyCoords(point, ret, transformSys);
-//					}
 
 	@Override
 	public void endPlot() {
