@@ -1207,4 +1207,9 @@ public class GeoSymbolic extends GeoElement
 		}
 		return conditionalSerializer;
 	}
+
+	@Override
+	public void setZero() {
+		setValue(new ExpressionNode(kernel, new MyDouble(kernel, 0.0)));
+	}
 }
