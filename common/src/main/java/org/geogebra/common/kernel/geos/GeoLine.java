@@ -117,7 +117,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public GeoLine(Construction c) {
 		super(c);
 		setConstructionDefaults();
-		setEquationForm(EquationForm.Linear.IMPLICIT); // overwrite GeoElement's default of Kernel.COORD_CARTESIAN
 	}
 
 	/**
@@ -135,7 +134,6 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 	public GeoLine(Construction cons, double a, double b, double c) {
 		super(cons, a, b, c); // GeoVec3D constructor
 		setConstructionDefaults();
-		setEquationForm(EquationForm.Linear.IMPLICIT); // overwrite GeoElement's default of Kernel.COORD_CARTESIAN
 	}
 
 	/**
