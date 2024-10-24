@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.view.algebra.AlgebraItem;
 import org.geogebra.common.gui.view.algebra.Suggestion;
-import org.geogebra.common.gui.view.algebra.SuggestionRootExtremum;
+import org.geogebra.common.gui.view.algebra.SuggestionIntersectExtremum;
 import org.geogebra.common.gui.view.algebra.SuggestionSolve;
 import org.geogebra.common.gui.view.algebra.SuggestionSolveForSymbolic;
 import org.geogebra.common.gui.view.algebra.SuggestionStatistics;
@@ -86,7 +86,7 @@ public final class ContextMenuFactory {
 		CreateSlider createSlider = new CreateSlider(algebraProcessor, new LabelController());
 		RemoveSlider removeSlider = new RemoveSlider(algebraProcessor);
 		Suggestion statisticsSuggestion = SuggestionStatistics.get(geoElement);
-		Suggestion specialPointsSuggestion = SuggestionRootExtremum.get(geoElement);
+		Suggestion specialPointsSuggestion = SuggestionIntersectExtremum.get(geoElement);
 		Suggestion solveSuggestion = SuggestionSolveForSymbolic.isValid(geoElement)
 				? SuggestionSolveForSymbolic.get(geoElement)
 				: SuggestionSolve.get(geoElement);
