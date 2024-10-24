@@ -227,7 +227,6 @@ public enum BernsteinMarchingConfig implements MarchingConfig {
 		return new MyPoint(x, y, SegmentType.LINE_TO);
 	}
 
-
 	static {
 		for (BernsteinMarchingConfig config : values()) {
 			map.put(config.flag, config);

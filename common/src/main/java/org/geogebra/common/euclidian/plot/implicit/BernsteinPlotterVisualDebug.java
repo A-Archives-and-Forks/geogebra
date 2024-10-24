@@ -5,7 +5,6 @@ import java.util.List;
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
-import org.geogebra.common.factories.AwtFactory;
 
 /**
  * Draws visual debug on EV, cell bounds, kinds, possible solutions, edges, etc.
@@ -30,11 +29,6 @@ final class BernsteinPlotterVisualDebug implements VisualDebug {
 		for (BernsteinPlotCell cell : cells) {
 			drawCell(g2, cell);
 		}
-
-	}
-
-	private static void setLineWidth(GGraphics2D g2, int width) {
-		g2.setStroke(AwtFactory.getPrototype().newBasicStroke(width));
 	}
 
 	private void drawCell(GGraphics2D g2, BernsteinPlotCell cell) {

@@ -20,7 +20,7 @@ abstract class QuadTree {
 	private LinkSegments segments;
 
 	public QuadTree() {
-		segments = new LinkSegments(locusPoints);
+		segments = new LinkSegments();
 
 	}
 

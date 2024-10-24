@@ -26,6 +26,10 @@ public class LinkSegments {
 		this.locusPoints = locusPoints;
 	}
 
+	public LinkSegments() {
+		// no locusPoints are set.
+	}
+
 	/**
 	 * Add segment(s) based on the marching rectangle rect.
 	 * @param rect {@link MarchingRect}
