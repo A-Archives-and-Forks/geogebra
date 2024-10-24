@@ -67,7 +67,7 @@ public class ForceInputFormTest extends BaseUnitTest {
 		GeoConic parabola = (GeoConic) factory.create("y=xx");
 		GeoConic hyperbola = (GeoConic) factory.create("yy-xx=1");
 
-        Assert.assertEquals(EquationForm.Linear.USER, geoLine.getEquationForm()); // TODO expectation is correct, actual value not (interference by EvalInfo)
+        Assert.assertEquals(EquationForm.Linear.USER, geoLine.getEquationForm());
 		Assert.assertEquals(EquationForm.Linear.EXPLICIT, geoLineWithCommand.getEquationForm());
 		Assert.assertEquals(EquationForm.Linear.EXPLICIT, geoRay.getEquationForm());
 		Assert.assertEquals(EquationForm.Quadric.USER, parabola.getEquationForm());

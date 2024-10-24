@@ -2,7 +2,6 @@ package org.geogebra.common.main.settings.config.equationforms;
 
 import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.EquationForm;
-import org.geogebra.common.kernel.kernelND.GeoConicND;
 
 /**
  * Equation behavior that doesn't apply any customization to the default equation forms.
