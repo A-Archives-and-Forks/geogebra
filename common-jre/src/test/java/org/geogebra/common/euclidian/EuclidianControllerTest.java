@@ -391,7 +391,7 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		click(100, 100); // reflection point E
 		checkContent("A = (0, 0)", "B = (2, -2)", "A' = (4, -4)",
 				unicode(circle),
-				unicode("c': (x - 4)^2 + (y + 4)^2 = 25")); // TODO this doesn't match current Suite/Graphing behavior (multiplied out)
+				unicode("c': (x - 4)^2 + (y + 4)^2 = 25"));
 	}
 
 	@Test
