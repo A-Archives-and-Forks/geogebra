@@ -298,7 +298,7 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		setMode(EuclidianConstants.MODE_RAY);
 		click(0, 0);
 		click(100, 100);
-		checkContent("A = (0, 0)", "B = (2, -2)", "f: 2x + 2y = 0"); // TODO APPS-5867 this doesn't match current Suite/Graphing behavior
+		checkContent("A = (0, 0)", "B = (2, -2)", "f: 2x + 2y = 0");
 	}
 
 	@Test

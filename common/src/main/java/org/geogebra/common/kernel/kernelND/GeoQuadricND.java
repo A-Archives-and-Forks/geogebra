@@ -711,7 +711,7 @@ public abstract class GeoQuadricND extends GeoElement
 	public void setEquationForm(int toStringMode) {
 		EquationForm.Quadric equationForm = EquationForm.Quadric.valueOf(toStringMode);
 		if (equationForm != null) {
-			this.toStringMode = toStringMode;
+			this.toStringMode = equationForm.rawValue;
 		}
 	}
 
