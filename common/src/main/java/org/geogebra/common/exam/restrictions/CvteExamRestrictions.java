@@ -17,6 +17,9 @@ import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.algos.ConstructionElement;
 import org.geogebra.common.kernel.arithmetic.EquationValue;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.Function;
+import org.geogebra.common.kernel.arithmetic.PolyFunction;
 import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.arithmetic.filter.OperationExpressionFilter;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
@@ -27,6 +30,7 @@ import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.commands.selector.CommandNameFilter;
 import org.geogebra.common.kernel.geos.ConstructionElementSetup;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.kernelND.GeoPlaneND;
 import org.geogebra.common.main.Localization;
@@ -270,7 +274,7 @@ final class CvteExamRestrictions extends ExamRestrictions {
 					// Filter the show object property
 					property instanceof ShowObjectProperty
 					// for any conic element
-					&& geoElement.isGeoConic()
+					&& isConic(geoElement)
 					// created manually (without command/tool)
 					&& geoElement.getParentAlgorithm() == null
 			);
@@ -289,7 +293,7 @@ final class CvteExamRestrictions extends ExamRestrictions {
 					// that are non-linear
 					&& !(geoElement instanceof GeoLine || geoElement instanceof GeoPlaneND)
 					// with the exception of conics
-					&& !geoElement.isGeoConic()
+					&& !isConic(geoElement)
 			);
 		}
 	}
@@ -313,12 +317,12 @@ final class CvteExamRestrictions extends ExamRestrictions {
 				GeoElement geoElement = (GeoElement) constructionElement;
 				if (
 						// For every conic
-						geoElement.isGeoConic()
+						isConic(geoElement)
 						// created manually (without command/tool)
 						&& geoElement.getParentAlgorithm() == null
 				) {
-					// set the initial visibility to false in the euclidian view
-					geoElement.setEuclidianVisible(false);
+					// restrict the visibility of the element in the euclidian view
+					geoElement.setRestrictedEuclidianVisibility(true);
 				}
 			}
 		}
@@ -335,10 +339,10 @@ final class CvteExamRestrictions extends ExamRestrictions {
 						// that are non-linear
 						&& !(geoElement instanceof GeoLine || geoElement instanceof GeoPlaneND)
 						// with the exception of conics
-						&& !geoElement.isGeoConic()
+						&& !isConic(geoElement)
 				) {
-					// set the initial visibility to false in the euclidian view
-					geoElement.setEuclidianVisible(false);
+					// restrict the visibility of the element in the euclidian view
+					geoElement.setRestrictedEuclidianVisibility(true);
 				}
 			}
 		}
@@ -354,5 +358,28 @@ final class CvteExamRestrictions extends ExamRestrictions {
 				((GeoElement) constructionElement).setEuclidianVisible(false);
 			}
 		}
+	}
+
+	private static boolean isConic(GeoElement geoElement) {
+		if (geoElement.isGeoConic()) {
+			return true;
+		}
+		if (!(geoElement instanceof GeoFunction)) {
+			return false;
+		}
+		GeoFunction geoFunction = (GeoFunction) geoElement;
+		Function function = geoFunction.getFunction();
+		if (function == null) {
+			return false;
+		}
+		ExpressionNode expressionNode = geoFunction.getFunctionExpression();
+		if (expressionNode == null) {
+			return false;
+		}
+		PolyFunction polyFunction = function.expandToPolyFunction(expressionNode, false, true);
+		if (polyFunction == null) {
+			return false;
+		}
+		return polyFunction.getDegree() >= 2;
 	}
 }
