@@ -52,7 +52,7 @@ final class RationalizeFractionAlgo {
 	}
 
 	private ExpressionNode doRationalize() {
-		if (numerator.isLeaf()) {
+ 		if (numerator.isLeaf()) {
 			return rationalizeAsLeafNumerator();
 		}
 
@@ -140,8 +140,15 @@ final class RationalizeFractionAlgo {
 	}
 
 	private ExpressionNode rationalizeAsSquareRootProduct() {
+		ExpressionNode product = multiplySquareRoots(numerator, denominator);
+		double d = denominator.getLeft().evaluateDouble();
+		double divide = product.getLeftTree().divide(d*d).evaluateDouble();
+		if (DoubleUtil.isInteger(divide)) {
+			return new ExpressionNode(kernel, new MyDouble(kernel, divide), Operation.SQRT,
+					null);
+		}
 		return new ExpressionNode(kernel,
-				multiplySquareRoots(numerator, denominator),
+				product,
 				Operation.DIVIDE,
 				denominator.getLeft());
 	}
@@ -154,7 +161,7 @@ final class RationalizeFractionAlgo {
 	private ExpressionNode multiplySquareRoots(ExpressionNode left, ExpressionNode right) {
 		double product = left.getLeftTree().multiply(right.getLeft())
 				.wrap().evaluateDouble();
-		
+
 		return new ExpressionNode(kernel, new MyDouble(kernel, product),
 						Operation.SQRT, null);
 	}
@@ -168,6 +175,18 @@ final class RationalizeFractionAlgo {
 		ExpressionNode newNumerator =
 				new ExpressionNode(kernel, numeratorLeft, numerator.getOperation(),
 						numeratorRight);
+		if (newNumerator.isOperation(Operation.SQRT)) {
+			double denValue = rationalized.evaluateDouble();
+			double powDenominator = denValue * denValue;
+			double v = newNumerator.getRight().evaluateDouble();
+			double v1 = v / powDenominator;
+			if (DoubleUtil.isInteger(v1)) {
+				return new ExpressionNode(kernel,
+						new MyDouble(kernel, v1),
+						Operation.SQRT, null);
+
+			}
+		}
 		return new ExpressionNode(kernel,
 				newNumerator,
 				Operation.DIVIDE, rationalized);
