@@ -169,10 +169,10 @@ public class DrawLocus extends Drawable {
 		}
 	}
 
-	protected void drawPath(GGraphics2D g2, GeneralPathClippedForCurvePlotter gp1) {
+	protected void drawPath(GGraphics2D g2, GeneralPathClippedForCurvePlotter gp) {
 		g2.setPaint(getObjectColor());
 		g2.setStroke(objStroke);
-		g2.draw(gp1);
+		g2.draw(gp);
 	}
 
 	private GBufferedImage makeImage(GGraphics2D g2p, GRectangle bounds) {
@@ -216,12 +216,12 @@ public class DrawLocus extends Drawable {
 
 	protected void lazyCreateGeneralPath() {
 		if (gp == null) {
-			gp = createPlotter();
+			gp = newGeneralPath();
 		}
 		gp.resetWithThickness(geo.getLineThickness());
 	}
 
-	protected GeneralPathClippedForCurvePlotter createPlotter() {
+	protected GeneralPathClippedForCurvePlotter newGeneralPath() {
 		return new GeneralPathClippedForCurvePlotter(view);
 	}
 

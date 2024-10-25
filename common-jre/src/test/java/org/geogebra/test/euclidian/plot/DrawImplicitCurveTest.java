@@ -31,7 +31,7 @@ public class DrawImplicitCurveTest extends BaseUnitTest {
 
 		DrawImplicitCurve drawImplicitCurve = new DrawImplicitCurve(view, geo) {
 			@Override
-			protected GeneralPathClippedForCurvePlotter createPlotter() {
+			protected GeneralPathClippedForCurvePlotter newGeneralPath() {
 				GeneralPathClippedForCurvePlotterMock curvePlotterMock =
 						new GeneralPathClippedForCurvePlotterMock(view, plotterMock);
 				curvePlotterMock.setDelimiter("\n");

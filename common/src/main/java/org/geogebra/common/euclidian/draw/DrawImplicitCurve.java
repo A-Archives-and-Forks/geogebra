@@ -41,9 +41,9 @@ public class DrawImplicitCurve extends DrawLocus {
 	// part, 1=>fill positiv part
 
 	/**
-	 * Creates new drawable for implicit Curvenomial
+	 * Creates new drawable for implicit curve
 	 * @param view view
-	 * @param implicitCurve implicit Curvenomial
+	 * @param implicitCurve implicit curve
 	 */
 	public DrawImplicitCurve(EuclidianView view, GeoImplicit implicitCurve) {
 		this(view, implicitCurve, BERNSTEIN_BASED_PLOTTER
@@ -51,9 +51,9 @@ public class DrawImplicitCurve extends DrawLocus {
 	}
 
 	/**
-	 * Creates new drawable for implicit Curvenomial
+	 * Creates new drawable for implicit curve
 	 * @param view view
-	 * @param implicitCurve implicit Curvenomial
+	 * @param implicitCurve implicit curve
 	 */
 	public DrawImplicitCurve(EuclidianView view, GeoImplicit implicitCurve,
 			boolean bernsteinBasedPlotter) {

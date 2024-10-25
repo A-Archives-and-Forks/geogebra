@@ -112,6 +112,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		int maxWidth = settings.minBoxWidthInPixels();
 		int maxHeight = settings.minBoxHeightInPixels();
 		if (config == BernsteinMarchingConfig.T1111) {
+			// TODO: implement correctly
 			maxWidth /= 8;
 			maxHeight /= 8;
 		}
