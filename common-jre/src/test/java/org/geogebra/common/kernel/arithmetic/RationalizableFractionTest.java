@@ -134,7 +134,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("sqrt(3) / sqrt(4)", "sqrt(3) / 2");
 		rationalizationShouldBe("sqrt(3) / sqrt(1)", "sqrt(3)");
 		rationalizationShouldBe("sqrt(6) / sqrt(2)", "sqrt(3)");
-		rationalizationShouldBe("3 / sqrt(8)", "(3 * sqrt(2)) / 4");
+		rationalizationShouldBe("3 / sqrt(8)", "(3sqrt(2)) / 4");
 	}
 
 	@Test
@@ -143,4 +143,5 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("4 / (sqrt(5) - 1)", "sqrt(5) + 1");
 		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
 	}
+
 }
