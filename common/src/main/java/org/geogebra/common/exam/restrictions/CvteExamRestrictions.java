@@ -355,7 +355,7 @@ final class CvteExamRestrictions extends ExamRestrictions {
 					constructionElement instanceof GeoElement
 					&& ((GeoElement) constructionElement).isInequality()
 			) {
-				((GeoElement) constructionElement).setEuclidianVisible(false);
+				((GeoElement) constructionElement).setRestrictedEuclidianVisibility(true);
 			}
 		}
 	}

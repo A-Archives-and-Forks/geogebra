@@ -106,4 +106,18 @@ public final class CvteExamTests extends BaseExamTests {
                     app.getLocalization(), List.of(nonLinearEquation)));
         });
     }
+
+    @Test
+    public void testInequalityRestrictions() {
+        List.of(evaluateGeoElement("x > 0"),
+                evaluateGeoElement("y <= 1"),
+                evaluateGeoElement("x < y"),
+                evaluateGeoElement("x - y > 2")
+        ).forEach(inequality -> {
+            assertFalse(inequality.isEuclidianVisible());
+            assertFalse(inequality.isEuclidianToggleable());
+            assertNull(geoElementPropertiesFactory.createShowObjectProperty(
+                    app.getLocalization(), List.of(inequality)));
+        });
+    }
 }
