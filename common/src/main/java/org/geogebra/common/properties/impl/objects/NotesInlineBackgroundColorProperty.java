@@ -26,7 +26,7 @@ public class NotesInlineBackgroundColorProperty extends ElementColorProperty
 	 */
 	public NotesInlineBackgroundColorProperty(Localization localization,
 			GeoElement element) throws NotApplicablePropertyException {
-		super(localization, new NotesInlineColorPropertyDelegate(element));
+		super(localization, new NotesInlineColorPropertyDelegate(element), "stylebar.BgColor");
 		this.element = element;
 		setValues(Arrays.stream(GeoColorValues.values()).map(ColorValues::getColor)
 				.collect(Collectors.toList()));
