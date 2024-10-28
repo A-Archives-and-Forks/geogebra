@@ -10,8 +10,10 @@ import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
+import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
+import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
 import org.geogebra.web.full.gui.toolbar.mow.popupcomponents.ColorChooserPanel;
@@ -19,6 +21,7 @@ import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.AriaHelper;
+import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
 import org.gwtproject.user.client.ui.FlowPanel;
@@ -130,6 +133,17 @@ public class IconButtonWithProperty extends IconButton {
 			});
 			colorPanel.updateColorSelection(geo.getObjectColor());
 			parent.add(colorPanel);
+			if (colorProperty.getFirstProperty() instanceof NotesInlineBackgroundColorProperty) {
+				StandardButton noColorButton = new StandardButton(MaterialDesignResources.INSTANCE
+						.no_color(), appW.getLocalization().getMenu("noColor"), 24);
+				noColorButton.addStyleName("noColBtn");
+				noColorButton.addFastClickHandler(source -> {
+					if (popupHandler != null) {
+						popupHandler.fireActionPerformed(colorProperty, null);
+					}
+				});
+				parent.add(noColorButton);
+			}
 		}
 	}
 

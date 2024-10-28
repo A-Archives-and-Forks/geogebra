@@ -337,5 +337,28 @@
 				height: 148px;
 			}
 		}
+
+		.noColBtn {
+			display: inline-flex;
+			cursor: pointer;
+			margin: 16px 0 0 0;
+
+    		&:hover {
+    			background-color: neutral(200);
+    		}
+
+    		img {
+    			opacity: 0.54;
+    			margin: 6px 0;
+    		}
+
+    		.gwt-Label {
+    			font-size: 16px;
+    			margin: 8px 0px 8px 12px;
+    			height: 24px;
+    			line-height: 24px;
+    			cursor: pointer;
+    		}
+		}
 	}
 }

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.euclidian.EuclidianStyleBarStatic;
-import org.geogebra.common.kernel.InlineTextFormatter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.color.ColorValues;
@@ -14,9 +13,8 @@ import org.geogebra.common.main.color.GeoColorValues;
 import org.geogebra.common.properties.aliases.ColorProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 import org.geogebra.common.properties.impl.objects.delegate.NotesInlineColorPropertyDelegate;
-import org.geogebra.common.util.StringUtil;
 
-public class NotesFontColorProperty extends ElementColorProperty
+public class NotesInlineBackgroundColorProperty extends ElementColorProperty
 		implements ColorProperty {
 
 	private final GeoElement element;
@@ -26,7 +24,7 @@ public class NotesFontColorProperty extends ElementColorProperty
 	 * @param element - element
 	 * @throws NotApplicablePropertyException when one of the elements has no color
 	 */
-	public NotesFontColorProperty(Localization localization,
+	public NotesInlineBackgroundColorProperty(Localization localization,
 			GeoElement element) throws NotApplicablePropertyException {
 		super(localization, new NotesInlineColorPropertyDelegate(element));
 		this.element = element;
@@ -36,11 +34,6 @@ public class NotesFontColorProperty extends ElementColorProperty
 
 	@Override
 	public void doSetValue(GColor value) {
-		EuclidianStyleBarStatic.applyColor(value, element.getAlphaValue(), element.getApp(),
-				List.of(element));
-
-		String htmlColor = StringUtil.toHtmlColor(value);
-		InlineTextFormatter inlineFormatter = new InlineTextFormatter();
-		inlineFormatter.formatInlineText(List.of(element), "color", htmlColor);
+		EuclidianStyleBarStatic.applyBgColor(List.of(element), value, 1);
 	}
 }
