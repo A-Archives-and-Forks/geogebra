@@ -570,7 +570,7 @@ public class GeoSymbolic extends GeoElement
 		if (isTwinUpToDate) {
 			return twinGeo;
 		}
-		GeoElementND newTwin = createTwinGeo();
+		GeoElementND newTwin = ensureNotInConstruction(createTwinGeo());
 
 		if (newTwin instanceof EquationValue) {
 			((EquationValue) newTwin).setToUser();
@@ -579,7 +579,7 @@ public class GeoSymbolic extends GeoElement
 		if (newTwin instanceof GeoList) {
 			newTwin.setEuclidianVisible(true);
 		}
-		if (twinGeo != null && !twinGeo.isEmptySpreadsheetCell()) {
+		if (twinGeo != null) {
 			twinGeo.remove();
 		}
 
@@ -595,6 +595,17 @@ public class GeoSymbolic extends GeoElement
 		isTwinUpToDate = true;
 
 		return twinGeo;
+	}
+
+	private GeoElementND ensureNotInConstruction(GeoElementND computed) {
+		GeoElementND newTwin = computed;
+		if (newTwin != null && newTwin.isLabelSet()) {
+			newTwin = newTwin.copyInternal(cons);
+			if (newTwin.isGeoNumeric()) {
+				((GeoNumeric) newTwin).setDrawable(false);
+			}
+		}
+		return newTwin;
 	}
 
 	private GeoElementND createTwinGeo() {

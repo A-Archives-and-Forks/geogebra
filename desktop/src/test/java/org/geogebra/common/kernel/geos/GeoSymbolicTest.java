@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.hamcrest.core.AnyOf.anyOf;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -2352,4 +2353,17 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		assertThat(simplify.getTwinGeo().getGeoClassType(), is(GeoClass.NUMERIC));
 	}
 
+	@Test
+	public void redefineShouldNotDeleteSlider() {
+		GeoNumeric slider = new GeoNumeric(app.getKernel().getConstruction(), 3);
+		slider.setEuclidianVisible(true);
+		slider.setLabel("a");
+		GeoSymbolic copy = add("b=a");
+		assertThat(copy, hasValue("3"));
+		assertThat(copy.getTwinGeo().isDrawable(), equalTo(false));
+		ap.changeGeoElement(copy, "a", true, false,
+				TestErrorHandler.INSTANCE, ignore -> {});
+		assertThat(lookup("b"), hasValue("3"));
+		assertArrayEquals(new String[]{"a", "b"}, app.getGgbApi().getAllObjectNames());
+	}
 }
