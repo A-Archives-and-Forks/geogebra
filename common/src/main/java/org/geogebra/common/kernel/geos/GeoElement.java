@@ -7183,4 +7183,11 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	public boolean isFreeInputPoint() {
 		return isGeoPoint() && (isIndependent() || isMoveable());
 	}
+
+	/**
+	 * Sets the value of this element to zero
+	 */
+	public void setZero() {
+		// Overridden in subclasses
+	}
 }
