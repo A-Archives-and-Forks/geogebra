@@ -3,9 +3,9 @@ package org.geogebra.common.properties.impl.objects.delegate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInline;
 
-public class NotesFontColorPropertyDelegate extends AbstractGeoElementDelegate {
+public class NotesInlineColorPropertyDelegate extends AbstractGeoElementDelegate {
 
-	public NotesFontColorPropertyDelegate(GeoElement element)
+	public NotesInlineColorPropertyDelegate(GeoElement element)
 			throws NotApplicablePropertyException {
 		super(element);
 	}

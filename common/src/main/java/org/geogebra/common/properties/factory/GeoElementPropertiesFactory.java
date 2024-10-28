@@ -37,6 +37,7 @@ import org.geogebra.common.properties.impl.objects.MinProperty;
 import org.geogebra.common.properties.impl.objects.NameProperty;
 import org.geogebra.common.properties.impl.objects.NotesColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesFontColorProperty;
+import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
@@ -244,6 +245,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new ColorPropertyCollection<>(
 					colorProperties.toArray(new NotesFontColorProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Creates a background color property for inline object
+	 * @param localization localization
+	 * @param elements elements
+	 * @return color property
+	 */
+	public static ColorProperty createInlineBackgroundColorProperty(Localization localization,
+			List<GeoElement> elements) {
+		try {
+			List<NotesInlineBackgroundColorProperty> colorProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				colorProperties.add(new NotesInlineBackgroundColorProperty(localization, element));
+			}
+			return new ColorPropertyCollection<>(
+					colorProperties.toArray(new NotesInlineBackgroundColorProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

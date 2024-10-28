@@ -13,6 +13,7 @@ import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.ItalicProperty;
 import org.geogebra.common.properties.impl.objects.NotesColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesFontColorProperty;
+import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.common.properties.impl.objects.UnderlineProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
@@ -135,7 +136,8 @@ public class PropertiesIconAdapter {
 		} else if (property instanceof ColorPropertyCollection) {
 			AbstractValuedProperty<?> firstProperty = ((ColorPropertyCollection<?>) property)
 					.getFirstProperty();
-			if (firstProperty instanceof NotesColorProperty) {
+			if (firstProperty instanceof NotesColorProperty
+				|| firstProperty instanceof NotesInlineBackgroundColorProperty) {
 				return MaterialDesignResources.INSTANCE.color_black();
 			} else if (firstProperty instanceof NotesFontColorProperty) {
 				return MaterialDesignResources.INSTANCE.text_color();

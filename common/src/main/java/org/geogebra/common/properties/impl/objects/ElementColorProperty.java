@@ -44,6 +44,19 @@ public class ElementColorProperty extends AbstractEnumeratedProperty<GColor>
 		this.element = delegate.getElement();
 	}
 
+	/**
+	 * Constructor
+	 * @param localization - localization
+	 * @param delegate - delegate
+	 * @param name - name
+	 */
+	public ElementColorProperty(Localization localization, GeoElementDelegate delegate,
+			String name) {
+		super(localization, name);
+		this.delegate = delegate;
+		this.element = delegate.getElement();
+	}
+
 	@Override
 	public GColor getValue() {
 		return element.getObjectColor();
