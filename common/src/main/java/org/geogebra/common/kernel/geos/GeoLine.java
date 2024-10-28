@@ -1012,6 +1012,7 @@ public class GeoLine extends GeoVec3D implements Path, Translateable,
 			sbBuildValueStr.append(")");
 			return sbBuildValueStr.toString();
 
+		case EquationForm.Linear.CONST_IMPLICIT_NON_CANONICAL:
 		case EquationForm.Linear.CONST_GENERAL:
 			g[0] = x;
 			g[1] = y;

@@ -11,6 +11,8 @@ public final class EquationForm {
 		EXPLICIT(Linear.CONST_EXPLICIT),
 		/** parametric equation */
 		PARAMETRIC(Linear.CONST_PARAMETRIC),
+		/** TODO APPS-5867 document equation form */
+		IMPLICIT_NON_CANONICAL(Linear.CONST_IMPLICIT_NON_CANONICAL),
 		/** general form a x + b y + c = 0 (GGB-1212) */
 		GENERAL(Linear.CONST_GENERAL),
 		/** user input form */
@@ -21,6 +23,7 @@ public final class EquationForm {
 		public static final int CONST_IMPLICIT = 0;
 		public static final int CONST_EXPLICIT = 1;
 		public static final int CONST_PARAMETRIC = 2;
+		public static final int CONST_IMPLICIT_NON_CANONICAL = 3;
 		public static final int CONST_GENERAL = 4;
 		public static final int CONST_USER = 5;
 
@@ -33,6 +36,8 @@ public final class EquationForm {
 				return EXPLICIT;
 			case CONST_PARAMETRIC:
 				return PARAMETRIC;
+			case CONST_IMPLICIT_NON_CANONICAL:
+				return IMPLICIT_NON_CANONICAL;
 			case CONST_GENERAL:
 				return GENERAL;
 			case CONST_USER:
