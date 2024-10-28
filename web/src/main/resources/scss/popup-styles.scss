@@ -342,6 +342,7 @@
 			display: inline-flex;
 			cursor: pointer;
 			margin: 16px 0 0 0;
+			width: 100%;
 
     		&:hover {
     			background-color: neutral(200);
@@ -349,7 +350,7 @@
 
     		img {
     			opacity: 0.54;
-    			margin: 6px 0;
+    			margin: 8px 0;
     		}
 
     		.gwt-Label {
