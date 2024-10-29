@@ -36,8 +36,10 @@ import org.geogebra.common.properties.impl.objects.MaxProperty;
 import org.geogebra.common.properties.impl.objects.MinProperty;
 import org.geogebra.common.properties.impl.objects.NameProperty;
 import org.geogebra.common.properties.impl.objects.NotesColorProperty;
+import org.geogebra.common.properties.impl.objects.NotesColorWithOpacityProperty;
 import org.geogebra.common.properties.impl.objects.NotesFontColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
+import org.geogebra.common.properties.impl.objects.NotesOpacityColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
@@ -135,6 +137,20 @@ public class GeoElementPropertiesFactory {
 	}
 
 	/**
+	 * Creates color with opacity properties for a list of GeoElements.
+	 * @param localization localization
+	 * @param elements input elements
+	 * @return the list of properties for the GeoElement(s)
+	 */
+	public static PropertiesArray createNotesColorWithOpacityProperties(
+			Localization localization, List<GeoElement> elements) {
+		List<Property> properties = new ArrayList<>();
+		addPropertyIfNotNull(properties, createColorWithOpacityProperty(localization, elements));
+		addPropertyIfNotNull(properties, createOpacityColorProperty(localization, elements));
+		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
 	 * Creates cell border style properties for a list of GeoElements.
 	 * @param localization localization
 	 * @param elements input elements
@@ -225,6 +241,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new ColorPropertyCollection<>(
 					colorProperties.toArray(new NotesColorProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Creates a color property for non-mask shapes
+	 * @param localization localization
+	 * @param elements elements
+	 * @return color property
+	 */
+	public static ColorProperty createColorWithOpacityProperty(Localization localization,
+			List<GeoElement> elements) {
+		try {
+			List<NotesColorWithOpacityProperty> colorProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				colorProperties.add(new NotesColorWithOpacityProperty(localization, element));
+			}
+			return new ColorPropertyCollection<>(
+					colorProperties.toArray(new NotesColorWithOpacityProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
@@ -636,6 +672,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new RangePropertyCollection<>(
 					opacityProperties.toArray(new OpacityProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a RangePropertyCollection controlling the opacity or null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static RangeProperty<Integer> createOpacityColorProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<NotesOpacityColorProperty> opacityProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				opacityProperties.add(new NotesOpacityColorProperty(localization, element));
+			}
+			return new RangePropertyCollection<>(
+					opacityProperties.toArray(new NotesOpacityColorProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
