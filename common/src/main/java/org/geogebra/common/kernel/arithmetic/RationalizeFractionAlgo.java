@@ -39,8 +39,8 @@ final class RationalizeFractionAlgo {
 				} else if (gcdLeft != 1) {
 					double v = evalLeft / gcdLeft;
 					double canceledDenumerator = denominator.divide(gcdLeft).evaluateDouble();
-					return new ExpressionNode(kernel, new MyDouble(kernel, v).wrap().
-							multiplyR(numerator.getRightTree()),
+					return new ExpressionNode(kernel, new MyDouble(kernel, v).wrap()
+							.multiplyR(numerator.getRightTree()),
 							Operation.DIVIDE, new MyDouble(kernel, canceledDenumerator)
 					);
 				} else if (DoubleUtil.isEqual(gcdRight, evalCanceled)) {
@@ -59,7 +59,7 @@ final class RationalizeFractionAlgo {
 	}
 
 	private ExpressionNode doRationalize() {
- 		if (numerator.isLeaf()) {
+		if (numerator.isLeaf()) {
 			return rationalizeAsLeafNumerator();
 		}
 
