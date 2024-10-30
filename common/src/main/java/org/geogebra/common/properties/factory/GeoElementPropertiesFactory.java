@@ -441,7 +441,8 @@ public class GeoElementPropertiesFactory {
 	}
 
 	/**
-	 * Returns an IconsEnumeratedProperty controlling the extended point style or null if not applicable.
+	 * Returns an IconsEnumeratedProperty controlling the extended point style or null if
+	 * not applicable.
 	 * @param localization localization
 	 * @param elements elements
 	 * @return property or null
