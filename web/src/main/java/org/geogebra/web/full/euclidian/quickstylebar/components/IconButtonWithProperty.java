@@ -10,7 +10,9 @@ import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
+import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
+import org.geogebra.common.properties.impl.objects.NotesOpacityColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
@@ -33,7 +35,6 @@ public class IconButtonWithProperty extends IconButton {
 	private GPopupPanel propertyPopup;
 	private SliderWithProperty lineThicknessSlider;
 	private final PropertyWidgetAdapter widgetAdapter;
-	private ColorChooserPanel colorPanel;
 	private PopupColorHandler popupHandler;
 
 	/**
@@ -102,24 +103,6 @@ public class IconButtonWithProperty extends IconButton {
 			parent.add(enumeratedPropertyButtonPanel);
 		}
 
-		if (property instanceof RangeProperty) {
-			RangeProperty<?> firstProperty
-					= ((RangePropertyCollection<?>) property).getFirstProperty();
-			if (firstProperty instanceof NotesThicknessProperty) {
-				lineThicknessSlider = widgetAdapter.getSliderWidget(
-					(RangePropertyCollection<?>) property, geo);
-				parent.add(lineThicknessSlider);
-			} else if (firstProperty instanceof CellBorderThicknessProperty) {
-				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
-						(RangePropertyCollection<?>) property);
-				parent.add(borderThickness);
-			} else if (firstProperty instanceof PointSizeProperty) {
-				SliderWithProperty slider = widgetAdapter.getSliderWidget(
-						(RangePropertyCollection<?>) property, geo);
-				parent.add(slider);
-			}
-		}
-
 		if (property instanceof NamedEnumeratedPropertyCollection
 				&& ((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]
 				instanceof TextFontSizeProperty) {
@@ -130,11 +113,11 @@ public class IconButtonWithProperty extends IconButton {
 
 		if (property instanceof ColorPropertyCollection<?>) {
 			ColorPropertyCollection<?> colorProperty = (ColorPropertyCollection<?>) property;
-			colorPanel = new ColorChooserPanel(appW,
+			ColorChooserPanel colorPanel = new ColorChooserPanel(appW,
 					colorProperty.getValues(), color -> {
-					if (popupHandler != null) {
-						popupHandler.fireActionPerformed(colorProperty, color);
-					}
+				if (popupHandler != null) {
+					popupHandler.fireActionPerformed(colorProperty, color);
+				}
 			});
 			colorPanel.updateColorSelection(geo.getObjectColor());
 			parent.add(colorPanel);
@@ -148,6 +131,25 @@ public class IconButtonWithProperty extends IconButton {
 					}
 				});
 				parent.add(noColorButton);
+			}
+		}
+
+		if (property instanceof RangePropertyCollection<?>) {
+			RangeProperty<?> firstProperty
+					= ((RangePropertyCollection<?>) property).getFirstProperty();
+			if (firstProperty instanceof NotesThicknessProperty) {
+				lineThicknessSlider = widgetAdapter.getSliderWidget(
+						(RangePropertyCollection<?>) property, geo);
+				parent.add(lineThicknessSlider);
+			} else if (firstProperty instanceof CellBorderThicknessProperty) {
+				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
+						(RangePropertyCollection<?>) property);
+				parent.add(borderThickness);
+			} else if (firstProperty instanceof NotesOpacityColorProperty
+					|| firstProperty instanceof ImageOpacityProperty) {
+				SliderWithProperty colorOpacitySlider = widgetAdapter.getSliderWidget(
+						(RangePropertyCollection<?>) property, geo);
+				parent.add(colorOpacitySlider);
 			}
 		}
 	}
