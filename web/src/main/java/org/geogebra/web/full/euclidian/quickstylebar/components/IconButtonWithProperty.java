@@ -12,6 +12,7 @@ import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
+import org.geogebra.common.properties.impl.objects.PointSizeProperty;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
@@ -112,6 +113,10 @@ public class IconButtonWithProperty extends IconButton {
 				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
 						(RangePropertyCollection<?>) property);
 				parent.add(borderThickness);
+			} else if (firstProperty instanceof PointSizeProperty) {
+				SliderWithProperty slider = widgetAdapter.getSliderWidget(
+						(RangePropertyCollection<?>) property, geo);
+				parent.add(slider);
 			}
 		}
 
