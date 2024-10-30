@@ -131,10 +131,13 @@ public final class CvteExamTests extends BaseExamTests {
                 "x - y > 2"
         ).forEach(expression -> {
             GeoElement geoElement = evaluateGeoElement(expression);
-            assertFalse(expression, geoElement.isEuclidianVisible());
-            assertFalse(expression, geoElement.isEuclidianToggleable());
-            assertNull(expression, geoElementPropertiesFactory.createShowObjectProperty(
-                    app.getLocalization(), List.of(geoElement)));
+            assertFalse(expression + " shouldn't be visible in the euclidian view.",
+                    geoElement.isEuclidianVisible());
+            assertFalse(expression + " shouldn't be toggleable in the algebra input.",
+                    geoElement.isEuclidianToggleable());
+            assertNull(expression + " shouldn't have a show object property.",
+                    geoElementPropertiesFactory.createShowObjectProperty(
+                            app.getLocalization(), List.of(geoElement)));
         });
     }
 }
