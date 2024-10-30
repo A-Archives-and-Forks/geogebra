@@ -17,7 +17,7 @@ final class RationalizeFractionAlgo {
 	}
 
 	public ExpressionNode compute() {
-		ExpressionNode result = doRationalize();
+		ExpressionNode result = getReducedRoot(doRationalize(), kernel);
 		return result.isOperation(Operation.DIVIDE) ? cancelGCDs(result, kernel) : result;
 	}
 
@@ -36,6 +36,13 @@ final class RationalizeFractionAlgo {
 				long gcdRight = Kernel.gcd((long) evalCanceled, (long) evalRight);
 				if (DoubleUtil.isEqual(gcdLeft, evalCanceled)) {
 					return numerator.getRightTree();
+				} else if (gcdLeft != 1) {
+					double v = evalLeft / gcdLeft;
+					double canceledDenumerator = denominator.divide(gcdLeft).evaluateDouble();
+					return new ExpressionNode(kernel, new MyDouble(kernel, v).wrap()
+							.multiplyR(numerator.getRightTree()),
+							Operation.DIVIDE, new MyDouble(kernel, canceledDenumerator)
+					);
 				} else if (DoubleUtil.isEqual(gcdRight, evalCanceled)) {
 					if (DoubleUtil.isEqual(evalCanceled, evalRight)) {
 						return numerator.getLeftTree();
@@ -118,7 +125,7 @@ final class RationalizeFractionAlgo {
 			if (DoubleUtil.isInteger(v)) {
 				return new ExpressionNode(kernel,
 						numerator.multiply(mul),
-						Operation.DIVIDE, new MyDouble(kernel, v));
+						Operation.DIVIDE, newNumber(v));
 			}
 		}
 		return null;
@@ -140,8 +147,9 @@ final class RationalizeFractionAlgo {
 	}
 
 	private ExpressionNode rationalizeAsSquareRootProduct() {
+		ExpressionNode product = multiplySquareRoots(numerator, denominator);
 		return new ExpressionNode(kernel,
-				multiplySquareRoots(numerator, denominator),
+				product,
 				Operation.DIVIDE,
 				denominator.getLeft());
 	}
@@ -154,8 +162,8 @@ final class RationalizeFractionAlgo {
 	private ExpressionNode multiplySquareRoots(ExpressionNode left, ExpressionNode right) {
 		double product = left.getLeftTree().multiply(right.getLeft())
 				.wrap().evaluateDouble();
-		
-		return new ExpressionNode(kernel, new MyDouble(kernel, product),
+
+		return new ExpressionNode(kernel, newNumber(product),
 						Operation.SQRT, null);
 	}
 
@@ -171,5 +179,35 @@ final class RationalizeFractionAlgo {
 		return new ExpressionNode(kernel,
 				newNumerator,
 				Operation.DIVIDE, rationalized);
+	}
+
+	static ExpressionNode getReducedRoot(ExpressionNode node, Kernel kernel) {
+		if (node.isOperation(Operation.DIVIDE)) {
+			ExpressionNode nominator = node.getLeftTree();
+			if (nominator.isOperation(Operation.SQRT)) {
+				ExpressionValue reducedSqrt = Surds.getResolution(nominator, kernel);
+				if (reducedSqrt != null) {
+					return new ExpressionNode(kernel, reducedSqrt, Operation.DIVIDE,
+							node.getRightTree());
+				}
+			} else if (nominator.isOperation(Operation.MULTIPLY)) {
+				ExpressionNode rightTree = nominator.getRightTree();
+				ExpressionValue reducedSqrt = Surds.getResolution(rightTree, kernel);
+				if (reducedSqrt != null) {
+					ExpressionNode constantProduct =
+							nominator.getLeftTree().multiplyR(reducedSqrt.wrap().getLeftTree());
+					return new ExpressionNode(kernel,
+							reducedSqrt.wrap().getRightTree().multiplyR(
+									constantProduct.unwrap().evaluateDouble()),
+							Operation.DIVIDE,
+							node.getRightTree());
+				}
+			}
+		}
+		return node;
+	}
+
+	private MyDouble newNumber(double outer) {
+		return new MyDouble(kernel, outer);
 	}
 }
