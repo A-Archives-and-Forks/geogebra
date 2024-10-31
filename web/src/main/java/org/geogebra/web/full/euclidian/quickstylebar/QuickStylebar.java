@@ -17,7 +17,6 @@ import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
-import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperty;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
@@ -65,6 +64,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addPropertyPopupButton(activeGeoList.get(0), null, false, imageOpacityProperty);
 
 		addCropButton();
+
+		PropertiesArray colorWithOpacityProperty = GeoElementPropertiesFactory
+				.createNotesColorWithOpacityProperties(getApp().getLocalization(), activeGeoList);
+		addColorPropertyButton(activeGeoList.get(0), colorWithOpacityProperty.getProperties());
 
 		Property colorProperty = GeoElementPropertiesFactory.createNotesColorProperty(
 				getApp().getLocalization(), activeGeoList);
@@ -133,13 +136,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addColorPropertyButton(GeoElement geo, Property property) {
-		if (!(property instanceof ColorPropertyCollection<?>)) {
+	private void addColorPropertyButton(GeoElement geo, Property... properties) {
+		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
+		Property firstProperty = properties[0];
 
 		IconButtonWithProperty colorButton = new IconButtonWithProperty(getApp(), "colorStyle",
-				PropertiesIconAdapter.getIcon(property), property.getName(), geo, true, property);
+				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(), geo, true,
+				properties);
 
 		setPopupHandlerWithUndoAction(colorButton);
 		styleAndRegisterButton(colorButton);

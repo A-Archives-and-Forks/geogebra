@@ -3,7 +3,8 @@ package org.geogebra.web.full.euclidian.quickstylebar.components;
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
-import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
+import org.geogebra.common.properties.impl.objects.NotesOpacityColorProperty;
+import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
 import org.geogebra.web.full.gui.util.LineStylePreview;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
@@ -38,8 +39,16 @@ public class SliderWithProperty extends FlowPanel {
 		this.lineType = lineType;
 		this.color = color;
 
-		addStyleName("sliderComponent");
+		styleComponent();
 		buildGui();
+	}
+
+	private void styleComponent() {
+		addStyleName("sliderComponent");
+		if (getFirstProperty() instanceof ThicknessProperty
+			|| getFirstProperty() instanceof NotesOpacityColorProperty) {
+			addStyleName("withMargin");
+		}
 	}
 
 	private void buildGui() {
@@ -59,12 +68,11 @@ public class SliderWithProperty extends FlowPanel {
 
 	private void addPropertyBasedPreview(FlowPanel parent) {
 		if (getFirstProperty() instanceof ThicknessProperty) {
-			addStyleName("withMargin");
 			preview = new LineStylePreview(30, 30);
 			preview.addStyleName("preview");
 			parent.add(preview);
-		} else if (getFirstProperty() instanceof ImageOpacityProperty) {
-			unitLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(((ImageOpacityProperty)
+		} else if (getFirstProperty() instanceof OpacityProperty) {
+			unitLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(((OpacityProperty)
 					getFirstProperty()).getValue() + "%", "sliderLabel");
 			parent.add(unitLabel);
 		}
