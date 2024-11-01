@@ -7,6 +7,7 @@ import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.Delete;
 import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.DuplicateInput;
 import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.DuplicateOutput;
 import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.RemoveLabel;
+import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.RemoveSlider;
 import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.Settings;
 import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.Solve;
 import static org.geogebra.common.contextmenu.AlgebraContextMenuItem.SpecialPoints;
@@ -17,14 +18,10 @@ import java.util.List;
 
 import org.geogebra.common.AppCommonFactory;
 import org.geogebra.common.GeoGebraConstants;
-import org.geogebra.common.cas.CASparser;
 import org.geogebra.common.cas.MockCASGiac;
-import org.geogebra.common.factories.CASFactory;
-import org.geogebra.common.factories.CASFactoryDummy;
+import org.geogebra.common.gui.view.algebra.contextmenu.impl.CreateSlider;
 import org.geogebra.common.jre.headless.AppCommon;
-import org.geogebra.common.kernel.CASGenericInterface;
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
@@ -43,7 +40,8 @@ public class AlgebraContextMenuTests {
 
 	private AlgebraProcessor algebraProcessor;
 	private String appCode;
-	private MockCASGiac giac;
+	private MockCASGiac mockCASGiac;
+	private Kernel kernel;
 
 	@Test
 	public void testAlgebraContextMenuWithInvalidGeoElement() {
@@ -209,21 +207,23 @@ public class AlgebraContextMenuTests {
 	@Test
 	public void testForSimpleInputWithSliderInCasApp() {
 		setupApp(GeoGebraConstants.CAS_APPCODE);
-		giac.memmorize("5");
+		mockCASGiac.memorize("5");
+		GeoElement number = add("slider=5");
+		new CreateSlider(algebraProcessor, new LabelController()).execute(number);
 		assertEquals(
-				List.of(RemoveLabel,
-						CreateSlider,
+				List.of(RemoveSlider,
 						DuplicateInput,
 						Delete,
 						Settings),
-				contextMenuFactory.makeAlgebraContextMenu(add("5"), algebraProcessor, appCode)
+				contextMenuFactory.makeAlgebraContextMenu(
+						kernel.lookupLabel("slider"), algebraProcessor, appCode)
 		);
 	}
 
 	@Test
 	public void testForSimpleInputWithoutLabelInCasApp() {
 		setupApp(GeoGebraConstants.CAS_APPCODE);
-		giac.memmorize("5");
+		mockCASGiac.memorize("5");
 		GeoElement geoElement = add("5");
 		new LabelController().hideLabel(geoElement);
 		assertEquals(
@@ -237,9 +237,24 @@ public class AlgebraContextMenuTests {
 	}
 
 	@Test
+	public void testForSimpleInputWithoutSliderInCasApp() {
+		setupApp(GeoGebraConstants.CAS_APPCODE);
+		mockCASGiac.memorize("5");
+		GeoElement geoElement = add("5");
+		assertEquals(
+				List.of(RemoveLabel,
+						CreateSlider,
+						DuplicateInput,
+						Delete,
+						Settings),
+				contextMenuFactory.makeAlgebraContextMenu(geoElement, algebraProcessor, appCode)
+		);
+	}
+
+	@Test
 	public void testForInputWithStatisticsInCasApp() {
 		setupApp(GeoGebraConstants.CAS_APPCODE);
-		giac.memmorize("{1,2,3}");
+		mockCASGiac.memorize("{1, 2, 3}");
 		assertEquals(
 				List.of(CreateTableValues,
 						RemoveLabel,
@@ -255,7 +270,7 @@ public class AlgebraContextMenuTests {
 	@Test
 	public void testForInputWithSpecialPointsInCasApp() {
 		setupApp(GeoGebraConstants.CAS_APPCODE);
-		giac.memmorize("x");
+		mockCASGiac.memorize("x");
 		assertEquals(
 				List.of(CreateTableValues,
 						RemoveLabel,
@@ -270,22 +285,10 @@ public class AlgebraContextMenuTests {
 	private void setupApp(String appCode) {
 		this.appCode = appCode;
 		AppCommon app = AppCommonFactory.create(makeAppConfig(appCode));
-		boolean cas = GeoGebraConstants.CAS_APPCODE.equals(appCode);
-		app.getKernel().setSymbolicMode(cas
-				? SymbolicMode.SYMBOLIC_AV : SymbolicMode.NONE);
+		mockCASGiac = new MockCASGiac(app);
 		algebraProcessor = app.getKernel().getAlgebraProcessor();
+		kernel = app.getKernel();
 		app.getSettingsUpdater().resetSettingsOnAppStart();
-		if (cas) {
-			giac = new MockCASGiac((CASparser) app.getKernel().getGeoGebraCAS().getCASparser());
-			app.setCASFactory(new CASFactory() {
-				@Override
-				public CASGenericInterface newGiac(CASparser parser, Kernel kernel) {
-					return giac;
-				}
-			});
-		} else {
-			app.setCASFactory(new CASFactoryDummy());
-		}
 	}
 
 	private AppConfig makeAppConfig(String appCode) {
