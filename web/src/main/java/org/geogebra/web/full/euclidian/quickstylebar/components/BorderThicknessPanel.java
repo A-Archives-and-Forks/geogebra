@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.euclidian.event.PointerEventType;
+import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.web.full.javax.swing.LineThicknessCheckMarkItem;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
@@ -12,14 +14,17 @@ import org.gwtproject.user.client.ui.FlowPanel;
 
 public class BorderThicknessPanel extends FlowPanel {
 	private final RangePropertyCollection<?> property;
+	private final Localization loc;
 	private List<LineThicknessCheckMarkItem> checkMarkItems;
 
 	/**
 	 * UI presenting cell border thickness
 	 * @param property - cell border thickness property
+	 * @param loc - localization
 	 */
-	public BorderThicknessPanel(RangePropertyCollection<?> property) {
+	public BorderThicknessPanel(RangePropertyCollection<?> property, Localization loc) {
 		this.property = property;
+		this.loc = loc;
 		buildGui();
 	}
 
@@ -27,17 +32,36 @@ public class BorderThicknessPanel extends FlowPanel {
 		add(BaseWidgetFactory.INSTANCE.newDivider(false));
 		checkMarkItems = new ArrayList<>();
 
+		if (property.getFirstProperty() instanceof BorderThicknessProperty) {
+			addNoBorderItem();
+		}
 		addThicknessCheckMarkItem(property, "thin", 1);
 		addThicknessCheckMarkItem(property, "thick", 3);
 	}
 
 	private void addThicknessCheckMarkItem(RangePropertyCollection<?> property,
 			String style, int value) {
-		LineThicknessCheckMarkItem checkMarkItem = new LineThicknessCheckMarkItem(style, value);
+		LineThicknessCheckMarkItem checkMarkItem = new LineThicknessCheckMarkItem( style, value);
 		add(checkMarkItem);
 		checkMarkItem.setSelected(property.getValue() == value);
 		checkMarkItems.add(checkMarkItem);
 
+		addClickHandler(value, checkMarkItem, property);
+	}
+
+	private void addNoBorderItem() {
+		addStyleName("withMargin");
+
+		LineThicknessCheckMarkItem noBorder = new LineThicknessCheckMarkItem(loc
+				.getMenu("stylebar.NoBorder"), "textItem", 0);
+		add(noBorder);
+		checkMarkItems.add(noBorder);
+
+		addClickHandler(0, noBorder, property);
+	}
+
+	private void addClickHandler( int value, LineThicknessCheckMarkItem checkMarkItem,
+			RangePropertyCollection<?> property) {
 		ClickStartHandler.init(checkMarkItem,
 				new ClickStartHandler(true, true) {
 					@Override

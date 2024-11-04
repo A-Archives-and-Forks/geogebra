@@ -141,11 +141,8 @@ public class IconButtonWithProperty extends IconButton {
 				lineThicknessSlider = widgetAdapter.getSliderWidget(
 						(RangePropertyCollection<?>) property, geo);
 				parent.add(lineThicknessSlider);
-			} else if (firstProperty instanceof CellBorderThicknessProperty) {
-				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
-						(RangePropertyCollection<?>) property);
-				parent.add(borderThickness);
-			} else if (firstProperty instanceof BorderThicknessProperty) {
+			} else if (firstProperty instanceof CellBorderThicknessProperty
+					|| firstProperty instanceof BorderThicknessProperty) {
 				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
 						(RangePropertyCollection<?>) property);
 				parent.add(borderThickness);

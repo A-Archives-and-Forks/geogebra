@@ -19,7 +19,7 @@ public class BorderThicknessProperty extends AbstractRangeProperty<Integer> {
 	 */
 	public BorderThicknessProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "Thickness", null, 3, 2);
+		super(localization, "Thickness", 0, 3, 1);
 		delegate = new TextMindmapDelegate(element);
 	}
 

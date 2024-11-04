@@ -289,46 +289,6 @@
 			.buttonList {
 				padding: 0 8px;
 			}
-
-			.divider {
-				height: 1px;
-				margin: 8px;
-			}
-
-			.lineThicknessItem {
-				display: flex;
-				height: 36px;
-				padding: 0px 16px;
-
-				&:hover {
-					background-color: neutral(200);
-					cursor: pointer;
-				}
-
-				.checkImg {
-					opacity: 0;
-					margin: 6px 16px 6px 0px;
-
-					&.selected {
-						opacity: 0.54;
-					}
-				}
-
-				.linePreview {
-				 	width: 100%;
-				 	background-color: neutral(900);
-
-				 	&.thin {
-						 height: 1px;
-						 margin: 18px 0px;
-					}
-
-					&.thick {
-						height: 3px;
-						margin: 17px 0px;
-					}
-				}
-			}
 		}
 
 		&.colorStyle {
@@ -360,6 +320,50 @@
     			line-height: 24px;
     			cursor: pointer;
     		}
+		}
+
+		.divider {
+			height: 1px;
+			margin: 8px;
+		}
+
+		.lineThicknessItem {
+			display: flex;
+			height: 36px;
+			padding: 0px 16px;
+
+			&.textItem .gwt-Label {
+				line-height: 24px;
+			}
+
+    		&:hover {
+    			background-color: neutral(200);
+    			cursor: pointer;
+    		}
+
+    		.checkImg {
+    			opacity: 0;
+    			margin: 6px 16px 6px 0px;
+
+    			&.selected {
+    				opacity: 0.54;
+    			}
+			}
+
+    		.linePreview {
+    			width: 100%;
+    			background-color: neutral(900);
+
+    			&.thin {
+					height: 1px;
+					margin: 18px 0px;
+				}
+
+    			&.thick {
+    				height: 3px;
+    				margin: 17px 0px;
+    			}
+			}
 		}
 	}
 }
