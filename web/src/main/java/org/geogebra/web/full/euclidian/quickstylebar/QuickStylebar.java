@@ -99,6 +99,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addPropertyPopupButton(activeGeoList.get(0), "cellBorderStyle", true,
 				cellBorderProperty.getProperties());
 
+		PropertiesArray objectBorderProperty = GeoElementPropertiesFactory
+				.createObjectBorderProperties(getApp().getLocalization(), activeGeoList);
+		addColorPropertyButton(activeGeoList.get(0), objectBorderProperty.getProperties());
+
 		addDivider();
 
 		Property fontColorProperty = GeoElementPropertiesFactory.createNotesFontColorProperty(

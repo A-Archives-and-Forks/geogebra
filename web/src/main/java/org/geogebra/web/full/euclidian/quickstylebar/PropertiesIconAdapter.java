@@ -9,6 +9,7 @@ import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
+import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.ItalicProperty;
 import org.geogebra.common.properties.impl.objects.NotesColorProperty;
@@ -143,6 +144,8 @@ public class PropertiesIconAdapter {
 				return MaterialDesignResources.INSTANCE.color_black();
 			} else if (firstProperty instanceof NotesFontColorProperty) {
 				return MaterialDesignResources.INSTANCE.text_color();
+			} else if (firstProperty instanceof BorderColorProperty) {
+				return MaterialDesignResources.INSTANCE.color_border();
 			}
 		}
 
