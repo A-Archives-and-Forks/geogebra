@@ -111,9 +111,9 @@ public class PropertiesIconAdapter {
 		case ICON_POINT_STYLE_EMPTY_DIAMOND:
 			return res.point_diamond_empty();
 		case ICON_POINT_STYLE_CROSS:
-			return res.point_cross();
-		case ICON_POINT_STYLE_PLUS:
 			return res.point_cross_diag();
+		case ICON_POINT_STYLE_PLUS:
+			return res.point_cross();
 		case ICON_POINT_STYLE_NO_OUTLINE:
 			return res.point_no_outline();
 		case ICON_POINT_STYLE_TRIANGLE_NORTH:
