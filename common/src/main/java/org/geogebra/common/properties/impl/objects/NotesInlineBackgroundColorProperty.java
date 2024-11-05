@@ -36,4 +36,9 @@ public class NotesInlineBackgroundColorProperty extends ElementColorProperty
 	public void doSetValue(GColor value) {
 		EuclidianStyleBarStatic.applyBgColor(List.of(element), value, 1);
 	}
+
+	@Override
+	public GColor getValue() {
+		return element.getBackgroundColor();
+	}
 }

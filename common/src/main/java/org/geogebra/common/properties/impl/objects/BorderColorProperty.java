@@ -31,10 +31,16 @@ public class BorderColorProperty extends ElementColorProperty {
 
 	@Override
 	public void doSetValue(GColor color) {
-		GeoInline text = (GeoInline) element;
-		if (!text.getBorderColor().equals(color)) {
-			text.setBorderColor(color);
+		GeoInline geoInline = (GeoInline) element;
+		if (!geoInline.getBorderColor().equals(color)) {
+			geoInline.setBorderColor(color);
 			element.updateVisualStyle(GProperty.LINE_STYLE);
 		}
+	}
+
+	@Override
+	public GColor getValue() {
+		GeoInline geoInline = (GeoInline) element;
+		return geoInline.getBorderColor();
 	}
 }

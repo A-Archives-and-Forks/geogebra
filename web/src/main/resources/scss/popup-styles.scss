@@ -279,6 +279,10 @@
 			margin-top: 16px;
 		}
 
+		.colorPalette.withMargin {
+			margin-bottom: 16px;
+		}
+
 		&.segmentStyle {
 			max-width: 168px;
 		}
@@ -333,7 +337,7 @@
 			padding: 0px 16px;
 
 			&.textItem .gwt-Label {
-				line-height: 24px;
+				line-height: 36px;
 			}
 
     		&:hover {

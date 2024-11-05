@@ -9,6 +9,7 @@ import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
@@ -119,19 +120,13 @@ public class IconButtonWithProperty extends IconButton {
 					popupHandler.fireActionPerformed(colorProperty, color);
 				}
 			});
-			colorPanel.updateColorSelection(geo.getObjectColor());
-			parent.add(colorPanel);
-			if (colorProperty.getFirstProperty() instanceof NotesInlineBackgroundColorProperty) {
-				StandardButton noColorButton = new StandardButton(MaterialDesignResources.INSTANCE
-						.no_color(), appW.getLocalization().getMenu("noColor"), 24);
-				noColorButton.addStyleName("noColBtn");
-				noColorButton.addFastClickHandler(source -> {
-					if (popupHandler != null) {
-						popupHandler.fireActionPerformed(colorProperty, null);
-					}
-				});
-				parent.add(noColorButton);
+			if (colorProperty.getFirstProperty() instanceof BorderColorProperty) {
+				colorPanel.addStyleName("withMargin");
 			}
+			colorPanel.updateColorSelection(colorProperty.getFirstProperty().getValue());
+			parent.add(colorPanel);
+
+			addNoColorButton(colorProperty, popupHandler, parent);
 		}
 
 		if (property instanceof RangePropertyCollection<?>) {
@@ -152,6 +147,21 @@ public class IconButtonWithProperty extends IconButton {
 						(RangePropertyCollection<?>) property, geo);
 				parent.add(colorOpacitySlider);
 			}
+		}
+	}
+
+	private void addNoColorButton(ColorPropertyCollection<?> colorProperty,
+			PopupColorHandler popupHandler, FlowPanel parent) {
+		if (colorProperty.getFirstProperty() instanceof NotesInlineBackgroundColorProperty) {
+			StandardButton noColorButton = new StandardButton(MaterialDesignResources.INSTANCE
+					.no_color(), appW.getLocalization().getMenu("noColor"), 24);
+			noColorButton.addStyleName("noColBtn");
+			noColorButton.addFastClickHandler(source -> {
+				if (popupHandler != null) {
+					popupHandler.fireActionPerformed(colorProperty, null);
+				}
+			});
+			parent.add(noColorButton);
 		}
 	}
 

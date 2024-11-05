@@ -50,11 +50,10 @@ public class BorderThicknessPanel extends FlowPanel {
 	}
 
 	private void addNoBorderItem() {
-		addStyleName("withMargin");
-
 		LineThicknessCheckMarkItem noBorder = new LineThicknessCheckMarkItem(loc
 				.getMenu("stylebar.NoBorder"), "textItem", 0);
 		add(noBorder);
+		noBorder.setSelected(property.getValue() == 0);
 		checkMarkItems.add(noBorder);
 
 		addClickHandler(0, noBorder, property);
