@@ -43,6 +43,7 @@ import org.geogebra.common.properties.impl.objects.NotesOpacityColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
+import org.geogebra.common.properties.impl.objects.PointStyleExtendedProperty;
 import org.geogebra.common.properties.impl.objects.PointStyleProperty;
 import org.geogebra.common.properties.impl.objects.SegmentEndProperty;
 import org.geogebra.common.properties.impl.objects.SegmentStartProperty;
@@ -104,6 +105,20 @@ public class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		List<Property> properties = new ArrayList<>();
 		addPropertyIfNotNull(properties, createPointStyleProperty(localization, elements));
+		addPropertyIfNotNull(properties, createPointSizeProperty(localization, elements));
+		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
+	 * Creates extended point style properties for a list of GeoElements.
+	 * @param localization localization
+	 * @param elements input elements
+	 * @return the list of properties for the GeoElement(s)
+	 */
+	public static PropertiesArray createPointStyleExtendedProperties(
+			Localization localization, List<GeoElement> elements) {
+		List<Property> properties = new ArrayList<>();
+		addPropertyIfNotNull(properties, createPointStyleExtendedProperty(localization, elements));
 		addPropertyIfNotNull(properties, createPointSizeProperty(localization, elements));
 		return createPropertiesArray(localization, properties, elements);
 	}
@@ -192,7 +207,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedProperty createCellBorderStyleProperty(
+	public static IconsEnumeratedProperty<?> createCellBorderStyleProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<CellBorderProperty> cellBorderProperties = new ArrayList<>();
@@ -391,7 +406,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedProperty createPointStyleProperty(Localization localization,
+	public static IconsEnumeratedProperty<?> createPointStyleProperty(Localization localization,
 			List<GeoElement> elements) {
 		try {
 			List<PointStyleProperty> pointStyleProperties = new ArrayList<>();
@@ -420,6 +435,27 @@ public class GeoElementPropertiesFactory {
 			}
 			return new RangePropertyCollection<>(
 					pointSizeProperties.toArray(new PointSizeProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an IconsEnumeratedProperty controlling the extended point style or null if
+	 * not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static IconsEnumeratedProperty<?> createPointStyleExtendedProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<PointStyleExtendedProperty> pointStyleProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				pointStyleProperties.add(new PointStyleExtendedProperty(localization, element));
+			}
+			return new IconsEnumeratedPropertyCollection<>(
+					pointStyleProperties.toArray(new PointStyleExtendedProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
@@ -472,7 +508,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedProperty createLineStyleProperty(
+	public static IconsEnumeratedProperty<?> createLineStyleProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<LineStyleProperty> lineStyleProperties = new ArrayList<>();
@@ -492,7 +528,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedPropertyCollection createFillingStyleProperty(
+	public static IconsEnumeratedPropertyCollection<?, ?> createFillingStyleProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<FillingStyleProperty> fillingStyleProperties = new ArrayList<>();
@@ -513,7 +549,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedPropertyCollection createHorizontalAlignmentProperty(
+	public static IconsEnumeratedPropertyCollection<?, ?> createHorizontalAlignmentProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<HorizontalAlignmentProperty> horizontalAlignmentProperties = new ArrayList<>();
@@ -535,7 +571,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedPropertyCollection createVerticalAlignmentProperty(
+	public static IconsEnumeratedPropertyCollection<?, ?> createVerticalAlignmentProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<VerticalAlignmentProperty> verticalAlignmentProperties = new ArrayList<>();
@@ -557,7 +593,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedPropertyCollection createSegmentStartProperty(
+	public static IconsEnumeratedPropertyCollection<?, ?> createSegmentStartProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<SegmentStartProperty> segmentStartProperties = new ArrayList<>();
@@ -599,7 +635,7 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static IconsEnumeratedPropertyCollection createSegmentEndProperty(
+	public static IconsEnumeratedPropertyCollection<?, ?> createSegmentEndProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<SegmentEndProperty> segmentEndProperties = new ArrayList<>();
