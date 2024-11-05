@@ -41,7 +41,7 @@ public class BorderThicknessPanel extends FlowPanel {
 
 	private void addThicknessCheckMarkItem(RangePropertyCollection<?> property,
 			String style, int value) {
-		LineThicknessCheckMarkItem checkMarkItem = new LineThicknessCheckMarkItem( style, value);
+		LineThicknessCheckMarkItem checkMarkItem = new LineThicknessCheckMarkItem(style, value);
 		add(checkMarkItem);
 		checkMarkItem.setSelected(property.getValue() == value);
 		checkMarkItems.add(checkMarkItem);
@@ -59,7 +59,7 @@ public class BorderThicknessPanel extends FlowPanel {
 		addClickHandler(0, noBorder, property);
 	}
 
-	private void addClickHandler( int value, LineThicknessCheckMarkItem checkMarkItem,
+	private void addClickHandler(int value, LineThicknessCheckMarkItem checkMarkItem,
 			RangePropertyCollection<?> property) {
 		ClickStartHandler.init(checkMarkItem,
 				new ClickStartHandler(true, true) {
