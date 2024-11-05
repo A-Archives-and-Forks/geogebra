@@ -3,7 +3,7 @@
 @use 'z-index';
 
 .GeoGebraFrame {
-	
+
 	// command suggestion popup in AV
 	.gwt-SuggestBoxPopup.ggb-AlgebraViewSuggestionPopup.matDesign {
 		border-radius: 2px;
@@ -22,7 +22,7 @@
 			}
 		}
 	}
-	
+
 	// help popup with command list
 	.gwt-PopupPanel.helpPopupAV.GeoGebraPopup.matDesign,
 		.gwt-PopupPanel.GeoGebraPopup.matDesign.helpPopupAVBottom {
@@ -77,7 +77,7 @@
 		font-size: 90%; // 14px
 		box-shadow: 0 0 2px 1px colors.$popup-shadow;
 		white-space: nowrap;
-		
+
 		.gwt-Label {
 			text-align: center;
 		}
@@ -156,18 +156,18 @@
 		padding: 8px 0px;
 
 		.thicknessPanel {
-            padding-bottom: 8px;
-            border-bottom: 1px solid colors.$tool-border;
+			padding-bottom: 8px;
+			border-bottom: 1px solid colors.$tool-border;
 
-            .textItem {
-            	.gwt-Label {
-            		line-height: 24px;
-            	}
-            }
+			.textItem {
+				.gwt-Label {
+					line-height: 24px;
+				}
+			}
 
-            .linePreview {
-            	width: 112px;
-            }
+			.linePreview {
+				width: 112px;
+			}
 		}
 
 		.matSelectionTable {
@@ -312,22 +312,22 @@
 			margin: 16px 0 0 0;
 			width: 100%;
 
-    		&:hover {
-    			background-color: neutral(200);
-    		}
+			&:hover {
+				background-color: neutral(200);
+			}
 
-    		img {
-    			opacity: 0.54;
-    			margin: 8px 0;
-    		}
+			img {
+				opacity: 0.54;
+				margin: 8px 0;
+			}
 
-    		.gwt-Label {
-    			font-size: 16px;
-    			margin: 8px 0px 8px 12px;
-    			height: 24px;
-    			line-height: 24px;
-    			cursor: pointer;
-    		}
+			.gwt-Label {
+				font-size: 16px;
+				margin: 8px 0px 8px 12px;
+				height: 24px;
+				line-height: 24px;
+				cursor: pointer;
+			}
 		}
 
 		.divider {
@@ -344,33 +344,33 @@
 				line-height: 36px;
 			}
 
-    		&:hover {
-    			background-color: neutral(200);
-    			cursor: pointer;
-    		}
-
-    		.checkImg {
-    			opacity: 0;
-    			margin: 6px 16px 6px 0px;
-
-    			&.selected {
-    				opacity: 0.54;
-    			}
+			&:hover {
+				background-color: neutral(200);
+				cursor: pointer;
 			}
 
-    		.linePreview {
-    			width: 100%;
-    			background-color: neutral(900);
+			.checkImg {
+				opacity: 0;
+				margin: 6px 16px 6px 0px;
 
-    			&.thin {
+				&.selected {
+					opacity: 0.54;
+				}
+			}
+
+			.linePreview {
+				width: 100%;
+				background-color: neutral(900);
+
+				&.thin {
 					height: 1px;
 					margin: 18px 0px;
 				}
 
-    			&.thick {
-    				height: 3px;
-    				margin: 17px 0px;
-    			}
+				&.thick {
+					height: 3px;
+					margin: 17px 0px;
+				}
 			}
 		}
 	}

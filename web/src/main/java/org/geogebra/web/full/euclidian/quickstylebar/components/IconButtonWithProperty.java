@@ -124,7 +124,17 @@ public class IconButtonWithProperty extends IconButton {
 			colorPanel.updateColorSelection(colorProperty.getFirstProperty().getValue());
 			parent.add(colorPanel);
 
-			addNoColorButton(colorProperty, popupHandler, parent);
+			if (colorProperty.getFirstProperty() instanceof NotesInlineBackgroundColorProperty) {
+				StandardButton noColorButton = new StandardButton(MaterialDesignResources.INSTANCE
+						.no_color(), appW.getLocalization().getMenu("noColor"), 24);
+				noColorButton.addStyleName("noColBtn");
+				noColorButton.addFastClickHandler(source -> {
+					if (popupHandler != null) {
+						popupHandler.fireActionPerformed(colorProperty, null);
+					}
+				});
+				parent.add(noColorButton);
+			}
 		}
 
 		if (property instanceof RangePropertyCollection<?>) {
@@ -144,21 +154,6 @@ public class IconButtonWithProperty extends IconButton {
 						(RangePropertyCollection<?>) property, geo);
 				parent.add(sliderWithProperty);
 			}
-		}
-	}
-
-	private void addNoColorButton(ColorPropertyCollection<?> colorProperty,
-			PopupColorHandler popupHandler, FlowPanel parent) {
-		if (colorProperty.getFirstProperty() instanceof NotesInlineBackgroundColorProperty) {
-			StandardButton noColorButton = new StandardButton(MaterialDesignResources.INSTANCE
-					.no_color(), appW.getLocalization().getMenu("noColor"), 24);
-			noColorButton.addStyleName("noColBtn");
-			noColorButton.addFastClickHandler(source -> {
-				if (popupHandler != null) {
-					popupHandler.fireActionPerformed(colorProperty, null);
-				}
-			});
-			parent.add(noColorButton);
 		}
 	}
 
