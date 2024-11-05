@@ -12,9 +12,7 @@ import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
-import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
-import org.geogebra.common.properties.impl.objects.NotesOpacityColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
@@ -141,11 +139,10 @@ public class IconButtonWithProperty extends IconButton {
 				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
 						(RangePropertyCollection<?>) property);
 				parent.add(borderThickness);
-			} else if (firstProperty instanceof NotesOpacityColorProperty
-					|| firstProperty instanceof ImageOpacityProperty) {
-				SliderWithProperty colorOpacitySlider = widgetAdapter.getSliderWidget(
+			} else {
+				SliderWithProperty sliderWithProperty = widgetAdapter.getSliderWidget(
 						(RangePropertyCollection<?>) property, geo);
-				parent.add(colorOpacitySlider);
+				parent.add(sliderWithProperty);
 			}
 		}
 	}

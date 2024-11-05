@@ -77,6 +77,11 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				.createInlineBackgroundColorProperty(getApp().getLocalization(), activeGeoList);
 		addColorPropertyButton(activeGeoList.get(0), inlineBackgroundColorProperty);
 
+		PropertiesArray pointStyleProperty = GeoElementPropertiesFactory
+				.createPointStyleExtendedProperties(getApp().getLocalization(), activeGeoList);
+		addPropertyPopupButton(activeGeoList.get(0), "pointStyle", true,
+				pointStyleProperty.getProperties());
+
 		Property fillingStyleProperty = GeoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), null, false, fillingStyleProperty);
@@ -346,6 +351,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			getElement().getStyle().setTop(position.y, Unit.PX);
 		} else {
 			setVisible(false);
+			getApp().closePopups();
 		}
 	}
 

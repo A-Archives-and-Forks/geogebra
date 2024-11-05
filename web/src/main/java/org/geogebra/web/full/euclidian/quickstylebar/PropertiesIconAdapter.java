@@ -103,6 +103,29 @@ public class PropertiesIconAdapter {
 			return res.border_outer();
 		case ICON_CELL_BORDER_NONE:
 			return res.border_clear();
+		case ICON_POINT_STYLE_DOT:
+			return res.point_full();
+		case ICON_POINT_STYLE_CIRCLE:
+			return res.point_empty();
+		case ICON_POINT_STYLE_FILLED_DIAMOND:
+			return res.point_diamond();
+		case ICON_POINT_STYLE_EMPTY_DIAMOND:
+			return res.point_diamond_empty();
+		case ICON_POINT_STYLE_CROSS:
+			return res.point_cross_diag();
+		case ICON_POINT_STYLE_PLUS:
+			return res.point_cross();
+		case ICON_POINT_STYLE_NO_OUTLINE:
+			return res.point_no_outline();
+		case ICON_POINT_STYLE_TRIANGLE_NORTH:
+			return res.point_up();
+		case ICON_POINT_STYLE_TRIANGLE_SOUTH:
+			return res.point_down();
+		case ICON_POINT_STYLE_TRIANGLE_WEST:
+			return res.point_left();
+		case ICON_POINT_STYLE_TRIANGLE_EAST:
+			return res.point_right();
+
 		}
 		return res.stylebar_empty();
 	}

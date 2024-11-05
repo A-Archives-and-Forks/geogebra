@@ -3,7 +3,7 @@ package org.geogebra.web.full.euclidian.quickstylebar.components;
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
-import org.geogebra.common.properties.impl.objects.NotesOpacityColorProperty;
+import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
 import org.geogebra.web.full.gui.util.LineStylePreview;
@@ -45,8 +45,7 @@ public class SliderWithProperty extends FlowPanel {
 
 	private void styleComponent() {
 		addStyleName("sliderComponent");
-		if (getFirstProperty() instanceof ThicknessProperty
-			|| getFirstProperty() instanceof NotesOpacityColorProperty) {
+		if (!(getFirstProperty() instanceof ImageOpacityProperty)) {
 			addStyleName("withMargin");
 		}
 	}
