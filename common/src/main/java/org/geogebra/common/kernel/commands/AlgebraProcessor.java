@@ -971,7 +971,7 @@ public class AlgebraProcessor {
 			final AsyncOperation<GeoElementND[]> callback0,
 			final EvalInfo info) {
 		if (!isExpressionAllowed(ve, inputExpressionFilters)) {
-			return null;
+			throw new MyError(loc, Errors.CASGeneralErrorMessage);
 		}
 		// collect undefined variables
 		CollectUndefinedVariables collecter = new Traversing.CollectUndefinedVariables(

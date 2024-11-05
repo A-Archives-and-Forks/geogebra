@@ -8,7 +8,7 @@ import javax.annotation.CheckForNull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.gui.toolcategorization.AppType;
-import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.geos.properties.FillType;
@@ -65,7 +65,7 @@ public class AppConfigUnrestrictedGraphing extends AppConfigGraphing {
 	}
 
 	@Override
-	public OperationArgumentFilter createOperationArgumentFilter() {
+	public ExpressionFilter createOperationArgumentFilter() {
 		return null;
 	}
 

@@ -1,6 +1,9 @@
 package org.geogebra.common.kernel.commands;
 
 import static org.geogebra.test.TestStringUtil.unicode;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -565,5 +568,24 @@ public class ParserTest {
 
 		AlgebraTestHelper.shouldPass("$a1=2", app);
 		AlgebraTestHelper.shouldPass("$$a1=2", app);
+	}
+
+
+	@Test
+	public void testIsSimpleNumber() throws ParseException {
+		ExpressionNode minusOne = parseExpression("-1").wrap();
+		assertThat(minusOne, notNullValue());
+		assertThat(minusOne.isSimpleNumber(), is(true));
+
+		ExpressionNode recurringDecimal = parseExpression("1.3" + Unicode.OVERLINE).wrap();
+		assertThat(recurringDecimal, notNullValue());
+		assertThat(recurringDecimal.isSimpleNumber(), is(false));
+	}
+
+	@Test
+	public void testCalculationWithMinusOneIsNotSimpleNumber() throws ParseException {
+		ExpressionNode minusOneCalc = parseExpression("(-1)(3)").wrap();
+		assertThat(minusOneCalc, notNullValue());
+		assertThat(minusOneCalc.isSimpleNumber(), is(false));
 	}
 }

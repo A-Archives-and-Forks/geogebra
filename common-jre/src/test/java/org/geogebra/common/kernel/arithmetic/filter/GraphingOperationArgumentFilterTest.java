@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 
-	private final OperationArgumentFilter filter = new GraphingOperationArgumentFilter();
+	private final ExpressionFilter filter = GraphingOperationArgumentFilter.INSTANCE;
 
 	@Test
 	public void testFiltersCrossProduct() {
@@ -60,7 +60,7 @@ public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 	private void assertAllowed(Operation op, ExpressionValue left, ExpressionValue right,
 			Matcher<Boolean> check) {
 		assertThat(op + " should be allowed for " + left + ", " + right,
-				filter.isAllowed(op, left, right), check);
+				filter.isAllowed(new ExpressionNode(getKernel(), left, op, right)), check);
 	}
 
 	private ExpressionValue getVector() {

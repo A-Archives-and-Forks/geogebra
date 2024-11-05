@@ -53,6 +53,7 @@ import org.geogebra.common.io.layout.PerspectiveDecoder;
 import org.geogebra.common.javax.swing.SwingConstants;
 import org.geogebra.common.kernel.ModeSetter;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.commands.CommandNotLoadedError;
 import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
@@ -2441,6 +2442,10 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 		CommandFilter commandFilter = getConfig().getCommandFilter();
 		if (commandFilter != null) {
 			getKernel().getAlgebraProcessor().getCmdDispatcher().removeCommandFilter(commandFilter);
+		}
+		ExpressionFilter expressionFilter = getConfig().createOperationArgumentFilter();
+		if (expressionFilter != null) {
+			getKernel().getAlgebraProcessor().removeInputExpressionFilter(expressionFilter);
 		}
 		storeCurrentUndoHistory();
 		storeCurrentMaterial();

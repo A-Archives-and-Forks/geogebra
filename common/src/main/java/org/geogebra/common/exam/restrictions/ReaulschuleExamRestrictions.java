@@ -10,6 +10,10 @@ import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.settings.Settings;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
+import org.geogebra.common.kernel.arithmetic.filter.GraphingOperationArgumentFilter;
+import org.geogebra.common.kernel.arithmetic.filter.OperationExpressionFilter;
+import org.geogebra.common.plugin.Operation;
 
 final class ReaulschuleExamRestrictions extends ExamRestrictions {
 	ReaulschuleExamRestrictions() {
@@ -18,11 +22,11 @@ final class ReaulschuleExamRestrictions extends ExamRestrictions {
 						SuiteSubApp.PROBABILITY, SuiteSubApp.SCIENTIFIC),
 				SuiteSubApp.GRAPHING,
 				null,
+				getInputExpressionFilter(),
 				null,
 				null,
 				null,
-				null,
-				null,
+				getFilteredOperations(),
 				null,
 				null,
 				null);
@@ -45,5 +49,14 @@ final class ReaulschuleExamRestrictions extends ExamRestrictions {
 		euclidian.setAxisNumberingDistance(0, 0.5);
 		euclidian.setAxisNumberingDistance(1, 0.5);
 		euclidian.endBatch();
+	}
+
+	private static Set<ExpressionFilter> getInputExpressionFilter() {
+		return Set.of(new OperationExpressionFilter(getFilteredOperations()),
+				GraphingOperationArgumentFilter.INSTANCE);
+	}
+
+	private static Set<Operation> getFilteredOperations() {
+		return Set.of(Operation.ALT,Operation.ARG);
 	}
 }

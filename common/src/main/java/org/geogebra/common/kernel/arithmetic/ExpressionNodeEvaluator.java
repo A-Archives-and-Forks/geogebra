@@ -35,7 +35,6 @@ import com.google.j2objc.annotations.Weak;
 public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 
 	private Localization loc;
-	private OperationArgumentFilter filter;
 
 	/**
 	 * Kernel used to create the results
@@ -64,14 +63,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 								   OperationArgumentFilter filter) {
 		this.loc = loc;
 		this.kernel = kernel;
-		this.filter = filter;
-	}
-
-	/**
-	 * @param operationArgumentFilter filter for unacceptable operations
-	 */
-	public void setOperationArgumentFilter(OperationArgumentFilter operationArgumentFilter) {
-		this.filter = operationArgumentFilter;
 	}
 
 	/**
@@ -112,9 +103,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 		rt = right.evaluate(tpl); // right tree
 
 		// handle list operations first
-		if (filter != null && !filter.isAllowed(operation, lt, rt)) {
-			throw illegalBinary(lt, rt, Errors.IllegalArgument, operation.name());
-		}
 		ExpressionValue special = handleSpecial(lt, rt, left, right, operation,
 				tpl);
 		if (special != null) {
