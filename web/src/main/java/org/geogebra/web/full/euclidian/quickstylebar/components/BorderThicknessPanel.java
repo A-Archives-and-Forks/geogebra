@@ -68,8 +68,8 @@ public class BorderThicknessPanel extends FlowPanel {
 					public void onClickStart(int x, int y, PointerEventType type) {
 						checkMarkItems.forEach(item -> item.setSelected(false));
 						checkMarkItem.setSelected(true);
-						UpdateStyleActionStore store = new UpdateStyleActionStore(
-								appW.getSelectionManager().getSelectedGeos(), appW.getUndoManager());
+						UpdateStyleActionStore store = new UpdateStyleActionStore(appW
+								.getSelectionManager().getSelectedGeos(), appW.getUndoManager());
 						property.setValue(value);
 						if (store.needUndo()) {
 							store.storeUndo();
