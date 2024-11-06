@@ -4,27 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.euclidian.event.PointerEventType;
-import org.geogebra.common.main.Localization;
+import org.geogebra.common.main.undo.UpdateStyleActionStore;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.web.full.javax.swing.LineThicknessCheckMarkItem;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
+import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.FlowPanel;
 
 public class BorderThicknessPanel extends FlowPanel {
 	private final RangePropertyCollection<?> property;
-	private final Localization loc;
+	private final AppW appW;
 	private List<LineThicknessCheckMarkItem> checkMarkItems;
 
 	/**
 	 * UI presenting cell border thickness
 	 * @param property - cell border thickness property
-	 * @param loc - localization
+	 * @param appW - application
 	 */
-	public BorderThicknessPanel(RangePropertyCollection<?> property, Localization loc) {
+	public BorderThicknessPanel(RangePropertyCollection<?> property, AppW appW) {
 		this.property = property;
-		this.loc = loc;
+		this.appW = appW;
 		buildGui();
 	}
 
@@ -50,8 +51,8 @@ public class BorderThicknessPanel extends FlowPanel {
 	}
 
 	private void addNoBorderItem() {
-		LineThicknessCheckMarkItem noBorder = new LineThicknessCheckMarkItem(loc
-				.getMenu("stylebar.NoBorder"), "textItem", 0);
+		LineThicknessCheckMarkItem noBorder = new LineThicknessCheckMarkItem(
+				appW.getLocalization().getMenu("stylebar.NoBorder"), "textItem", 0);
 		add(noBorder);
 		noBorder.setSelected(property.getValue() == 0);
 		checkMarkItems.add(noBorder);
@@ -67,7 +68,13 @@ public class BorderThicknessPanel extends FlowPanel {
 					public void onClickStart(int x, int y, PointerEventType type) {
 						checkMarkItems.forEach(item -> item.setSelected(false));
 						checkMarkItem.setSelected(true);
+						UpdateStyleActionStore store = new UpdateStyleActionStore(
+								appW.getSelectionManager().getSelectedGeos(), appW.getUndoManager());
 						property.setValue(value);
+						if (store.needUndo()) {
+							store.storeUndo();
+						}
+						appW.closePopups();
 					}
 				});
 	}

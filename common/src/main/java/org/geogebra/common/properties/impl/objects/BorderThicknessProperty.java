@@ -26,10 +26,8 @@ public class BorderThicknessProperty extends AbstractRangeProperty<Integer> {
 	@Override
 	protected void setValueSafe(Integer value) {
 		GeoElement geo = delegate.getElement();
-		if (geo.getLineThickness() != value) {
-			geo.setLineThickness(value);
-			geo.updateVisualStyleRepaint(GProperty.LINE_STYLE);
-		}
+		geo.setLineThickness(value);
+		geo.updateVisualStyleRepaint(GProperty.COMBINED);
 	}
 
 	@Override
