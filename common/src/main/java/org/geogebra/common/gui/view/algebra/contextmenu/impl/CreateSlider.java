@@ -32,12 +32,15 @@ public class CreateSlider implements MenuAction<GeoElement>,
 
 	@Override
 	public boolean isAvailable(GeoElement element) {
+		// CAS numbers that are simple (not computations)
+		// for these the slider never exists (slider creation replaces them in construction)
 		if (element instanceof GeoSymbolic) {
 			GeoSymbolic symbolic = (GeoSymbolic) element;
 			return symbolic.getDefinition().isSimpleNumber();
 		}
+		// numbers that are not showing a slider yet and are simple (not computations)
 		return element instanceof GeoNumeric
-				&& !((GeoNumeric) element).isShowingExtendedAV()
+				&& !((GeoNumeric) element).isAVSliderOrCheckboxVisible()
 				&& element.isSimple();
 	}
 

@@ -37,6 +37,6 @@ public class CreateSliderTest extends BaseUnitTest {
 		createSlider.execute(number);
 		assertThat(number.getIntervalMin(), equalTo(-5.0));
 		assertThat(number.getIntervalMax(), equalTo(5.0));
-		assertThat(number.isShowingExtendedAV(), equalTo(true));
+		assertThat(number.isAVSliderOrCheckboxVisible(), equalTo(true));
 	}
 }

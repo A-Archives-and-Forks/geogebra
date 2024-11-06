@@ -26,9 +26,10 @@ public class RemoveSlider implements MenuAction<GeoElement>, AsyncOperation<GeoE
 
 	@Override
 	public boolean isAvailable(GeoElement element) {
+		// asymmetric with CreateSlider: no need for isSimple check, we have a slider already
 		if (element instanceof GeoNumeric) {
 			GeoNumeric numeric = (GeoNumeric) element;
-			return !numeric.isDependentConst() && numeric.isShowingExtendedAV();
+			return !numeric.isDependentConst() && numeric.isAVSliderOrCheckboxVisible();
 		}
 		return false;
 	}
@@ -36,12 +37,8 @@ public class RemoveSlider implements MenuAction<GeoElement>, AsyncOperation<GeoE
 	@Override
 	public void execute(GeoElement element) {
 		if (processor.getKernel().getSymbolicMode() == SymbolicMode.NONE) {
-			GeoNumeric numeric = (GeoNumeric) element;
-			numeric.setShowExtendedAV(false);
-			numeric.setEuclidianVisible(false);
-			numeric.setIntervalMin(null);
-			numeric.setIntervalMax(null);
-			numeric.notifyUpdate();
+			((GeoNumeric) element).removeSlider();
+			element.getKernel().storeUndoInfo();
 			return;
 		}
 		String newValue = element.toString(StringTemplate.defaultTemplate);

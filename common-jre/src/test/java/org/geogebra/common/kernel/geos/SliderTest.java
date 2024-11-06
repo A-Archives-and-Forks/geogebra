@@ -31,9 +31,9 @@ public class SliderTest extends BaseUnitTest {
 	@Test
 	public void setShowExtendedAV() {
 		GeoNumeric slider = add("a = 1", info);
-		slider.setShowExtendedAV(true);
+		slider.setAVSliderOrCheckboxVisible(true);
 		slider.initAlgebraSlider();
-		slider.setShowExtendedAV(false);
+		slider.setAVSliderOrCheckboxVisible(false);
 		assertThat(slider.showInEuclidianView(), is(true));
 	}
 
@@ -45,10 +45,10 @@ public class SliderTest extends BaseUnitTest {
 
 		GeoNumeric slider = add("a = 1", info);
 		app.storeUndoInfo();
-		slider.setShowExtendedAV(true);
+		slider.setAVSliderOrCheckboxVisible(true);
 		slider.setEuclidianVisible(true);
 		app.storeUndoInfo();
-		slider.setShowExtendedAV(false);
+		slider.setAVSliderOrCheckboxVisible(false);
 		app.storeUndoInfo();
 		slider.setEuclidianVisible(false);
 		app.storeUndoInfo();
@@ -62,10 +62,10 @@ public class SliderTest extends BaseUnitTest {
 		assertThat(slider.isEuclidianVisible(), is(true));
 
 		slider = undoRedo.getAfterUndo("a");
-		assertThat(slider.isShowingExtendedAV(), is(true));
+		assertThat(slider.isAVSliderOrCheckboxVisible(), is(true));
 
 		slider = undoRedo.getAfterRedo("a");
-		assertThat(slider.isShowingExtendedAV(), is(false));
+		assertThat(slider.isAVSliderOrCheckboxVisible(), is(false));
 
 		slider = undoRedo.getAfterRedo("a");
 		assertThat(slider.isEuclidianVisible(), is(false));

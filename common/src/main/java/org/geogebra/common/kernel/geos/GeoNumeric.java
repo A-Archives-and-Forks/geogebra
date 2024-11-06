@@ -147,7 +147,7 @@ public class GeoNumeric extends GeoElement
 	private Double origSliderY = null;
 	private ArrayList<EuclidianViewInterfaceSlim> evListeners = null;
 
-	private boolean showExtendedAV = false;
+	private boolean showAVSlider = false;
 	private static volatile Comparator<GeoNumberValue> comparator;
 	private BigDecimal exactValue;
 	private @CheckForNull GeoPointND startPoint;
@@ -901,7 +901,7 @@ public class GeoNumeric extends GeoElement
 		sb.append("\" horizontal=\"");
 		sb.append(sliderHorizontal);
 		sb.append("\" showAlgebra=\"");
-		sb.append(isShowingExtendedAV());
+		sb.append(isAVSliderOrCheckboxVisible());
 		sb.append("\"/>\n");
 		if (sliderBlobSize != DEFAULT_SLIDER_BLOB_SIZE) {
 			sb.append("\t<pointSize val=\"");
@@ -1777,13 +1777,13 @@ public class GeoNumeric extends GeoElement
 	}
 
 	@Override
-	public boolean isShowingExtendedAV() {
-		return showExtendedAV;
+	public boolean isAVSliderOrCheckboxVisible() {
+		return showAVSlider;
 	}
 
 	@Override
-	public void setShowExtendedAV(boolean showExtendedAV) {
-		this.showExtendedAV = showExtendedAV;
+	public void setAVSliderOrCheckboxVisible(boolean showSliderOrCheckbox) {
+		this.showAVSlider = showSliderOrCheckbox;
 	}
 
 	@Override
@@ -1882,7 +1882,7 @@ public class GeoNumeric extends GeoElement
 	 * Update min and max for slider in Algebra
 	 */
 	public void initAlgebraSlider() {
-		if (!showExtendedAV) {
+		if (!showAVSlider) {
 			return;
 		}
 		GeoPointND old = startPoint;
@@ -2143,8 +2143,20 @@ public class GeoNumeric extends GeoElement
 	 */
 	public void createSlider() {
 		isDrawable = true;
-		setShowExtendedAV(true);
+		setAVSliderOrCheckboxVisible(true);
 		initAlgebraSlider();
+		notifyUpdate();
+	}
+
+	/**
+	 * Removes the slider.
+	 */
+	public void removeSlider() {
+		isDrawable = false;
+		setAVSliderOrCheckboxVisible(false);
+		intervalMin = null;
+		intervalMax = null;
+		setEuclidianVisible(false);
 		notifyUpdate();
 	}
 

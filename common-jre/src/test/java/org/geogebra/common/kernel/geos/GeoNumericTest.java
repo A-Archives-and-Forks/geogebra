@@ -7,10 +7,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.gui.view.algebra.EvalInfoFactory;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionNodeConstants.StringType;
 import org.geogebra.common.kernel.arithmetic.RecurringDecimal;
+import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.main.settings.config.AppConfigCas;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.test.annotation.Issue;
@@ -202,5 +204,12 @@ public class GeoNumericTest extends BaseUnitTest {
 		GeoNumeric a = addAvInput("a=1E-30+1E-30");
 		assertThat(a.toValueString(scientificTemplate),
 				is("2.00 " + Unicode.CENTER_DOT + " 10" + StringUtil.numberToIndex(-30)));
+	}
+
+	@Test
+	public void testAutoCreatedSliderAlgebraVisibility() {
+		EvalInfo info = EvalInfoFactory.getEvalInfoForAV(getApp(), true);
+		assertThat(((GeoNumeric) add("a", info)).isAVSliderOrCheckboxVisible(), equalTo(true));
+		assertThat(((GeoNumeric) add("3", info)).isAVSliderOrCheckboxVisible(), equalTo(false));
 	}
 }
