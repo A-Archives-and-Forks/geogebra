@@ -10,6 +10,7 @@ import org.geogebra.common.contextmenu.ContextMenuFactory;
 import org.geogebra.common.kernel.geos.BaseSymbolicTest;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoNumeric;
+import org.geogebra.common.ownership.GlobalScope;
 import org.junit.Test;
 
 public class RemoveLabelActionTest extends BaseSymbolicTest {
@@ -19,11 +20,11 @@ public class RemoveLabelActionTest extends BaseSymbolicTest {
 		GeoElement integral = add("Integral(sin(x))");
 		GeoNumeric constant = (GeoNumeric) lookup("c_{1}");
 		constant.initAlgebraSlider();
-		List<AlgebraContextMenuItem> items = ContextMenuFactory
+		List<AlgebraContextMenuItem> items = GlobalScope.contextMenuFactory
 				.makeAlgebraContextMenu(constant, ap, app.getConfig().getAppCode());
 		assertFalse("Remove label should not be available for sliders in CAS",
 				items.contains(AlgebraContextMenuItem.RemoveLabel));
-		items = ContextMenuFactory
+		items = GlobalScope.contextMenuFactory
 				.makeAlgebraContextMenu(integral, ap, app.getConfig().getAppCode());
 		assertTrue("Remove label should be available for integral in CAS",
 				items.contains(AlgebraContextMenuItem.RemoveLabel));
