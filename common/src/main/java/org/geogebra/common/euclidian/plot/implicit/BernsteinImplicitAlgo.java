@@ -12,7 +12,6 @@ import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.implicit.LinkSegments;
-import org.geogebra.common.kernel.implicit.MarchingConfig;
 
 public class BernsteinImplicitAlgo implements PlotterAlgo {
 
@@ -87,8 +86,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 			BernsteinMarchingConfigProvider provider =
 					new BernsteinMarchingConfigProvider(currentCell);
 
-			MarchingConfig config = cell.getMarchingConfig();
-			if (isBoxSmallEnough(currentCell.boundingBox, config)) {
+			if (isBoxSmallEnough(currentCell.boundingBox)) {
 				addToOutput(currentCell, provider);
 			} else {
 				for (BernsteinPlotCell c : currentCell.split()) {
@@ -106,7 +104,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		cells.add(currentCell);
 	}
 
-	private boolean isBoxSmallEnough(BernsteinBoundingBox box, MarchingConfig config) {
+	private boolean isBoxSmallEnough(BernsteinBoundingBox box) {
 		double width = bounds.toScreenCoordXd(box.x2()) - bounds.toScreenCoordXd(box.x1());
 		double height = bounds.toScreenCoordYd(box.y1()) - bounds.toScreenCoordYd(box.y2());
 		int maxWidth = settings.minBoxWidthInPixels();

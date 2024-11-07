@@ -2,7 +2,7 @@ package org.geogebra.common.euclidian.plot.implicit;
 
 class BernsteinImplicitAlgoSettingsImpl
 		implements BernsteinImplicitAlgoSettings {
-	private int boxSize = 5;
+	private int boxSize = 10;
 
 	@Override
 	public int minBoxWidthInPixels() {

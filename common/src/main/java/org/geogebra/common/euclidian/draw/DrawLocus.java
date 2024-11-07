@@ -246,6 +246,10 @@ public class DrawLocus extends Drawable {
 
 	@Override
 	public void drawStroke(GGraphics2D g2) {
+		drawStrokedPath(g2, gp);
+	}
+
+	void drawStrokedPath(GGraphics2D g2, GeneralPathClippedForCurvePlotter gp) {
 		if (partialHitClip != null) {
 			g2.setClip(partialHitClip, true);
 			g2.draw(gp);
@@ -255,7 +259,7 @@ public class DrawLocus extends Drawable {
 		}
 	}
 
-	private void drawHighlighted(GGraphics2D g2) {
+	protected void drawHighlighted(GGraphics2D g2) {
 		g2.setPaint(geo.getSelColor());
 		g2.setStroke(selStroke);
 		drawStroke(g2);

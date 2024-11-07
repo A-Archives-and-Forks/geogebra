@@ -91,6 +91,20 @@ public class DrawImplicitCurve extends DrawLocus {
 	}
 
 	@Override
+	protected void drawHighlighted(GGraphics2D g2) {
+		if (bernsteinBasedPlotter) {
+			g2.setPaint(geo.getSelColor());
+			g2.setStroke(selStroke);
+
+			bernsteinPlotter.draw(g2);
+
+			drawStrokedPath(g2, gp);
+		} else {
+			super.drawHighlighted(g2);
+		}
+	}
+
+	@Override
 	public GArea getShape() {
 		return AwtFactory.getPrototype().newArea();
 	}
