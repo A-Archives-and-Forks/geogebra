@@ -23,7 +23,7 @@ public class BorderColorProperty extends ElementColorProperty {
 	 */
 	public BorderColorProperty(Localization localization,
 			GeoElement element) throws NotApplicablePropertyException {
-		super(localization, new TextMindmapDelegate(element));
+		super(localization, new TextMindmapDelegate(element), "stylebar.Borders");
 		this.element = element;
 		setValues(Arrays.stream(GeoColorValues.values()).map(ColorValues::getColor)
 				.collect(Collectors.toList()));
