@@ -16,6 +16,7 @@ import org.geogebra.common.gui.view.table.dialog.StatsBuilder;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.kernelND.GeoEvaluatable;
+import org.geogebra.common.main.DialogManager;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
@@ -174,6 +175,13 @@ public class ContextMenuTV {
 	}
 
 	private void edit() {
+		if (getColumnIdx() == 0) {
+			DialogManager dialogManager = getApp().getDialogManager();
+			if (dialogManager != null) {
+				dialogManager.openTableViewDialog(null);
+			}
+			return;
+		}
 		GuiManagerInterfaceW guiManager = getApp().getGuiManager();
 		if (guiManager != null) {
 			guiManager.startEditing(geo);
