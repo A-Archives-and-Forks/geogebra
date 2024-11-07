@@ -9,6 +9,8 @@ import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.objects.BorderColorProperty;
+import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
@@ -116,8 +118,12 @@ public class IconButtonWithProperty extends IconButton {
 					popupHandler.fireActionPerformed(colorProperty, color);
 				}
 			});
-			colorPanel.updateColorSelection(geo.getObjectColor());
+			if (colorProperty.getFirstProperty() instanceof BorderColorProperty) {
+				colorPanel.addStyleName("withMargin");
+			}
+			colorPanel.updateColorSelection(colorProperty.getFirstProperty().getValue());
 			parent.add(colorPanel);
+
 			if (colorProperty.getFirstProperty() instanceof NotesInlineBackgroundColorProperty) {
 				StandardButton noColorButton = new StandardButton(MaterialDesignResources.INSTANCE
 						.no_color(), appW.getLocalization().getMenu("noColor"), 24);
@@ -138,7 +144,8 @@ public class IconButtonWithProperty extends IconButton {
 				lineThicknessSlider = widgetAdapter.getSliderWidget(
 						(RangePropertyCollection<?>) property, geo);
 				parent.add(lineThicknessSlider);
-			} else if (firstProperty instanceof CellBorderThicknessProperty) {
+			} else if (firstProperty instanceof CellBorderThicknessProperty
+					|| firstProperty instanceof BorderThicknessProperty) {
 				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
 						(RangePropertyCollection<?>) property);
 				parent.add(borderThickness);

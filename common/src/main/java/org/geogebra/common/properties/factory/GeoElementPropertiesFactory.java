@@ -21,6 +21,8 @@ import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
+import org.geogebra.common.properties.impl.objects.BorderColorProperty;
+import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
@@ -162,6 +164,20 @@ public class GeoElementPropertiesFactory {
 		List<Property> properties = new ArrayList<>();
 		addPropertyIfNotNull(properties, createColorWithOpacityProperty(localization, elements));
 		addPropertyIfNotNull(properties, createOpacityColorProperty(localization, elements));
+		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
+	 * Creates border color and thickness for a list of GeoElements.
+	 * @param localization localization
+	 * @param elements input elements
+	 * @return the list of properties for the GeoElement(s)
+	 */
+	public static PropertiesArray createObjectBorderProperties(
+			Localization localization, List<GeoElement> elements) {
+		List<Property> properties = new ArrayList<>();
+		addPropertyIfNotNull(properties, createBorderColorProperty(localization, elements));
+		addPropertyIfNotNull(properties, createBorderThicknessProperty(localization, elements));
 		return createPropertiesArray(localization, properties, elements);
 	}
 
@@ -316,6 +332,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new ColorPropertyCollection<>(
 					colorProperties.toArray(new NotesInlineBackgroundColorProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Creates border color property for text and mindmap
+	 * @param localization localization
+	 * @param elements elements
+	 * @return color property
+	 */
+	public static ColorProperty createBorderColorProperty(Localization localization,
+			List<GeoElement> elements) {
+		try {
+			List<BorderColorProperty> colorProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				colorProperties.add(new BorderColorProperty(localization, element));
+			}
+			return new ColorPropertyCollection<>(
+					colorProperties.toArray(new BorderColorProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}
@@ -728,6 +764,26 @@ public class GeoElementPropertiesFactory {
 			}
 			return new RangePropertyCollection<>(
 					opacityProperties.toArray(new NotesOpacityColorProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a RangePropertyCollection controlling the opacity or null if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static RangeProperty<Integer> createBorderThicknessProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<BorderThicknessProperty> opacityProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				opacityProperties.add(new BorderThicknessProperty(localization, element));
+			}
+			return new RangePropertyCollection<>(
+					opacityProperties.toArray(new BorderThicknessProperty[0]));
 		} catch (NotApplicablePropertyException ignored) {
 			return null;
 		}

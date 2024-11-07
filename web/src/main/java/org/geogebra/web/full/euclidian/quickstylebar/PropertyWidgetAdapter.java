@@ -78,7 +78,7 @@ public class PropertyWidgetAdapter {
 	 * @return panel for line thickness ui
 	 */
 	public FlowPanel getBorderThicknessWidget(RangePropertyCollection<?> property) {
-		return new BorderThicknessPanel(property);
+		return new BorderThicknessPanel(property, appW);
 	}
 
 	/**
