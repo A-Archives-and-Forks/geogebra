@@ -142,6 +142,10 @@ final class RationalizeFractionAlgo {
 	 * @return natural ordered + or - expression.
 	 */
 	private ExpressionNode getOperandOrder(ExpressionNode plusMinusNode) {
+		if (plusMinusNode == null) {
+			return null;
+		}
+
 		ExpressionNode leftTree = plusMinusNode.getLeftTree();
 		ExpressionNode operandLeft = leftTree.getLeftTree();
 		if (operandLeft.isLeaf() && operandLeft.evaluateDouble() < 0) {
