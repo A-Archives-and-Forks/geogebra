@@ -68,8 +68,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
 		rationalizationShouldBe("1 / (sqrt(2) + 1)", "sqrt(2) - 1");
 		rationalizationShouldBe("1 / (sqrt(2) - 1)", "sqrt(2) + 1");
-		rationalizationShouldBe("1 / (1 + sqrt(2))", "-1 + sqrt(2)");
-		rationalizationShouldBe("1 / (1 - sqrt(2))", "-1 - sqrt(2)");
+		rationalizationShouldBe("1 / (1 + sqrt(2))", "sqrt(2) - 1");
 		rationalizationShouldBe("1 / (sqrt(2) + 3)", "(sqrt(2) - 3) / -7");
 		rationalizationShouldBe("1 / (sqrt(2) - 3)", "(sqrt(2) + 3) / -7");
 	}
@@ -144,4 +143,9 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
 	}
 
+	@Test
+	public void testProductInDenominator() {
+		rationalizationShouldBe("1 / (2 * (1 + sqrt(2)))", "(sqrt(2) - 1) / 2");
+		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(sqrt(2) + 1) / 2");
+	}
 }

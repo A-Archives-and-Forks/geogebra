@@ -81,8 +81,14 @@ final class RationalizeFractionAlgo {
 	private ExpressionNode factorize() {
 		for (Operation op: new Operation[]{Operation.MINUS, Operation.PLUS}) {
 			if (denominator.isOperation(op)) {
-				return checkFactorization(op);
+				return checkFactorization(op, denominator);
 			}
+		}
+		if (denominator.isOperation(Operation.MULTIPLY)) {
+			ExpressionNode node =
+					checkFactorization(denominator.getRight().wrap().getOperation(),
+							denominator.getRightTree());
+			return node.divide(denominator.getLeftTree());
 		}
 		return null;
 	}
@@ -102,33 +108,51 @@ final class RationalizeFractionAlgo {
 		return factorize();
 	}
 
-	private ExpressionNode checkFactorization(Operation op) {
-		if (denominator.isOperation(op)) {
+	private ExpressionNode checkFactorization(Operation op, ExpressionNode node) {
+		ExpressionNode factorization = null;
+		if (node.isOperation(op)) {
 			ExpressionNode mul =
-					new ExpressionNode(kernel, denominator.getLeft(), Operation.inverse(op),
-							denominator.getRight());
-			double v = denominator.multiply(mul).evaluateDouble();
+					new ExpressionNode(kernel, node.getLeft(), Operation.inverse(op),
+							node.getRight());
+			double v = node.multiply(mul).evaluateDouble();
 			if (DoubleUtil.isEqual(v, 1, Kernel.STANDARD_PRECISION)) {
-				return new ExpressionNode(kernel,
+				factorization = new ExpressionNode(kernel,
 						numerator.multiplyR(mul));
-			}
-
-			if (DoubleUtil.isEqual(v, -1, Kernel.STANDARD_PRECISION)) {
+			} else if (DoubleUtil.isEqual(v, -1, Kernel.STANDARD_PRECISION)) {
 				ExpressionNode invMul =
-						new ExpressionNode(kernel, denominator.getLeft().wrap().multiplyR(-1),
+						new ExpressionNode(kernel, node.getLeft().wrap().multiplyR(-1),
 								Operation.inverse(op),
-								denominator.getRight().wrap().multiplyR(-1));
-				return new ExpressionNode(kernel,
+								node.getRight().wrap().multiplyR(-1));
+				factorization = new ExpressionNode(kernel,
 						numerator.multiply(invMul));
-			}
-
-			if (DoubleUtil.isInteger(v)) {
-				return new ExpressionNode(kernel,
+			} else if (DoubleUtil.isInteger(v)) {
+				factorization = new ExpressionNode(kernel,
 						numerator.multiply(mul),
 						Operation.DIVIDE, newNumber(v));
 			}
 		}
-		return null;
+		return getOperandOrder(factorization);
+	}
+
+	/**
+	 * if plusMinusNode is in form like "-1 + sqrt(2)", returns "sqrt(2) - 1"
+	 * if not, returs the parameter back.
+	 *
+	 * @param plusMinusNode to check
+	 * @return natural ordered + or - expression.
+	 */
+	private ExpressionNode getOperandOrder(ExpressionNode plusMinusNode) {
+		ExpressionNode leftTree = plusMinusNode.getLeftTree();
+		ExpressionNode operandLeft = leftTree.getLeftTree();
+		if (operandLeft.isLeaf() && operandLeft.evaluateDouble() < 0) {
+			ExpressionNode operandRight = leftTree.getRightTree();
+			return new ExpressionNode(kernel, operandRight.getLeft().evaluateDouble() == -1
+					? operandRight.getRightTree()
+					: operandRight,
+					Operation.inverse(leftTree.getOperation()),
+					operandLeft);
+		}
+		return plusMinusNode;
 	}
 
 	private ExpressionNode simplifiedMultiply(ExpressionValue rationalized,
