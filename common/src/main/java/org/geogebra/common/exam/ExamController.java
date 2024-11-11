@@ -480,8 +480,6 @@ public final class ExamController {
 			examRestrictions = ExamRestrictions.forExamType(examType);
 		}
 		propertiesRegistry.addListener(examRestrictions);
-		applyRestrictionsToContextDependencies(activeDependencies);
-		applyRestrictionsToRestrictables();
 
 		cheatingEvents = new CheatingEvents();
 		cheatingEvents.delegate = (cheatingEvent) -> {
