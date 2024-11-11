@@ -147,5 +147,11 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void testProductInDenominator() {
 		rationalizationShouldBe("1 / (2 * (1 + sqrt(2)))", "(sqrt(2) - 1) / 2");
 		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(sqrt(2) + 1) / 2");
+		rationalizationShouldBe("1 / (2 * sqrt(2))", "sqrt(2) / 4");
+	}
+
+	@Test
+	public void testEvaluateUnderSquareRoot() {
+		rationalizationShouldBe("1 / sqrt(3 + 4)", "sqrt(7) / 7");
 	}
 }

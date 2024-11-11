@@ -38,10 +38,10 @@ final class RationalizeFractionAlgo {
 					return numerator.getRightTree();
 				} else if (gcdLeft != 1) {
 					double v = evalLeft / gcdLeft;
-					double canceledDenumerator = denominator.divide(gcdLeft).evaluateDouble();
+					double canceledDominator = denominator.divide(gcdLeft).evaluateDouble();
 					return new ExpressionNode(kernel, new MyDouble(kernel, v).wrap()
 							.multiplyR(numerator.getRightTree()),
-							Operation.DIVIDE, new MyDouble(kernel, canceledDenumerator)
+							Operation.DIVIDE, new MyDouble(kernel, canceledDominator)
 					);
 				} else if (DoubleUtil.isEqual(gcdRight, evalCanceled)) {
 					if (DoubleUtil.isEqual(evalCanceled, evalRight)) {
@@ -68,7 +68,7 @@ final class RationalizeFractionAlgo {
 		}
 
 		if (numerator.isOperation(Operation.SQRT) || canBeFactorized()) {
-			return factorize();
+			return factorizeOrHandleProduct();
 		}
 
 		return rationalizeAsLeafSqrtDenominator();
@@ -78,19 +78,41 @@ final class RationalizeFractionAlgo {
 		return hasTwoTags(numerator) && hasTwoTags(denominator);
 	}
 
-	private ExpressionNode factorize() {
+	/**
+	 * If the fraction can be factorized, it is done here
+	 * or if denominator is a product, it is handled here too.
+	 * @return
+	 */
+	private ExpressionNode factorizeOrHandleProduct() {
 		for (Operation op: new Operation[]{Operation.MINUS, Operation.PLUS}) {
 			if (denominator.isOperation(op)) {
-				return checkFactorization(op, denominator);
+				return doFactorize(denominator);
 			}
 		}
 		if (denominator.isOperation(Operation.MULTIPLY)) {
-			ExpressionNode node =
-					checkFactorization(denominator.getRight().wrap().getOperation(),
-							denominator.getRightTree());
-			return node.divide(denominator.getLeftTree());
+			return handleProductInDenominator();
 		}
 		return null;
+	}
+
+	private ExpressionNode handleProductInDenominator() {
+		ExpressionNode rightOperand = denominator.getRight().wrap();
+		Operation rightOperandOperation = rightOperand.getOperation();
+		if (hasTwoTags(rightOperand)) {
+			ExpressionNode node = doFactorize(denominator.getRightTree());
+			return node.divide(denominator.getLeftTree());
+		} else {
+			ExpressionNode numerator = new ExpressionNode(kernel, denominator.getLeftTree(),
+					rightOperandOperation, null);
+			ExpressionNode denominator = this.denominator.getLeftTree().getLeftTree()
+					.multiply(rightOperand.getLeft());
+			return new ExpressionNode(kernel, numerator, Operation.DIVIDE,
+					newNumber(denominator));
+		}
+	}
+
+	private ExpressionValue newNumber(ExpressionNode node) {
+		return newNumber(node.evaluateDouble());
 	}
 
 	private static boolean hasTwoTags(ExpressionNode node) {
@@ -101,37 +123,53 @@ final class RationalizeFractionAlgo {
 
 	private ExpressionNode rationalizeAsLeafNumerator() {
 		if (denominator.isOperation(Operation.SQRT)) {
+			double underSqrt = denominator.getLeft().evaluateDouble();
+			MyDouble left = newNumber(underSqrt);
 			return new ExpressionNode(kernel,
-					numerator.multiplyR(denominator),
-					Operation.DIVIDE, denominator.getLeft());
+					numerator.multiplyR(new ExpressionNode(kernel, left, Operation.SQRT,
+									null)
+					), Operation.DIVIDE, left);
 		}
-		return factorize();
+		return factorizeOrHandleProduct();
 	}
 
-	private ExpressionNode checkFactorization(Operation op, ExpressionNode node) {
-		ExpressionNode factorization = null;
-		if (node.isOperation(op)) {
-			ExpressionNode mul =
-					new ExpressionNode(kernel, node.getLeft(), Operation.inverse(op),
-							node.getRight());
-			double v = node.multiply(mul).evaluateDouble();
-			if (DoubleUtil.isEqual(v, 1, Kernel.STANDARD_PRECISION)) {
-				factorization = new ExpressionNode(kernel,
-						numerator.multiplyR(mul));
-			} else if (DoubleUtil.isEqual(v, -1, Kernel.STANDARD_PRECISION)) {
-				ExpressionNode invMul =
-						new ExpressionNode(kernel, node.getLeft().wrap().multiplyR(-1),
-								Operation.inverse(op),
-								node.getRight().wrap().multiplyR(-1));
-				factorization = new ExpressionNode(kernel,
-						numerator.multiply(invMul));
-			} else if (DoubleUtil.isInteger(v)) {
-				factorization = new ExpressionNode(kernel,
-						numerator.multiply(mul),
-						Operation.DIVIDE, newNumber(v));
-			}
+	private ExpressionNode doFactorize(ExpressionNode node) {
+		ExpressionNode result = null;
+		Operation op = node.getOperation();
+		ExpressionNode conjugate = getConjugateFactor(node);
+		double newDenominatorValue = node.multiply(conjugate).evaluateDouble();
+		if (isOne(newDenominatorValue)) {
+			result = new ExpressionNode(kernel, numerator.multiplyR(conjugate));
+		} else if (isMinusOne(newDenominatorValue)) {
+			ExpressionNode minusConjugate = getMinusConjugate(node, op);
+			result = new ExpressionNode(kernel,	numerator.multiply(minusConjugate));
+		} else if (DoubleUtil.isInteger(newDenominatorValue)) {
+			// if new denominator is integer but not 1 or -1
+			result = new ExpressionNode(kernel,	numerator.multiply(conjugate),
+					Operation.DIVIDE, newNumber(newDenominatorValue));
 		}
-		return getOperandOrder(factorization);
+		return getOperandOrder(result);
+	}
+
+	private ExpressionNode getMinusConjugate(ExpressionNode node, Operation op) {
+		ExpressionNode minusConjugate =
+				new ExpressionNode(kernel, node.getLeft().wrap().multiplyR(-1),
+						Operation.inverse(op),
+						node.getRight().wrap().multiplyR(-1));
+		return minusConjugate;
+	}
+
+	private static boolean isMinusOne(double newDenominatorValue) {
+		return DoubleUtil.isEqual(newDenominatorValue, -1, Kernel.STANDARD_PRECISION);
+	}
+
+	private static boolean isOne(double newDenominatorValue) {
+		return DoubleUtil.isEqual(newDenominatorValue, 1, Kernel.STANDARD_PRECISION);
+	}
+
+	private ExpressionNode getConjugateFactor(ExpressionNode node) {
+		return new ExpressionNode(kernel, node.getLeft(), Operation.inverse(node.getOperation()),
+				node.getRight());
 	}
 
 	/**
@@ -211,19 +249,19 @@ final class RationalizeFractionAlgo {
 
 	static ExpressionNode getReducedRoot(ExpressionNode node, Kernel kernel) {
 		if (node.isOperation(Operation.DIVIDE)) {
-			ExpressionNode nominator = node.getLeftTree();
-			if (nominator.isOperation(Operation.SQRT)) {
-				ExpressionValue reducedSqrt = Surds.getResolution(nominator, kernel);
+			ExpressionNode numerator = node.getLeftTree();
+			if (numerator.isOperation(Operation.SQRT)) {
+				ExpressionValue reducedSqrt = Surds.getResolution(numerator, kernel);
 				if (reducedSqrt != null) {
 					return new ExpressionNode(kernel, reducedSqrt, Operation.DIVIDE,
 							node.getRightTree());
 				}
-			} else if (nominator.isOperation(Operation.MULTIPLY)) {
-				ExpressionNode rightTree = nominator.getRightTree();
+			} else if (numerator.isOperation(Operation.MULTIPLY)) {
+				ExpressionNode rightTree = numerator.getRightTree();
 				ExpressionValue reducedSqrt = Surds.getResolution(rightTree, kernel);
 				if (reducedSqrt != null) {
 					ExpressionNode constantProduct =
-							nominator.getLeftTree().multiplyR(reducedSqrt.wrap().getLeftTree());
+							numerator.getLeftTree().multiplyR(reducedSqrt.wrap().getLeftTree());
 					return new ExpressionNode(kernel,
 							reducedSqrt.wrap().getRightTree().multiplyR(
 									constantProduct.unwrap().evaluateDouble()),
