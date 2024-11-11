@@ -5,13 +5,17 @@ import static org.geogebra.common.kernel.commands.Commands.*;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianConstants;
+import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.Command;
 import org.geogebra.common.kernel.commands.CommandProcessor;
 import org.geogebra.common.kernel.commands.filter.BaseCommandArgumentFilter;
@@ -20,6 +24,8 @@ import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.commands.selector.CommandNameFilter;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.MyError;
+import org.geogebra.common.main.settings.EuclidianSettings;
+import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.main.syntax.suggestionfilter.LineSelector;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
 
@@ -191,6 +197,27 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 			return syntax;
 		}
 	}
+
+
+	@Override
+	protected RestorableSettings createSavedSettings() {
+		return new RealschuleSettings();
+	}
+
+	@Override
+	public void applySettingsRestrictions(@Nonnull Settings settings) {
+		super.applySettingsRestrictions(settings);
+		EuclidianSettings euclidian = settings.getEuclidian(1);
+		settings.getGeneral().setCoordFormat(Kernel.COORD_STYLE_AUSTRIAN);
+		euclidian.beginBatch();
+		euclidian.setAxisLabel(0, "x");
+		euclidian.setAxisLabel(1, "y");
+		euclidian.setGridType(EuclidianView.GRID_CARTESIAN);
+		euclidian.setAxisNumberingDistance(0, 0.5);
+		euclidian.setAxisNumberingDistance(1, 0.5);
+		euclidian.endBatch();
+	}
+
 
 	private static Set<ContextMenuItemFilter> createContextMenuItemFilters() {
 		return Set.of(contextMenuItem -> !Regression.isSameItemAs(contextMenuItem));

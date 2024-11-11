@@ -66,7 +66,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	private final SyntaxFilter syntaxFilter;
 	private final ToolCollectionFilter toolsFilter;
 	private final Map<String, PropertyRestriction> propertyRestrictions;
-	private RestorableSettings savedSettings;
+	private RestorableSettings savedSettings = null;
 
 	/**
 	 * Factory for ExamRestrictions.
@@ -221,9 +221,15 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				localization.getCommandSyntax().addSyntaxFilter(syntaxFilter);
 			}
 		}
+		if (settings != null && savedSettings == null) {
+			applySettingsRestrictions(settings);
+		}
+
 		if (autoCompleteProvider != null) {
 			autoCompleteProvider.setFilteredOperations(filteredOperations);
 		}
+
+
 		if (propertiesRegistry != null) {
 			propertyRestrictions.forEach((name, restriction) -> {
 				Property property = propertiesRegistry.lookup(name, context);
@@ -234,9 +240,6 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 		}
 		if (toolsProvider != null && toolsFilter != null) {
 			toolsProvider.addToolsFilter(toolsFilter);
-		}
-		if (settings != null) {
-			applySettingsRestrictions(settings);
 		}
 	}
 
