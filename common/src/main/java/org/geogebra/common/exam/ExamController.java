@@ -476,9 +476,6 @@ public final class ExamController {
 		tempStorage.clearTempMaterials();
 		createNewTempMaterial();
 
-		if (examRestrictions == null) {
-			examRestrictions = ExamRestrictions.forExamType(examType);
-		}
 		propertiesRegistry.addListener(examRestrictions);
 
 		cheatingEvents = new CheatingEvents();
