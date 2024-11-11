@@ -454,6 +454,7 @@ public final class ExamController {
 		if (activeDependencies == null && registeredDependencies == null) {
 			throw new IllegalStateException("no active context(s)");
 		}
+
 		this.examType = examType;
 		this.options = options;
 		if (examRestrictions == null) {
@@ -474,6 +475,13 @@ public final class ExamController {
 		});
 		tempStorage.clearTempMaterials();
 		createNewTempMaterial();
+
+		if (examRestrictions == null) {
+			examRestrictions = ExamRestrictions.forExamType(examType);
+		}
+		propertiesRegistry.addListener(examRestrictions);
+		applyRestrictionsToContextDependencies(activeDependencies);
+		applyRestrictionsToRestrictables();
 
 		cheatingEvents = new CheatingEvents();
 		cheatingEvents.delegate = (cheatingEvent) -> {

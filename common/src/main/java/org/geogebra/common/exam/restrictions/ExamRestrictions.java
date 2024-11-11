@@ -66,6 +66,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	private final SyntaxFilter syntaxFilter;
 	private final ToolCollectionFilter toolsFilter;
 	private final Map<String, PropertyRestriction> propertyRestrictions;
+	private RestorableSettings savedSettings;
 
 	/**
 	 * Factory for ExamRestrictions.
@@ -234,10 +235,43 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 		if (toolsProvider != null && toolsFilter != null) {
 			toolsProvider.addToolsFilter(toolsFilter);
 		}
-		if (contextMenuFactory != null) {
-			for (ContextMenuItemFilter contextMenuItemFilter : contextMenuItemFilters) {
-				contextMenuFactory.addFilter(contextMenuItemFilter);
-			}
+		if (settings != null) {
+			applySettingsRestrictions(settings);
+		}
+	}
+
+	/**
+	 * Creates an object that settings can be saved in exam start, and can be easily restored
+	 * at exam exit.
+	 * @return {@link RestorableSettings}
+	 */
+	protected RestorableSettings createSavedSettings() {
+		return null;
+	}
+
+	/**
+	 * Apply settings changes for this exam type.
+	 * @apiNote Override this only if the given exam needs custom settings, and call
+	 * @{code super.applySettingsRestrictions(settings)} before modifying any values in settings.
+	 * @param settings {@link Settings}
+	 */
+	protected void applySettingsRestrictions(@Nonnull Settings settings) {
+		savedSettings = createSavedSettings();
+		if (savedSettings != null) {
+			savedSettings.save(settings);
+		}
+	}
+
+	/**
+	 * Revert changes applied in {@link #applySettingsRestrictions(Settings)}, restoring the
+	 * previously saved settings.
+	 * @apiNote An override is not needed by default.
+	 * @param settings {@link Settings}
+	 */
+	protected void removeSettingsRestrictions(@Nonnull Settings settings) {
+		if (savedSettings != null) {
+			savedSettings.restore(settings);
+			savedSettings = null;
 		}
 	}
 
@@ -300,6 +334,9 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			for (ContextMenuItemFilter contextMenuItemFilter : contextMenuItemFilters) {
 				contextMenuFactory.removeFilter(contextMenuItemFilter);
 			}
+		}
+		if (settings != null) {
+			removeSettingsRestrictions(settings);
 		}
 	}
 
