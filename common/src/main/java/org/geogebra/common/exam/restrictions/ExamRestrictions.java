@@ -229,7 +229,6 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			autoCompleteProvider.setFilteredOperations(filteredOperations);
 		}
 
-
 		if (propertiesRegistry != null) {
 			propertyRestrictions.forEach((name, restriction) -> {
 				Property property = propertiesRegistry.lookup(name, context);
@@ -240,6 +239,11 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 		}
 		if (toolsProvider != null && toolsFilter != null) {
 			toolsProvider.addToolsFilter(toolsFilter);
+		}
+		if (contextMenuFactory != null) {
+			for (ContextMenuItemFilter contextMenuItemFilter : contextMenuItemFilters) {
+				contextMenuFactory.addFilter(contextMenuItemFilter);
+			}
 		}
 	}
 

@@ -337,7 +337,6 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 		}
 	}
 
-
 	@Override
 	protected RestorableSettings createSavedSettings() {
 		return new RealschuleSettings();
@@ -356,7 +355,6 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 		euclidian.setAxisNumberingDistance(1, 0.5);
 		euclidian.endBatch();
 	}
-
 
 	private static Set<ContextMenuItemFilter> createContextMenuItemFilters() {
 		return Set.of(contextMenuItem -> !Regression.isSameItemAs(contextMenuItem));
