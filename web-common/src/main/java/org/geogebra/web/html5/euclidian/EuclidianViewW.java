@@ -13,6 +13,7 @@ import org.geogebra.common.awt.MyImage;
 import org.geogebra.common.euclidian.CoordSystemAnimation;
 import org.geogebra.common.euclidian.Drawable;
 import org.geogebra.common.euclidian.EmbedManager;
+import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianController;
 import org.geogebra.common.euclidian.EuclidianCursor;
 import org.geogebra.common.euclidian.EuclidianPen;
@@ -40,6 +41,7 @@ import org.geogebra.common.util.debug.GeoGebraProfiler;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.ggbjdk.java.awt.DefaultBasicStroke;
 import org.geogebra.ggbjdk.java.awt.geom.Dimension;
+import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.html5.awt.GFontW;
 import org.geogebra.web.html5.awt.GGraphics2DW;
 import org.geogebra.web.html5.awt.LayeredGGraphicsW;
@@ -56,6 +58,7 @@ import org.geogebra.web.html5.gui.util.FocusUtil;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.main.AppW;
+import org.geogebra.web.html5.main.GlobalKeyDispatcherW;
 import org.geogebra.web.html5.main.MyImageW;
 import org.geogebra.web.html5.main.TimerSystemW;
 import org.geogebra.web.html5.multiuser.MultiuserManager;
@@ -71,11 +74,15 @@ import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.DomEvent;
 import org.gwtproject.event.dom.client.DropEvent;
+import org.gwtproject.event.dom.client.KeyDownEvent;
+import org.gwtproject.event.dom.client.KeyUpEvent;
 import org.gwtproject.event.dom.client.MouseDownEvent;
 import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Image;
 import org.gwtproject.user.client.ui.Widget;
+
+import com.himamis.retex.editor.share.util.GWTKeycodes;
 
 import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.DomGlobal;
@@ -1027,6 +1034,14 @@ public class EuclidianViewW extends EuclidianView implements
 		setCursorClass("cursor_rotation");
 	}
 
+	private void setGrabCursor() {
+		setCursorClass("cursor_grab");
+	}
+
+	private void setGrabbingCursor() {
+		setCursorClass("cursor_grabbing");
+	}
+
 	@Override
 	public boolean hasFocus() {
 		// changed to return true, otherwise Arrow keys don't work to pan the
@@ -1227,6 +1242,12 @@ public class EuclidianViewW extends EuclidianView implements
 			return;
 		case DRAG:
 			setDragCursor();
+			return;
+		case GRAB:
+			setGrabCursor();
+			return;
+		case GRABBING:
+			setGrabbingCursor();
 			return;
 		case MOVE:
 			setMoveCursor();

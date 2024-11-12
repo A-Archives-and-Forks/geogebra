@@ -304,5 +304,13 @@ public class EuclidianControllerW extends EuclidianController implements
 		}
 		return toolImageW.create(mode, fileName);
 	}
+
+	@Override
+	protected int getModeForShallMoveView(AbstractEvent event) {
+		if (((AppW) app).getGlobalKeyDispatcher().isSpaceOrShiftDown()) {
+			return EuclidianConstants.MODE_GRAB;
+		}
+		return EuclidianConstants.MODE_TRANSLATEVIEW;
+	}
 }
 

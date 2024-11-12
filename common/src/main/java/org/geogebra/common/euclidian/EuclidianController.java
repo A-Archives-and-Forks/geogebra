@@ -5381,6 +5381,10 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			view.setCursor(EuclidianCursor.PEN);
 			break;
 
+		case EuclidianConstants.MODE_GRAB:
+			view.setCursor(EuclidianCursor.GRAB);
+			break;
+
 		case EuclidianConstants.MODE_HIGHLIGHTER:
 			view.setCursor(EuclidianCursor.HIGHLIGHTER);
 			break;
@@ -7647,7 +7651,11 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			if (repaint) {
 				if (temporaryMode
 						&& mode != EuclidianConstants.MODE_TRANSLATEVIEW) {
-					view.setCursor(EuclidianCursor.MOVE);
+					if (mode == EuclidianConstants.MODE_GRAB) {
+						view.setCursor(EuclidianCursor.GRABBING);
+					} else {
+						view.setCursor(EuclidianCursor.MOVE);
+					}
 				}
 				moveView();
 			}
@@ -8828,7 +8836,11 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		startLoc = mouseLoc;
 		snapController.touchStarted(startLoc);
 
-		setDragCursorIfMoveView();
+		if (mode == EuclidianConstants.MODE_GRAB) {
+			view.setCursor(EuclidianCursor.GRABBING);
+		} else {
+			setDragCursorIfMoveView();
+		}
 
 		view.rememberOrigins();
 		xTemp = xRW;
@@ -9022,6 +9034,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			break;
 
 		// move drawing pad or axis
+		case EuclidianConstants.MODE_GRAB:
 		case EuclidianConstants.MODE_TRANSLATEVIEW:
 			mousePressedTranslatedView(type, specialMoveEvent(e));
 

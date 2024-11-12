@@ -2,6 +2,7 @@ package org.geogebra.web.html5.main;
 
 import java.util.List;
 
+import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.gui.AccessibilityManagerInterface;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.App;
@@ -45,6 +46,10 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	private static boolean leftAltDown = false;
 
 	private boolean escPressed = false;
+
+	private boolean spaceDown = false;
+
+	private int oldMode = EuclidianConstants.MODE_MOVE;
 
 	/**
 	 * @return whether ctrl is pressed
@@ -143,6 +148,11 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 					event.preventDefault();
 					event.stopPropagation();
 				}
+			} else if (DOM.eventGetType(event) == Event.ONKEYUP) {
+				if (handleKeyUp(event)) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
 			}
 		}
 
@@ -177,10 +187,48 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 					handleEscapeForNonApplets();
 				}
 				handled = true;
+			} else if (isSpace(kc) || isShift(kc)) {
+				handleSpaceOrShiftKey(kc, true);
+				handled = true;
 			} else {
 				handled = handled || handleSelectedGeosKeys(event);
 			}
 			return handled;
+		}
+
+		private boolean handleKeyUp(Event event) {
+			boolean handled = false;
+			KeyCodes kc = NavigatorUtil.translateGWTcode(event.getKeyCode());
+			if (isSpace(kc) || isShift(kc)) {
+				handleSpaceOrShiftKey(kc, false);
+				handled = true;
+			}
+			return handled;
+		}
+
+		private void handleSpaceOrShiftKey(KeyCodes kc, boolean down) {
+			if (down && app.getMode() == EuclidianConstants.MODE_GRAB) {
+				return;
+			}
+			if (down) {
+				oldMode = app.getMode();
+				app.setMode(EuclidianConstants.MODE_GRAB);
+			} else {
+				app.setMode(oldMode);
+			}
+			if (isSpace(kc)) {
+				spaceDown = down;
+			} else {
+				shiftDown = down;
+			}
+		}
+
+		private boolean isSpace(KeyCodes kc) {
+			return kc == KeyCodes.SPACE;
+		}
+
+		private boolean isShift(KeyCodes kc) {
+			return kc == KeyCodes.SHIFT;
 		}
 	}
 
@@ -400,5 +448,9 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 		} else {
 			return code == JavaKeyCodes.VK_F4;
 		}
+	}
+
+	public boolean isSpaceOrShiftDown() {
+		return spaceDown || shiftDown;
 	}
 }

@@ -429,6 +429,10 @@ public final class EuclidianConstants {
 	 * Triangle protractor
 	 */
 	public static final int MODE_TRIANGLE_PROTRACTOR = 129;
+	/**
+	 * Grab
+	 */
+	public static final int MODE_GRAB = 130;
 
 	/** macro tools ID offset */
 	public static final int MACRO_MODE_ID_OFFSET = 100001;
