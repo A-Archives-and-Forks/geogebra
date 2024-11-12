@@ -81,7 +81,8 @@ final class RationalizeFractionAlgo {
 	/**
 	 * If the fraction can be factorized, it is done here
 	 * or if denominator is a product, it is handled here too.
-	 * @return
+	 *
+	 * @return the altered expression described above.
 	 */
 	private ExpressionNode factorizeOrHandleProduct() {
 		for (Operation op: new Operation[]{Operation.MINUS, Operation.PLUS}) {
@@ -142,10 +143,11 @@ final class RationalizeFractionAlgo {
 			result = new ExpressionNode(kernel, numerator.multiplyR(conjugate));
 		} else if (isMinusOne(newDenominatorValue)) {
 			ExpressionNode minusConjugate = getMinusConjugate(node, op);
-			result = new ExpressionNode(kernel,	numerator.multiply(minusConjugate));
+			result = new ExpressionNode(kernel, numerator.multiply(minusConjugate));
 		} else if (DoubleUtil.isInteger(newDenominatorValue)) {
 			// if new denominator is integer but not 1 or -1
-			result = new ExpressionNode(kernel,	numerator.multiply(conjugate),
+
+			result = new ExpressionNode(kernel, numerator.multiply(conjugate),
 					Operation.DIVIDE, newNumber(newDenominatorValue));
 		}
 		return getOperandOrder(result);
