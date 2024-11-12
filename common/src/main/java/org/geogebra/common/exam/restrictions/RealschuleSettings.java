@@ -11,6 +11,7 @@ public class RealschuleSettings implements RestorableSettings {
 	private String yLabel;
 	private GeoNumberValue xDistance;
 	private GeoNumberValue yDistance;
+	private boolean equationChangeRestricted;
 
 	@Override
 	public void save(Settings settings) {
@@ -22,6 +23,7 @@ public class RealschuleSettings implements RestorableSettings {
 		yLabel = axesLabels[1];
 		xDistance = euclidian.getAxisNumberingDistance(0);
 		yDistance = euclidian.getAxisNumberingDistance(1);
+		equationChangeRestricted = settings.getAlgebra().isEquationChangeByDragRestricted();
 	}
 
 	@Override
@@ -33,5 +35,6 @@ public class RealschuleSettings implements RestorableSettings {
 		euclidian.setAxisLabel(1, yLabel);
 		euclidian.setAxisNumberingDistance(0, xDistance);
 		euclidian.setAxisNumberingDistance(1, yDistance);
+		settings.getAlgebra().setEquationChangeByDragRestricted(equationChangeRestricted);
 	}
 }

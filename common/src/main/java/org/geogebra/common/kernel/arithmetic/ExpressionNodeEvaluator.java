@@ -2,7 +2,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
-import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.arithmetic3D.Vector3DValue;
 import org.geogebra.common.kernel.geos.GeoCasCell;
 import org.geogebra.common.kernel.geos.GeoDummyVariable;
@@ -48,19 +47,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 	 * @param kernel kernel
 	 */
 	public ExpressionNodeEvaluator(Localization loc, Kernel kernel) {
-		this(loc, kernel, null);
-	}
-
-	/**
-	 * Creates new expression node evaluator
-	 *
-	 * @param loc
-	 *            localization for errors
-	 * @param kernel
-	 *            kernel
-	 */
-	public ExpressionNodeEvaluator(Localization loc, Kernel kernel,
-								   OperationArgumentFilter filter) {
 		this.loc = loc;
 		this.kernel = kernel;
 	}

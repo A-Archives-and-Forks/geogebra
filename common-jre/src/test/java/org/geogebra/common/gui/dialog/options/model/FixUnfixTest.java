@@ -34,7 +34,7 @@ public class FixUnfixTest extends BaseUnitTest {
 	@Test
 	public void testDefaultFixForFunctionGeometry() {
 		getApp().setConfig(new AppConfigGeometry());
-		Assert.assertFalse(getApp().getConfig().isObjectDraggingRestricted());
+		Assert.assertFalse(getApp().getSettings().getAlgebra().isEquationChangeByDragRestricted());
 
 		GeoFunction function = add("f(x) = x+1");
 		GeoConic conic = add("x*x+y*y=5");
@@ -115,7 +115,7 @@ public class FixUnfixTest extends BaseUnitTest {
 	@Test
 	public void testFixedPropertyFunctionInGraphing() {
 		getApp().setConfig(new AppConfigGraphing());
-		Assert.assertTrue(getApp().getConfig().isObjectDraggingRestricted());
+		Assert.assertTrue(getApp().getSettings().getAlgebra().isEquationChangeByDragRestricted());
 
 		GeoFunction function = add("f(x) = x+1");
 		GeoConic conic = add("x*x+y*y=5");
@@ -135,7 +135,7 @@ public class FixUnfixTest extends BaseUnitTest {
 	@Test
 	public void testFixedPropertyFunctionInGeometry() {
 		getApp().setConfig(new AppConfigGeometry());
-		Assert.assertFalse(getApp().getConfig().isObjectDraggingRestricted());
+		Assert.assertFalse(getApp().getSettings().getAlgebra().isEquationChangeByDragRestricted());
 
 		GeoFunction function = add("f(x) = x+1");
 		GeoConic conic = add("x*x+y*y=5");

@@ -23,6 +23,8 @@ public class AlgebraSettings extends AbstractSettings {
 
 	private int style = AlgebraStyle.VALUE;
 
+	private boolean equationChangeByDragRestricted;
+
 	private static final List<Integer> styleModes = Arrays.asList(
 			Kernel.ALGEBRA_STYLE_DEFINITION_AND_VALUE,
 			Kernel.ALGEBRA_STYLE_VALUE, Kernel.ALGEBRA_STYLE_DEFINITION,
@@ -225,5 +227,13 @@ public class AlgebraSettings extends AbstractSettings {
 			}
 			sbXML.append("\"/>\n");
 		}
+	}
+
+	public boolean isEquationChangeByDragRestricted() {
+		return equationChangeByDragRestricted;
+	}
+
+	public void setEquationChangeByDragRestricted(boolean equationChangeByDragRestricted) {
+		this.equationChangeByDragRestricted = equationChangeByDragRestricted;
 	}
 }
