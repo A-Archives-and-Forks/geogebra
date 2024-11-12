@@ -11,7 +11,6 @@ import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.PreviewFeature;
-import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
 
 public enum ExamType {
 
