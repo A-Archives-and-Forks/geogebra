@@ -2514,7 +2514,7 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 		resetFullScreenBtn();
 		reinitAlgebraView();
 		if (!examController.isIdle()) {
-			examController.createNewTempMaterial();
+			setActiveMaterial(examController.getNewTempMaterial());
 		}
 	}
 
