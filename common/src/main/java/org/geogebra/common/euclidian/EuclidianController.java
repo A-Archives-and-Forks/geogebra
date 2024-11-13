@@ -9337,7 +9337,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	private boolean shallMoveView(AbstractEvent event) {
-		return app.isShiftDragZoomEnabled()
+		return app.isShiftDragZoomEnabled() && mode != EuclidianConstants.MODE_GRAB
 				&& (!doubleClickStarted && (mode == EuclidianConstants.MODE_MOVE
 						|| specialMoveEvent(event)));
 	}

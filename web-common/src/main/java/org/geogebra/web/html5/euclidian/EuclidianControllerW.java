@@ -26,7 +26,6 @@ import org.geogebra.web.html5.gui.tooltip.PreviewPointPopup;
 import org.geogebra.web.html5.gui.tooltip.ToolTipManagerW;
 import org.geogebra.web.html5.gui.util.LongTouchManager;
 import org.geogebra.web.html5.main.AppW;
-import org.geogebra.web.html5.main.GlobalKeyDispatcherW;
 import org.gwtproject.event.dom.client.DropEvent;
 import org.gwtproject.event.dom.client.DropHandler;
 
@@ -305,13 +304,4 @@ public class EuclidianControllerW extends EuclidianController implements
 		}
 		return toolImageW.create(mode, fileName);
 	}
-
-	@Override
-	protected int getModeForShallMoveView(AbstractEvent event) {
-		if (GlobalKeyDispatcherW.getSpaceDown() || GlobalKeyDispatcherW.getShiftDown()) {
-			return EuclidianConstants.MODE_GRAB;
-		}
-		return EuclidianConstants.MODE_TRANSLATEVIEW;
-	}
 }
-
