@@ -6,10 +6,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.geogebra.common.contextmenu.AlgebraContextMenuItem;
+import org.geogebra.common.contextmenu.ContextMenuFactory;
 import org.geogebra.common.kernel.geos.BaseSymbolicTest;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoNumeric;
-import org.geogebra.common.ownership.GlobalScope;
 import org.junit.Test;
 
 public class RemoveLabelActionTest extends BaseSymbolicTest {
