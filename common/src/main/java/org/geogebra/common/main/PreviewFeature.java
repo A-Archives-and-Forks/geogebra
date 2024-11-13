@@ -38,7 +38,7 @@ public enum PreviewFeature {
 	 * @apiNote Set the {@code true} at run time (early in the app startup code) to enable
 	 * feature previews in test builds.
 	 */
-	public static boolean enableFeaturePreviews = false;
+	public static boolean enableFeaturePreviews = true;
 	
 	/**
 	 * Whether a preview feature is enabled (the default), or not. The latter case can be used
