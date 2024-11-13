@@ -212,4 +212,19 @@ public class GeoNumericTest extends BaseUnitTest {
 		assertThat(((GeoNumeric) add("a", info)).isAVSliderOrCheckboxVisible(), equalTo(true));
 		assertThat(((GeoNumeric) add("3", info)).isAVSliderOrCheckboxVisible(), equalTo(false));
 	}
+
+	@Test
+	public void shouldPrintUnicodePowerOf10() {
+		GeoNumeric a = addAvInput("a=1E30+1E30");
+
+		assertThat(a.toValueString(scientificTemplate),
+				is("2.00 " + Unicode.CENTER_DOT + " 10" + StringUtil.numberToIndex(30)));
+	}
+
+	@Test
+	public void shouldPrintUnicodeNegativePowerOf10() {
+		GeoNumeric a = addAvInput("a=1E-30+1E-30");
+		assertThat(a.toValueString(scientificTemplate),
+				is("2.00 " + Unicode.CENTER_DOT + " 10" + StringUtil.numberToIndex(-30)));
+	}
 }

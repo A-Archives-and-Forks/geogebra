@@ -214,7 +214,7 @@ public final class ContextMenuFactory {
 	 */
 	@Nonnull
 	public List<InputContextMenuItem> makeInputContextMenu(
-			boolean includeHelpItem, boolean  includeImageItem
+			boolean includeHelpItem, boolean includeImageItem
 	) {
 		List<InputContextMenuItem> items = new ArrayList<>();
 		items.add(Expression);
