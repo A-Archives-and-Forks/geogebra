@@ -40,6 +40,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 	private static boolean controlDown = false;
 	private static boolean shiftDown = false;
+	private static boolean spaceDown = false;
 
 	private static boolean rightAltDown = false;
 
@@ -47,8 +48,9 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 	private boolean escPressed = false;
 
-	private boolean spaceDown = false;
-
+	/**
+	 * Used to make sure the old mode is set correctly after grabbing and moving the Graphics View
+	 */
 	private int oldMode = EuclidianConstants.MODE_MOVE;
 
 	/**
@@ -77,6 +79,13 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	 */
 	public static boolean getShiftDown() {
 		return shiftDown;
+	}
+
+	/**
+	 * @return Whether space is pressed
+	 */
+	public static boolean getSpaceDown() {
+		return spaceDown;
 	}
 
 	/**
@@ -135,6 +144,8 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	}
 
 	private class GlobalShortcutHandler implements EventListener {
+
+		private boolean grabModeSet = false;
 
 		@Override
 		public void onBrowserEvent(Event event) {
@@ -207,14 +218,16 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 		}
 
 		private void handleSpaceOrShiftKey(KeyCodes kc, boolean down) {
-			if (down && app.getMode() == EuclidianConstants.MODE_GRAB) {
+			if (down && grabModeSet) {
 				return;
 			}
 			if (down) {
 				oldMode = app.getMode();
 				app.setMode(EuclidianConstants.MODE_GRAB);
+				grabModeSet = true;
 			} else {
 				app.setMode(oldMode);
+				grabModeSet = false;
 			}
 			if (isSpace(kc)) {
 				spaceDown = down;
@@ -448,9 +461,5 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 		} else {
 			return code == JavaKeyCodes.VK_F4;
 		}
-	}
-
-	public boolean isSpaceOrShiftDown() {
-		return spaceDown || shiftDown;
 	}
 }

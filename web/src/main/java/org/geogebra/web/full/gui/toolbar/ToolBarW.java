@@ -158,6 +158,8 @@ public class ToolBarW extends FlowPanel
 		// move mode button instead
 		if (tmpMode == EuclidianConstants.MODE_SELECTION_LISTENER) {
 			tmpMode = EuclidianConstants.MODE_MOVE;
+		} else if (tmpMode == EuclidianConstants.MODE_GRAB) {
+			tmpMode = EuclidianConstants.MODE_TRANSLATEVIEW;
 		}
 
 		if (modeToggleMenus != null) {
@@ -171,7 +173,6 @@ public class ToolBarW extends FlowPanel
 			
 			if (!success && tmpMode != getFirstMode()) {
 				tmpMode = setMode(getFirstMode(), m);
-
 			}
 
 			this.mode = tmpMode;
