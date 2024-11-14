@@ -461,6 +461,10 @@ public final class ExamController {
 			examRestrictions = ExamRestrictions.forExamType(examType);
 		}
 		propertiesRegistry.addListener(examRestrictions);
+		forEachDelegate(delegate -> {
+			delegate.examClearClipboard();
+			delegate.examClearApps();
+		});
 		applyRestrictionsToDelegates();
 		if (activeDependencies != null) {
 			applyRestrictionsToContextDependencies(activeDependencies);
@@ -468,11 +472,6 @@ public final class ExamController {
 			registeredDependencies.forEach(this::applyRestrictionsToContextDependencies);
 		}
 		applyRestrictionsToRestrictables();
-
-		forEachDelegate(delegate -> {
-			delegate.examClearClipboard();
-			delegate.examClearApps();
-		});
 		tempStorage.clearTempMaterials();
 		createNewTempMaterial();
 
