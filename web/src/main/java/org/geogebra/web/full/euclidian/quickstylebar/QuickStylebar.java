@@ -362,7 +362,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 	@Override
 	public void updateVisualStyle(GeoElement geo) {
-		// nothing for now
+		getApp().closePopups();
+		updateStyleBar();
 	}
 
 	@Override
