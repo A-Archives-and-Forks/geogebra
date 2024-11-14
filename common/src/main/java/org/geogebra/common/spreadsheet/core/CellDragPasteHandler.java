@@ -139,13 +139,15 @@ public class CellDragPasteHandler {
 		case DOWN:
 			pasteVertical(destinationRange, getMinRowIndexFromOrigin(), getMaxRowIndexFromOrigin(),
 					getMinColumnIndexFromOrigin(), getMaxColumnIndexFromOrigin());
-			return;
+			break;
 		case RIGHT:
 		case LEFT:
 			pasteHorizontal(destinationRange, getMinRowIndexFromOrigin(),
 					getMaxRowIndexFromOrigin(), getMinColumnIndexFromOrigin(),
 					getMaxColumnIndexFromOrigin());
+			break;
 		}
+		setDestinationRangeToNonEmptySpreadsheetCells(destinationRange);
 	}
 
 	private void pasteVertical(TabularRange destinationRange, int minOriginRow, int maxOriginRow,
@@ -220,6 +222,15 @@ public class CellDragPasteHandler {
 			}
 			row++;
 		} while (row < destinationRange.getHeight());
+	}
+
+	private void setDestinationRangeToNonEmptySpreadsheetCells(TabularRange destinationRange) {
+		destinationRange.forEach((row, column) -> {
+			GeoElement geo = tabularData.contentAt(row, column);
+			if (geo != null) {
+				geo.setEmptySpreadsheetCell(false);
+			}
+		});
 	}
 
 	private boolean shouldCopySingleRowOnly() {

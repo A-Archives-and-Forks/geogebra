@@ -1,12 +1,16 @@
 package org.geogebra.common.spreadsheet.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElementSpreadsheet;
+import org.geogebra.common.spreadsheet.kernel.DefaultSpreadsheetCellProcessor;
 import org.geogebra.common.spreadsheet.kernel.KernelTabularDataAdapter;
+import org.geogebra.test.annotation.Issue;
 import org.junit.Test;
 
 public class CellDragPasteHandlerTest extends BaseUnitTest {
@@ -179,6 +183,26 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 		assertCellContentEquals("-11", 2, 1);
 		assertCellContentEquals("2", 3, 2);
 		assertCellContentEquals("1", 2, 2);
+	}
+
+	@Test
+	@Issue("APPS-5987")
+	public void testDragPasteShouldResultInNonEmptySpreadsheetCells() {
+		DefaultSpreadsheetCellProcessor processor
+				= new DefaultSpreadsheetCellProcessor(getAlgebraProcessor());
+		getKernel().attach(tabularData);
+		processor.process("=3", 0, 0);
+		processor.process("=A2", 0, 1);
+
+		setRangeToCopy(0, 0, 1, 1);
+		pasteToDestination(1, 1);
+		assertTrue(lookup("A2").isEmptySpreadsheetCell());
+		assertTrue(lookup("A3").isEmptySpreadsheetCell());
+
+		setRangeToCopy(0, 0, 0, 0);
+		pasteToDestination(1, 0);
+		assertFalse(lookup("A2").isEmptySpreadsheetCell());
+		assertTrue(lookup("A3").isEmptySpreadsheetCell());
 	}
 
 	private void setRangeToCopy(int fromRow, int toRow, int fromColumn, int toColumn) {
