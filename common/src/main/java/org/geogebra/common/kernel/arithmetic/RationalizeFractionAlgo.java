@@ -20,14 +20,21 @@ final class RationalizeFractionAlgo {
 		ExpressionNode result = getReducedRoot(doRationalize(), kernel);
 		ExpressionNode canceledResult =
 				result.isOperation(Operation.DIVIDE) ? cancelGCDs(result, kernel) : result;
-		return canceledResult;
+		return checkDecimals(canceledResult) ? null : canceledResult;
 	}
 
-	private boolean checkDecimals(ExpressionNode node) {
+	/**
+	 * Package private to be testable in isolation
+	 *
+	 * @param node to test
+	 * @return if the expressx
+	 */
+	static boolean checkDecimals(ExpressionNode node) {
 		return node.inspect(new Inspecting() {
 			@Override
 			public boolean check(ExpressionValue v) {
-				return true;
+				return (v instanceof NumberValue
+				|| v instanceof MyDouble) && !isIntegerValue(v.wrap());
 			}
 		});
 }
@@ -35,8 +42,7 @@ final class RationalizeFractionAlgo {
 
 	static boolean isIntegerValue(ExpressionNode node) {
 		double v = node.evaluateDouble();
-		long rounded = Math.round(v);
-		return v - rounded > Kernel.MAX_PRECISION;
+		return DoubleUtil.isEqual(v, Math.rint(v), Kernel.MAX_PRECISION);
 	}
 
 

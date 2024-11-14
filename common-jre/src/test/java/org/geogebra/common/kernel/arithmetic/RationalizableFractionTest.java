@@ -1,8 +1,11 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import static org.geogebra.common.kernel.arithmetic.RationalizeFractionAlgo.checkDecimals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.StringTemplate;
@@ -153,8 +156,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void name() {
-		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2))",
-				"(-1 + sqrt(2)) sqrt(5)");
+		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
 
 	}
 
@@ -168,5 +170,28 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	@Test
 	public void testEvaluateUnderSquareRoot() {
 		rationalizationShouldBe("1 / sqrt(3 + 4)", "sqrt(7) / 7");
+	}
+
+	@Test
+	public void testCheckDecimals() {
+		shouldPassToDecimalTest("sqrt(2) / 4");
+		shouldPassToDecimalTest("1 + sqrt(2)");
+		shouldPassToDecimalTest("(2 (sqrt(5) + 1))");
+		shouldNotPassToDecimalTest("1 + sqrt(2.5)");
+		shouldNotPassToDecimalTest("16.5 * 2 sqrt(5)");
+	}
+
+	private void shouldNotPassToDecimalTest(String command) {
+		assertTrue(isPassDecimal(command));
+	}
+
+	private void shouldPassToDecimalTest(String command) {
+		assertFalse(isPassDecimal(command));
+	}
+
+	private boolean isPassDecimal(String command) {
+		GeoNumeric numeric = add(command);
+		numeric.setSymbolicMode(true, true);
+		return checkDecimals(numeric.getDefinition());
 	}
 }
