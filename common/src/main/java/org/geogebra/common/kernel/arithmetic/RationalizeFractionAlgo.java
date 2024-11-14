@@ -12,14 +12,33 @@ final class RationalizeFractionAlgo {
 	public RationalizeFractionAlgo(Kernel kernel, ExpressionNode numerator,
 			ExpressionNode denominator) {
 		this.kernel = kernel;
-		this.numerator = numerator;
-		this.denominator = denominator;
+		this.numerator = processUnderSqrts(numerator);
+		this.denominator = processUnderSqrts(denominator);
 	}
 
 	public ExpressionNode compute() {
 		ExpressionNode result = getReducedRoot(doRationalize(), kernel);
-		return result.isOperation(Operation.DIVIDE) ? cancelGCDs(result, kernel) : result;
+		ExpressionNode canceledResult =
+				result.isOperation(Operation.DIVIDE) ? cancelGCDs(result, kernel) : result;
+		return canceledResult;
 	}
+
+	private boolean checkDecimals(ExpressionNode node) {
+		return node.inspect(new Inspecting() {
+			@Override
+			public boolean check(ExpressionValue v) {
+				return true;
+			}
+		});
+}
+
+
+	static boolean isIntegerValue(ExpressionNode node) {
+		double v = node.evaluateDouble();
+		long rounded = Math.round(v);
+		return v - rounded > Kernel.MAX_PRECISION;
+	}
+
 
 	private static ExpressionNode cancelGCDs(ExpressionNode node, Kernel kernel) {
 		ExpressionNode numerator = node.getLeftTree();
@@ -124,14 +143,35 @@ final class RationalizeFractionAlgo {
 
 	private ExpressionNode rationalizeAsLeafNumerator() {
 		if (denominator.isOperation(Operation.SQRT)) {
-			double underSqrt = denominator.getLeft().evaluateDouble();
-			MyDouble left = newNumber(underSqrt);
+			ExpressionNode sqrtOf = simplifyUnderSqrt(denominator);
 			return new ExpressionNode(kernel,
-					numerator.multiplyR(new ExpressionNode(kernel, left, Operation.SQRT,
-									null)
-					), Operation.DIVIDE, left);
+					numerator.multiplyR(sqrtOf), Operation.DIVIDE, sqrtOf.getLeftTree());
 		}
 		return factorizeOrHandleProduct();
+	}
+
+	private ExpressionNode processUnderSqrts(final ExpressionNode node) {
+		node.inspect(new Inspecting() {
+			@Override
+			public boolean check(ExpressionValue v) {
+				if (v.isOperation(Operation.SQRT)) {
+					ExpressionNode sqrtOf = simplifyUnderSqrt(node);
+					v.wrap().setLeft(sqrtOf.getLeft());
+				}
+				return true;
+			}
+		});
+		return node;
+	}
+
+	private ExpressionNode simplifyUnderSqrt(ExpressionNode node) {
+		if (node.getLeft().isLeaf()) {
+			return node;
+		}
+		double underSqrt = node.getLeft().evaluateDouble();
+		MyDouble left = newNumber(underSqrt);
+		return new ExpressionNode(kernel, left, Operation.SQRT,
+				null);
 	}
 
 	private ExpressionNode doFactorize(ExpressionNode node) {

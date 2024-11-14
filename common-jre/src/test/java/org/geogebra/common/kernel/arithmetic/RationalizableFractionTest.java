@@ -48,6 +48,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldBeUnsupported("(3.2 (sqrt(3) + 1)) / sqrt(2)");
 	}
 
+
 	private void shouldBeUnsupported(String definition) {
 		GeoElementND geo = add(definition);
 		ExpressionNode resolution = RationalizableFraction.getResolution(geo.getDefinition());
@@ -134,6 +135,13 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("sqrt(3) / sqrt(1)", "sqrt(3)");
 		rationalizationShouldBe("sqrt(6) / sqrt(2)", "sqrt(3)");
 		rationalizationShouldBe("3 / sqrt(8)", "(3sqrt(2)) / 4");
+		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2))",
+				"(-1 + sqrt(2)) sqrt(5)");
+	}
+
+	@Test
+	public void testDecimalsShouldDiscardResults() {
+		shouldBeUnsupported("sqrt(2 + 3) / (1 + sqrt(2 + 5))");
 	}
 
 	@Test
@@ -141,6 +149,13 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
 		rationalizationShouldBe("4 / (sqrt(5) - 1)", "sqrt(5) + 1");
 		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
+	}
+
+	@Test
+	public void name() {
+		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2))",
+				"(-1 + sqrt(2)) sqrt(5)");
+
 	}
 
 	@Test
