@@ -366,7 +366,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			return;
 		}
 
-		for(IconButton button : quickButtons) {
+		for (IconButton button : quickButtons) {
 			if (button instanceof IconButtonWithProperty) {
 				((IconButtonWithProperty) button).closePopup();
 			}

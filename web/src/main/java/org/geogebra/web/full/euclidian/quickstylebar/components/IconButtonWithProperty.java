@@ -186,6 +186,9 @@ public class IconButtonWithProperty extends IconButton {
 		this.popupHandler = popupHandler;
 	}
 
+	/**
+	 * close popup of button
+	 */
 	public void closePopup() {
 		if (propertyPopup != null) {
 			propertyPopup.hide();
