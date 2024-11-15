@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic.filter;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -11,7 +12,9 @@ import org.geogebra.common.kernel.arithmetic.Function;
 import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.MyList;
 import org.geogebra.common.kernel.arithmetic.MyVecNode;
+import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.geogebra.common.kernel.geos.GeoVec2D;
+import org.geogebra.common.kernel.parser.ParseException;
 import org.geogebra.common.plugin.Operation;
 import org.hamcrest.Matcher;
 import org.junit.Test;
@@ -45,6 +48,14 @@ public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 		ExpressionValue function = new Function(getKernel(),
 				new ExpressionNode(getKernel(), 0));
 		assertAllowed(Operation.ABS, function, null, is(true));
+	}
+
+	@Test
+	public void absFilterShouldWorkForExpressions() throws ParseException {
+		add("A=(1,1)");
+		add("B=(2,2)");
+		ValidExpression node = getKernel().getParser().parseGeoGebraExpression("abs(A-B)");
+		assertThat(filter.isAllowed(node), equalTo(false));
 	}
 
 	@Test

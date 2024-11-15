@@ -342,6 +342,10 @@ public class Variable extends ValidExpression {
 
 	@Override
 	public ValueType getValueType() {
+		GeoElement reference = kernel.lookupLabel(name);
+		if (reference != null) {
+			return reference.getValueType();
+		}
 		return ValueType.UNKNOWN;
 	}
 
