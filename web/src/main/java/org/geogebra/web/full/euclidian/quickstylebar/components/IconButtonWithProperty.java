@@ -185,4 +185,10 @@ public class IconButtonWithProperty extends IconButton {
 	public void addPopupHandler(PopupColorHandler popupHandler) {
 		this.popupHandler = popupHandler;
 	}
+
+	public void closePopup() {
+		if (propertyPopup != null) {
+			propertyPopup.hide();
+		}
+	}
 }
