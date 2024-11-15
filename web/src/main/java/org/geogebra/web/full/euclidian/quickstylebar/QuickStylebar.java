@@ -362,7 +362,16 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 	@Override
 	public void updateVisualStyle(GeoElement geo) {
-		// nothing for now
+		if (!isVisible()) {
+			return;
+		}
+
+		for (IconButton button : quickButtons) {
+			if (button instanceof IconButtonWithProperty) {
+				((IconButtonWithProperty) button).closePopup();
+			}
+		}
+		updateStyleBar();
 	}
 
 	@Override
