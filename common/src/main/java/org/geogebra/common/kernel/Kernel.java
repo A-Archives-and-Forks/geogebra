@@ -1370,7 +1370,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 				// convert scientific notation 1.0E-20 to 1*10^(-20)
 				String scientificStr = MyDouble.toString(x);
 
-				return tpl.convertScientificNotation(scientificStr);
+				return tpl.convertScientificNotationGiac(scientificStr);
 			}
 
 			// number formatting for screen output
@@ -1963,7 +1963,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 		ScientificFormatAdapter sfa = tpl.getSF(sf);
 		// get scientific format
 		StringUtil.appendFormat(sbFormatSF, x, sfa);
-		return sbFormatSF.toString();
+		return tpl.convertScientificNotationForDisplay(sbFormatSF.toString());
 	}
 
 	/**
@@ -4165,7 +4165,6 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 			storeStateForModeStarting();
 			app.getEventDispatcher()
 					.dispatchEvent(new Event(EventType.REDO));
-			app.setUnAutoSaved();
 		}
 	}
 
@@ -4218,7 +4217,6 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 		notifyReset();
 		app.getCompanion().recallViewCreators();
 		app.batchUpdateEnd();
-		app.setUnAutoSaved();
 	}
 
 	/**
@@ -4249,7 +4247,6 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 				storeStateForModeStarting();
 				app.getEventDispatcher()
 						.dispatchEvent(new Event(EventType.UNDO));
-				app.setUnAutoSaved();
 			}
 		}
 	}
