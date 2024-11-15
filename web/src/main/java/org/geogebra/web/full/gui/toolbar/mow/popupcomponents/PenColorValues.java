@@ -8,12 +8,12 @@ public enum PenColorValues implements ColorValues {
 	BLACK(GColor.BLACK),
 	MEBIS_PURPLE(GColor.newColorRGB(0x975FA8)),
 	GGB_PURPLE(GColor.DEFAULT_PURPLE),
-	BLUE(GColor.newColorRGB(0x1665C0)),
+	BLUE(GColor.newColorRGB(0x1565C0)),
 	GREEN(GColor.newColorRGB(0x388C83)),
 	WHITE(GColor.WHITE),
 	YELLOW(GColor.newColorRGB(0xFFCC02)),
 	ORANGE(GColor.newColorRGB(0xE07415)),
-	RED(GColor.newColorRGB(0xD3302F)),
+	RED(GColor.newColorRGB(0xD32F2F)),
 	CUSTOM_COLOR(null);
 
 	private final GColor color;

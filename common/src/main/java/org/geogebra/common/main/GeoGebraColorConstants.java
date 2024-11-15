@@ -135,15 +135,15 @@ public class GeoGebraColorConstants {
 
 	// New colors for graphing/geometry app objects
 	/** GEOGEBRA_OBJECT_GREEN */
-	public static final GColor GEOGEBRA_OBJECT_GREEN = rgb(0x2E7D32);
+	public static final GColor GEOGEBRA_OBJECT_GREEN = rgb(0x006758);
 	/** GEOGEBRA_OBJECT_BlUE */
 	public static final GColor GEOGEBRA_OBJECT_BLUE = rgb(0x1565C0);
 	/** GEOGEBRA_OBJECT_RED */
 	public static final GColor GEOGEBRA_OBJECT_RED = rgb(0xD32F2F);
 	/** GEOGEBRA_OBJECT_GREY */
-	public static final GColor GEOGEBRA_OBJECT_GREY = rgb(0x616161);
+	public static final GColor GEOGEBRA_OBJECT_GREY = rgb(0x6E6D73);
 	/** GEOGEBRA_OBJECT_BLACK */
-	public static final GColor GEOGEBRA_OBJECT_BLACK = GColor.BLACK;
+	public static final GColor GEOGEBRA_OBJECT_BLACK = rgb(0x1C1C1F);
 	/** GEOGEBRA_OBJECT_PINK */
 	public static final GColor GEOGEBRA_OBJECT_PINK = GColor.newColor(216, 27,
 			96);
