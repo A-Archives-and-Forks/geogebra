@@ -1,11 +1,26 @@
 package org.geogebra.common.kernel.arithmetic.filter;
 
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
-import org.geogebra.common.plugin.Operation;
+import org.geogebra.common.kernel.arithmetic.Inspecting;
+import org.geogebra.common.kernel.arithmetic.ValidExpression;
 
-public class ScientificOperationArgumentFilter implements OperationArgumentFilter {
+public enum ScientificOperationArgumentFilter implements ExpressionFilter, Inspecting {
+
+	INSTANCE;
+
 	@Override
-	public boolean isAllowed(Operation operation, ExpressionValue left, ExpressionValue right) {
-		return !(left.evaluatesToList() || right.evaluatesToList());
+	public boolean isAllowed(ValidExpression expression) {
+		return !expression.inspect(this);
+	}
+
+	@Override
+	public boolean check(ExpressionValue expression) {
+		return expression.isExpressionNode() && !expression.isLeaf()
+				&& containsList((ExpressionNode) expression);
+	}
+
+	private boolean containsList(ExpressionNode expression) {
+		return expression.getLeft().evaluatesToList() || expression.getLeft().evaluatesToList();
 	}
 }

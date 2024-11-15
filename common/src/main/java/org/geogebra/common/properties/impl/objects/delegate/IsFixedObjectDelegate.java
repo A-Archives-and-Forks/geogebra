@@ -3,7 +3,7 @@ package org.geogebra.common.properties.impl.objects.delegate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoList;
-import org.geogebra.common.main.AppConfig;
+import org.geogebra.common.main.settings.AlgebraSettings;
 
 public class IsFixedObjectDelegate extends AbstractGeoElementDelegate {
 
@@ -16,8 +16,8 @@ public class IsFixedObjectDelegate extends AbstractGeoElementDelegate {
 		if (element instanceof GeoList) {
 			return isApplicableToList((GeoList) element);
 		}
-		AppConfig config = element.getApp().getConfig();
-		if (hasFunctionProperties(element) && config.isObjectDraggingRestricted()) {
+		AlgebraSettings algebraSettings = element.getApp().getSettings().getAlgebra();
+		if (hasFunctionProperties(element) && algebraSettings.isEquationChangeByDragRestricted()) {
 			return false;
 		}
 		return element.showFixUnfix();

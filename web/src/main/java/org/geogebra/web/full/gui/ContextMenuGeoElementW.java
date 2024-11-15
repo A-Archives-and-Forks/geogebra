@@ -474,8 +474,9 @@ public class ContextMenuGeoElementW extends ContextMenuGeoElement
 	private void addFixObjectForOneGeo() {
 		final GeoElement geo = getGeo();
 		// change back to old name-> Fix instead of Lock
-		if (geo.isFixable() && (!app.getConfig().isObjectDraggingRestricted()
-				|| !geo.isFunctionOrEquationFromUser())) {
+		if (geo.isFixable() && (
+				!app.getSettings().getAlgebra().isEquationChangeByDragRestricted()
+						|| !geo.isFunctionOrEquationFromUser())) {
 			addFixObjectMenuItem(geo.isLocked(), () -> fixObjectCmd(!geo.isLocked()));
 		}
 	}
@@ -490,7 +491,8 @@ public class ContextMenuGeoElementW extends ContextMenuGeoElement
 
 	private void addFixForSelection(ArrayList<GeoElement> selectedGeos) {
 		boolean fixable = true;
-		boolean locked = !app.getConfig().isObjectDraggingRestricted();
+		boolean locked = !app.getSettings().getAlgebra()
+				.isEquationChangeByDragRestricted();
 		for (GeoElement geo: selectedGeos) {
 			fixable = fixable && geo.isFixable();
 			locked = locked && geo.isLocked();

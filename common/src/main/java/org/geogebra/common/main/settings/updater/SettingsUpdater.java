@@ -38,6 +38,8 @@ public class SettingsUpdater {
 		settings.getLabelSettings().setLabelVisibility(LabelVisibility.PointsOnly);
 		settings.getAlgebra().setStyle(AlgebraStyle.DEFINITION_AND_VALUE);
 		fontSettingsUpdater.resetFonts();
+		settings.getAlgebra().setEquationChangeByDragRestricted(
+				appConfig.isObjectDraggingRestricted());
 	}
 
 	/**

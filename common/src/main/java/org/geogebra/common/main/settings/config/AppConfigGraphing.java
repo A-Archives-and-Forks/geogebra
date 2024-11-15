@@ -13,8 +13,8 @@ import org.geogebra.common.io.layout.Perspective;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.arithmetic.filter.GraphingOperationArgumentFilter;
-import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.GraphingCommandArgumentFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
@@ -303,8 +303,8 @@ public class AppConfigGraphing extends AbstractAppConfig {
 	}
 
 	@Override
-	public OperationArgumentFilter createOperationArgumentFilter() {
-		return new GraphingOperationArgumentFilter();
+	public ExpressionFilter createOperationArgumentFilter() {
+		return GraphingOperationArgumentFilter.INSTANCE;
 	}
 
 	@Override

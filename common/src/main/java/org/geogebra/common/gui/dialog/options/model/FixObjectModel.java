@@ -2,6 +2,7 @@ package org.geogebra.common.gui.dialog.options.model;
 
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.App;
+import org.geogebra.common.main.settings.AlgebraSettings;
 
 public class FixObjectModel extends BooleanOptionModel {
 
@@ -24,7 +25,8 @@ public class FixObjectModel extends BooleanOptionModel {
 	@Override
 	public boolean isValidAt(int index) {
 		GeoElement geo = getGeoAt(index);
-		return geo.isFixable() && (!app.getConfig().isObjectDraggingRestricted()
+		AlgebraSettings algebraSettings = app.getSettings().getAlgebra();
+		return geo.isFixable() && (!algebraSettings.isEquationChangeByDragRestricted()
 				|| !geo.isFunctionOrEquationFromUser());
 	}
 
