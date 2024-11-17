@@ -18,6 +18,7 @@ dependencies {
     api(libs.elemental2.webgl)
     api(libs.gwt.resources.api)
     api(libs.gwt.timer)
+    api("com.google.jsinterop:base:1.0.3")
 
     implementation(project(":common"))
     implementation(libs.autoService)

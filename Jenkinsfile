@@ -57,7 +57,7 @@ pipeline {
             steps {
                 updateGitlabCommitStatus name: 'build', state: 'pending'
                 writeFile file: 'changes.csv', text: getChangelog()
-                sh label: 'build web', script: "$gradleCmd :web:prepareS3Upload :web:mergeDeploy ${modules} -Pgdraft=true -PdeployggbRoot=https://apps-builds.s3-eu-central-1.amazonaws.com/${s3buildDir}"
+                sh label: 'build web', script: "$gradleCmd :web:prepareS3Upload :web:mergeDeploy ${modules} --info -Pgdraft=true -PdeployggbRoot=https://apps-builds.s3-eu-central-1.amazonaws.com/${s3buildDir}"
             }
         }
         stage('tests and reports') {
