@@ -2,7 +2,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url='https://oss.sonatype.org/content/repositories/comgooglejsinterop-1038')
+        maven(url="https://oss.sonatype.org/content/repositories/comgooglejsinterop-1038")
     }
     versionCatalogs {
         create("libs") {
