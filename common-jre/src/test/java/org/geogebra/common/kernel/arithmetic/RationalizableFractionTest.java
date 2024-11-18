@@ -11,6 +11,7 @@ import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
+import org.geogebra.common.util.debug.Log;
 import org.junit.Test;
 
 public class RationalizableFractionTest extends BaseUnitTest {
@@ -49,6 +50,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldBeUnsupported("2.3 / sqrt(2)");
 		shouldBeUnsupported("((1 / 2) (sqrt(3) + 1)) / sqrt(2)");
 		shouldBeUnsupported("(3.2 (sqrt(3) + 1)) / sqrt(2)");
+		shouldBeUnsupported("((4+sqrt(10+0.0001))/(-2+sqrt(0.0001+10)))");
 	}
 
 
@@ -193,5 +195,19 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		GeoNumeric numeric = add(command);
 		numeric.setSymbolicMode(true, true);
 		return checkDecimals(numeric.getDefinition());
+	}
+
+	@Test
+	public void test() {
+		rationalizationShouldBe("(-2 + sqrt(7)) / (-9 + sqrt(4))", "(2 - sqrt(7)) / 7");
+		rationalizationShouldBe("(-2 + sqrt(7)) / (-9 + sqrt(2 + 2))",
+				"(2 - sqrt(7)) / 7");
+	}
+
+
+	private String genericSqrtFraction(int a, int b, int c, int d) {
+		String s = "(" + a + " + sqrt(" + b + ")) / " + "(" + c + " + sqrt(" + d + "))";
+		Log.debug(s);
+		return s;
 	}
 }

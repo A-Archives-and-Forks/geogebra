@@ -17,9 +17,16 @@ final class RationalizeFractionAlgo {
 	}
 
 	public ExpressionNode compute() {
-		ExpressionNode result = getReducedRoot(doRationalize(), kernel);
+		ExpressionNode rationalizedNode = doRationalize();
+		if (rationalizedNode == null) {
+			return null;
+		}
+
+		ExpressionNode reducedRoot = getReducedRoot(rationalizedNode, kernel);
 		ExpressionNode canceledResult =
-				result.isOperation(Operation.DIVIDE) ? cancelGCDs(result, kernel) : result;
+				reducedRoot.isOperation(Operation.DIVIDE)
+						? cancelGCDs(reducedRoot, kernel)
+						: reducedRoot;
 		return checkDecimals(canceledResult) ? null : canceledResult;
 	}
 

@@ -104,8 +104,7 @@ public final class RationalizableFraction {
 		if (denominatorValue != null) {
 			return denominatorValue == 1
 			? new ExpressionNode(node.getLeftTree())
-					: new ExpressionNode(kernel, node.getLeftTree(), Operation.DIVIDE,
-					new MyDouble(kernel, denominatorValue));
+					: createFractionWithIntegerDenominator(node, kernel, denominatorValue);
 		}
 
 		RationalizeFractionAlgo algo =
@@ -114,6 +113,34 @@ public final class RationalizableFraction {
 		return algo.compute();
 	}
 
+	private static ExpressionNode createFractionWithIntegerDenominator(ExpressionNode node, Kernel kernel,
+			Integer denominatorValue) {
+		if (denominatorValue < 0) {
+			ExpressionNode numerator = node.getLeftTree();
+			numerator.traverse(new Traversing() {
+				ExpressionNode parent = null;
+				@Override
+				public ExpressionValue process(ExpressionValue ev) {
+					if (ev instanceof MySpecialDouble && (parent == null
+							|| !parent.isOperation(Operation.SQRT))) {
+						return new MyDouble(kernel, -ev.evaluateDouble());
+					}
+					parent = ev.wrap();
+					return ev;
+				}
+			});
+			numerator.setOperation(flip(numerator.getOperation()));
+
+				return new ExpressionNode(kernel, numerator,
+					Operation.DIVIDE, new MyDouble(kernel, -denominatorValue));
+		}
+		return new ExpressionNode(kernel, node.getLeftTree(), Operation.DIVIDE,
+				new MyDouble(kernel, denominatorValue));
+	}
+
+	private static Operation flip(Operation operation) {
+		return Operation.PLUS.equals(operation) ? Operation.MINUS : Operation.PLUS;
+	}
 	private static Integer evaluateAsInteger(ExpressionNode node) {
 		double v = node.evaluateDouble();
 		return DoubleUtil.isEqual(v,  (int) v) ? (int) v : null;
