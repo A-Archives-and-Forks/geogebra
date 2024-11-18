@@ -1,12 +1,8 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.kernel.arithmetic.Splittable;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
+import org.geogebra.common.kernel.implicit.MarchingConfig;
 
 /**
  * BernsteinPlotCell is the basic building block of the algorithm.
@@ -17,41 +13,16 @@ import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
  *
  */
 public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
-	final BernsteinBoundingBox boundingBox;
-	final BernsteinPolynomial polynomial;
-	private final BernsteinPlotCellKind kind;
-	private final Map<EdgeKind, BernsteinPlotCellEdge> edges = new HashMap<>();
-
-	/**
-	 *
-	 * @return kind: top, left, bottom, right,
-	 */
-	BernsteinPlotCellKind getKind() {
-		return kind;
-	}
-
-	/**
-	 *
-	 * @return the edges of the cell.
-	 */
-	public Collection<BernsteinPlotCellEdge> getEdges() {
-		return edges.values();
-	}
-
-	/**
-	 *
-	 * @return the center point of the cell.
-	 */
-	public GPoint2D center() {
-		return new GPoint2D(boundingBox.getXHalf(),
-				boundingBox.getYHalf());
-	}
-
 	enum BernsteinPlotCellKind {
 		CELL0,
 		CELL1,
 		CELL2
 	}
+
+	final BernsteinBoundingBox boundingBox;
+	final BernsteinPolynomial polynomial;
+	private final BernsteinPlotCellKind kind;
+	private MarchingConfig marchingConfig;
 
 	/**
 	 *
@@ -62,6 +33,14 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 		boundingBox = box;
 		this.polynomial = polynomial;
 		kind = classify();
+	}
+
+	/**
+	 *
+	 * @return kind: top, left, bottom, right,
+	 */
+	BernsteinPlotCellKind getKind() {
+		return kind;
 	}
 
 	private BernsteinPlotCellKind classify() {
@@ -91,24 +70,6 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 		return cells;
 	}
 
-	void createEdges() {
-		edges.put(EdgeKind.TOP, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getX1(), boundingBox.getX2(),
-				boundingBox.getY1(), EdgeKind.TOP));
-
-		edges.put(EdgeKind.LEFT, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getY1(), boundingBox.getY2(),
-				boundingBox.getX1(), EdgeKind.LEFT));
-
-		edges.put(EdgeKind.BOTTOM, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getX1(), boundingBox.getX2(),
-				boundingBox.getY2(), EdgeKind.BOTTOM));
-
-		edges.put(EdgeKind.RIGHT, BernsteinPlotCellEdge.create(this, polynomial,
-				boundingBox.getY1(), boundingBox.getY2(),
-				boundingBox.getX2(), EdgeKind.RIGHT));
-	}
-
 	@Override
 	public String toString() {
 		return "CurvePlotContext{"
@@ -120,5 +81,13 @@ public class BernsteinPlotCell implements Splittable<BernsteinPlotCell> {
 
 	public boolean mightHaveSolution() {
 		return kind != BernsteinPlotCellKind.CELL2;
+	}
+
+	public MarchingConfig getMarchingConfig() {
+		return marchingConfig;
+	}
+
+	public void setMarchingConfig(MarchingConfig marchingConfig) {
+		this.marchingConfig = marchingConfig;
 	}
 }

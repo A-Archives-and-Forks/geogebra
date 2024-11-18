@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class BernsteinPlotCellTest extends BaseUnitTest {
 	private BernsteinPlotCell context;
-	private BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
+	private final BernsteinPolynomialConverter converter = new BernsteinPolynomialConverter();
 
 	@Ignore
 	@Test
@@ -33,8 +33,8 @@ public class BernsteinPlotCellTest extends BaseUnitTest {
 	}
 
 	private void checkEvalOnContext(BernsteinPolynomial bernstein, BernsteinPlotCell context) {
-		double offsetX = context.boundingBox.getX1();
-		double offsetY = context.boundingBox.getY1();
+		double offsetX = context.boundingBox.x1();
+		double offsetY = context.boundingBox.y1();
 		assertSameValue(bernstein, offsetX + 0, offsetY + 0, context, 0, 0);
 		assertSameValue(bernstein, offsetX + 0.25, offsetY + 0, context, 0.5, 0);
 		assertSameValue(bernstein, offsetX + 0.5, offsetY + 0, context, 1, 0);

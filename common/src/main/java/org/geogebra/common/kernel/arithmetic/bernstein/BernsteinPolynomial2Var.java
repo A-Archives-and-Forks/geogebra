@@ -2,8 +2,6 @@ package org.geogebra.common.kernel.arithmetic.bernstein;
 
 import static org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial1Var.copyArrayTo;
 
-import org.geogebra.common.util.MyMath;
-
 public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	private final double minX;
 	private final double maxX;
@@ -11,6 +9,10 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 	final BernsteinPolynomial[] bernsteinCoeffs;
 	BernsteinPolynomial[] dividedCoeffs;
 	private BinomialCoefficientsSign sign;
+
+	public BernsteinPolynomial2Var(BernsteinPolynomial2Var polynomial, int min, int max) {
+		this(polynomial.bernsteinCoeffs, min, max, polynomial.degreeX);
+	}
 
 	/**
 	 * @param bernsteinCoeffs coefficients in x
@@ -39,21 +41,30 @@ public class BernsteinPolynomial2Var implements BernsteinPolynomial {
 		}
 		dividedCoeffs = new BernsteinPolynomial[degreeX + 1];
 		for (int i = 0; i < degreeX + 1; i++) {
-			dividedCoeffs[i] = bernsteinCoeffs[i].divide(MyMath.binomial(degreeX, i));
+			dividedCoeffs[i] = bernsteinCoeffs[i].divide(BinomialCache.get(degreeX, i));
 		}
 	}
 
 	@Override
 	public double evaluate(double valueX, double valueY) {
+		createLazyDivideCoeffs();
+		if (valueX == 0) {
+			return dividedCoeffs[0].evaluate(valueY);
+		}
+
+		if (valueX == 1) {
+			return dividedCoeffs[degreeX].evaluate(valueY);
+		}
+
 		double[] partialEval = new double[degreeX + 1];
 		double[] lastPartialEval = new double[degreeX + 1];
-		double scaledX = (valueX - minX) / (maxX - minX);
+		double scaledX = valueX;
 		double scaledOneMinusX = 1 - scaledX;
 
-		createLazyDivideCoeffs();
 		for (int i = 0; i < degreeX + 1; i++) {
 			lastPartialEval[i] = dividedCoeffs[i].evaluate(valueY);
 		}
+
 		for (int i = 1; i <= degreeX + 1; i++) {
 			for (int j = degreeX - i; j >= 0; j--) {
 				partialEval[j] = scaledOneMinusX * lastPartialEval[j]

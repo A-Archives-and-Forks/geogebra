@@ -85,7 +85,7 @@ public class DrawLocus extends Drawable {
 
 		// line on screen?
 		if (!geo.isInverseFill() && !view.intersects(gp)) {
-			isVisible = false;
+			//isVisible = false;
 			// don't return here to make sure that getBounds() works for
 			// offscreen points too
 		}
@@ -155,11 +155,11 @@ public class DrawLocus extends Drawable {
 					GGraphics2D graphics = bitmap.createGraphics();
 					graphics.setAntialiasing();
 					graphics.translate(-bitmapShiftX, -bitmapShiftY);
-					drawPath(graphics);
+					drawPath(graphics, gp);
 				}
 				g2.drawImage(bitmap, bitmapShiftX, bitmapShiftY);
 			} else {
-				drawPath(g2);
+				drawPath(g2, gp);
 			}
 
 			if (geo.isFillable() && geo.isFilled()) {
@@ -169,7 +169,7 @@ public class DrawLocus extends Drawable {
 		}
 	}
 
-	private void drawPath(GGraphics2D g2) {
+	protected void drawPath(GGraphics2D g2, GeneralPathClippedForCurvePlotter gp) {
 		g2.setPaint(getObjectColor());
 		g2.setStroke(objStroke);
 		g2.draw(gp);
@@ -188,12 +188,13 @@ public class DrawLocus extends Drawable {
 				(int) rectangle.getHeight() + 2 * BITMAP_PADDING);
 	}
 
-	private void buildGeneralPath(ArrayList<? extends MyPoint> pointList) {
-		if (gp == null) {
-			gp = new GeneralPathClippedForCurvePlotter(view);
-		}
-		gp.resetWithThickness(geo.getLineThickness());
+	protected void buildGeneralPath(ArrayList<? extends MyPoint> pointList) {
+		lazyCreateGeneralPath();
 		// Use the last plotted point for positioning the label:
+		setLabelPosition(pointList);
+	}
+
+	protected void setLabelPosition(ArrayList<? extends MyPoint> pointList) {
 		labelPosition = CurvePlotterUtils.draw(gp, pointList, transformSys);
 		/*
 		 * Due to numerical instability of the curve plotter algorithm this
@@ -211,6 +212,17 @@ public class DrawLocus extends Drawable {
 				labelPosition[1] = py;
 			}
 		}
+	}
+
+	protected void lazyCreateGeneralPath() {
+		if (gp == null) {
+			gp = newGeneralPath();
+		}
+		gp.resetWithThickness(geo.getLineThickness());
+	}
+
+	protected GeneralPathClippedForCurvePlotter newGeneralPath() {
+		return new GeneralPathClippedForCurvePlotter(view);
 	}
 
 	@Override
@@ -234,6 +246,10 @@ public class DrawLocus extends Drawable {
 
 	@Override
 	public void drawStroke(GGraphics2D g2) {
+		drawStrokedPath(g2, gp);
+	}
+
+	void drawStrokedPath(GGraphics2D g2, GeneralPathClippedForCurvePlotter gp) {
 		if (partialHitClip != null) {
 			g2.setClip(partialHitClip, true);
 			g2.draw(gp);
@@ -243,7 +259,7 @@ public class DrawLocus extends Drawable {
 		}
 	}
 
-	private void drawHighlighted(GGraphics2D g2) {
+	protected void drawHighlighted(GGraphics2D g2) {
 		g2.setPaint(geo.getSelColor());
 		g2.setStroke(selStroke);
 		drawStroke(g2);

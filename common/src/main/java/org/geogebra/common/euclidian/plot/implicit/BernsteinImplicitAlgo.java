@@ -1,8 +1,5 @@
 package org.geogebra.common.euclidian.plot.implicit;
 
-import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_BOX_IN_PIXELS;
-import static org.geogebra.common.euclidian.plot.implicit.BernsteinPlotter.SMALLEST_EDGE_IN_PIXELS;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,33 +11,42 @@ import org.geogebra.common.kernel.arithmetic.BoundsRectangle;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomial;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.implicit.LinkSegments;
 
 public class BernsteinImplicitAlgo implements PlotterAlgo {
 
-	private final CellGrid<BernsteinPlotCell>  grid;
+	public static final BoundsRectangle UNIT_SQUARE = new BoundsRectangle(0, 1, 0, 1);
 	private final EuclidianViewBounds bounds;
 	private final GeoElement curve;
+	private final List<BernsteinPlotCell> cells;
+	private final BernsteinImplicitAlgoSettings settings;
 	private final BernsteinPolynomialConverter converter;
+	private final LinkSegments segments;
+	BernsteinPolynomial polynomial;
 
 	/**
-	 *
-	 * @param grid {@link CellGrid}
 	 * @param bounds {@link EuclidianViewBounds}
 	 * @param curve the curve geo.
+	 * @param cells the cells as itermediate result of the algo.
+	 * @param segments to make segments as the final result of the algo.
+	 * @param settings {@link BernsteinImplicitAlgoSettings}
 	 */
-	public BernsteinImplicitAlgo(CellGrid<BernsteinPlotCell> grid, EuclidianViewBounds bounds,
-			GeoElement curve) {
-		this.grid = grid;
+	public BernsteinImplicitAlgo(EuclidianViewBounds bounds, GeoElement curve,
+			List<BernsteinPlotCell> cells, LinkSegments segments,
+			BernsteinImplicitAlgoSettings settings) {
 		this.bounds = bounds;
 		this.curve = curve;
+		this.cells = cells;
+		this.segments = segments;
+		this.settings = settings;
 		converter = new BernsteinPolynomialConverter();
 	}
 
 	@Override
 	public void compute() {
-		grid.resize(bounds);
 		List<BernsteinPlotCell> cells = initialSplit(createRootCell());
 		cells.forEach(this::findSolutions);
+		segments.flush();
 	}
 
 	private List<BernsteinPlotCell> initialSplit(BernsteinPlotCell rootCell) {
@@ -51,7 +57,7 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 
 	private BernsteinPlotCell createRootCell() {
 		BoundsRectangle limits = new BoundsRectangle(bounds);
-		BernsteinPolynomial polynomial = converter.from(curve, limits);
+		polynomial = converter.from(curve, limits);
 		BernsteinBoundingBox box = new BernsteinBoundingBox(limits);
 		return new BernsteinPlotCell(box, polynomial);
 	}
@@ -77,8 +83,11 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 				return;
 			}
 
+			BernsteinMarchingConfigProvider provider =
+					new BernsteinMarchingConfigProvider(currentCell);
+
 			if (isBoxSmallEnough(currentCell.boundingBox)) {
-				putToGrid(currentCell);
+				addToOutput(currentCell, provider);
 			} else {
 				for (BernsteinPlotCell c : currentCell.split()) {
 					if (c.mightHaveSolution()) {
@@ -89,82 +98,17 @@ public class BernsteinImplicitAlgo implements PlotterAlgo {
 		}
 	}
 
+	private void addToOutput(BernsteinPlotCell currentCell,
+			BernsteinMarchingConfigProvider provider) {
+		segments.add(provider.getMarchingRect(), provider);
+		cells.add(currentCell);
+	}
+
 	private boolean isBoxSmallEnough(BernsteinBoundingBox box) {
-		double width = bounds.toScreenCoordXd(box.getX2()) - bounds.toScreenCoordXd(box.getX1());
-		double height = bounds.toScreenCoordYd(box.getY1()) - bounds.toScreenCoordYd(box.getY2());
-		return width < SMALLEST_BOX_IN_PIXELS
-				|| height < SMALLEST_BOX_IN_PIXELS;
-	}
-
-	@SuppressWarnings("unused")
-	private void findSolutionsInEdges(BernsteinPlotCell context) {
-		context.createEdges();
-		for (BernsteinPlotCellEdge edge : context.getEdges()) {
-			if (edge.mightHaveSolutions()) {
-				findSolutionsInOneEdge(edge);
-			}
-		}
-	}
-
-	private void findSolutionsInOneEdge(BernsteinPlotCellEdge startEdge) {
-		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
-		stack.push(startEdge);
-
-		while (!stack.isEmpty()) {
-			BernsteinPlotCellEdge edge = stack.pop();
-			if (edge.isDerivativeSignDiffer()) {
-				BernsteinPlotCellEdge[] split = edge.split();
-				stack.push(split[0]);
-				stack.push(split[1]);
-			} else {
-				findSignChangeInEdge(edge);
-			}
-		}
-
-	}
-
-	private void findSignChangeInEdge(BernsteinPlotCellEdge startEdge) {
-		Stack<BernsteinPlotCellEdge> stack = new Stack<>();
-		stack.push(startEdge);
-		while (!stack.isEmpty()) {
-			BernsteinPlotCellEdge edge = stack.pop();
-			if (edge.mightHaveSolutions() && isEdgeSmallEnough(edge)) {
-				if (edge.hasIntersect()) {
-					addIntersect(edge);
-				}
-				return;
-			}
-
-			BernsteinPlotCellEdge[] split = edge.split();
-			if (split[0].mightHaveSolutions()) {
-				stack.push(split[0]);
-			}
-			if (split[1].mightHaveSolutions()) {
-				stack.push(split[1]);
-			}
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void addIntersect(BernsteinPlotCellEdge edge) {
-		// TODO: implement
-	}
-
-	private void putToGrid(BernsteinPlotCell cell) {
-		int column = (int) Math.round(bounds.toScreenCoordXd(cell.boundingBox.getX1())
-				/ SMALLEST_BOX_IN_PIXELS);
-		int row =  (int) Math.round(bounds.toScreenCoordYd(cell.boundingBox.getY1())
-				/ SMALLEST_BOX_IN_PIXELS);
-		grid.put(cell, row, column);
-
-	}
-
-	private boolean isEdgeSmallEnough(BernsteinPlotCellEdge edge) {
-		double x1 = edge.startPoint().x;
-		double x2 = x1 + edge.length();
-		double width = edge.isHorizontal()
-				? bounds.toScreenCoordXd(x1) - bounds.toScreenCoordXd(x2)
-				: bounds.toScreenCoordYd(x1) - bounds.toScreenCoordYd(x2);
-		return width < SMALLEST_EDGE_IN_PIXELS;
+		double width = bounds.toScreenCoordXd(box.x2()) - bounds.toScreenCoordXd(box.x1());
+		double height = bounds.toScreenCoordYd(box.y1()) - bounds.toScreenCoordYd(box.y2());
+		int maxWidth = settings.minBoxWidthInPixels();
+		int maxHeight = settings.minBoxHeightInPixels();
+		return width < maxWidth && height < maxHeight;
 	}
 }

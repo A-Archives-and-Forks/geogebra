@@ -11,12 +11,13 @@ import org.geogebra.common.euclidian.plot.interval.EuclidianViewBounds;
  * with colors.
  * This class should not be used in release!
  */
-final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell> {
+final class BernsteinPlotterVisualDebug implements VisualDebug {
 	private final EuclidianViewBounds bounds;
 	private List<BernsteinPlotCell> cells;
 
-	BernsteinPlotterVisualDebug(EuclidianViewBounds bounds) {
+	BernsteinPlotterVisualDebug(EuclidianViewBounds bounds, List<BernsteinPlotCell> cells) {
 		this.bounds = bounds;
+		this.cells = cells;
 	}
 
 	@Override
@@ -28,42 +29,37 @@ final class BernsteinPlotterVisualDebug implements VisualDebug<BernsteinPlotCell
 		for (BernsteinPlotCell cell : cells) {
 			drawCell(g2, cell);
 		}
-
 	}
 
 	private void drawCell(GGraphics2D g2, BernsteinPlotCell cell) {
-		GColor color;
-		switch (cell.getKind()) {
-		case CELL0:
-			color = GColor.GREEN;
-			break;
-		case CELL1:
-			color = GColor.BLUE;
-			break;
-		case CELL2:
-			color = GColor.GRAY;
-			break;
-		default:
-			color = GColor.BLACK;
-		}
+		GColor color = getCellColor(cell);
 
-		int x = (int) (bounds.toScreenCoordXd(cell.boundingBox.getX1()));
-		int y = (int) (bounds.toScreenCoordYd(cell.boundingBox.getY1()));
-		int width = (int) (bounds.toScreenCoordXd(cell.boundingBox.getX2()) - x);
-		int height = (int) (bounds.toScreenCoordYd(cell.boundingBox.getY2()) - y);
+		int x = (int) (bounds.toScreenCoordXd(cell.boundingBox.x1()));
+		int y = (int) (bounds.toScreenCoordYd(cell.boundingBox.y1()));
+		int width = (int) (bounds.toScreenCoordXd(cell.boundingBox.x2()) - x);
+		int height = (int) (bounds.toScreenCoordYd(cell.boundingBox.y2()) - y);
 		g2.setColor(color);
 
-		g2.setColor(GColor.BLACK.deriveWithAlpha(25));
 		g2.drawRect(x, y, width, height);
+		drawConfigText(g2, cell, x, y - width / 2);
 	}
 
-	/**
-	 *
-	 * @param cells to display debug information from.
-	 */
-	@Override
-	public void setData(List<BernsteinPlotCell> cells) {
-		this.cells = cells;
+	private static void drawConfigText(GGraphics2D g2, BernsteinPlotCell cell, int x, int y) {
+		BernsteinMarchingConfig config = (BernsteinMarchingConfig) cell.getMarchingConfig();
+		g2.setColor(config.color());
+		g2.drawString(config.toString(), x, y);
+	}
 
+	private static GColor getCellColor(BernsteinPlotCell cell) {
+		switch (cell.getKind()) {
+		case CELL0:
+			return GColor.GREEN;
+		case CELL1:
+			return GColor.YELLOW;
+		case CELL2:
+			return GColor.GRAY;
+		default:
+			return GColor.BLACK;
+		}
 	}
 }

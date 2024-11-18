@@ -1,8 +1,11 @@
 package org.geogebra.common.kernel.implicit;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import org.geogebra.common.kernel.matrix.Coords;
 
-class Rect {
+class Rect implements MarchingRect {
 	/**
 	 * 
 	 */
@@ -63,19 +66,71 @@ class Rect {
 		return rect;
 	}
 
+	@Override
 	public double x1() {
 		return this.coords.val[0];
 	}
 
+	@Override
 	public double x2() {
 		return this.coords.val[0] + fx;
 	}
 
+	@Override
 	public double y1() {
 		return this.coords.val[1];
 	}
 
+	@Override
 	public double y2() {
 		return this.coords.val[1] + fy;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Rect rect = (Rect) o;
+		return x == rect.x && y == rect.y && shares == rect.shares && status == rect.status
+				&& Double.compare(fx, rect.fx) == 0
+				&& Double.compare(fy, rect.fy) == 0 && singular == rect.singular
+				&& Objects.deepEquals(evals, rect.evals) && Objects.equals(coords,
+				rect.coords);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(Arrays.hashCode(evals), x, y, shares, status, fx, fy, singular, coords);
+	}
+
+	@Override
+	public double topLeft() {
+		return evals[0];
+	}
+
+	@Override
+	public double topRight() {
+		return evals[1];
+	}
+
+	@Override
+	public double bottomLeft() {
+		return evals[3];
+	}
+
+	@Override
+	public double bottomRight() {
+		return evals[2];
+	}
+
+	@Override
+	public double cornerAt(int i) {
+		return evals[i];
 	}
 }
