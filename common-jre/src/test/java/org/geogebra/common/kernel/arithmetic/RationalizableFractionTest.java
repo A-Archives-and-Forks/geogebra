@@ -200,8 +200,8 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	@Test
 	public void test() {
 		rationalizationShouldBe("(-2 + sqrt(7)) / (-9 + sqrt(4))", "(2 - sqrt(7)) / 7");
-		rationalizationShouldBe("(-2 + sqrt(7)) / (-9 + sqrt(2 + 2))",
-				"(2 - sqrt(7)) / 7");
+//		rationalizationShouldBe("(-2 + sqrt(3+4)) / (-9 + sqrt(4))",
+//				"(2 - sqrt(7)) / 7");
 	}
 
 

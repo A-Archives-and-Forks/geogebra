@@ -116,7 +116,7 @@ public final class RationalizableFraction {
 	private static ExpressionNode createFractionWithIntegerDenominator(ExpressionNode node, Kernel kernel,
 			Integer denominatorValue) {
 		if (denominatorValue < 0) {
-			ExpressionNode numerator = node.getLeftTree();
+			ExpressionNode numerator = RationalizeFractionAlgo.processUnderSqrts(node.getLeftTree().deepCopy(kernel), kernel);
 			numerator.traverse(new Traversing() {
 				ExpressionNode parent = null;
 				@Override

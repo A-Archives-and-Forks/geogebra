@@ -12,8 +12,8 @@ final class RationalizeFractionAlgo {
 	public RationalizeFractionAlgo(Kernel kernel, ExpressionNode numerator,
 			ExpressionNode denominator) {
 		this.kernel = kernel;
-		this.numerator = processUnderSqrts(numerator);
-		this.denominator = processUnderSqrts(denominator);
+		this.numerator = numerator;//rocessUnderSqrts(numerator, kernel);
+		this.denominator = denominator;//processUnderSqrts(denominator, kernel);
 	}
 
 	public ExpressionNode compute() {
@@ -23,10 +23,11 @@ final class RationalizeFractionAlgo {
 		}
 
 		ExpressionNode reducedRoot = getReducedRoot(rationalizedNode, kernel);
-		ExpressionNode canceledResult =
-				reducedRoot.isOperation(Operation.DIVIDE)
+		ExpressionNode canceledResult = processUnderSqrts(
+		reducedRoot.isOperation(Operation.DIVIDE)
 						? cancelGCDs(reducedRoot, kernel)
-						: reducedRoot;
+						: reducedRoot,
+				kernel);
 		return checkDecimals(canceledResult) ? null : canceledResult;
 	}
 
@@ -54,40 +55,8 @@ final class RationalizeFractionAlgo {
 
 
 	private static ExpressionNode cancelGCDs(ExpressionNode node, Kernel kernel) {
-		ExpressionNode numerator = node.getLeftTree();
-		ExpressionNode denominator = node.getRightTree();
-		boolean numeratorLeaf = numerator.isLeaf();
-		boolean denominatorLeaf = denominator.isLeaf();
-		if (!numeratorLeaf && denominatorLeaf) {
-			ExpressionValue canceled = denominator.getLeft();
-			if (numerator.isOperation(Operation.MULTIPLY))  {
-				double evalCanceled = canceled.evaluateDouble();
-				double evalLeft = numerator.getLeft().evaluateDouble();
-				double evalRight = numerator.getRight().evaluateDouble();
-				long gcdLeft = Kernel.gcd((long) evalCanceled, (long) evalLeft);
-				long gcdRight = Kernel.gcd((long) evalCanceled, (long) evalRight);
-				if (DoubleUtil.isEqual(gcdLeft, evalCanceled)) {
-					return numerator.getRightTree();
-				} else if (gcdLeft != 1) {
-					double v = evalLeft / gcdLeft;
-					double canceledDominator = denominator.divide(gcdLeft).evaluateDouble();
-					return new ExpressionNode(kernel, new MyDouble(kernel, v).wrap()
-							.multiplyR(numerator.getRightTree()),
-							Operation.DIVIDE, new MyDouble(kernel, canceledDominator)
-					);
-				} else if (DoubleUtil.isEqual(gcdRight, evalCanceled)) {
-					if (DoubleUtil.isEqual(evalCanceled, evalRight)) {
-						return numerator.getLeftTree();
-					} else {
-						double v = evalRight / evalCanceled;
-						return new ExpressionNode(kernel, new MyDouble(kernel, v),
-								numerator.getOperation(), node.getLeftTree().getLeftTree()
-						);
-					}
-				}
-			}
-		}
-		return node;
+		CancelGCDInFraction gcd = new CancelGCDInFraction(node, kernel);
+		return gcd.simplify();
 	}
 
 	private ExpressionNode doRationalize() {
@@ -145,7 +114,7 @@ final class RationalizeFractionAlgo {
 	}
 
 	private ExpressionValue newNumber(ExpressionNode node) {
-		return newNumber(node.evaluateDouble());
+		return new MyDouble(kernel, node.evaluateDouble());
 	}
 
 	private static boolean hasTwoTags(ExpressionNode node) {
@@ -156,33 +125,24 @@ final class RationalizeFractionAlgo {
 
 	private ExpressionNode rationalizeAsLeafNumerator() {
 		if (denominator.isOperation(Operation.SQRT)) {
-			ExpressionNode sqrtOf = simplifyUnderSqrt(denominator);
+			ExpressionNode sqrtOf = simplifyUnderSqrt(denominator, kernel);
 			return new ExpressionNode(kernel,
 					numerator.multiplyR(sqrtOf), Operation.DIVIDE, sqrtOf.getLeftTree());
 		}
 		return factorizeOrHandleProduct();
 	}
 
-	private ExpressionNode processUnderSqrts(final ExpressionNode node) {
-		node.inspect(new Inspecting() {
-			@Override
-			public boolean check(ExpressionValue v) {
-				if (v.isOperation(Operation.SQRT)) {
-					ExpressionNode sqrtOf = simplifyUnderSqrt(node);
-					v.wrap().setLeft(sqrtOf.getLeft());
-				}
-				return true;
-			}
-		});
-		return node;
+	static ExpressionNode processUnderSqrts(final ExpressionNode node, Kernel kernel) {
+		ReduceRoot reduceRoot = new ReduceRoot(node, kernel);
+		return reduceRoot.simplify();
 	}
 
-	private ExpressionNode simplifyUnderSqrt(ExpressionNode node) {
+	private static ExpressionNode simplifyUnderSqrt(ExpressionNode node, Kernel kernel) {
 		if (node.getLeft().isLeaf()) {
 			return node;
 		}
 		double underSqrt = node.getLeft().evaluateDouble();
-		MyDouble left = newNumber(underSqrt);
+		MyDouble left = new MyDouble(kernel, underSqrt);
 		return new ExpressionNode(kernel, left, Operation.SQRT,
 				null);
 	}
@@ -201,7 +161,7 @@ final class RationalizeFractionAlgo {
 			// if new denominator is integer but not 1 or -1
 
 			result = new ExpressionNode(kernel, numerator.multiply(conjugate),
-					Operation.DIVIDE, newNumber(newDenominatorValue));
+					Operation.DIVIDE, new MyDouble(kernel, newDenominatorValue));
 		}
 		return getOperandOrder(result);
 	}
@@ -284,7 +244,7 @@ final class RationalizeFractionAlgo {
 		double product = left.getLeftTree().multiply(right.getLeft())
 				.wrap().evaluateDouble();
 
-		return new ExpressionNode(kernel, newNumber(product),
+		return new ExpressionNode(kernel, new MyDouble(kernel, product),
 						Operation.SQRT, null);
 	}
 
