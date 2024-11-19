@@ -10,12 +10,12 @@ public class UpdateContentActionStore {
 
 	private final UndoManager undoManager;
 	private final List<String> initialLabelsHeightsAndContent = new ArrayList<>();
-	private final ArrayList<GeoInline> geos;
+	private final List<GeoInline> geos;
 
 	/**
 	 * @param geosAsList Selected geos (GeoInline)
 	 */
-	public UpdateContentActionStore(ArrayList<GeoInline> geosAsList) {
+	public UpdateContentActionStore(List<GeoInline> geosAsList) {
 		this.geos = geosAsList;
 		for (GeoInline geo : geosAsList) {
 			initialLabelsHeightsAndContent.add(geo.getLabelSimple());

@@ -23,6 +23,7 @@ import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.AriaHelper;
+import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
@@ -136,8 +137,8 @@ public class IconButtonWithProperty extends IconButton {
 				parent.add(noColorButton);
 			}
 		}
-
 		if (property instanceof RangePropertyCollection<?>) {
+
 			RangeProperty<?> firstProperty
 					= ((RangePropertyCollection<?>) property).getFirstProperty();
 			if (firstProperty instanceof NotesThicknessProperty) {
@@ -190,7 +191,8 @@ public class IconButtonWithProperty extends IconButton {
 	 * close popup of button
 	 */
 	public void closePopup() {
-		if (propertyPopup != null) {
+		if (propertyPopup != null
+				&& !propertyPopup.getElement().isOrHasChild(Dom.getActiveElement())) {
 			propertyPopup.hide();
 		}
 	}

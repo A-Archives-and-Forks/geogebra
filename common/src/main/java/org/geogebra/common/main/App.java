@@ -4451,25 +4451,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *            whether to reset the stored offsets
 	 */
 	public void adjustScreen(boolean reset) {
-		if (!kernel.getApplication().has(Feature.ADJUST_WIDGETS)) {
-			return;
-		}
-		if (adjustScreen == null) {
-			adjustScreen = new AdjustScreen(getEuclidianView1());
-		}
-		if (!reset) {
-			adjustScreen.restartButtons();
-		}
-		adjustScreen.apply(reset);
-		if (this.hasEuclidianView2(1)) {
-			if (adjustScreen2 == null) {
-				adjustScreen2 = new AdjustScreen(getEuclidianView2(1));
-			}
-			if (!reset) {
-				adjustScreen2.restartButtons();
-			}
-			adjustScreen2.apply(reset);
-		}
+
 	}
 
 	/**

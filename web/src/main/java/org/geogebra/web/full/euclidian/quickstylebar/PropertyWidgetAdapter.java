@@ -57,7 +57,6 @@ public class PropertyWidgetAdapter {
 				if (closePopupOnAction) {
 					appW.closePopups();
 				}
-				appW.storeUndoInfo();
 			});
 
 			enumeratedPropertyIconButton.setActive(finalI == iconProperty.getIndex());
