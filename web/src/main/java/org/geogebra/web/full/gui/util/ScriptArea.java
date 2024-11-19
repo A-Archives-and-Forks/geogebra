@@ -39,6 +39,13 @@ public class ScriptArea extends TextArea
 		addKeyPressHandler(this);
 		addKeyDownHandler(this);
 		addKeyUpHandler(this);
+		disableAutocorrect();
+	}
+
+	private void disableAutocorrect() {
+		getElement().setAttribute("autocorrect", "off");
+		getElement().setAttribute("autocapitalize", "off");
+		getElement().setAttribute("spellcheck", "false");
 	}
 
 	@Override
