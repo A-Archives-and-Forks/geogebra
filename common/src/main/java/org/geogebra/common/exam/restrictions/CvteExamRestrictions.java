@@ -4,8 +4,6 @@ import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Re
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics1;
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics2;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -54,7 +52,7 @@ import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 
 @SuppressWarnings("PMD.SimplifyBooleanReturns")
-final class CvteExamRestrictions extends ExamRestrictions {
+public final class CvteExamRestrictions extends ExamRestrictions {
 
 	private boolean casEnabled = true;
 
@@ -287,7 +285,7 @@ final class CvteExamRestrictions extends ExamRestrictions {
 		@Override
 		public boolean isAllowed(Property property, GeoElement geoElement) {
 			if (property instanceof ShowObjectProperty) {
-				return !shouldRestrictVisibility(geoElement);
+				return isVisibilityEnabled(geoElement);
 			}
 			return true;
 		}
@@ -299,104 +297,116 @@ final class CvteExamRestrictions extends ExamRestrictions {
 			if (constructionElement instanceof GeoElement) {
 				GeoElement geoElement = (GeoElement) constructionElement;
 
-				if (shouldRestrictVisibility(geoElement)) {
+				if (!isVisibilityEnabled(geoElement)) {
 					geoElement.setRestrictedEuclidianVisibility(true);
 				}
 			}
 		}
 	}
 
-	private static boolean shouldRestrictVisibility(GeoElement geoElement) {
-		// Allow any explicit equation
+	public static boolean isVisibilityEnabled(GeoElement geoElement) {
+		// Allow explicit equations
+		// E.g.: y = 2x
+		//		 y = 5
+		// 		 y = x^2
+		// 		 y = x^3
+		//		 y = x^2 - 5x + 2
 		if (isExplicitEquation(geoElement)) {
-			return false;
+			return true;
 		}
 
 		// Allow circles created by "Circle(<Center>, <Radius>)" command
 		// or "Circle: Center & Radius" tool
-		if (isCircleCreatedWithPointRadiusAlgorithm(geoElement)) {
-			return false;
-		}
-
-		// Restrict the visibility of equations with the exception of linear equations
-		if (geoElement instanceof EquationValue && !isLinearEquation(geoElement)) {
+		// E.g.: Circle((0, 0), 2)
+		// 		 Circle(A, 4)
+		if (geoElement.getParentAlgorithm() instanceof AlgoCirclePointRadius) {
 			return true;
 		}
 
 		// Restrict the visibility of any other conic
+		// E.g.: x^2 + y^2 = 4
+		// 	     x^2 / 9 + x^2 / 4 = 1
+		// 	     x^2 - y^2 = 4
 		if (geoElement.isGeoConic()) {
+			return false;
+		}
+
+		// Allow linear equations
+		// E.g.: x = 0
+		// 	     x + y = 0
+		// 	     2x - 3y = 4
+		//		 x = y
+		//	     2x = y
+		// 	     y = 2x
+		if (isLinearEquation(geoElement)) {
 			return true;
+		}
+
+		// Restrict the visibility of any other equation
+		// E.g.: x^2 = 0
+		//		 x^2 = 1
+		//		 2^x = 0
+		//		 sin(x) = 0
+		//		 ln(x) = 0
+		//		 |x - 3| = 0
+		//		 x^2 = y
+		//		 x^3 = y
+		//		 y^2 = x
+		//		 y^3 = x
+		//		 x^3 + y^2 = 2
+		if (isEquation(geoElement)) {
+			return false;
 		}
 
 		// Restrict the visibility of every inequality
+		// E.g.: x > 0
+		// 		 y <= 1
+		// 		 x < y
+		// 		 x - y > 2
+		// 		 x^2 + 2y^2 < 1
 		if (geoElement.isInequality()) {
-			return true;
+			return false;
 		}
 
-		return false;
-	}
-
-	private static Map<String, Integer> getVariableCount(ExpressionValue equation) {
-		Map<String, Integer> variableCount = new HashMap<>();
-		equation.inspect(expressionValue -> {
-            if (expressionValue instanceof FunctionVariable) {
-                String variable = ((FunctionVariable) expressionValue).getSetVarString();
-                if (!variableCount.containsKey(variable)) {
-                    variableCount.put(variable, 1);
-                } else {
-                    variableCount.put(variable, variableCount.get(variable) + 1);
-                }
-            }
-            return false;
-        });
-		return variableCount;
-	}
-
-	private static boolean isFunctionVariable(ExpressionNode expressionNode) {
-		return expressionNode.getRight() == null
-				&& expressionNode.getLeft() != null
-				&& expressionNode.getLeft() instanceof FunctionVariable
-				&& expressionNode.isOperation(Operation.NO_OPERATION);
+		return true;
 	}
 
 	@Nullable
-	private static String unwrapVariable(ExpressionNode expressionNode) {
-		if (isFunctionVariable(expressionNode)) {
-			return ((FunctionVariable) expressionNode.getLeft()).getSetVarString();
+	private static String unwrapVariable(ExpressionValue expressionValue) {
+		if (expressionValue instanceof FunctionVariable) {
+			return ((FunctionVariable) expressionValue).getSetVarString();
+		}
+		return null;
+	}
+
+	@Nullable
+	private static Equation unwrapEquation(GeoElement geoElement) {
+		ExpressionNode definition = geoElement.getDefinition();
+		if (definition != null && definition.unwrap() instanceof Equation) {
+			return (Equation) definition.unwrap();
+		}
+		if (geoElement instanceof EquationValue) {
+			return ((EquationValue) geoElement).getEquation();
 		}
 		return null;
 	}
 
 	private static boolean isEquation(GeoElement geoElement) {
 		ExpressionNode definition = geoElement.getDefinition();
-		return definition != null && definition.unwrap() instanceof Equation;
+		return (definition != null && definition.unwrap() instanceof Equation)
+				|| geoElement instanceof EquationValue;
 	}
 
 	private static boolean isExplicitEquation(GeoElement geoElement) {
-		return isEquation(geoElement) && isExplicitEquation(unwrapEquation(geoElement));
-	}
-
-	private static boolean isCircleCreatedWithPointRadiusAlgorithm(GeoElement geoElement) {
-		return geoElement.isGeoConic()
-				&& geoElement.getParentAlgorithm() instanceof AlgoCirclePointRadius;
-	}
-
-	@Nullable
-	private static Equation unwrapEquation(GeoElement geoElement) {
-		if (isEquation(geoElement)) {
-			return (Equation) geoElement.getDefinition().unwrap();
-		}
-		return null;
-	}
-
-	private static boolean isExplicitEquation(Equation equation) {
-		Map<String, Integer> variableCount = getVariableCount(equation);
-		// An equation is explicit if it has a single "y" variable
-		return variableCount.get("y") != null && variableCount.get("y") == 1
-				// which is on the left side of the equation alone
-				&& "y".equals(unwrapVariable(equation.getLHS()))
-				// and all other variables are either "x" or none
-				&& Set.of("x", "y").containsAll(variableCount.keySet());
+		Equation equation = unwrapEquation(geoElement);
+		// A GeoElement is an explicit equation if
+		return
+				// it is an equation
+				equation != null
+				// with a single "y" variable on the left-hand side
+				&& "y".equals(unwrapVariable(equation.getLHS().unwrap()))
+				// and any variables on the right-hand side (if any) are all "x".
+				&& equation.getRHS().inspect(value -> "x".equals(unwrapVariable(value)));
 	}
 
 	private static boolean isLinearEquation(GeoElement geoElement) {
