@@ -15,6 +15,9 @@ public class CancelGCDInFraction implements SimplifyNode {
 
 	@Override
 	public ExpressionNode simplify(ExpressionNode node) {
+		if (!node.isOperation(Operation.DIVIDE)) {
+			return node;
+		}
 		numerator = node.getLeftTree();
 		denominator = node.getRightTree();
 

@@ -1,4 +1,8 @@
+
 package org.geogebra.common.kernel.arithmetic;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.plugin.Operation;
@@ -8,32 +12,29 @@ final class RationalizeFractionAlgo {
 	private final Kernel kernel;
 	private final ExpressionNode numerator;
 	private final ExpressionNode denominator;
+	private final List<SimplifyNode> simplifiers;
 
 	public RationalizeFractionAlgo(Kernel kernel, ExpressionNode numerator,
 			ExpressionNode denominator) {
 		this.kernel = kernel;
 		this.numerator = numerator;
 		this.denominator = denominator;
+		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
+				new ReduceRoot(kernel), new CancelGCDInFraction(kernel)
+		);
 	}
 
 	public ExpressionNode compute() {
-		ExpressionNode rationalizedNode = doRationalize();
-		if (rationalizedNode == null) {
+		ExpressionNode node = doRationalize();
+		if (node == null) {
 			return null;
 		}
 
-		ExpressionNode reducedRoot = getReducedRoot(rationalizedNode, kernel);
-		ExpressionNode canceledResult = processUnderSqrts(
-		reducedRoot.isOperation(Operation.DIVIDE)
-						? cancelGCDs(reducedRoot, kernel)
-						: reducedRoot,
-				kernel);
-//		if (canceledResult.isOperation(Operation.MULTIPLY)) {
-//			SimplifyMultiplication simplifyMultiplication =
-//					new SimplifyMultiplication(canceledResult, kernel);
-//			Log.debug("EzittAz");
-//		}
-		return checkDecimals(canceledResult) ? null : canceledResult;
+		for (SimplifyNode simplifier : simplifiers) {
+			node = simplifier.simplify(node);
+		}
+
+		return checkDecimals(node) ? null : node;
 	}
 
 	/**
@@ -56,12 +57,6 @@ final class RationalizeFractionAlgo {
 	static boolean isIntegerValue(ExpressionNode node) {
 		double v = node.evaluateDouble();
 		return DoubleUtil.isEqual(v, Math.rint(v), Kernel.MAX_PRECISION);
-	}
-
-
-	private static ExpressionNode cancelGCDs(ExpressionNode node, Kernel kernel) {
-		CancelGCDInFraction gcd = new CancelGCDInFraction(kernel);
-		return gcd.simplify(node);
 	}
 
 	private ExpressionNode doRationalize() {
@@ -265,32 +260,6 @@ final class RationalizeFractionAlgo {
 		return new ExpressionNode(kernel,
 				newNumerator,
 				Operation.DIVIDE, rationalized);
-	}
-
-	static ExpressionNode getReducedRoot(ExpressionNode node, Kernel kernel) {
-		if (node.isOperation(Operation.DIVIDE)) {
-			ExpressionNode numerator = node.getLeftTree();
-			if (numerator.isOperation(Operation.SQRT)) {
-				ExpressionValue reducedSqrt = Surds.getResolution(numerator, kernel);
-				if (reducedSqrt != null) {
-					return new ExpressionNode(kernel, reducedSqrt, Operation.DIVIDE,
-							node.getRightTree());
-				}
-			} else if (numerator.isOperation(Operation.MULTIPLY)) {
-				ExpressionNode rightTree = numerator.getRightTree();
-				ExpressionValue reducedSqrt = Surds.getResolution(rightTree, kernel);
-				if (reducedSqrt != null) {
-					ExpressionNode constantProduct =
-							numerator.getLeftTree().multiplyR(reducedSqrt.wrap().getLeftTree());
-					return new ExpressionNode(kernel,
-							reducedSqrt.wrap().getRightTree().multiplyR(
-									constantProduct.unwrap().evaluateDouble()),
-							Operation.DIVIDE,
-							node.getRightTree());
-				}
-			}
-		}
-		return node;
 	}
 
 	private MyDouble newNumber(double outer) {
