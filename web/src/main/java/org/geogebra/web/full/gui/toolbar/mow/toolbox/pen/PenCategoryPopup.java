@@ -57,6 +57,8 @@ public class PenCategoryPopup extends CategoryPopup implements SettingListener {
 
 		sliderComponent = new ComponentSlider((AppW) app);
 		addContent(sliderComponent);
+
+		colorChooser.updateColorSelection(PenColorValues.BLACK.getColor());
 	}
 
 	/**
