@@ -5,7 +5,7 @@ import org.geogebra.common.main.color.ColorValues;
 
 public enum PenColorValues implements ColorValues {
 
-	BLACK(GColor.BLACK),
+	BLACK(GColor.newColorRGB(0x1C1C1F)),
 	MEBIS_PURPLE(GColor.newColorRGB(0x975FA8)),
 	GGB_PURPLE(GColor.DEFAULT_PURPLE),
 	BLUE(GColor.newColorRGB(0x1565C0)),
