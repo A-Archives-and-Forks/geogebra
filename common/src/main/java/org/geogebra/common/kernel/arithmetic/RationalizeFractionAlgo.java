@@ -12,8 +12,8 @@ final class RationalizeFractionAlgo {
 	public RationalizeFractionAlgo(Kernel kernel, ExpressionNode numerator,
 			ExpressionNode denominator) {
 		this.kernel = kernel;
-		this.numerator = numerator;//rocessUnderSqrts(numerator, kernel);
-		this.denominator = denominator;//processUnderSqrts(denominator, kernel);
+		this.numerator = numerator;
+		this.denominator = denominator;
 	}
 
 	public ExpressionNode compute() {
@@ -28,6 +28,11 @@ final class RationalizeFractionAlgo {
 						? cancelGCDs(reducedRoot, kernel)
 						: reducedRoot,
 				kernel);
+//		if (canceledResult.isOperation(Operation.MULTIPLY)) {
+//			SimplifyMultiplication simplifyMultiplication =
+//					new SimplifyMultiplication(canceledResult, kernel);
+//			Log.debug("EzittAz");
+//		}
 		return checkDecimals(canceledResult) ? null : canceledResult;
 	}
 
@@ -55,8 +60,8 @@ final class RationalizeFractionAlgo {
 
 
 	private static ExpressionNode cancelGCDs(ExpressionNode node, Kernel kernel) {
-		CancelGCDInFraction gcd = new CancelGCDInFraction(node, kernel);
-		return gcd.simplify();
+		CancelGCDInFraction gcd = new CancelGCDInFraction(kernel);
+		return gcd.simplify(node);
 	}
 
 	private ExpressionNode doRationalize() {
@@ -133,8 +138,8 @@ final class RationalizeFractionAlgo {
 	}
 
 	static ExpressionNode processUnderSqrts(final ExpressionNode node, Kernel kernel) {
-		ReduceRoot reduceRoot = new ReduceRoot(node, kernel);
-		return reduceRoot.simplify();
+		ReduceRoot reduceRoot = new ReduceRoot(kernel);
+		return reduceRoot.simplify(node);
 	}
 
 	private static ExpressionNode simplifyUnderSqrt(ExpressionNode node, Kernel kernel) {

@@ -1,13 +1,8 @@
 package org.geogebra.common.kernel.arithmetic;
 
-import static org.junit.Assert.assertEquals;
-
-import org.geogebra.common.BaseUnitTest;
-import org.geogebra.common.kernel.StringTemplate;
-import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.junit.Test;
 
-public class ReduceRootTest extends BaseUnitTest {
+public class ReduceRootTest extends BaseSimplifyTest {
 	@Test
 	public void testReducedRoots() {
 		shouldReduce("sqrt(3 + 4)", "sqrt(7)");
@@ -19,16 +14,7 @@ public class ReduceRootTest extends BaseUnitTest {
 	}
 
 	private void shouldReduce(String actualDef, String expectedDef) {
-		GeoNumeric actual = newSymbolicNumeric(actualDef);
-		GeoNumeric expected = newSymbolicNumeric(expectedDef);
-		ReduceRoot reduceRoot = new ReduceRoot(actual.getDefinition(), getKernel());
-		assertEquals(expected.getDefinition().toString(StringTemplate.defaultTemplate),
-				reduceRoot.simplify().toString(StringTemplate.defaultTemplate));
+		shouldSimplify(actualDef, expectedDef, new ReduceRoot(getKernel()));
 	}
 
-	private GeoNumeric newSymbolicNumeric(String actualDef) {
-		GeoNumeric actual = add(actualDef);
-		actual.setSymbolicMode(true, true);
-		return actual;
-	}
 }

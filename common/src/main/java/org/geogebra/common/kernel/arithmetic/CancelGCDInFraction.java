@@ -5,20 +5,19 @@ import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 
 public class CancelGCDInFraction implements SimplifyNode {
-	private final ExpressionNode node;
 	private final Kernel kernel;
-	private final ExpressionNode numerator;
-	private final ExpressionNode denominator;
+	private ExpressionNode numerator;
+	private ExpressionNode denominator;
 
-	public CancelGCDInFraction(ExpressionNode node, Kernel kernel) {
-		this.node = node;
+	public CancelGCDInFraction(Kernel kernel) {
 		this.kernel = kernel;
-		numerator = node.getLeftTree();
-		denominator = node.getRightTree();
 	}
 
 	@Override
-	public ExpressionNode simplify() {
+	public ExpressionNode simplify(ExpressionNode node) {
+		numerator = node.getLeftTree();
+		denominator = node.getRightTree();
+
 		if (isNumeratorCancelableByDenominator()) {
 			ExpressionValue canceled = denominator.getLeft();
 			if (numerator.isOperation(Operation.MULTIPLY))  {

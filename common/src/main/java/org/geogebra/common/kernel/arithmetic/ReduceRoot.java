@@ -4,17 +4,13 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.plugin.Operation;
 
 public class ReduceRoot implements SimplifyNode {
-
-	private final ExpressionNode node;
 	private final Kernel kernel;
 
-	public ReduceRoot(ExpressionNode node, Kernel kernel) {
-		this.node = node;
+	public ReduceRoot(Kernel kernel) {
 		this.kernel = kernel;
 	}
-
 	@Override
-	public ExpressionNode simplify() {
+	public ExpressionNode simplify(ExpressionNode node) {
 		ExpressionValue reduceUnderSqrt = node.traverse(new Traversing() {
 			@Override
 			public ExpressionValue process(ExpressionValue ev) {

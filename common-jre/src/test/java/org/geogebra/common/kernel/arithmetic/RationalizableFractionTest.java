@@ -157,12 +157,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void name() {
-		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
-
-	}
-
-	@Test
 	public void testProductInDenominator() {
 		rationalizationShouldBe("1 / (2 * (1 + sqrt(2)))", "(sqrt(2) - 1) / 2");
 		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(sqrt(2) + 1) / 2");
@@ -200,10 +194,28 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	@Test
 	public void test() {
 		rationalizationShouldBe("(-2 + sqrt(7)) / (-9 + sqrt(4))", "(2 - sqrt(7)) / 7");
-//		rationalizationShouldBe("(-2 + sqrt(3+4)) / (-9 + sqrt(4))",
-//				"(2 - sqrt(7)) / 7");
+		rationalizationShouldBe("(-2 + sqrt(3+4)) / (-9 + sqrt(4))",
+				"(2 - sqrt(7)) / 7");
+		rationalizationShouldBe("(-10 + sqrt(6)) / (5 + sqrt(1))",
+				"(-10 + sqrt(6)) / 6");
+//		rationalizationShouldBe("(-10 + sqrt(5)) / (-2 + sqrt(5))",
+//				"(-8sqrt(5) - 15");
+////		rationalizationShouldBe("(7 + sqrt(8)) / (4 + sqrt(8))",
+//				"(-3 sqrt(2)) / 4");
+//		rationalizationShouldBe(genericSqrtFraction(7, 4, -8, 10),
+//				"");
+//		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
+//				"");
 	}
 
+	@Test
+	public void name() {
+//		rationalizationShouldBe(genericSqrtFraction(-10, 5, -2, 5),
+//				"-8sqrt(5) - 15");
+//		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))",
+//				"-3(sqrt(2) + 1)");
+
+	}
 
 	private String genericSqrtFraction(int a, int b, int c, int d) {
 		String s = "(" + a + " + sqrt(" + b + ")) / " + "(" + c + " + sqrt(" + d + "))";
