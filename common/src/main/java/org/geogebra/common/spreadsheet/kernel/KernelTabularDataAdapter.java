@@ -307,4 +307,12 @@ public final class KernelTabularDataAdapter implements UpdateLocationView, Tabul
 	public CellDragPasteHandler<GeoElement> getCellDragPasteHandler() {
 		return new CellDragPasteHandler<>(this, kernel);
 	}
+
+	@Override
+	public void markNonEmpty(int row, int column) {
+		GeoElement geo = contentAt(row, column);
+		if (geo != null) {
+			geo.setEmptySpreadsheetCell(false);
+		}
+	}
 }
