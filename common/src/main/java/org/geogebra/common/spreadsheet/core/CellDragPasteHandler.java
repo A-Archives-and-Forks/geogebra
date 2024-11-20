@@ -226,10 +226,7 @@ public class CellDragPasteHandler {
 
 	private void setDestinationRangeToNonEmptySpreadsheetCells(TabularRange destinationRange) {
 		destinationRange.forEach((row, column) -> {
-			GeoElement geo = tabularData.contentAt(row, column);
-			if (geo != null) {
-				geo.setEmptySpreadsheetCell(false);
-			}
+			tabularData.markNonEmpty(row, column);
 		});
 	}
 
