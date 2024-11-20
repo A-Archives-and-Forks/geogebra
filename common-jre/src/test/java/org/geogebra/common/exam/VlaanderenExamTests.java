@@ -1,14 +1,14 @@
 package org.geogebra.common.exam;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.geogebra.common.SuiteSubApp;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public final class VlaanderenExamTests extends BaseExamTests {
-    @Before
+    @BeforeEach
     public void setupVlaanderenExam() {
         setInitialApp(SuiteSubApp.GRAPHING);
         examController.startExam(ExamType.VLAANDEREN, null);

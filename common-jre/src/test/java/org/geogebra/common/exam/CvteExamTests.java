@@ -1,5 +1,6 @@
 package org.geogebra.common.exam;
 
+import static org.geogebra.common.exam.restrictions.CvteExamRestrictions.isVisibilityEnabled;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,10 +33,12 @@ public final class CvteExamTests extends BaseExamTests {
         evaluate("l1={1,2}");
         evaluate("l2={1,2}");
 
-        assertNull(evaluate("{l1, l2}"));
-        assertNull(evaluate("{If(true, l1)}"));
-        assertNull(evaluate("{IterationList(x^2,3,2)}"));
-        assertNull(evaluate("{Sequence(k,k,1,3)}"));
+        assertAll(
+                () -> assertNull(evaluate("{l1, l2}")),
+                () -> assertNull(evaluate("{If(true, l1)}")),
+                () -> assertNull(evaluate("{IterationList(x^2,3,2)}")),
+                () -> assertNull(evaluate("{Sequence(k,k,1,3)}"))
+        );
     }
 
     @Test
@@ -55,24 +58,29 @@ public final class CvteExamTests extends BaseExamTests {
 
     @Test
     public void testToolRestrictions() {
-        assertTrue(app.getAvailableTools().contains(EuclidianConstants.MODE_MOVE));
-        assertFalse(app.getAvailableTools().contains(EuclidianConstants.MODE_POINT));
-        assertTrue(commandDispatcher.isAllowedByCommandFilters(Commands.Curve));
-        assertTrue(commandDispatcher.isAllowedByCommandFilters(Commands.CurveCartesian));
+        assertAll(
+                () -> assertTrue(app.getAvailableTools().contains(EuclidianConstants.MODE_MOVE)),
+                () -> assertFalse(app.getAvailableTools().contains(EuclidianConstants.MODE_POINT)),
+                () -> assertTrue(commandDispatcher.isAllowedByCommandFilters(Commands.Curve)),
+                () -> assertTrue(commandDispatcher.isAllowedByCommandFilters(Commands.CurveCartesian))
+        );
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
             // Enabled conics
             "Circle((0, 0), 2)",
-            "Circle((1, 1), 4)",
             // Enabled equations
             "x = 0",
+            "y = 5",
             "x + y = 0",
+            "x = y",
             "2x - 3y = 4",
+            "2x = y",
             "y = 2x",
             "y = x^2",
             "y = x^3",
+            "y = x^2 - 5x + 2",
             // Other enabled expressions
             "x",
             "f(x) = x^2",
@@ -80,12 +88,7 @@ public final class CvteExamTests extends BaseExamTests {
             "A = (1, 2)"
     })
     public void testUnrestrictedGraphicalOutputVisibility(String expression) {
-        GeoElement geoElement = evaluateGeoElement(expression);
-        assertAll(
-                () -> assertTrue(geoElement.isEuclidianVisible()),
-                () -> assertTrue(geoElement.isEuclidianToggleable()),
-                () -> assertNotNull(geoElementPropertiesFactory.createShowObjectProperty(
-                        app.getLocalization(), List.of(geoElement))));
+        assertTrue(isVisibilityEnabled(evaluateGeoElement(expression)));
     }
 
     @ParameterizedTest
@@ -105,18 +108,32 @@ public final class CvteExamTests extends BaseExamTests {
             "x^2 = y",
             "x^3 = y",
             "y^2 = x",
-            "x^2 + y^2 = 4",
-            "x^2 / 9 + y^2 / 4 = 1",
-            "x^2 - y^2 = 4",
             "x^3 + y^2 = 2",
             "y^3 = x"
     })
     public void testRestrictedGraphicalOutputVisibility(String expression) {
-        GeoElement geoElement = evaluateGeoElement(expression);
+        assertFalse(isVisibilityEnabled(evaluateGeoElement(expression)));
+    }
+
+    @Test
+    public void testRestrictedVisibilityInEuclidianView() {
+        GeoElement allowedGeoElement = evaluateGeoElement("x = 0");
+        GeoElement restrictedGeoElement = evaluateGeoElement("x^2 = 0");
         assertAll(
-                () -> assertFalse(geoElement.isEuclidianVisible()),
-                () -> assertFalse(geoElement.isEuclidianToggleable()),
+                () -> assertTrue(isVisibilityEnabled(allowedGeoElement)),
+                () -> assertFalse(isVisibilityEnabled(restrictedGeoElement))
+        );
+
+        assertAll(
+                () -> assertTrue(allowedGeoElement.isEuclidianVisible()),
+                () -> assertTrue(allowedGeoElement.isEuclidianToggleable()),
+                () -> assertNotNull(geoElementPropertiesFactory.createShowObjectProperty(
+                        app.getLocalization(), List.of(allowedGeoElement))),
+
+                () -> assertFalse(restrictedGeoElement.isEuclidianVisible()),
+                () -> assertFalse(restrictedGeoElement.isEuclidianToggleable()),
                 () -> assertNull(geoElementPropertiesFactory.createShowObjectProperty(
-                        app.getLocalization(), List.of(geoElement))));
+                        app.getLocalization(), List.of(restrictedGeoElement)))
+        );
     }
 }
