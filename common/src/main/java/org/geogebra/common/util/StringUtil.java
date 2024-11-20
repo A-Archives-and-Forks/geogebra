@@ -1086,6 +1086,21 @@ public class StringUtil extends com.himamis.retex.editor.share.input.Character {
 	}
 
 	/**
+	 * @param input String
+	 * @return The passed string without any leading zeros
+	 */
+	public static String removeLeadingZeros(String input) {
+		int newBeginIndex = 0;
+		for (int i = 0; i < input.length(); i++) {
+			if (input.charAt(i) != '0') {
+				return input.substring(newBeginIndex);
+			}
+			newBeginIndex++;
+		}
+		return input.substring(newBeginIndex);
+	}
+
+	/**
 	 * @param color
 	 *            color
 	 * @return hex string with # prefix

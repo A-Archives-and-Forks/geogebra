@@ -12,12 +12,14 @@ import org.geogebra.web.html5.gui.util.ClickStartHandler;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.geogebra.web.html5.gui.util.ToggleButton;
+import org.geogebra.web.html5.gui.view.button.TriStateToggleButton;
 import org.geogebra.web.html5.main.DrawEquationW;
 import org.gwtproject.canvas.client.Canvas;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.HTML;
 import org.gwtproject.user.client.ui.Image;
 import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.Widget;
 
 import com.himamis.retex.editor.share.util.Unicode;
 
@@ -79,61 +81,147 @@ public class AlgebraOutputPanel extends FlowPanel {
 	/**
 	 * @param parent parent panel
 	 * @param geo geoElement
-	 * @return the symbolic button
+	 * @return the symbolic button or the engineering notation button
 	 */
-	public static ToggleButton createSymbolicButton(FlowPanel parent,
+	public static ToggleButton createToggleButton(FlowPanel parent,
 			final GeoElement geo) {
 
-		ToggleButton btnSymbolic = getSymbolicButtonIfExists(parent);
+		ToggleButton toggleButton;
+		Widget existingButton = getSymbolicButtonIfExists(parent);
 
-		if (btnSymbolic == null) {
-			btnSymbolic = newSymbolicButton(geo);
-		}
-
-		updateSymbolicIcons(geo, btnSymbolic);
-
-		btnSymbolic.addStyleName("symbolicButton");
-
-		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC) {
-			btnSymbolic.setSelected(false);
+		if (existingButton == null || existingButton instanceof TriStateToggleButton) {
+			toggleButton = newToggleButton(geo);
 		} else {
-			btnSymbolic.setSelected(true);
-			btnSymbolic.addStyleName("btn-prefix");
+			toggleButton = (ToggleButton) existingButton;
 		}
 
-		parent.add(btnSymbolic);
-		return btnSymbolic;
+		updateToggleButtonIcons(geo, toggleButton);
+
+		toggleButton.addStyleName("symbolicButton");
+
+		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC
+				&& !SymbolicUtil.isEngineeringNotationMode(geo)) {
+			toggleButton.setSelected(false);
+		} else {
+			toggleButton.setSelected(true);
+			toggleButton.addStyleName("btn-prefix");
+		}
+
+		parent.add(toggleButton);
+		return toggleButton;
 	}
 
-	private static void updateSymbolicIcons(GeoElement geo, ToggleButton btnSymbolic) {
+	public static TriStateToggleButton createEngineeringButton(FlowPanel parent,
+			final GeoElement geo) {
+
+		TriStateToggleButton button;
+		Widget existingButton = getSymbolicButtonIfExists(parent);
+
+		if (existingButton == null || existingButton instanceof ToggleButton) {
+			button = newEngineeringButton(geo);
+		} else {
+			button = (TriStateToggleButton) existingButton;
+		}
+
+		updateEngineeringButtonIcons(geo, button);
+		button.addStyleName("symbolicButton");
+
+		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC
+				&& button.getIndex() != 2) {
+			button.select(0);
+		} else if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.SYMBOLIC) {
+			button.select(1);
+		} else {
+			button.select(2);
+		}
+
+		parent.add(button);
+		return button;
+	}
+
+	private static void updateToggleButtonIcons(GeoElement geo, ToggleButton toggleButton) {
+		if (AlgebraItem.shouldShowEngineeringNotationOutputButton(geo)) {
+			toggleButton.updateIcons(MaterialDesignResources.INSTANCE.engineering_notation_white(),
+					MaterialDesignResources.INSTANCE.modeToggleSymbolic());
+		} else if (AlgebraItem.evaluatesToFraction(geo)) {
+			toggleButton.updateIcons(MaterialDesignResources.INSTANCE.fraction_white(),
+					MaterialDesignResources.INSTANCE.modeToggleSymbolic());
+			Dom.toggleClass(toggleButton, "show-fraction", !toggleButton.isSelected());
+		} else {
+			toggleButton.updateIcons(MaterialDesignResources.INSTANCE.equal_sign_white(),
+					MaterialDesignResources.INSTANCE.modeToggleSymbolic());
+		}
+	}
+
+	private static void updateEngineeringButtonIcons(GeoElement geo, TriStateToggleButton button) {
 		if (AlgebraItem.evaluatesToFraction(geo)) {
-			btnSymbolic.updateIcons(MaterialDesignResources.INSTANCE.fraction_white(),
+			button.updateIcons(MaterialDesignResources.INSTANCE.fraction_white(),
+					MaterialDesignResources.INSTANCE.engineering_notation_white(),
 					MaterialDesignResources.INSTANCE.modeToggleSymbolic());
-			Dom.toggleClass(btnSymbolic, "show-fraction", !btnSymbolic.isSelected());
+			Dom.toggleClass(button, "show-fraction", button.getIndex() == 0);
 		} else {
-			btnSymbolic.updateIcons(MaterialDesignResources.INSTANCE.equal_sign_white(),
+			button.updateIcons(MaterialDesignResources.INSTANCE.equal_sign_white(),
+					MaterialDesignResources.INSTANCE.engineering_notation_white(),
 					MaterialDesignResources.INSTANCE.modeToggleSymbolic());
 		}
 	}
 
-	private static ToggleButton newSymbolicButton(GeoElement geo) {
-		final ToggleButton btn = new ToggleButton();
+	private static ToggleButton newToggleButton(GeoElement geo) {
+		final ToggleButton button = new ToggleButton();
+		if (AlgebraItem.shouldShowSymbolicOutputButton(geo)) {
+			return newSymbolicToggleButton(geo, button);
+		} else {
+			return newEngineeringToggleButton(geo, button);
+		}
+	}
 
-		ClickStartHandler.init(btn, new ClickStartHandler(true, true) {
+	private static ToggleButton newSymbolicToggleButton(GeoElement geo, ToggleButton button) {
+		ClickStartHandler.init(button, new ClickStartHandler(true, true) {
 			@Override
 			public void onClickStart(int x, int y, PointerEventType type) {
 				boolean symbolic = SymbolicUtil.toggleSymbolic(geo);
-				btn.setSelected(symbolic);
-				Dom.toggleClass(btn, "show-fraction", !symbolic);
+				button.setSelected(symbolic);
+				Dom.toggleClass(button, "show-fraction", !symbolic);
 			}
 		});
-		return btn;
+		return button;
 	}
 
-	private static ToggleButton getSymbolicButtonIfExists(FlowPanel parent) {
+	private static ToggleButton newEngineeringToggleButton(GeoElement geo, ToggleButton button) {
+		ClickStartHandler.init(button, new ClickStartHandler(true, true) {
+			@Override
+			public void onClickStart(int x, int y, PointerEventType type) {
+				boolean engineeringMode = SymbolicUtil.toggleEngineeringNotation(geo);
+				button.setSelected(engineeringMode);
+			}
+		});
+		return button;
+	}
+
+	private static TriStateToggleButton newEngineeringButton(GeoElement geo) {
+		final TriStateToggleButton button = new TriStateToggleButton();
+
+		ClickStartHandler.init(button, new ClickStartHandler(true, true) {
+			@Override
+			public void onClickStart(int x, int y, PointerEventType type) {
+				boolean symbolic = SymbolicUtil.isSymbolicMode(geo);
+				if (button.getIndex() != 0) {
+					SymbolicUtil.toggleEngineeringNotation(geo);
+				}
+				if (button.getIndex() != 2) {
+					symbolic = SymbolicUtil.toggleSymbolic(geo);
+				}
+				button.selectNext();
+				Dom.toggleClass(button, "show-fraction", !symbolic);
+			}
+		});
+		return button;
+	}
+
+	private static Widget getSymbolicButtonIfExists(FlowPanel parent) {
 		for (int i = 0; i < parent.getWidgetCount(); i++) {
 			if (parent.getWidget(i).getStyleName().contains("symbolicButton")) {
-				return (ToggleButton) parent.getWidget(i);
+				return parent.getWidget(i);
 			}
 		}
 		return null;

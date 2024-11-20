@@ -177,6 +177,29 @@ public class SymbolicUtil {
 	}
 
 	/**
+	 * @param geo Element
+	 * @return Whether the element is symbolic
+	 */
+	public static boolean isSymbolicMode(GeoElement geo) {
+		return geo instanceof HasSymbolicMode && ((HasSymbolicMode) geo).isSymbolicMode();
+	}
+
+	public static boolean toggleEngineeringNotation(GeoElement geo) {
+		if (geo instanceof HasSymbolicMode) {
+			HasSymbolicMode hasSymbolicGeo = (HasSymbolicMode) geo;
+			hasSymbolicGeo.setEngineeringNotationMode(!hasSymbolicGeo.isEngineeringNotationMode());
+			geo.updateRepaint();
+			return hasSymbolicGeo.isEngineeringNotationMode();
+		}
+		return false;
+	}
+
+	public static boolean isEngineeringNotationMode(GeoElement geo) {
+		return geo instanceof HasSymbolicMode
+				&& ((HasSymbolicMode) geo).isEngineeringNotationMode();
+	}
+
+	/**
 	 * @param expression to be checked
 	 * @return true if numeric approximation should be calculated
 	 */

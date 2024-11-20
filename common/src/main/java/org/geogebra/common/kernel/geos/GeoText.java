@@ -126,6 +126,7 @@ public class GeoText extends GeoElement
 
 	private TraceModesEnum traceModes;
 	private boolean symbolicMode;
+	private boolean engineeringNotationMode = false;
 	private int totalHeight;
 	private int totalWidth;
 	private final List<GeoElement> updateListeners;
@@ -1427,6 +1428,16 @@ public class GeoText extends GeoElement
 	@Override
 	public boolean isSymbolicMode() {
 		return this.symbolicMode;
+	}
+
+	@Override
+	public void setEngineeringNotationMode(boolean mode) {
+		engineeringNotationMode = mode;
+	}
+
+	@Override
+	public boolean isEngineeringNotationMode() {
+		return engineeringNotationMode;
 	}
 
 	/**

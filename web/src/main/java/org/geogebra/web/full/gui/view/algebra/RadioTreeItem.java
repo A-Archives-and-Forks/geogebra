@@ -65,7 +65,6 @@ import org.geogebra.web.html5.gui.util.LayoutUtilW;
 import org.geogebra.web.html5.gui.util.LongTouchManager;
 import org.geogebra.web.html5.gui.util.MathKeyboardListener;
 import org.geogebra.web.html5.gui.util.NoDragImage;
-import org.geogebra.web.html5.gui.util.ToggleButton;
 import org.geogebra.web.html5.gui.zoompanel.FocusableWidget;
 import org.geogebra.web.html5.main.DrawEquationW;
 import org.geogebra.web.html5.util.DataTest;
@@ -172,7 +171,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	private ComponentToast toast;
 	private final SyntaxController syntaxController;
 	private int index;
-	private ToggleButton symbolicButton;
+	private Widget symbolicButton;
 
 	public void updateOnNextRepaint() {
 		needsUpdate = true;
@@ -402,13 +401,27 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	protected boolean updateValuePanel(String text) {
 		boolean ret = outputPanel.updateValuePanel(geo, text, latex,
 				getFontSize());
-		if (geo != null && AlgebraItem.shouldShowSymbolicOutputButton(geo)) {
+		if (geo != null && shouldShowOutputButton(geo)) {
 			addControls();
-			symbolicButton = AlgebraOutputPanel.createSymbolicButton(controls, geo);
+			if (shouldShowSymbolicAndEngineeringOutputButton(geo)) {
+				symbolicButton = AlgebraOutputPanel.createEngineeringButton(controls, geo);
+			} else {
+				symbolicButton = AlgebraOutputPanel.createToggleButton(controls, geo);
+			}
 		} else if (controls != null) {
 			AlgebraOutputPanel.removeSymbolicButton(controls);
 		}
 		return ret;
+	}
+
+	private boolean shouldShowOutputButton(GeoElement geo) {
+		return AlgebraItem.shouldShowSymbolicOutputButton(geo)
+				|| AlgebraItem.shouldShowEngineeringNotationOutputButton(geo);
+	}
+
+	private boolean shouldShowSymbolicAndEngineeringOutputButton(GeoElement geo) {
+		return AlgebraItem.shouldShowSymbolicOutputButton(geo)
+				&& AlgebraItem.shouldShowEngineeringNotationOutputButton(geo);
 	}
 
 	private void buildItemContent() {

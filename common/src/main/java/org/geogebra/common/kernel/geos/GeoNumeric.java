@@ -136,6 +136,7 @@ public class GeoNumeric extends GeoElement
 
 	private boolean autoStep = false;
 	private boolean symbolicMode = false;
+	private boolean engineeringNotationMode = false;
 
 	// is a constant depending on a function
 	private boolean isDependentConst = false;
@@ -694,6 +695,9 @@ public class GeoNumeric extends GeoElement
 				&& !getDefinition().isLeaf()
 				&& tpl.supportsFractions()) {
 			return getDefinition().toFractionString(tpl);
+		}
+		if (engineeringNotationMode) {
+			return kernel.format(value, tpl.deriveWithEngineeringNotation());
 		}
 		return kernel.format(value, tpl);
 	}
@@ -1920,6 +1924,16 @@ public class GeoNumeric extends GeoElement
 	@Override
 	public boolean isSymbolicMode() {
 		return symbolicMode;
+	}
+
+	@Override
+	public void setEngineeringNotationMode(boolean mode) {
+		engineeringNotationMode = mode;
+	}
+
+	@Override
+	public boolean isEngineeringNotationMode() {
+		return engineeringNotationMode;
 	}
 
 	@Override

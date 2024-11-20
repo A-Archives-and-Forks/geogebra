@@ -83,6 +83,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 	private boolean supportsFractions = true;
 	private char pointCoordBar = '|';
 	private boolean displayStyle;
+	private boolean displayEngineeringNotation = false;
 
 	/**
 	 * Default template, but do not localize commands
@@ -953,6 +954,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 		result.shouldPrintMethodsWithParenthesis = shouldPrintMethodsWithParenthesis;
 		result.forEditorParser = forEditorParser;
 		result.allowShortLhs = allowShortLhs;
+		result.displayEngineeringNotation = displayEngineeringNotation;
 		return result;
 	}
 
@@ -3089,11 +3091,17 @@ public class StringTemplate implements ExpressionNodeConstants {
 	}
 
 	/**
-	 * Converts e.g. 3E + 222 to 3.00 * 10²²² - only for {@link StringType#GEOGEBRA}
+	 * Converts e.g. 3E + 222 to 3.00 * 10²²² - only for {@link StringType#GEOGEBRA}<br/>
+	 * In case the engineering notation should be displayed, this method forwards its call to
+	 * {@link #convertEngineeringNotationForDisplay(double)}
 	 * @param scientificStr String in scientific notation
+	 * @param number Number
 	 * @return Formatted string in scientific notation using m*10^n
 	 */
-	public String convertScientificNotationForDisplay(String scientificStr) {
+	public String convertScientificNotationForDisplay(String scientificStr, double number) {
+		if (displayEngineeringNotation) {
+			return convertEngineeringNotationForDisplay(number);
+		}
 		if (stringType == StringType.LATEX) {
 			return convertScientificNotation(scientificStr);
 		}
@@ -3118,6 +3126,89 @@ public class StringTemplate implements ExpressionNodeConstants {
 			}
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Converts e.g. 1234 to 1.234 * 10³, 1234567 to 1.234567 * 10^6
+	 * @param scientificStr String in scientific notation
+	 * @param number Number
+	 * @return Formatted string in engineering notation using m*10^n, where n is restricted
+	 * to multiples of three
+	 */
+	public String convertEngineeringNotationForDisplay(double number) {
+		String valueString = Double.toString(number);
+		String decimalsString = "";
+		String predecimalsString = valueString;
+
+		if (valueString.contains(".")) {
+			decimalsString = valueString.substring(valueString.indexOf(".") + 1, valueString.length());
+			predecimalsString = valueString.substring(0, valueString.indexOf('.'));
+		}
+
+		int exponent = getExponentForEngineeringNotation(predecimalsString);
+		if (exponent == 0 && number < 1) {
+			return createEngineeringNotationWithNegativeExponent(predecimalsString, decimalsString,
+					getNegativeExponentForEngineeringNotation(decimalsString));
+		}
+		return createEngineeringNotationWithPositiveExponent(
+				predecimalsString, decimalsString, exponent);
+	}
+
+	private int getExponentForEngineeringNotation(String predecimalsString) {
+		int amountOfPredecimals = predecimalsString.length();
+		if (amountOfPredecimals % 3 == 0) {
+			return amountOfPredecimals - 3;
+		}
+		return amountOfPredecimals % 3 == 2 ? amountOfPredecimals - 2 : amountOfPredecimals - 1;
+	}
+
+	private int getNegativeExponentForEngineeringNotation(String decimalsString) {
+		boolean nonZeroFound = false;
+		for (int i = 0; i < decimalsString.length(); i++) {
+			if (!nonZeroFound && decimalsString.charAt(i) != '0') {
+				nonZeroFound = true;
+			}
+			if (nonZeroFound && (i + 1) % 3 == 0) {
+				return -(i + 1);
+			}
+		}
+		return 0;
+	}
+
+	private String createEngineeringNotationWithPositiveExponent(String predecimalsString,
+			String decimalsString, int exponent) {
+		StringBuilder engineeringNotation = new StringBuilder();
+		int shiftBy = predecimalsString.length() - exponent;
+		engineeringNotation.append(predecimalsString.substring(0, shiftBy));
+		if (!predecimalsString.substring(shiftBy).isEmpty()) {
+			engineeringNotation.append(".");
+		}
+		engineeringNotation.append(predecimalsString.substring(shiftBy));
+		engineeringNotation.append(decimalsString);
+		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
+		String exponentString = String.valueOf(exponent);
+		for (int i = 0; i < exponentString.length(); i++) {
+			engineeringNotation.append(Unicode.numberToSuperscript(exponentString.charAt(i) - '0'));
+		}
+		return engineeringNotation.toString();
+	}
+
+	private String createEngineeringNotationWithNegativeExponent(String predecimalsString,
+			String decimalsString, int exponent) {
+		StringBuilder engineeringNotation = new StringBuilder();
+		int shiftBy = Math.abs(exponent);
+		engineeringNotation.append(decimalsString.substring(0, shiftBy));
+		if (!decimalsString.substring(shiftBy).isEmpty()) {
+			engineeringNotation.append(".");
+		}
+		engineeringNotation.append(decimalsString.substring(shiftBy));
+		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
+		engineeringNotation.append(Unicode.SUPERSCRIPT_MINUS);
+		String exponentString = String.valueOf(exponent);
+		for (int i = 1; i < exponentString.length(); i++) {
+			engineeringNotation.append(Unicode.numberToSuperscript(exponentString.charAt(i) - '0'));
+		}
+		return StringUtil.removeLeadingZeros(engineeringNotation.toString());
 	}
 
 	/**
@@ -3734,6 +3825,15 @@ public class StringTemplate implements ExpressionNodeConstants {
 	public StringTemplate deriveWithPi(String piString) {
 		StringTemplate copy = copy();
 		copy.printFormPI = piString;
+		return copy;
+	}
+
+	/**
+	 * @return Copy of this that forces the display of the engineering notation
+	 */
+	public StringTemplate deriveWithEngineeringNotation() {
+		StringTemplate copy = copy();
+		copy.displayEngineeringNotation = true;
 		return copy;
 	}
 

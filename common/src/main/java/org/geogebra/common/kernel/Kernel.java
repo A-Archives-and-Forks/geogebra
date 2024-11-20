@@ -1954,7 +1954,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * Uses current ScientificFormat sf to format a number. Makes sure ".123" is
 	 * returned as "0.123".
 	 */
-	final private String formatSF(double x, StringTemplate tpl) {
+	final private String formatSF(double number, StringTemplate tpl) {
 		if (sbFormatSF == null) {
 			sbFormatSF = new StringBuilder();
 		} else {
@@ -1962,8 +1962,8 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 		}
 		ScientificFormatAdapter sfa = tpl.getSF(sf);
 		// get scientific format
-		StringUtil.appendFormat(sbFormatSF, x, sfa);
-		return tpl.convertScientificNotationForDisplay(sbFormatSF.toString());
+		StringUtil.appendFormat(sbFormatSF, number, sfa);
+		return tpl.convertScientificNotationForDisplay(sbFormatSF.toString(), number);
 	}
 
 	/**

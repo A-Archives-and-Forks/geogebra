@@ -1,5 +1,6 @@
 package org.geogebra.common.gui.view.algebra;
 
+import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.algos.AlgoFractionText;
@@ -26,6 +27,7 @@ import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.settings.AlgebraStyle;
 import org.geogebra.common.main.settings.CoordinatesFormat;
 import org.geogebra.common.main.settings.Settings;
+import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.IndexHTMLBuilder;
 import org.geogebra.common.util.IndexLaTeXBuilder;
@@ -410,6 +412,16 @@ public class AlgebraItem {
 	}
 
 	/**
+	 * @param geo Element
+	 * @return Whether we should show the engineering notation output button for the geo
+	 */
+	public static boolean shouldShowEngineeringNotationOutputButton(GeoElement geo) {
+		return GlobalScope.examController.getExamType() == ExamType.REALSCHULE
+				&& geo instanceof HasSymbolicMode && !isTextItem(geo)
+				&& geo.getKernel().useSignificantFigures;
+	}
+
+	/**
 	 * @param geo element
 	 * @return whether equal sign prefix should be shown (rather than approx sign)
 	 */
@@ -498,7 +510,7 @@ public class AlgebraItem {
 	 */
 	public static boolean shouldShowBothRows(GeoElement element) {
 		return (hasDefinitionAndValueMode(element) || isDependentText(element)
-				|| isSymbolicDiffers(element))
+				|| isSymbolicDiffers(element) || shouldShowEngineeringNotationOutputButton(element))
 				&& shouldShowOutputRowForAlgebraStyle(element, getAlgebraStyle(element.getApp()));
 	}
 

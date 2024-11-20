@@ -3012,6 +3012,21 @@ public class GeoList extends GeoElement
 	}
 
 	@Override
+	public void setEngineeringNotationMode(boolean mode) {
+		for (int i = 0; i < this.size(); i++) {
+			if (get(i) instanceof HasSymbolicMode) {
+				((HasSymbolicMode) get(i)).setEngineeringNotationMode(mode);
+			}
+		}
+	}
+
+	@Override
+	public boolean isEngineeringNotationMode() {
+		return size() > 0 && get(0) instanceof HasSymbolicMode
+				&& ((HasSymbolicMode) get(0)).isEngineeringNotationMode();
+	}
+
+	@Override
 	public DescriptionMode getDescriptionMode() {
 		if (isMatrix() && isIndependent()) {
 			return DescriptionMode.VALUE;

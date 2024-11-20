@@ -25,4 +25,14 @@ public interface HasSymbolicMode extends GeoElementND {
 
 	/** @return Whether this has symbolic mode, eg. fractions for numbers */
 	boolean isSymbolicMode();
+
+	/**
+	 * @param mode Engineering notation mode
+	 */
+	void setEngineeringNotationMode(boolean mode);
+
+	/**
+	 * @return Whether this is currently using the engineering notation mode
+	 */
+	boolean isEngineeringNotationMode();
 }

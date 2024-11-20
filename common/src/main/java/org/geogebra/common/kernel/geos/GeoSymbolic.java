@@ -72,6 +72,7 @@ public class GeoSymbolic extends GeoElement
 	private int pointStyle;
 	private int pointSize;
 	private boolean symbolicMode;
+	private boolean engineeringNotationMode = false;
 	private ArbitraryConstantRegistry constant;
 	private boolean wrapInNumeric = false;
 
@@ -933,6 +934,16 @@ public class GeoSymbolic extends GeoElement
 	@Override
 	public boolean isSymbolicMode() {
 		return symbolicMode;
+	}
+
+	@Override
+	public void setEngineeringNotationMode(boolean mode) {
+		engineeringNotationMode = mode;
+	}
+
+	@Override
+	public boolean isEngineeringNotationMode() {
+		return engineeringNotationMode;
 	}
 
 	@Override
