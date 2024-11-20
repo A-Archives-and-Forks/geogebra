@@ -927,7 +927,7 @@ public final class EuclidianConstants {
 		case EuclidianConstants.MODE_TRIANGLE_PROTRACTOR:
 			return "TriangleProtractor";
 		case EuclidianConstants.MODE_GRAB:
-			return "Grab";
+			return "MoveGraphicsView";
 		default:
 			return "";
 		}

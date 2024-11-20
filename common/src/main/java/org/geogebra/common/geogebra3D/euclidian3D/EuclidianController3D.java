@@ -4011,7 +4011,7 @@ public abstract class EuclidianController3D extends EuclidianController {
 	}
 
 	@Override
-	protected void setDragCursorIfMoveView() {
+	protected void setGrabbingCursorIfMoveView() {
 		// nothing to do, keep same cursor
 	}
 

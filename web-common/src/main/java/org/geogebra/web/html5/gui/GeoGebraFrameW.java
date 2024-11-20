@@ -500,8 +500,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 			app.setCustomToolBar();
 
 			if (app.isApplet()) {
-				Event.sinkEvents(geoGebraElement.getElement(),
-						Event.ONKEYPRESS | Event.ONKEYDOWN | Event.ONKEYUP);
+				Event.sinkEvents(geoGebraElement.getElement(), Event.KEYEVENTS);
 				Event.setEventListener(geoGebraElement.getElement(),
 						app.getGlobalKeyDispatcher().getGlobalShortcutHandler());
 			} else {
@@ -509,8 +508,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 				if (parent != null) {
 					Element grandparent = parent.getParentElement();
 					if (grandparent != null) {
-						Event.sinkEvents(parent,
-								Event.ONKEYPRESS | Event.ONKEYDOWN | Event.ONKEYUP);
+						Event.sinkEvents(parent, Event.KEYEVENTS);
 						Event.setEventListener(parent,
 								app.getGlobalKeyDispatcher().getGlobalShortcutHandler());
 					}
