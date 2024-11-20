@@ -2,7 +2,6 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.EuclidianConstants;
@@ -11,9 +10,7 @@ import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoInline;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
-import org.geogebra.common.main.undo.UpdateContentActionStore;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.aliases.BooleanProperty;
@@ -69,15 +66,16 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		PropertiesArray colorWithOpacityProperty = GeoElementPropertiesFactory
 				.createNotesColorWithOpacityProperties(getApp().getLocalization(), activeGeoList);
-		addColorPropertyButton(activeGeoList, colorWithOpacityProperty.getProperties());
+		addColorPropertyButton(activeGeoList, UndoActionType.STYLE,
+				colorWithOpacityProperty.getProperties());
 
 		Property colorProperty = GeoElementPropertiesFactory.createNotesColorProperty(
 				getApp().getLocalization(), activeGeoList);
-		addColorPropertyButton(activeGeoList, colorProperty);
+		addColorPropertyButton(activeGeoList, UndoActionType.STYLE, colorProperty);
 
 		Property inlineBackgroundColorProperty = GeoElementPropertiesFactory
 				.createInlineBackgroundColorProperty(getApp().getLocalization(), activeGeoList);
-		addColorPropertyButton(activeGeoList, inlineBackgroundColorProperty);
+		addColorPropertyButton(activeGeoList, UndoActionType.STYLE, inlineBackgroundColorProperty);
 
 		PropertiesArray pointStyleProperty = GeoElementPropertiesFactory
 				.createPointStyleExtendedProperties(getApp().getLocalization(), activeGeoList);
@@ -108,13 +106,15 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		PropertiesArray objectBorderProperty = GeoElementPropertiesFactory
 				.createObjectBorderProperties(getApp().getLocalization(), activeGeoList);
-		addColorPropertyButton(activeGeoList, objectBorderProperty.getProperties());
+		addColorPropertyButton(activeGeoList, UndoActionType.STYLE,
+				objectBorderProperty.getProperties());
 
 		addDivider();
 
 		Property fontColorProperty = GeoElementPropertiesFactory.createNotesFontColorProperty(
 				getApp().getLocalization(), activeGeoList);
-		addColorPropertyButton(activeGeoList, fontColorProperty);
+		addColorPropertyButton(activeGeoList, UndoActionType.STYLE_OR_CONTENT,
+				fontColorProperty);
 
 		Property fontSizeProperty = GeoElementPropertiesFactory.createTextFontSizeProperty(
 				getApp().getLocalization(), activeGeoList, ev);
@@ -123,19 +123,20 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		BooleanProperty boldProperty = GeoElementPropertiesFactory
 				.createBoldProperty(getApp().getLocalization(), activeGeoList);
-		addTextFormatPropertyButton(activeGeoList.get(0), boldProperty);
+		addTextFormatPropertyButton(activeGeoList, boldProperty);
 
 		BooleanProperty italicProperty = GeoElementPropertiesFactory
 				.createItalicProperty(getApp().getLocalization(), activeGeoList);
-		addTextFormatPropertyButton(activeGeoList.get(0), italicProperty);
+		addTextFormatPropertyButton(activeGeoList, italicProperty);
 
 		BooleanProperty underlineProperty = GeoElementPropertiesFactory
 				.createUnderlineProperty(getApp().getLocalization(), activeGeoList);
-		addTextFormatPropertyButton(activeGeoList.get(0), underlineProperty);
+		addTextFormatPropertyButton(activeGeoList, underlineProperty);
 
 		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList, null, true, horizontalAlignmentProperty);
+		addPropertyPopupButton(activeGeoList, null, true,
+				UndoActionType.STYLE_OR_CONTENT, horizontalAlignmentProperty);
 
 		Property verticalAlignmentProperty = GeoElementPropertiesFactory
 				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
@@ -147,12 +148,13 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addContextMenuButton();
 	}
 
-	private void addColorPropertyButton(List<GeoElement> geos, Property... properties) {
+	private void addColorPropertyButton(List<GeoElement> geos, UndoActionType undoFiler,
+			Property... properties) {
 		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
 		Property firstProperty = properties[0];
-		addUndoActionObserver(properties, geos);
+		addUndoActionObserver(properties, geos, undoFiler);
 		IconButtonWithProperty colorButton = new IconButtonWithProperty(getApp(), "colorStyle",
 				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(),
 				geos.get(0), true, properties);
@@ -161,12 +163,12 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		styleAndRegisterButton(colorButton);
 	}
 
-	private void addTextFormatPropertyButton(GeoElement geo,
+	private void addTextFormatPropertyButton(List<GeoElement> geos,
 			BooleanProperty property) {
-		if (property == null || !(geo instanceof HasTextFormatter)) {
+		if (property == null || !(geos.get(0) instanceof HasTextFormatter)) {
 			return;
 		}
-
+		property.addValueObserver(new UndoActionObserver(geos, UndoActionType.STYLE_OR_CONTENT));
 		IconButton toggleButton = new IconButton(getApp(), null,
 				PropertiesIconAdapter.getIcon(property), property.getName());
 		toggleButton.setActive(property.getValue());
@@ -178,14 +180,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 			BooleanProperty property) {
 		btn.addFastClickHandler(ignore -> {
 			getApp().closePopups();
-			ArrayList<GeoElement> activeGeoList =
-					(ArrayList<GeoElement>) stylebarPositioner.createActiveGeoList();
-			UpdateContentActionStore store = new UpdateContentActionStore(activeGeoList.stream()
-					.map(geo -> (GeoInline) geo).collect(Collectors.toList()));
 			property.setValue(!btn.isActive());
-			if (store.needUndo()) {
-				store.storeUndo();
-			}
 			btn.setActive(!btn.isActive());
 		});
 	}
@@ -199,21 +194,29 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 	private void addPropertyPopupButton(List<GeoElement> geos, String className,
 			boolean closePopupOnAction, Property... properties) {
+		addPropertyPopupButton(geos, className, closePopupOnAction,
+				UndoActionType.STYLE, properties);
+	}
+
+	private void addPropertyPopupButton(List<GeoElement> geos, String className,
+			boolean closePopupOnAction, UndoActionType undoType, Property... properties) {
 		if (properties.length == 0 || properties[0] == null) {
 			return;
 		}
 		Property firstProperty = properties[0];
-		addUndoActionObserver(properties, geos);
+		addUndoActionObserver(properties, geos, undoType);
 		IconButton button = new IconButtonWithProperty(getApp(), className,
 				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(), geos.get(0),
 				closePopupOnAction, properties);
 		styleAndRegisterButton(button);
 	}
 
-	private void addUndoActionObserver(Property[] properties, List<GeoElement> geos) {
+	private void addUndoActionObserver(Property[] properties, List<GeoElement> geos,
+			UndoActionType undoActionType) {
 		for (Property property: properties) {
 			if (property instanceof ValuedProperty) {
-				((ValuedProperty<?>) property).addValueObserver(new UndoActionObserver(geos));
+				((ValuedProperty<?>) property).addValueObserver(
+						new UndoActionObserver(geos, undoActionType));
 			}
 		}
 	}

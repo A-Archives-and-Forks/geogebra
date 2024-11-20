@@ -88,7 +88,7 @@ public class PropertyWidgetAdapter {
 	public SliderWithProperty getSliderWidget(RangePropertyCollection<?> property,
 			GeoElement geo) {
 		return new SliderWithProperty(appW, property, geo.getLineType(),
-				geo.getLineThickness(), geo.getObjectColor());
+				geo.getObjectColor());
 	}
 
 	/**

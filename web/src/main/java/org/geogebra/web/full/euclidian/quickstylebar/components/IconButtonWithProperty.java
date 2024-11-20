@@ -188,11 +188,11 @@ public class IconButtonWithProperty extends IconButton {
 	}
 
 	/**
-	 * close popup of button
+	 * close popup of button if it doesn't contain sliders
 	 */
 	public void closePopup() {
-		if (propertyPopup != null
-				&& !propertyPopup.getElement().isOrHasChild(Dom.getActiveElement())) {
+		if (propertyPopup != null && Dom.querySelectorForElement(
+				propertyPopup.getElement(), "[type=range]") == null) {
 			propertyPopup.hide();
 		}
 	}
