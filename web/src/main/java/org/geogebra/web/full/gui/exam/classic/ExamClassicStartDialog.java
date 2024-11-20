@@ -7,6 +7,7 @@ import org.geogebra.common.gui.toolbar.ToolBar;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.web.full.gui.components.ComponentCheckbox;
+import org.geogebra.web.full.gui.exam.ExamControllerDelegateW;
 import org.geogebra.web.full.gui.layout.DockManagerW;
 import org.geogebra.web.full.gui.layout.DockPanelW;
 import org.geogebra.web.full.gui.layout.LayoutW;

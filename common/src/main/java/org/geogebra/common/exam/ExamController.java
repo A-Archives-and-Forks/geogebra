@@ -154,7 +154,9 @@ public final class ExamController {
 			@Nonnull Localization localization,
 			@Nonnull Settings settings,
 			@CheckForNull AutocompleteProvider autocompleteProvider,
-			@CheckForNull ToolsProvider toolsProvider) {
+			@CheckForNull ToolsProvider toolsProvider,
+			@CheckForNull Construction construction,
+			@CheckForNull ScheduledPreviewFromInputBar scheduledPreviewFromInputBar) {
 		if (activeDependencies != null) {
 			throw new IllegalStateException(
 					"registerContexts() must not be mixed with calls to setActiveContext()");
@@ -165,7 +167,9 @@ public final class ExamController {
 				localization,
 				settings,
 				autocompleteProvider,
-				toolsProvider);
+				toolsProvider,
+				construction,
+				scheduledPreviewFromInputBar);
 		if (registeredDependencies == null) {
 			registeredDependencies = new ArrayList<>();
 		}

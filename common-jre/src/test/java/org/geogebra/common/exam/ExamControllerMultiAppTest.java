@@ -19,7 +19,8 @@ public class ExamControllerMultiAppTest {
 
 	@Before
 	public void setup() {
-		controller = new ExamController(new DefaultPropertiesRegistry(), new ContextMenuFactory());
+		controller = new ExamController(new DefaultPropertiesRegistry(), null,
+				new ContextMenuFactory());
 		app = AppCommonFactory.create3D();
 	}
 
@@ -29,7 +30,7 @@ public class ExamControllerMultiAppTest {
 		controller.registerContext(this,
 				app.getKernel().getAlgebraProcessor().getCommandDispatcher(),
 				app.getKernel().getAlgebraProcessor(),
-				app.getLocalization(), app.getSettings(), null, null);
+				app.getLocalization(), app.getSettings(), null, null, null, null);
 		controller.registerDelegate(firstDelegate);
 		TestExamDelegate secondDelegate = new TestExamDelegate();
 		controller.registerDelegate(secondDelegate);
