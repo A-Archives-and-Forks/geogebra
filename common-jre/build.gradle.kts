@@ -19,7 +19,6 @@ dependencies {
     implementation(project(":editor-base"))
 
     testImplementationIntegration(project(":ggbjdk"))
-    testImplementationIntegration(project(":ggbjdk"))
     testImplementationIntegration(libs.junit)
     testImplementationIntegration(libs.hamcrest)
     testImplementationIntegration(libs.mockito.core)
