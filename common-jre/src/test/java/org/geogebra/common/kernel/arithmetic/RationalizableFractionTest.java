@@ -210,8 +210,8 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void name() {
-//		rationalizationShouldBe(genericSqrtFraction(-10, 5, -2, 5),
-//				"-8sqrt(5) - 15");
+		rationalizationShouldBe(genericSqrtFraction(-10, 5, -2, 5),
+				"-8sqrt(5) - 15");
 //		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))",
 //				"-3(sqrt(2) + 1)");
 
