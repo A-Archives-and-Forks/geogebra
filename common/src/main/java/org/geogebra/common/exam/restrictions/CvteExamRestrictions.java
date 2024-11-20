@@ -374,10 +374,10 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 
 		// Restrict the visibility of every inequality
 		// E.g.: x > 0
-		// 		 y <= 1
-		// 		 x < y
-		// 		 x - y > 2
-		// 		 x^2 + 2y^2 < 1
+		//       y <= 1
+		//       x < y
+		//       x - y > 2
+		//       x^2 + 2y^2 < 1
 		if (geoElement.isInequality()) {
 			return false;
 		}
