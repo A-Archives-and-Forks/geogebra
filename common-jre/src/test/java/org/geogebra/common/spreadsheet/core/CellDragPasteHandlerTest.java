@@ -1,12 +1,15 @@
 package org.geogebra.common.spreadsheet.core;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.cas.MockCASGiac;
 import org.geogebra.common.kernel.StringTemplate;
+import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.geos.GeoElementSpreadsheet;
 import org.geogebra.common.spreadsheet.kernel.DefaultSpreadsheetCellProcessor;
 import org.geogebra.common.spreadsheet.kernel.KernelTabularDataAdapter;
@@ -203,6 +206,27 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 		pasteToDestination(1, 0);
 		assertFalse(lookup("A2").isEmptySpreadsheetCell());
 		assertTrue(lookup("A3").isEmptySpreadsheetCell());
+	}
+
+	@Test
+	public void testLinearPatternCAS() {
+		getApp().setCasConfig();
+		getApp().getKernel().setSymbolicMode(SymbolicMode.SYMBOLIC_AV);
+		MockCASGiac mockCASGiac = new MockCASGiac(getApp());
+		mockCASGiac.memorize("1");
+		add("A1=1");
+		mockCASGiac.memorize("2");
+		add("B1=2");
+		mockCASGiac.memorize("2");
+		add("A2=2");
+		mockCASGiac.memorize("2");
+		add("B2=2");
+		mockCASGiac.memorize("3");
+		add("C1=A1+B1");
+		mockCASGiac.memorize("4");
+		setRangeToCopy(0, 0, 2, 2);
+		pasteToDestination(1, 2);
+		assertThat(lookup("C2"), hasValue("4"));
 	}
 
 	private void setRangeToCopy(int fromRow, int toRow, int fromColumn, int toColumn) {
