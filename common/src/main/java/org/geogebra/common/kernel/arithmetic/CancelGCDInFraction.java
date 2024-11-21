@@ -14,10 +14,12 @@ public class CancelGCDInFraction implements SimplifyNode {
 	}
 
 	@Override
-	public ExpressionNode simplify(ExpressionNode node) {
-		if (!node.isOperation(Operation.DIVIDE)) {
-			return node;
-		}
+	public boolean isAccepted(ExpressionNode node) {
+		return node.isOperation(Operation.DIVIDE);
+	}
+
+	@Override
+	public ExpressionNode apply(ExpressionNode node) {
 		numerator = node.getLeftTree();
 		denominator = node.getRightTree();
 

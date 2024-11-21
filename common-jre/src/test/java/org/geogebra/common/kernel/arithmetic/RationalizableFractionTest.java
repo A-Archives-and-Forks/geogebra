@@ -87,9 +87,9 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("sqrt(3) / (sqrt(2) - 1)", "sqrt(3) (sqrt(2) + 1)");
 		rationalizationShouldBe("sqrt(3) / (sqrt(2) + 1)", "sqrt(3) (sqrt(2) - 1)");
 		rationalizationShouldBe("(sqrt(3) + 1) / (sqrt(2) + 1)",
-				"(sqrt(3) + 1) (sqrt(2) - 1)");
+				"sqrt(6) - sqrt(3) - 1 + sqrt(2)");
 		rationalizationShouldBe("(sqrt(3) + 1) / (sqrt(2) - 1)",
-				"(sqrt(3) + 1) (sqrt(2) + 1)");
+				"sqrt(6) + sqrt(3) + 1 + sqrt(2)");
 	}
 
 	@Test
@@ -176,7 +176,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldNotPassToDecimalTest("1 + sqrt(2.5)");
 		shouldNotPassToDecimalTest("16.5 * 2 sqrt(5)");
 	}
-
+|
 	private void shouldNotPassToDecimalTest(String command) {
 		assertTrue(isPassDecimal(command));
 	}

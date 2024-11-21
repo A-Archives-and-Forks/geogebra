@@ -11,10 +11,12 @@ public class SimplifyToRadical implements SimplifyNode {
 	}
 
 	@Override
-	public ExpressionNode simplify(ExpressionNode node) {
-		if (!node.isOperation(Operation.DIVIDE)) {
-			return node;
-		}
+	public boolean isAccepted(ExpressionNode node) {
+		return node.isOperation(Operation.DIVIDE);
+	}
+
+	@Override
+	public ExpressionNode apply(ExpressionNode node) {
 		ExpressionNode numerator = node.getLeftTree();
 		if (numerator.isOperation(Operation.SQRT)) {
 			ExpressionValue reducedSqrt = Surds.getResolution(numerator, kernel);

@@ -12,7 +12,7 @@ public class BaseSimplifyTest extends BaseUnitTest {
 		GeoNumeric expected = newSymbolicNumeric(expectedDef);
 		GeoNumeric actual = newSymbolicNumeric(actualDef);
 		assertEquals(expected.getDefinition().toString(StringTemplate.defaultTemplate),
-				simplifier.simplify(actual.getDefinition())
+				simplifier.apply(actual.getDefinition())
 						.toString(StringTemplate.defaultTemplate));
 	}
 

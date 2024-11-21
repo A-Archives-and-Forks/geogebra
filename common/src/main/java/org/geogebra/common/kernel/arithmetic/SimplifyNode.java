@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic;
 
 public interface SimplifyNode {
-	ExpressionNode simplify(ExpressionNode node);
+	boolean isAccepted(ExpressionNode node);
+	ExpressionNode apply(ExpressionNode node);
 }
