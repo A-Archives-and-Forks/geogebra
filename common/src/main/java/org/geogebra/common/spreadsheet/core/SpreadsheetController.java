@@ -308,7 +308,8 @@ public final class SpreadsheetController {
 				: layout.findColumn(x + viewport.getMinX());
 	}
 
-	private void showContextMenu(double x, double y, int fromRow, int toRow, int fromCol, int toCol) {
+	private void showContextMenu(double x, double y, int fromRow, int toRow,
+			int fromCol, int toCol) {
 		if (controlsDelegate != null) {
 			controlsDelegate.showContextMenu(contextMenuItems.get(fromRow, toRow, fromCol, toCol),
 					new GPoint((int) Math.round(x), (int) Math.round(y)));

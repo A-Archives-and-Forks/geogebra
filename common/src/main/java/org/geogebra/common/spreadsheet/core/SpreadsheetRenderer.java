@@ -100,8 +100,8 @@ public final class SpreadsheetRenderer {
 
 		double topLeftX = Math.max(layout.getX(column) - offsetX, layout.getRowHeaderWidth());
 		double topLeftY = Math.max(layout.getY(row) - offsetY, layout.getColumnHeaderHeight());
-		double topRightX = (layout.getX(column) - offsetX + layout.getWidth(column));
-		double topRightY = (layout.getY(row) - offsetY);
+		double topRightX = layout.getX(column) - offsetX + layout.getWidth(column);
+		double topRightY = layout.getY(row) - offsetY;
 
 		double width = layout.getWidth(column);
 		double height = layout.getHeight(row);
