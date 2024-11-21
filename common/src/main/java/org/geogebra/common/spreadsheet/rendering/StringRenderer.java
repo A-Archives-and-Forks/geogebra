@@ -21,11 +21,11 @@ public class StringRenderer implements CellRenderer {
 	private static final int LINE_HEIGHT = 16;
 
 	@Override
-	public void draw(Object data, int fontStyle, int offset, GGraphics2D graphics,
+	public void draw(Object data, int fontStyle, double offsetX, GGraphics2D graphics,
 			Rectangle cellBorder) {
 		GFont font = baseFont.deriveFont(fontStyle);
 		graphics.setFont(font);
-		graphics.drawString(data.toString(), cellBorder.getMinX() + offset,
+		graphics.drawString(data.toString(), cellBorder.getMinX() + offsetX,
 				cellBorder.getMaxY() - (cellBorder.getHeight() - LINE_HEIGHT) / 2
 						- font.getSize() / 4.0);
 	}

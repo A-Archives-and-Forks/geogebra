@@ -107,8 +107,8 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 		});
 		registry.addEventListener(spreadsheetElement, "pointermove", event -> {
 			NativePointerEvent ptr = Js.uncheckedCast(event);
-			int offsetX = getEventX(ptr);
-			int offsetY = getEventY(ptr);
+			double offsetX = getEventX(ptr);
+			double offsetY = getEventY(ptr);
 			Modifiers modifiers = getModifiers(ptr);
 			DomGlobal.clearTimeout(moveTimeout);
 			handlePointerMoved(offsetX, offsetY, modifiers);
@@ -143,7 +143,7 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 		});
 	}
 
-	private void handlePointerMoved(int offsetX, int offsetY,
+	private void handlePointerMoved(double offsetX, double offsetY,
 			Modifiers modifiers) {
 		DomGlobal.clearTimeout(moveTimeout);
 		setCursor(spreadsheet.getCursor(offsetX, offsetY));
@@ -188,13 +188,13 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 				evt.isShiftKeyDown(), false);
 	}
 
-	private int getEventX(NativePointerEvent ptr) {
-		return Math.min((int) ptr.getOffsetX() - scrollOverlay.getElement()
+	private double getEventX(NativePointerEvent ptr) {
+		return Math.min(ptr.getOffsetX() - scrollOverlay.getElement()
 				.getScrollLeft(), scrollOverlay.getOffsetWidth());
 	}
 
-	private int getEventY(NativePointerEvent ptr) {
-		return Math.min((int) ptr.getOffsetY() - scrollOverlay.getElement()
+	private double getEventY(NativePointerEvent ptr) {
+		return Math.min(ptr.getOffsetY() - scrollOverlay.getElement()
 				.getScrollTop(), scrollOverlay.getOffsetHeight());
 	}
 
@@ -272,9 +272,9 @@ public class SpreadsheetPanel extends FlowPanel implements RequiresResize {
 		return new ViewportAdjusterDelegate() {
 
 			@Override
-			public void setScrollPosition(int x, int y) {
-				scrollOverlay.setHorizontalScrollPosition(x);
-				scrollOverlay.setVerticalScrollPosition(y);
+			public void setScrollPosition(double x, double y) {
+				scrollOverlay.setHorizontalScrollPosition((int) Math.round(x));
+				scrollOverlay.setVerticalScrollPosition((int) Math.round(y));
 				viewportChanges++;
 			}
 

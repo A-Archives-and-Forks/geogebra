@@ -55,11 +55,11 @@ public final class SelfRenderable {
 	 * @param cellBorder cell dimensions
 	 */
 	public void draw(GGraphics2D graphics, Rectangle cellBorder) {
-		int offset = HORIZONTAL_PADDING;
+		double offset = HORIZONTAL_PADDING;
 		if (alignment == CellFormat.ALIGN_CENTER) {
-			offset = (int) (cellBorder.getWidth() - width) / 2;
+			offset = (cellBorder.getWidth() - width) / 2;
 		} else if (alignment == CellFormat.ALIGN_RIGHT) {
-			offset = (int) (cellBorder.getWidth() - width) - HORIZONTAL_PADDING;
+			offset = (cellBorder.getWidth() - width) - HORIZONTAL_PADDING;
 		}
 		renderer.draw(renderable, fontStyle, offset, graphics, cellBorder);
 	}

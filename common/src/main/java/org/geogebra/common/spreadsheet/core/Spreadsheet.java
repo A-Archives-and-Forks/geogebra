@@ -54,7 +54,7 @@ public final class Spreadsheet implements TabularDataChangeListener {
 	public void draw(GGraphics2D graphics) {
 		graphics.setPaint(GColor.WHITE);
 		Rectangle viewport = controller.getViewport();
-		graphics.fillRect(0, 0, (int) viewport.getWidth(), (int) viewport.getHeight());
+		renderer.fillRect(graphics, 0, 0, viewport.getWidth(), viewport.getHeight());
 		List<TabularRange> visibleSelections = controller.getVisibleSelections();
 		for (TabularRange range: visibleSelections) {
 			renderer.drawSelection(range, graphics, viewport);
@@ -116,8 +116,8 @@ public final class Spreadsheet implements TabularDataChangeListener {
 		}
 		graphics.translate(0, offsetY);
 		graphics.setColor(controller.getStyle().getHeaderBackgroundColor());
-		graphics.fillRect(0, 0, (int) layout.getRowHeaderWidth(),
-				(int) layout.getColumnHeaderHeight());
+		renderer.fillRect(graphics, 0, 0,
+				layout.getRowHeaderWidth(), layout.getColumnHeaderHeight());
 
 		drawErrorCells(graphics, portion, viewport, offsetX, offsetY);
 	}
@@ -175,7 +175,7 @@ public final class Spreadsheet implements TabularDataChangeListener {
 	 * @param y screen coordinate of event
 	 * @param modifiers alt/ctrl/shift
 	 */
-	public void handlePointerUp(int x, int y, Modifiers modifiers) {
+	public void handlePointerUp(double x, double y, Modifiers modifiers) {
 		controller.handlePointerUp(x, y, modifiers);
 	}
 
@@ -184,13 +184,16 @@ public final class Spreadsheet implements TabularDataChangeListener {
 	 * @param y screen coordinate of event
 	 * @param modifiers alt/ctrl/shift
 	 */
-	public void handlePointerDown(int x, int y, Modifiers modifiers) {
+	public void handlePointerDown(double x, double y, Modifiers modifiers) {
         controller.handlePointerDown(x, y, modifiers);
-
-		// start selecting
 	}
 
-	public void handlePointerMove(int x, int y, Modifiers modifiers) {
+	/**
+	 * @param x screen coordinate of event
+	 * @param y screen coordinate of event
+	 * @param modifiers alt/ctrl/shift
+	 */
+	public void handlePointerMove(double x, double y, Modifiers modifiers) {
 		controller.handlePointerMove(x, y, modifiers);
 	}
 
@@ -226,7 +229,7 @@ public final class Spreadsheet implements TabularDataChangeListener {
 	 * @param y mouse position relative to viewport, in logical points.
 	 * @return the cursor to show at the given point.
 	 */
-	public MouseCursor getCursor(int x, int y) {
+	public MouseCursor getCursor(double x, double y) {
 		return controller.getDragAction(x, y).cursor;
 	}
 

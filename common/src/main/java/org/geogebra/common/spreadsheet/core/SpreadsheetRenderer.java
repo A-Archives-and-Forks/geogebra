@@ -67,8 +67,8 @@ public final class SpreadsheetRenderer {
 			Rectangle cellBorder = layout.getBounds(row, column);
 			if (renderable.getBackground() != null) {
 				graphics.setColor(renderable.getBackground());
-				graphics.fillRect((int) cellBorder.getMinX(), (int) cellBorder.getMinY(),
-						(int) cellBorder.getWidth(), (int) cellBorder.getHeight());
+				fillRect(graphics, cellBorder.getMinX(), cellBorder.getMinY(),
+						cellBorder.getWidth(), cellBorder.getHeight());
 			}
 
 			if (!hasError) {
@@ -80,8 +80,8 @@ public final class SpreadsheetRenderer {
 
 	private void drawCellBorder(int row, int column, GGraphics2D graphics) {
 		graphics.setStroke(borderStroke);
-		graphics.drawRect((int) layout.getX(column), (int) layout.getY(row),
-				(int) layout.getWidth(column), (int) layout.getHeight(row));
+		graphics.drawRect((int) Math.round(layout.getX(column)), (int) Math.round(layout.getY(row)),
+				(int) Math.round(layout.getWidth(column)), (int) Math.round(layout.getHeight(row)));
 	}
 
 	/**
@@ -98,18 +98,18 @@ public final class SpreadsheetRenderer {
 		graphics.setColor(style.geErrorGridColor());
 		graphics.setStroke(borderStroke);
 
-		int topLeftX = (int) Math.max(layout.getX(column) - offsetX, layout.getRowHeaderWidth());
-		int topLeftY = (int) Math.max(layout.getY(row) - offsetY, layout.getColumnHeaderHeight());
-		int topRightX = (int) (layout.getX(column) - offsetX + layout.getWidth(column));
-		int topRightY = (int) (layout.getY(row) - offsetY);
+		double topLeftX = Math.max(layout.getX(column) - offsetX, layout.getRowHeaderWidth());
+		double topLeftY = Math.max(layout.getY(row) - offsetY, layout.getColumnHeaderHeight());
+		double topRightX = (layout.getX(column) - offsetX + layout.getWidth(column));
+		double topRightY = (layout.getY(row) - offsetY);
 
-		int width = (int) layout.getWidth(column);
-		int height = (int) layout.getHeight(row);
+		double width = layout.getWidth(column);
+		double height = layout.getHeight(row);
 		if (leftOutOfBounds(column, offsetX)) {
-			width = (int) (topRightX - layout.getRowHeaderWidth());
+			width = topRightX - layout.getRowHeaderWidth();
 		}
 		if (topOutOfBounds(row, offsetY)) {
-			height = (int) (topRightY + layout.getHeight(row) - layout.getColumnHeaderHeight());
+			height = topRightY + layout.getHeight(row) - layout.getColumnHeaderHeight();
 		}
 
 		// Draw error border
@@ -137,7 +137,7 @@ public final class SpreadsheetRenderer {
 		return layout.getY(row) - offsetY < layout.getColumnHeaderHeight();
 	}
 
-	private void drawErrorTriangle(GGraphics2D graphics, int topRightX, int topRightY) {
+	private void drawErrorTriangle(GGraphics2D graphics, double topRightX, double topRightY) {
 		GGeneralPath path = AwtFactory.getPrototype().newGeneralPath();
 		path.moveTo(topRightX - ERROR_TRIANGLE_WIDTH, topRightY);
 		path.lineTo(topRightX, topRightY);
@@ -148,7 +148,7 @@ public final class SpreadsheetRenderer {
 		graphics.fill(path);
 	}
 
-	private void drawErrorString(GGraphics2D graphics, int topLeftX, int topLeftY) {
+	private void drawErrorString(GGraphics2D graphics, double topLeftX, double topLeftY) {
 		graphics.setColor(style.getTextColor());
 		graphics.setFont(graphics.getFont().deriveFont(GFont.ITALIC));
 		graphics.drawString(tabularData.getErrorString(), topLeftX + TEXT_PADDING,
@@ -191,14 +191,12 @@ public final class SpreadsheetRenderer {
 
 	void drawHeaderBackgroundAndOutline(GGraphics2D graphics, Rectangle rectangle) {
 		graphics.setColor(style.getHeaderBackgroundColor());
-		graphics.fillRect(0, 0, (int) rectangle.getWidth(),
-				(int) layout.getColumnHeaderHeight());
-		graphics.fillRect(0, 0, (int) layout.getRowHeaderWidth(),
-				(int) rectangle.getHeight());
+		fillRect(graphics, 0, 0, rectangle.getWidth(), layout.getColumnHeaderHeight());
+		fillRect(graphics, 0, 0, layout.getRowHeaderWidth(), rectangle.getHeight());
 		double bottom = layout.getColumnHeaderHeight();
 		graphics.setColor(style.getGridColor());
 		graphics.drawStraightLine(0, bottom, rectangle.getWidth(), bottom);
-		double right =  layout.getRowHeaderWidth();
+		double right = layout.getRowHeaderWidth();
 		graphics.drawStraightLine(right, 0, right, rectangle.getHeight());
 	}
 
@@ -206,8 +204,8 @@ public final class SpreadsheetRenderer {
 		Rectangle bounds = layout.getBounds(selection, viewport);
 		if (bounds != null) {
 			graphics.setColor(style.getSelectionColor());
-			graphics.fillRect((int) bounds.getMinX(), (int) bounds.getMinY(),
-					(int) bounds.getWidth(), (int) bounds.getHeight());
+			fillRect(graphics, bounds.getMinX(), bounds.getMinY(),
+					bounds.getWidth(), bounds.getHeight());
 		}
 	}
 
@@ -270,33 +268,29 @@ public final class SpreadsheetRenderer {
 		double offsetY = -viewport.getMinY() + layout.getColumnHeaderHeight();
 		TabularRange range = selection.getRange();
 
-		int minX = 0;
-		int minY, height, width;
+		double minX = 0;
+		double minY, height, width;
 		if (range.getMinRow() >= 0) {
-			minY = (int) (layout.getY(range.getMinRow()) + offsetY);
-			height = (int) (layout.getY(range.getMaxRow() + 1)
-					- layout.getY(range.getMinRow()));
+			minY = layout.getY(range.getMinRow()) + offsetY;
+			height = layout.getY(range.getMaxRow() + 1) - layout.getY(range.getMinRow());
 		} else {
 			minY = 0;
-			height = (int) viewport.getHeight();
+			height = viewport.getHeight();
 		}
 		graphics.setColor(range.getMinColumn() == -1 ? style.getSelectionHeaderColor()
 				: style.getGridColor());
-		graphics.fillRect(minX, minY,
-				(int) layout.getRowHeaderWidth(), height);
+		fillRect(graphics, minX, minY, layout.getRowHeaderWidth(), height);
 		minY = 0;
 		if (range.getMinColumn() >= 0) {
-			minX = (int) (layout.getX(range.getMinColumn()) + offsetX);
-			width = (int) (layout.getX(range.getMaxColumn() + 1)
-					- layout.getX(range.getMinColumn()));
+			minX = layout.getX(range.getMinColumn()) + offsetX;
+			width = layout.getX(range.getMaxColumn() + 1) - layout.getX(range.getMinColumn());
 		} else {
 			minX = 0;
-			width = (int) viewport.getWidth();
+			width = viewport.getWidth();
 		}
 		graphics.setColor(range.getMinRow() == -1 ? style.getSelectionHeaderColor()
 				: style.getGridColor());
-		graphics.fillRect(minX, minY,
-				width, (int) layout.getColumnHeaderHeight());
+		fillRect(graphics, minX, minY, width, layout.getColumnHeaderHeight());
 
 	}
 
@@ -307,7 +301,7 @@ public final class SpreadsheetRenderer {
 	void drawDraggingDot(GPoint2D dot, GGraphics2D graphics) {
 		int dotSize = 4;
 		graphics.setColor(style.getSelectionBorderColor());
-		graphics.fillRect((int) dot.getX() - dotSize, (int) dot.getY() - dotSize,
+		fillRect(graphics, dot.getX() - dotSize, dot.getY() - dotSize,
 				dotSize * 2, dotSize * 2);
 		graphics.setStroke(gridStroke);
 		graphics.setColor(GColor.WHITE);
@@ -320,5 +314,20 @@ public final class SpreadsheetRenderer {
 		graphics.setStroke(borderStroke);
 		drawRectangleWithStraightLines(graphics,
 				bounds.getMinX(), bounds.getMinY(), bounds.getMaxX(), bounds.getMaxY());
+	}
+
+	/**
+	 * This method allows for filling a rectangle by making sure the passed values,
+	 * which are doubles, are correctly rounded to the nearest integer values using
+	 * {@link Math#round(double)}
+	 * @param graphics {@link GGraphics2D}
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param width width
+	 * @param height height
+	 */
+	void fillRect(GGraphics2D graphics, double x, double y, double width, double height) {
+		graphics.fillRect((int) Math.round(x), (int) Math.round(y),
+				(int) Math.round(width), (int) Math.round(height));
 	}
 }

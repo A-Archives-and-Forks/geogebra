@@ -44,8 +44,8 @@ public final class ViewportAdjuster {
 
 		if (scrollAmountX != 0 || scrollAmountY != 0) {
 			viewportAdjusterDelegate.setScrollPosition(
-					(int) (viewport.getMinX() + scrollAmountX),
-					(int) (viewport.getMinY() + scrollAmountY));
+					viewport.getMinX() + scrollAmountX,
+					viewport.getMinY() + scrollAmountY);
 			return viewport.translatedBy(scrollAmountX, scrollAmountY);
 		}
 		return viewport;
@@ -61,10 +61,10 @@ public final class ViewportAdjuster {
 	 * (horizontally)
 	 * @return new viewport
 	 */
-	Rectangle scrollForDrag(int x, int y, Rectangle viewport,
+	Rectangle scrollForDrag(double x, double y, Rectangle viewport,
 			boolean extendVertically) {
-		int viewportWidth = (int) viewport.getWidth();
-		int viewportHeight = (int) viewport.getHeight();
+		double viewportWidth = viewport.getWidth();
+		double viewportHeight = viewport.getHeight();
 		int scrollAmountX = 0;
 		int scrollAmountY = 0;
 
@@ -86,7 +86,7 @@ public final class ViewportAdjuster {
 			return viewport;
 		}
 
-		viewportAdjusterDelegate.setScrollPosition((int) targetX, (int) targetY);
+		viewportAdjusterDelegate.setScrollPosition(targetX, targetY);
 		return viewport.translatedBy(scrollAmountX, scrollAmountY);
 	}
 
@@ -159,7 +159,7 @@ public final class ViewportAdjuster {
 		viewportAdjusterDelegate.updateScrollableContentSize(size);
 	}
 
-	private int getVerticalScrollAmountForDrag(int viewportHeight, int y) {
+	private int getVerticalScrollAmountForDrag(double viewportHeight, double y) {
 		if (viewportHeight - y < viewportHeight / 10) {
 			return SCROLL_AMOUNT_FOR_PASTE_SELECTION;
 		} else if (y < viewportHeight / 10) {
@@ -168,7 +168,7 @@ public final class ViewportAdjuster {
 		return 0;
 	}
 
-	private int getHorizontalScrollAmountForDrag(int viewportWidth, int x) {
+	private int getHorizontalScrollAmountForDrag(double viewportWidth, double x) {
 		if (viewportWidth - x < viewportWidth / 10) {
 			return SCROLL_AMOUNT_FOR_PASTE_SELECTION;
 		} else if (x < viewportWidth / 10) {

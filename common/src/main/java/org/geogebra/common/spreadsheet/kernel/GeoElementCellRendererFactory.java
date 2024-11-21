@@ -69,9 +69,9 @@ public final class GeoElementCellRendererFactory implements CellRenderableFactor
 
 	private static class CheckboxCellRenderer implements CellRenderer {
 		@Override
-		public void draw(Object data, int fontStyle, int alignment,
+		public void draw(Object data, int fontStyle, double offsetX,
 				GGraphics2D g2d, Rectangle cellBorder) {
-			g2d.translate((int) cellBorder.getMinX(), (int) cellBorder.getMinY());
+			g2d.translate(cellBorder.getMinX(), cellBorder.getMinY());
 			g2d.scale(0.5, 0.5);
 			DrawBoolean.CheckBoxIcon.paintIcon(
 					((GeoBoolean) data).getBoolean(),
@@ -79,7 +79,7 @@ public final class GeoElementCellRendererFactory implements CellRenderableFactor
 					3,
 					3);
 			g2d.scale(2, 2);
-			g2d.translate((int) -cellBorder.getMinX(), (int) -cellBorder.getMinY());
+			g2d.translate(-cellBorder.getMinX(), -cellBorder.getMinY());
 		}
 
 		@Override

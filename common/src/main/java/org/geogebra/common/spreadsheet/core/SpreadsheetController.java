@@ -44,8 +44,8 @@ public final class SpreadsheetController {
 	private @CheckForNull ViewportAdjuster viewportAdjuster;
 	private @CheckForNull UndoProvider undoProvider;
 	private CellDragPasteHandler cellDragPasteHandler;
-	private int lastPointerPositionX = -1;
-	private int lastPointerPositionY = -1;
+	private double lastPointerPositionX = -1;
+	private double lastPointerPositionY = -1;
 	private @CheckForNull CopyPasteCutTabularData copyPasteCut;
 	private boolean autoscrollRow;
 	private boolean autoscrollColumn;
@@ -232,9 +232,8 @@ public final class SpreadsheetController {
 	 * @param y y-coordinate relative to viewport
 	 * @param modifiers event modifiers
 	 */
-	// TODO change to double (APPS-5637)
 	// TODO group all handleXxx methods together
-	public void handlePointerDown(int x, int y, Modifiers modifiers) {
+	public void handlePointerDown(double x, double y, Modifiers modifiers) {
 		if (isEditorActive()) {
 			saveContentAndHideCellEditor();
 		}
@@ -309,10 +308,10 @@ public final class SpreadsheetController {
 				: layout.findColumn(x + viewport.getMinX());
 	}
 
-	private void showContextMenu(int x, int y, int fromRow, int toRow, int fromCol, int toCol) {
+	private void showContextMenu(double x, double y, int fromRow, int toRow, int fromCol, int toCol) {
 		if (controlsDelegate != null) {
 			controlsDelegate.showContextMenu(contextMenuItems.get(fromRow, toRow, fromCol, toCol),
-					new GPoint(x, y));
+					new GPoint((int) Math.round(x), (int) Math.round(y)));
 		}
 		resetDragAction();
 	}
@@ -327,7 +326,7 @@ public final class SpreadsheetController {
 				lastRange.getMinRow(), lastRange.getMinColumn());
 	}
 
-	DragState getDragAction(int x, int y) {
+	DragState getDragAction(double x, double y) {
 		GPoint2D draggingDot = getDraggingDot();
 		if (draggingDot != null && draggingDot.distance(x, y) < 18) {
 			return new DragState(MouseCursor.DRAG_DOT, layout.findRow(y + viewport.getMinY()),
@@ -341,7 +340,7 @@ public final class SpreadsheetController {
 	 * @param y y-coordinate relative to viewport
 	 * @param modifiers event modifiers
 	 */
-	public void handlePointerUp(int x, int y, Modifiers modifiers) {
+	public void handlePointerUp(double x, double y, Modifiers modifiers) {
 		switch (dragState.cursor) {
 		case RESIZE_X:
 			if (isSelected(-1, dragState.startColumn)) {
@@ -366,7 +365,7 @@ public final class SpreadsheetController {
 		resetDragAction();
 	}
 
-	private void resizeAllSelectedColumns(int x) {
+	private void resizeAllSelectedColumns(double x) {
 		Stream<Selection> selections = getSelections();
 		double width = layout.getWidthForColumnResize(dragState.startColumn,
 				x + viewport.getMinX());
@@ -378,7 +377,7 @@ public final class SpreadsheetController {
 		});
 	}
 
-	private void resizeAllSelectedRows(int y) {
+	private void resizeAllSelectedRows(double y) {
 		Stream<Selection> selections = getSelections();
 		double height = layout.getHeightForRowResize(dragState.startRow,
 				y + viewport.getMinY());
@@ -631,7 +630,7 @@ public final class SpreadsheetController {
 	 * @param y event y-coordinate in pixels
 	 * @param modifiers alt/ctrl/shift
 	 */
-	public void handlePointerMove(int x, int y, Modifiers modifiers) {
+	public void handlePointerMove(double x, double y, Modifiers modifiers) {
 		lastPointerPositionX = x;
 		lastPointerPositionY = y;
 		autoscrollColumn = autoscrollRow = false;
@@ -658,13 +657,13 @@ public final class SpreadsheetController {
 		cellDragPasteHandler.setDestinationForPaste(row, column);
 	}
 
-	private void resizeColumn(int x) {
+	private void resizeColumn(double x) {
 		double width = layout.getWidthForColumnResize(dragState.startColumn,
 				x + viewport.getMinX());
 		layout.setWidthForColumns(width, dragState.startColumn, dragState.startColumn);
 	}
 
-	private void resizeRow(int y) {
+	private void resizeRow(double y) {
 		double height = layout.getHeightForRowResize(dragState.startRow,
 				y + viewport.getMinY());
 		layout.setHeightForRows(height, dragState.startRow, dragState.startRow);

@@ -36,7 +36,7 @@ public class SpreadsheetTest extends BaseUnitTest {
 		resetViewport();
 		spreadsheet.setViewportAdjustmentHandler(new ViewportAdjusterDelegate() {
 			@Override
-			public void setScrollPosition(int x, int y) {
+			public void setScrollPosition(double x, double y) {
 				// no UI to update
 			}
 

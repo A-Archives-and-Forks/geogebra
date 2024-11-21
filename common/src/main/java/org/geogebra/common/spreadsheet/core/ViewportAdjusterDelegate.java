@@ -5,8 +5,7 @@ import org.geogebra.common.util.shape.Size;
 
 public interface ViewportAdjusterDelegate {
 
-	// TODO change to double (APPS-5637)
-	void setScrollPosition(int x, int y);
+	void setScrollPosition(double x, double y);
 
 	/**
 	 * Retrieves the width of the scrollbar used for dragging content with the left mouse button

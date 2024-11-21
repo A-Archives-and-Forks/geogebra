@@ -59,7 +59,7 @@ public class SpreadsheetControllerTest implements SpreadsheetControlsDelegate {
         setViewport(new Rectangle(0, 100, 0, 120));
         controller.setViewportAdjustmentHandler(new ViewportAdjusterDelegate() {
             @Override
-            public void setScrollPosition(int x, int y) {
+            public void setScrollPosition(double x, double y) {
                 viewport = viewport.translatedBy(x, y);
             }
 
