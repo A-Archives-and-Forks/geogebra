@@ -2365,4 +2365,12 @@ public class GeoSymbolicTest extends BaseSymbolicTest {
 		assertThat(lookup("b"), hasValue("3"));
 		assertArrayEquals(new String[]{"a", "b"}, app.getGgbApi().getAllObjectNames());
 	}
+
+	@Test
+	@Issue("APPS-6033")
+	public void maxShouldUseCASForTwinGeo() {
+		GeoSymbolic max = add("Max(x^3-6x-1, -2, 3)");
+		assertThat(max.getTwinGeo(), hasValue("(3, 8)"));
+	}
+
 }
