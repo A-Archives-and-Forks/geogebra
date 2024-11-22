@@ -1397,6 +1397,9 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 				x = x * tpl.getRoundHalfUpFactor(abs, nf, sf, useSF);
 			}
 
+			if (tpl.shouldDisplayEngineeringNotation()) {
+				return tpl.convertEngineeringNotationForDisplay(x);
+			}
 			if (useSF) {
 				return formatSF(x, tpl);
 			}
@@ -1963,7 +1966,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 		ScientificFormatAdapter sfa = tpl.getSF(sf);
 		// get scientific format
 		StringUtil.appendFormat(sbFormatSF, number, sfa);
-		return tpl.convertScientificNotationForDisplay(sbFormatSF.toString(), number);
+		return tpl.convertScientificNotationForDisplay(sbFormatSF.toString());
 	}
 
 	/**

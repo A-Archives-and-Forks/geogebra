@@ -417,8 +417,7 @@ public class AlgebraItem {
 	 */
 	public static boolean shouldShowEngineeringNotationOutputButton(GeoElement geo) {
 		return GlobalScope.examController.getExamType() == ExamType.REALSCHULE
-				&& geo instanceof HasSymbolicMode && !isTextItem(geo)
-				&& geo.getKernel().useSignificantFigures;
+				&& geo instanceof HasSymbolicMode && !isTextItem(geo);
 	}
 
 	/**

@@ -111,7 +111,7 @@ public class AlgebraOutputPanel extends FlowPanel {
 		return toggleButton;
 	}
 
-	public static TriStateToggleButton createEngineeringButton(FlowPanel parent,
+	public static TriStateToggleButton createTriStateToggleButton(FlowPanel parent,
 			final GeoElement geo) {
 
 		TriStateToggleButton button;
@@ -123,7 +123,7 @@ public class AlgebraOutputPanel extends FlowPanel {
 			button = (TriStateToggleButton) existingButton;
 		}
 
-		updateEngineeringButtonIcons(geo, button);
+		updateTriStateToggleButtonIcons(geo, button);
 		button.addStyleName("symbolicButton");
 
 		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC
@@ -153,7 +153,7 @@ public class AlgebraOutputPanel extends FlowPanel {
 		}
 	}
 
-	private static void updateEngineeringButtonIcons(GeoElement geo, TriStateToggleButton button) {
+	private static void updateTriStateToggleButtonIcons(GeoElement geo, TriStateToggleButton button) {
 		if (AlgebraItem.evaluatesToFraction(geo)) {
 			button.updateIcons(MaterialDesignResources.INSTANCE.fraction_white(),
 					MaterialDesignResources.INSTANCE.engineering_notation_white(),

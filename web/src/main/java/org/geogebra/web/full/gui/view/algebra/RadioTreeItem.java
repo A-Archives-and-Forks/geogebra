@@ -404,7 +404,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		if (geo != null && shouldShowOutputButton(geo)) {
 			addControls();
 			if (shouldShowSymbolicAndEngineeringOutputButton(geo)) {
-				symbolicButton = AlgebraOutputPanel.createEngineeringButton(controls, geo);
+				symbolicButton = AlgebraOutputPanel.createTriStateToggleButton(controls, geo);
 			} else {
 				symbolicButton = AlgebraOutputPanel.createToggleButton(controls, geo);
 			}
