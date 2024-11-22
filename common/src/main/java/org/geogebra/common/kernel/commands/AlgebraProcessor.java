@@ -970,9 +970,6 @@ public class AlgebraProcessor {
 			final ErrorHandler handler,
 			final AsyncOperation<GeoElementND[]> callback0,
 			final EvalInfo info) {
-		if (!isExpressionAllowed(ve, inputExpressionFilters)) {
-			return null;
-		}
 		// collect undefined variables
 		CollectUndefinedVariables collecter = new Traversing.CollectUndefinedVariables(
 				info.isMultipleUnassignedAllowed());
@@ -1124,17 +1121,19 @@ public class AlgebraProcessor {
 
 		// process ValidExpression (built by parser)
 
-		GeoElement[] geos = processValidExpression(storeUndo, handler, ve,
-				newInfo);
+		GeoElement[] geos = processValidExpression(storeUndo, handler, ve, newInfo);
 
 		// Test output for filtered expression
 		if (geos != null) {
-			boolean containsRestrictedExpressions = Arrays.stream(geos)
-					.map(geo -> geo.wrap())
+			boolean containsRestrictedInputExpression =
+					!isExpressionAllowed(ve, inputExpressionFilters);
+			boolean containsRestrictedOutputExpression = Arrays.stream(geos)
+					.map(GeoElement::wrap)
 					.anyMatch(geo -> !isExpressionAllowed(geo, outputExpressionFilters));
-			if (containsRestrictedExpressions) {
+
+			if (containsRestrictedOutputExpression || containsRestrictedInputExpression) {
 				// Remove filtered geos
-				Arrays.stream(geos).forEach(geo -> geo.remove());
+				Arrays.stream(geos).forEach(GeoElement::remove);
 				throw new MyError(loc, MyError.Errors.InvalidInput);
 			}
 		}
@@ -3221,11 +3220,6 @@ public class AlgebraProcessor {
 		// ELSE: resolve variables and evaluate expressionnode
 		n.resolveVariables(info);
 
-		// Check for allowed expressions again, as resolving variables might end up creating
-		// expressions that otherwise are not allowed. See APPS-5138
-		if (!isExpressionAllowed(n, inputExpressionFilters)) {
-			return null;
-		}
 		if (n.isLeaf() && n.getLeft().isExpressionNode()) {
 			// we changed f' to f'(x) -> clean double wrap
 			ExpressionNode unwrapped = n.getLeft().wrap();
