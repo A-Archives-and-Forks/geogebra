@@ -5,10 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.arithmetic.simplifiers.FactorizeTags;
+import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyToRadical;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SumNumbers;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 
-final class RationalizeFractionAlgo {
+public final class RationalizeFractionAlgo {
 	private final Kernel kernel;
 	private final ExpressionNode numerator;
 	private final ExpressionNode denominator;
@@ -21,7 +27,9 @@ final class RationalizeFractionAlgo {
 		this.denominator = denominator;
 		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
 				new ReduceRoot(kernel), new CancelGCDInFraction(kernel),
-				new SimplifyMultiplication(kernel)
+				new SimplifyMultiplication(kernel),
+				new SumNumbers(kernel),
+				new FactorizeTags(kernel)
 		);
 	}
 
@@ -57,7 +65,7 @@ final class RationalizeFractionAlgo {
 }
 
 
-	static boolean isIntegerValue(ExpressionNode node) {
+	public static boolean isIntegerValue(ExpressionNode node) {
 		double v = node.evaluateDouble();
 		return DoubleUtil.isEqual(v, Math.rint(v), Kernel.MAX_PRECISION);
 	}

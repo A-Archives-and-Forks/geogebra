@@ -1,9 +1,13 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.simplifiers;
 
 import static org.geogebra.common.kernel.arithmetic.Surds.getResolution;
 import static org.geogebra.common.util.DoubleUtil.isInteger;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionValue;
+import org.geogebra.common.kernel.arithmetic.MyDouble;
+import org.geogebra.common.kernel.arithmetic.NumberValue;
 import org.geogebra.common.plugin.Operation;
 
 public class SimplifyMultiplication implements SimplifyNode {

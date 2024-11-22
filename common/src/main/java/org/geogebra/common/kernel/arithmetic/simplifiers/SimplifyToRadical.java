@@ -1,6 +1,9 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.simplifiers;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionValue;
+import org.geogebra.common.kernel.arithmetic.Surds;
 import org.geogebra.common.plugin.Operation;
 
 public class SimplifyToRadical implements SimplifyNode {

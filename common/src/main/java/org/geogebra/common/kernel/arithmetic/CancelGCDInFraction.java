@@ -1,6 +1,7 @@
 package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 

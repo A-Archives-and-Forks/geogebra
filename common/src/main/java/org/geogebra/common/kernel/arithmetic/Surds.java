@@ -10,7 +10,7 @@ import org.geogebra.common.plugin.Operation;
 
 public class Surds {
 
-	protected static ExpressionValue getResolution(ExpressionNode expr,
+	public static ExpressionValue getResolution(ExpressionNode expr,
 			Kernel kernel) {
 		ExpressionValue left = expr.getLeft();
 		Operation op = expr.getOperation();

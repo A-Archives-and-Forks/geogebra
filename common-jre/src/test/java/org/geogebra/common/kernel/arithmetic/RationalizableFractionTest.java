@@ -176,7 +176,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldNotPassToDecimalTest("1 + sqrt(2.5)");
 		shouldNotPassToDecimalTest("16.5 * 2 sqrt(5)");
 	}
-|
+
 	private void shouldNotPassToDecimalTest(String command) {
 		assertTrue(isPassDecimal(command));
 	}
@@ -198,15 +198,13 @@ public class RationalizableFractionTest extends BaseUnitTest {
 				"(2 - sqrt(7)) / 7");
 		rationalizationShouldBe("(-10 + sqrt(6)) / (5 + sqrt(1))",
 				"(-10 + sqrt(6)) / 6");
-//		rationalizationShouldBe("(-10 + sqrt(5)) / (-2 + sqrt(5))",
-//				"(-8sqrt(5) - 15");
+		rationalizationShouldBe("(-10 + sqrt(5)) / (-2 + sqrt(5))",
+				"(-8sqrt(5) - 15");
 ////		rationalizationShouldBe("(7 + sqrt(8)) / (4 + sqrt(8))",
 //				"(-3 sqrt(2)) / 4");
-//		rationalizationShouldBe(genericSqrtFraction(7, 4, -8, 10),
-//				"");
-//		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
-//				"");
 	}
+
+
 
 	@Test
 	public void name() {
@@ -222,4 +220,12 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		Log.debug(s);
 		return s;
 	}
+	@Test
+	public void was() {
+	//	rationalizationShouldBe(genericSqrtFraction(7, 4, -8, 10),
+	//			"");
+		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
+				"");
+	}
+
 }

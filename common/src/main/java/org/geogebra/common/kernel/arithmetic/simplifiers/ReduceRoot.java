@@ -1,6 +1,11 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.simplifiers;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionValue;
+import org.geogebra.common.kernel.arithmetic.MyDouble;
+import org.geogebra.common.kernel.arithmetic.Surds;
+import org.geogebra.common.kernel.arithmetic.Traversing;
 import org.geogebra.common.plugin.Operation;
 
 public class ReduceRoot implements SimplifyNode {
@@ -27,6 +32,10 @@ public class ReduceRoot implements SimplifyNode {
 				return ev;
 			}
 		});
+		double v = reduceUnderSqrt.evaluateDouble();
+		if (v == Math.round(v)) {
+			return new MyDouble(kernel, v).wrap();
+		}
 
 		ExpressionValue surd = Surds.getResolution(reduceUnderSqrt.wrap(), kernel);
 		return surd != null ? surd.wrap() : reduceUnderSqrt.wrap();
