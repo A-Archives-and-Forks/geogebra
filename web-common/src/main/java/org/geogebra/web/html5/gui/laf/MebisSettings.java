@@ -56,24 +56,7 @@ public class MebisSettings implements VendorSettings {
 
 	@Override
 	public List<FontFamily> getTextToolFonts() {
-		return Arrays.asList(FontFamily.ARIAL,
-				FontFamily.CALIBRI,
-				FontFamily.CENTURY_GOTHIC,
-				FontFamily.COMIC_SANS,
-				FontFamily.COURIER,
-				FontFamily.GEORGIA,
-				FontFamily.DYSLEXIC,
-				FontFamily.PALATINO,
-				FontFamily.QUICKSAND,
-				FontFamily.ROBOTO,
-				FontFamily.SCHULBUCH_BAYERN,
-				FontFamily.SF_MONO,
-				FontFamily.SF_PRO,
-				FontFamily.SOURCE_SANS_PRO,
-				FontFamily.TIMES,
-				FontFamily.TITILLIUM,
-				FontFamily.TREBUCHET,
-				FontFamily.VERDANA);
+		return Arrays.asList(FontFamily.values());
 	}
 
 	@Override
