@@ -18,25 +18,16 @@ dependencies {
     implementation(project(":renderer-base"))
     implementation(project(":editor-base"))
 
-    testImplementationIntegration(project(":ggbjdk"))
-    testImplementationIntegration(libs.junit)
-    testImplementationIntegration(libs.hamcrest)
-    testImplementationIntegration(libs.mockito.core)
+    testFixturesApi(project(":ggbjdk"))
+    testFixturesApi(libs.junit)
+    testFixturesApi(libs.hamcrest)
+    testFixturesApi(libs.mockito.core)
 
     // Junit 5 support with backward compatibility
-    testImplementationIntegration(platform(libs.junit5.bom))
-    testImplementationIntegration(libs.junit5.jupiter)
-    testRuntimeOnlyIntegration(libs.junit5.vintage)
-}
-
-private fun DependencyHandler.testImplementationIntegration(dependencyNotation: Any) {
-    testImplementation(dependencyNotation)
-    testFixturesImplementation(dependencyNotation)
-}
-
-private fun DependencyHandler.testRuntimeOnlyIntegration(dependencyNotation: Any) {
-    testRuntimeOnly(dependencyNotation)
-    testFixturesRuntimeOnly(dependencyNotation)
+    testFixturesApi(platform(libs.junit5.bom))
+    testFixturesApi(libs.junit5.jupiter)
+    testFixturesRuntimeOnly(libs.junit5.vintage)
+    testRuntimeOnly(libs.junit5.vintage)
 }
 
 tasks.test {
