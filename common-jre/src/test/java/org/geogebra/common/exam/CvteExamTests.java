@@ -1,6 +1,8 @@
 package org.geogebra.common.exam;
 
 import static org.geogebra.common.exam.restrictions.CvteExamRestrictions.isVisibilityEnabled;
+import static org.geogebra.common.kernel.commands.Commands.Curve;
+import static org.geogebra.common.kernel.commands.Commands.CurveCartesian;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -14,7 +16,6 @@ import java.util.List;
 
 import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.euclidian.EuclidianConstants;
-import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,8 +62,8 @@ public final class CvteExamTests extends BaseExamTests {
         assertAll(
                 () -> assertTrue(app.getAvailableTools().contains(EuclidianConstants.MODE_MOVE)),
                 () -> assertFalse(app.getAvailableTools().contains(EuclidianConstants.MODE_POINT)),
-                () -> assertTrue(commandDispatcher.isAllowedByCommandFilters(Commands.Curve)),
-                () -> assertTrue(commandDispatcher.isAllowedByCommandFilters(Commands.CurveCartesian))
+                () -> assertTrue(commandDispatcher.isAllowedByCommandFilters(Curve)),
+                () -> assertTrue(commandDispatcher.isAllowedByCommandFilters(CurveCartesian))
         );
     }
 
