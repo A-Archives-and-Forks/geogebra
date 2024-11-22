@@ -24,7 +24,6 @@ dependencies {
     testImplementation(libs.mockito.core)
 
     // Junit 5 support with backward compatibility
-    testImplementation(platform(libs.junit5.bom))
     testImplementation(libs.junit5.jupiter)
     testRuntimeOnly(libs.junit5.vintage)
 

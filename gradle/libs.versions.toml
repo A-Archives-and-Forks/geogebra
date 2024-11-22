@@ -58,10 +58,8 @@ giac-android = { module = "org.geogebra:giac-android", version.ref = "javagiac" 
 giac-ios = { module = "fr.ujf-grenoble:igiac", version.ref = "javagiac" }
 
 junit = { module = "junit:junit", version.ref = "junit4" }
-junit5-bom = { module = "org.junit:junit-bom", version.ref = "junit5" }
-junit5-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
-junit5-vintage = { module = "org.junit.vintage:junit-vintage-engine" }
-
+junit5-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit5" }
+junit5-vintage = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit5" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 
