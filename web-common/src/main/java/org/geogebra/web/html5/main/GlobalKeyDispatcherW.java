@@ -2,6 +2,7 @@ package org.geogebra.web.html5.main;
 
 import java.util.List;
 
+import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.gui.AccessibilityManagerInterface;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.App;
@@ -39,12 +40,18 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 	private static boolean controlDown = false;
 	private static boolean shiftDown = false;
+	private static boolean spaceDown = false;
 
 	private static boolean rightAltDown = false;
 
 	private static boolean leftAltDown = false;
 
 	private boolean escPressed = false;
+
+	/**
+	 * Used to make sure the old mode is set correctly after grabbing and moving the Graphics View
+	 */
+	private int oldMode = EuclidianConstants.MODE_MOVE;
 
 	/**
 	 * @return whether ctrl is pressed
@@ -72,6 +79,13 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	 */
 	public static boolean getShiftDown() {
 		return shiftDown;
+	}
+
+	/**
+	 * @return Whether space is pressed
+	 */
+	public static boolean getSpaceDown() {
+		return spaceDown;
 	}
 
 	/**
@@ -131,6 +145,8 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 	private class GlobalShortcutHandler implements EventListener {
 
+		private boolean grabModeSet = false;
+
 		@Override
 		public void onBrowserEvent(Event event) {
 			if (CopyPasteW.incorrectTarget(event.getEventTarget().cast())
@@ -140,6 +156,11 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 			if (DOM.eventGetType(event) == Event.ONKEYDOWN) {
 				if (handleKeyDown(event)) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
+			} else if (DOM.eventGetType(event) == Event.ONKEYUP) {
+				if (handleKeyUp(event)) {
 					event.preventDefault();
 					event.stopPropagation();
 				}
@@ -177,10 +198,50 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 					handleEscapeForNonApplets();
 				}
 				handled = true;
+			} else if (isSpace(kc) || isShift(kc)) {
+				handleSpaceOrShiftKey(kc, true);
+				handled = true;
 			} else {
 				handled = handled || handleSelectedGeosKeys(event);
 			}
 			return handled;
+		}
+
+		private boolean handleKeyUp(Event event) {
+			boolean handled = false;
+			KeyCodes kc = NavigatorUtil.translateGWTcode(event.getKeyCode());
+			if (isSpace(kc) || isShift(kc)) {
+				handleSpaceOrShiftKey(kc, false);
+				handled = true;
+			}
+			return handled;
+		}
+
+		private void handleSpaceOrShiftKey(KeyCodes kc, boolean down) {
+			if (down && grabModeSet) {
+				return;
+			}
+			if (down) {
+				oldMode = app.getMode();
+				app.setMode(EuclidianConstants.MODE_GRAB);
+				grabModeSet = true;
+			} else {
+				app.setMode(oldMode);
+				grabModeSet = false;
+			}
+			if (isSpace(kc)) {
+				spaceDown = down;
+			} else {
+				shiftDown = down;
+			}
+		}
+
+		private boolean isSpace(KeyCodes kc) {
+			return kc == KeyCodes.SPACE;
+		}
+
+		private boolean isShift(KeyCodes kc) {
+			return kc == KeyCodes.SHIFT;
 		}
 	}
 

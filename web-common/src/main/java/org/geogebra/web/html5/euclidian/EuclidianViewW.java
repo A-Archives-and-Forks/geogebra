@@ -1027,6 +1027,14 @@ public class EuclidianViewW extends EuclidianView implements
 		setCursorClass("cursor_rotation");
 	}
 
+	private void setGrabCursor() {
+		setCursorClass("cursor_grab");
+	}
+
+	private void setGrabbingCursor() {
+		setCursorClass("cursor_grabbing");
+	}
+
 	@Override
 	public boolean hasFocus() {
 		// changed to return true, otherwise Arrow keys don't work to pan the
@@ -1227,6 +1235,12 @@ public class EuclidianViewW extends EuclidianView implements
 			return;
 		case DRAG:
 			setDragCursor();
+			return;
+		case GRAB:
+			setGrabCursor();
+			return;
+		case GRABBING:
+			setGrabbingCursor();
 			return;
 		case MOVE:
 			setMoveCursor();

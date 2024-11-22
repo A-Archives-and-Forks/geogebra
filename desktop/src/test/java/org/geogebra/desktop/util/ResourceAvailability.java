@@ -74,6 +74,7 @@ public class ResourceAvailability {
 			switch (i) {
 			case EuclidianConstants.MODE_SELECTION_LISTENER:
 			case EuclidianConstants.MODE_PHOTO_LIBRARY:
+			case EuclidianConstants.MODE_GRAB:
 				continue;
 			default:
 				ImageResourceD res = man.getToolImageResource(modeText);

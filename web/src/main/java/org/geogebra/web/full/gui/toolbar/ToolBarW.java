@@ -154,10 +154,11 @@ public class ToolBarW extends FlowPanel
 		boolean success = false;
 		int tmpMode = newMode;
 		// there is no special icon/button for the selection listener mode, use
-		// the
-		// move mode button instead
+		// the move mode button instead
 		if (tmpMode == EuclidianConstants.MODE_SELECTION_LISTENER) {
 			tmpMode = EuclidianConstants.MODE_MOVE;
+		} else if (tmpMode == EuclidianConstants.MODE_GRAB) {
+			tmpMode = EuclidianConstants.MODE_TRANSLATEVIEW;
 		}
 
 		if (modeToggleMenus != null) {
@@ -171,7 +172,11 @@ public class ToolBarW extends FlowPanel
 			
 			if (!success && tmpMode != getFirstMode()) {
 				tmpMode = setMode(getFirstMode(), m);
+			}
 
+			// Make sure correct mode 'GRAB' is not changed
+			if (newMode == EuclidianConstants.MODE_GRAB) {
+				tmpMode = newMode;
 			}
 
 			this.mode = tmpMode;

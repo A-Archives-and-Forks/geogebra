@@ -429,6 +429,10 @@ public final class EuclidianConstants {
 	 * Triangle protractor
 	 */
 	public static final int MODE_TRIANGLE_PROTRACTOR = 129;
+	/**
+	 * Grab
+	 */
+	public static final int MODE_GRAB = 130;
 
 	/** macro tools ID offset */
 	public static final int MACRO_MODE_ID_OFFSET = 100001;
@@ -922,6 +926,8 @@ public final class EuclidianConstants {
 			return "Protractor";
 		case EuclidianConstants.MODE_TRIANGLE_PROTRACTOR:
 			return "TriangleProtractor";
+		case EuclidianConstants.MODE_GRAB:
+			return "MoveGraphicsView";
 		default:
 			return "";
 		}
