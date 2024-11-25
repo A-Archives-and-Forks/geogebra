@@ -426,6 +426,15 @@ public class ExamControllerTests implements ExamControllerDelegate {
 		assertNull(evaluate("g(x) = f'"));
 	}
 
+	@Test
+	public void testNoSideEffects() {
+		setInitialApp(SuiteSubApp.GRAPHING);
+		examController.prepareExam();
+		examController.startExam(ExamType.IB, null);
+
+		assertNull(evaluate("g(x) = f'"));
+	}
+
 	// -- ExamControllerDelegate --
 
 	@Override
