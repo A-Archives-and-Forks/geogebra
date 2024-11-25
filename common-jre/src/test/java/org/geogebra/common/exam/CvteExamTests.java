@@ -103,8 +103,15 @@ public final class CvteExamTests extends BaseExamTests {
         assertFalse(isVisibilityEnabled(evaluateGeoElement("y^2 = x")));
         assertFalse(isVisibilityEnabled(evaluateGeoElement("x^3 + y^2 = 2")));
         assertFalse(isVisibilityEnabled(evaluateGeoElement("y^3 = x")));
+
+        // Restricted inequalities
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("x > 0")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("y <= 1")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("x < y")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("x - y > 2")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("x^2 + 2y^2 < 1")));
     }
-    
+
     @Test
     public void testRestrictedVisibilityInEuclidianView() {
         GeoElement allowedGeoElement = evaluateGeoElement("x = 0");
