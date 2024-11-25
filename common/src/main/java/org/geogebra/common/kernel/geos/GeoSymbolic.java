@@ -570,7 +570,7 @@ public class GeoSymbolic extends GeoElement
 		if (isTwinUpToDate) {
 			return twinGeo;
 		}
-		GeoElementND newTwin = createTwinGeo();
+		GeoElementND newTwin = ensureNotInConstruction(createTwinGeo());
 
 		if (newTwin instanceof EquationValue) {
 			((EquationValue) newTwin).setToUser();
@@ -595,6 +595,17 @@ public class GeoSymbolic extends GeoElement
 		isTwinUpToDate = true;
 
 		return twinGeo;
+	}
+
+	private GeoElementND ensureNotInConstruction(GeoElementND computed) {
+		GeoElementND newTwin = computed;
+		if (newTwin != null && newTwin.isLabelSet()) {
+			newTwin = newTwin.copyInternal(cons);
+			if (newTwin.isGeoNumeric()) {
+				((GeoNumeric) newTwin).setDrawable(false);
+			}
+		}
+		return newTwin;
 	}
 
 	private GeoElementND createTwinGeo() {
@@ -660,6 +671,8 @@ public class GeoSymbolic extends GeoElement
 		case TrigSimplify:
 		case TrigCombine:
 		case TrigExpand:
+		case Min:
+		case Max:
 			return true;
 		default: return false;
 		}
@@ -1206,5 +1219,10 @@ public class GeoSymbolic extends GeoElement
 			conditionalSerializer = new ConditionalSerializer(kernel, this);
 		}
 		return conditionalSerializer;
+	}
+
+	@Override
+	public void setZero() {
+		setValue(new ExpressionNode(kernel, new MyDouble(kernel, 0.0)));
 	}
 }

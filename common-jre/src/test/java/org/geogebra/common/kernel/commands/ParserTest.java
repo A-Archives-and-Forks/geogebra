@@ -1,6 +1,10 @@
 package org.geogebra.common.kernel.commands;
 
 import static org.geogebra.test.TestStringUtil.unicode;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -19,17 +23,20 @@ import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.FunctionVariable;
 import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.geogebra.common.kernel.arithmetic.variable.Variable;
+import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.kernel.parser.ParseException;
 import org.geogebra.common.kernel.parser.Parser;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.BracketsError;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.MyParseError;
+import org.geogebra.common.main.settings.config.AppConfigDefault;
 import org.geogebra.common.main.settings.config.AppConfigGraphing;
 import org.geogebra.common.main.settings.config.AppConfigScientific;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.test.commands.AlgebraTestHelper;
+import org.geogebra.test.commands.ErrorAccumulator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -517,55 +524,71 @@ public class ParserTest {
 		AlgebraProcessor processor = app.getKernel().getAlgebraProcessor();
 
 		assertEquals("(0, 0)",
-				processor.processAlgebraCommand("O", false)[0]
+				add("O")
 						.toValueString(StringTemplate.defaultTemplate));
 		assertEquals("(1, 1)",
-				processor.processAlgebraCommand("O+1", false)[0]
+				add("O+1")
 						.toValueString(StringTemplate.defaultTemplate)); // Creates A
 		assertEquals("(1, 1)",
-				processor.processAlgebraCommand("1+O", false)[0]
+				add("1+O")
 						.toValueString(StringTemplate.defaultTemplate)); // Creates B
 		assertEquals("(1, 2)",
-				processor.processAlgebraCommand("C(1,2)", false)[0]
-						.toValueString(StringTemplate.defaultTemplate));
-		assertEquals("5",
-				processor.processAlgebraCommand("C(1,2)", false)[0]
+				add("C(1,2)")
 						.toValueString(StringTemplate.defaultTemplate));
 		assertEquals("(2, 4)",
-				processor.processAlgebraCommand("C(2)", false)[0]
-						.toValueString(StringTemplate.defaultTemplate)); // Creates D
+				add("C(2)")
+						.toValueString(StringTemplate.defaultTemplate));
+		ErrorAccumulator acc = new ErrorAccumulator();
+		processor.processAlgebraCommandNoExceptionHandling("C(1,2)", false, acc, false, null);
+		assertThat(acc.getErrors(), containsString("Sorry"));
 		assertEquals("(1, 2, 3)",
-				processor.processAlgebraCommand("E(1,2,3)", false)[0]
+				add("E(1,2,3)")
 						.toValueString(StringTemplate.defaultTemplate));
-		processor.processAlgebraCommand("b=4", false);
+		add("b=4");
 		assertEquals("(4, 8, 12)",
-				processor.processAlgebraCommand("b(1,2,3)", false)[0]
+				add("b(1,2,3)")
 						.toValueString(StringTemplate.defaultTemplate));
+	}
+
+	@Test
+	public void testAutomaticObjectCreationClassic() {
+		app.setConfig(new AppConfigDefault());
+		assertEquals("(1, 2)",
+				add("D(1,2)")
+						.toValueString(StringTemplate.defaultTemplate));
+		assertEquals("5",
+				add("D(1,2)")
+						.toValueString(StringTemplate.defaultTemplate));
+	}
+
+	private GeoElementND add(String input) {
+		GeoElementND[] elements =  app.getKernel().getAlgebraProcessor()
+				.processAlgebraCommand(input, false);
+		return elements == null ? null : elements[0];
 	}
 
 	@Test
 	public void testAutomaticObjectCreationScientific() {
 		app.setConfig(new AppConfigScientific());
-		AlgebraProcessor processor = app.getKernel().getAlgebraProcessor();
-		processor.processAlgebraCommand("b=4", false);
-		assertNull(processor.processAlgebraCommand("O", false));
-		assertNull(processor.processAlgebraCommand("O+1", false));
-		assertNull(processor.processAlgebraCommand("1+O", false));
-		assertNull(processor.processAlgebraCommand("A(0,0)", false));
-		assertNull(processor.processAlgebraCommand("A(1,1,1)", false));
-		assertNull(processor.processAlgebraCommand("b(0,0)", false));
-		assertNull(processor.processAlgebraCommand("b(1,1,1)", false));
-		assertNull(processor.processAlgebraCommand("O(1,1)", false));
-		assertNull(processor.processAlgebraCommand("1+O(1,1)", false));
+		add("b=4");
+		assertNull(add("O"));
+		assertNull(add("O+1"));
+		assertNull(add("1+O"));
+		assertNull(add("A(0,0)"));
+		assertNull(add("A(1,1,1)"));
+		assertNull(add("b(0,0)"));
+		assertNull(add("b(1,1,1)"));
+		assertNull(add("O(1,1)"));
+		assertNull(add("1+O(1,1)"));
 
 		assertEquals("1.5",
-				processor.processAlgebraCommand("mean(1,2)", false)[0]
+				add("mean(1,2)")
 						.toValueString(StringTemplate.defaultTemplate));
 		assertEquals("1",
-				processor.processAlgebraCommand("sin(pi/2)", false)[0]
+				add("sin(pi/2)")
 						.toValueString(StringTemplate.defaultTemplate));
 		assertEquals("-4",
-				processor.processAlgebraCommand("bsin(3pi/2)", false)[0]
+				add("bsin(3pi/2)")
 						.toValueString(StringTemplate.defaultTemplate));
 	}
 
@@ -593,5 +616,23 @@ public class ParserTest {
 
 		AlgebraTestHelper.shouldPass("$a1=2", app);
 		AlgebraTestHelper.shouldPass("$$a1=2", app);
+	}
+
+	@Test
+	public void testIsSimpleNumber() throws ParseException {
+		ExpressionNode minusOne = parseExpression("-1").wrap();
+		assertThat(minusOne, notNullValue());
+		assertThat(minusOne.isSimpleNumber(), is(true));
+
+		ExpressionNode recurringDecimal = parseExpression("1.3" + Unicode.OVERLINE).wrap();
+		assertThat(recurringDecimal, notNullValue());
+		assertThat(recurringDecimal.isSimpleNumber(), is(false));
+	}
+
+	@Test
+	public void testCalculationWithMinusOneIsNotSimpleNumber() throws ParseException {
+		ExpressionNode minusOneCalc = parseExpression("(-1)(3)").wrap();
+		assertThat(minusOneCalc, notNullValue());
+		assertThat(minusOneCalc.isSimpleNumber(), is(false));
 	}
 }

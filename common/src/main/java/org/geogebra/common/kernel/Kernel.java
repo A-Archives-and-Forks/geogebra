@@ -42,7 +42,7 @@ import org.geogebra.common.kernel.arithmetic.MyDoubleDegreesMinutesSeconds;
 import org.geogebra.common.kernel.arithmetic.MySpecialDouble;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.arithmetic.Traversing;
-import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.cas.AlgoUsingTempCASalgo;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
@@ -442,6 +442,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	public AlgebraProcessor getAlgebraProcessor() {
 		if (algProcessor == null) {
 			algProcessor = newAlgebraProcessor(this);
+			algProcessor.addInputExpressionFilter(app.getConfig().createOperationArgumentFilter());
 		}
 		return algProcessor;
 	}
@@ -599,8 +600,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * @return the Evaluator for ExpressionNode
 	 */
 	public ExpressionNodeEvaluator newExpressionNodeEvaluator(Kernel kernel) {
-		return new ExpressionNodeEvaluator(app.getLocalization(), kernel,
-				app.getConfig().createOperationArgumentFilter());
+		return new ExpressionNodeEvaluator(app.getLocalization(), kernel);
 	}
 
 	/**
@@ -5251,9 +5251,9 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 			getAlgebraProcessor().getCommandDispatcher().addCommandFilter(commandFilter);
 		}
 		getAlgebraProcessor().setEnableStructures(config.isEnableStructures());
-		OperationArgumentFilter operationArgumentFilter = config.createOperationArgumentFilter();
-		if (operationArgumentFilter != null) {
-			getExpressionNodeEvaluator().setOperationArgumentFilter(operationArgumentFilter);
-		}
+		ExpressionFilter operationArgumentFilter = config.createOperationArgumentFilter();
+
+		getAlgebraProcessor().addInputExpressionFilter(operationArgumentFilter);
+
 	}
 }

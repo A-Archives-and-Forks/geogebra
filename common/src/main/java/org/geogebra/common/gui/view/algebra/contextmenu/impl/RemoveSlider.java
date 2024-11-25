@@ -38,6 +38,7 @@ public class RemoveSlider implements MenuAction<GeoElement>, AsyncOperation<GeoE
 	public void execute(GeoElement element) {
 		if (processor.getKernel().getSymbolicMode() == SymbolicMode.NONE) {
 			((GeoNumeric) element).removeSlider();
+			element.getKernel().storeUndoInfo();
 			return;
 		}
 		String newValue = element.toString(StringTemplate.defaultTemplate);

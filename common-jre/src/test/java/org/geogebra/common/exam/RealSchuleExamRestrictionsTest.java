@@ -1,11 +1,16 @@
 package org.geogebra.common.exam;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.euclidian.EuclidianView;
+import org.geogebra.common.gui.dialog.options.model.FixObjectModel;
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.geos.GeoConic;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.properties.impl.DefaultPropertiesRegistry;
@@ -38,7 +43,7 @@ public class RealSchuleExamRestrictionsTest extends BaseUnitTest {
 	}
 
 	private void defaultSettingsShouldBeRestored() {
-		coordFormatShouldBe(Kernel.COORD_CARTESIAN);
+		coordFormatShouldBe(Kernel.COORD_STYLE_DEFAULT);
 		axisLabelsShouldBe("xAxis", "yAxis");
 		gridShouldBe(EuclidianView.GRID_ISOMETRIC);
 		axisNumberDistanceShouldBe(1.5, 0);
@@ -46,7 +51,7 @@ public class RealSchuleExamRestrictionsTest extends BaseUnitTest {
 	}
 
 	private void createDefaultSetting() {
-		settings.getGeneral().setCoordFormat(Kernel.COORD_CARTESIAN);
+		settings.getGeneral().setCoordFormat(Kernel.COORD_STYLE_DEFAULT);
 		evSettings.setAxisLabel(0, "xAxis");
 		evSettings.setAxisLabel(1, "yAxis");
 		evSettings.setAxisNumberingDistance(0, 1.5);
@@ -60,6 +65,23 @@ public class RealSchuleExamRestrictionsTest extends BaseUnitTest {
 		gridShouldBe(EuclidianView.GRID_CARTESIAN);
 		axisNumberDistanceShouldBe(0.5, 0);
 		axisNumberDistanceShouldBe(0.5, 1);
+
+		assertThat(createFixedEqnModel().isValidAt(0), equalTo(false));
+	}
+
+	@Test
+	public void testExpressionRestrictions() {
+		startExam();
+		assertThrows(AssertionError.class, () -> add("abs((1,2))"));
+		assertThrows(AssertionError.class, () -> add("3+abs((1,2))"));
+		assertThat(add("2+abs(3)"), hasValue("5"));
+	}
+
+	private FixObjectModel createFixedEqnModel() {
+		GeoConic circle = add("x^2+y^2=0");
+		FixObjectModel model = new FixObjectModel(null, getApp());
+		model.setGeos(new Object[]{circle});
+		return model;
 	}
 
 	private void startExam() {

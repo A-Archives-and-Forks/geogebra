@@ -240,9 +240,11 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				localization.getCommandSyntax().addSyntaxFilter(syntaxFilter);
 			}
 		}
+
 		if (autoCompleteProvider != null) {
 			autoCompleteProvider.setFilteredOperations(filteredOperations);
 		}
+
 		if (propertiesRegistry != null) {
 			propertyRestrictions.forEach((name, restriction) -> {
 				Property property = propertiesRegistry.lookup(name, context);

@@ -16,6 +16,9 @@ import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.Command;
+import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
+import org.geogebra.common.kernel.arithmetic.filter.GraphingOperationArgumentFilter;
+import org.geogebra.common.kernel.arithmetic.filter.OperationExpressionFilter;
 import org.geogebra.common.kernel.commands.CommandProcessor;
 import org.geogebra.common.kernel.commands.filter.BaseCommandArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
@@ -27,6 +30,7 @@ import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.main.syntax.suggestionfilter.LineSelector;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
+import org.geogebra.common.plugin.Operation;
 
 final class RealschuleExamRestrictions extends ExamRestrictions {
 
@@ -36,11 +40,11 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 						SuiteSubApp.PROBABILITY, SuiteSubApp.SCIENTIFIC),
 				SuiteSubApp.GRAPHING,
 				null,
-				null,
+				getInputExpressionFilter(),
 				null,
 				createCommandFilters(),
 				createCommandArgumentFilters(),
-				null,
+				getFilteredOperations(),
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
@@ -140,24 +144,6 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 		);
 	}
 
-	@Override
-	protected RestorableSettings createSavedSettings() {
-		return new RealschuleSettings();
-	}
-
-	@Override
-	public void applySettingsRestrictions(@Nonnull Settings settings) {
-		EuclidianSettings euclidian = settings.getEuclidian(1);
-		settings.getGeneral().setCoordFormat(Kernel.COORD_STYLE_AUSTRIAN);
-		euclidian.beginBatch();
-		euclidian.setAxisLabel(0, "x");
-		euclidian.setAxisLabel(1, "y");
-		euclidian.setGridType(EuclidianView.GRID_CARTESIAN);
-		euclidian.setAxisNumberingDistance(0, 0.5);
-		euclidian.setAxisNumberingDistance(1, 0.5);
-		euclidian.endBatch();
-	}
-
 	private static class RealschuleCommandArgumentFilter extends BaseCommandArgumentFilter {
 		@Override
 		public void checkAllowed(Command command, CommandProcessor commandProcessor)
@@ -219,5 +205,34 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 			}
 			return syntax;
 		}
+	}
+
+	@Override
+	protected RestorableSettings createSavedSettings() {
+		return new RealschuleSettings();
+	}
+
+	@Override
+	public void applySettingsRestrictions(@Nonnull Settings settings) {
+		super.applySettingsRestrictions(settings);
+		EuclidianSettings euclidian = settings.getEuclidian(1);
+		settings.getGeneral().setCoordFormat(Kernel.COORD_STYLE_AUSTRIAN);
+		euclidian.beginBatch();
+		euclidian.setAxisLabel(0, "x");
+		euclidian.setAxisLabel(1, "y");
+		euclidian.setGridType(EuclidianView.GRID_CARTESIAN);
+		euclidian.setAxisNumberingDistance(0, 0.5);
+		euclidian.setAxisNumberingDistance(1, 0.5);
+		euclidian.endBatch();
+		settings.getAlgebra().setEquationChangeByDragRestricted(true);
+	}
+
+	private static Set<ExpressionFilter> getInputExpressionFilter() {
+		return Set.of(new OperationExpressionFilter(getFilteredOperations()),
+				GraphingOperationArgumentFilter.INSTANCE);
+	}
+
+	private static Set<Operation> getFilteredOperations() {
+		return Set.of(Operation.ALT, Operation.ARG);
 	}
 }

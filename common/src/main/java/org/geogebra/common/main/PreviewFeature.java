@@ -39,7 +39,7 @@ public enum PreviewFeature {
 	 * feature previews in test builds.
 	 */
 	@SuppressFBWarnings({"MS_SHOULD_BE_FINAL", "MS_PKGPROTECT"})
-	public static boolean enableFeaturePreviews = false;
+	public static boolean enableFeaturePreviews = true;
 
 	/**
 	 * Whether a preview feature is enabled (the default), or not. The latter case can be used

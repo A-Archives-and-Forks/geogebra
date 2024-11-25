@@ -65,4 +65,5 @@ public final class MockCASGiac extends CASgiac {
 	public void memorize(String response) {
 		responses.add(response);
 	}
+
 }

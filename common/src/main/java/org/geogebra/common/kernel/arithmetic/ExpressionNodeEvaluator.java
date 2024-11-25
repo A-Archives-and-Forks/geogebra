@@ -2,7 +2,6 @@ package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
-import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.arithmetic3D.Vector3DValue;
 import org.geogebra.common.kernel.geos.GeoCasCell;
 import org.geogebra.common.kernel.geos.GeoDummyVariable;
@@ -35,7 +34,6 @@ import com.google.j2objc.annotations.Weak;
 public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 
 	private Localization loc;
-	private OperationArgumentFilter filter;
 
 	/**
 	 * Kernel used to create the results
@@ -49,29 +47,8 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 	 * @param kernel kernel
 	 */
 	public ExpressionNodeEvaluator(Localization loc, Kernel kernel) {
-		this(loc, kernel, null);
-	}
-
-	/**
-	 * Creates new expression node evaluator
-	 *
-	 * @param loc
-	 *            localization for errors
-	 * @param kernel
-	 *            kernel
-	 */
-	public ExpressionNodeEvaluator(Localization loc, Kernel kernel,
-								   OperationArgumentFilter filter) {
 		this.loc = loc;
 		this.kernel = kernel;
-		this.filter = filter;
-	}
-
-	/**
-	 * @param operationArgumentFilter filter for unacceptable operations
-	 */
-	public void setOperationArgumentFilter(OperationArgumentFilter operationArgumentFilter) {
-		this.filter = operationArgumentFilter;
 	}
 
 	/**
@@ -112,9 +89,6 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 		rt = right.evaluate(tpl); // right tree
 
 		// handle list operations first
-		if (filter != null && !filter.isAllowed(operation, lt, rt)) {
-			throw illegalBinary(lt, rt, Errors.IllegalArgument, operation.name());
-		}
 		ExpressionValue special = handleSpecial(lt, rt, left, right, operation,
 				tpl);
 		if (special != null) {

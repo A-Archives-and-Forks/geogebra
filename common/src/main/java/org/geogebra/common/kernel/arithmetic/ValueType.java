@@ -331,4 +331,7 @@ public enum ValueType {
 		return arg.getValueType() == this ? this : fallback;
 	}
 
+	public boolean isVector() {
+		return this == NONCOMPLEX2D || this == VECTOR3D || this == COMPLEX;
+	}
 }
