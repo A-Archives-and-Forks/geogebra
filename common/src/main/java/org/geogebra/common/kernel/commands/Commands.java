@@ -644,8 +644,6 @@ public enum Commands implements CommandsConstants,
 
 	InverseNormal(TABLE_PROBABILITY),
 
-	nCr(TABLE_PROBABILITY),
-
 	Binomial(TABLE_PROBABILITY),
 
 	BinomialDist(TABLE_PROBABILITY),
@@ -1212,6 +1210,7 @@ public enum Commands implements CommandsConstants,
 
 	TrigCombine(TABLE_FUNCTION),
 
+	nCr(TABLE_ENGLISH),
 	nPr(TABLE_ENGLISH),
 
 	CASLoaded(TABLE_GEOGEBRA),

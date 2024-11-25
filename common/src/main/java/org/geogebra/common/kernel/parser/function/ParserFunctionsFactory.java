@@ -192,6 +192,7 @@ public class ParserFunctionsFactory {
 		put(pf, 1, "vectorize", Operation.MATRIXTOVECTOR, null);
 
 		put(pf, 2, "nPr", Operation.NPR, "( <n>, <r> )");
+		put(pf, 2, "nCr", Operation.NCR, "( <n>, <r> )");
 	}
 
 	private static void addExtraFunctions(ParserFunctionsImpl pf) {
@@ -248,5 +249,7 @@ public class ParserFunctionsFactory {
 		pf.addTranslatable("nroot", 2, ParserFunctions.NROOT_SUFFIX, Operation.NROOT);
 		pf.addTranslatable("nPr", 2, "( <n>, <r> )", Operation.NPR);
 		pf.addTranslatable("npr", 2, "( <n>, <r> )", Operation.NPR);
+		pf.addTranslatable("nCr", 2, "( <n>, <r> )", Operation.NCR);
+		pf.addTranslatable("ncr", 2, "( <n>, <r> )", Operation.NCR);
 	}
 }

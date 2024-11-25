@@ -1671,17 +1671,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *            error
 	 */
 	public final void showError(MyError e) {
-		if (isWhiteboardActive()) {
-			return;
-		}
-		String command = e.getcommandName();
-		Log.debug("command: " + command);
-		String message = e.getLocalizedMessage();
-		if (command == null) {
-			showErrorDialog(message);
-			return;
-		}
-		getErrorHandler().showCommandError(command, message);
+		ErrorHelper.handleError(e, null, getLocalization(), getDefaultErrorHandler());
 	}
 
 	/**

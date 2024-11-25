@@ -1474,6 +1474,18 @@ public enum Operation {
 			throw ev.illegalArgument(lt, rt, "log(");
 		}
 	},
+	NCR {
+		@Override
+		public ExpressionValue handle(ExpressionNodeEvaluator ev, ExpressionValue lt,
+				ExpressionValue rt, ExpressionValue left, ExpressionValue right, StringTemplate tpl,
+				boolean holdsLaTeX) {
+			if (lt instanceof NumberValue && rt instanceof NumberValue) {
+				return new MyDouble(ev.getKernel(),
+						MyMath.binomial(lt.evaluateDouble(), rt.evaluateDouble()));
+			}
+			throw ev.illegalArgument(lt, rt, "nCr(");
+		}
+	},
 	NPR {
 		@Override
 		public ExpressionValue handle(ExpressionNodeEvaluator ev, ExpressionValue lt,

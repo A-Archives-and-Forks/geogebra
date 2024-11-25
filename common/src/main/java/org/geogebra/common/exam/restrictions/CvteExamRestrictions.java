@@ -164,7 +164,8 @@ final class CvteExamRestrictions extends ExamRestrictions {
 				Operation.GAMMA_INCOMPLETE,
 				Operation.GAMMA_INCOMPLETE_REGULARIZED,
 				Operation.POLYGAMMA,
-				Operation.RANDOM);
+				Operation.RANDOM,
+				Operation.NPR);
 	}
 
 	private static Set<ContextMenuItemFilter> createContextMenuItemFilters() {

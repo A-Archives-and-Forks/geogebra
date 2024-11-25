@@ -467,10 +467,12 @@ public class ExpressionSerializer implements ExpressionNodeConstants {
 			twoVar(sb, leftStr, rightStr, "atan2d", "<arctan/>", "ATAN2", "atan2d", tpl, kernel,
 					false);
 			break;
+		case NCR:
+			twoVar(sb, leftStr, rightStr, "nCr", "<ncr/>", "NCR", "nCr", tpl, kernel, false);
+			break;
 		case NPR:
 			twoVar(sb, leftStr, rightStr, "nPr", "<npr/>", "NPR", "nPr", tpl, kernel, false);
 			break;
-
 		case COSH:
 			trig(leftStr, sb, "<cosh/>", "\\cosh", "COSH(", "cosh", "cosh", tpl, loc, false);
 			break;

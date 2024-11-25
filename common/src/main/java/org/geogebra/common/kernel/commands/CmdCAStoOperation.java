@@ -16,7 +16,7 @@ import org.geogebra.common.plugin.Operation;
  */
 public class CmdCAStoOperation extends CommandProcessor {
 
-	private Operation op;
+	private final Operation op;
 
 	/**
 	 * @param kernel
@@ -37,7 +37,7 @@ public class CmdCAStoOperation extends CommandProcessor {
 		GeoElement[] ret = kernel.getAlgebraProcessor()
 				.processExpressionNode(en, info);
 
-		if (ret[0] != null) {
+		if (ret != null && ret[0] != null) {
 			ret[0].setLabel(c.getLabel());
 		}
 
@@ -51,7 +51,7 @@ public class CmdCAStoOperation extends CommandProcessor {
 		case YCOORD:
 		case XCOORD:
 			if (c.getArgumentNumber() != 1) {
-				throw argNumErr(c);
+				throw getFunctionArgNumberError(c);
 			}
 			c.getArgument(0).resolveVariables(info);
 			return new ExpressionNode(kernel, c.getArgument(0).unwrap(), op, null);
@@ -59,8 +59,9 @@ public class CmdCAStoOperation extends CommandProcessor {
 		case MULTIPLY:
 		case VECTORPRODUCT:
 		case NPR:
+		case NCR:
 			if (c.getArgumentNumber() != 2) {
-				throw argNumErr(c);
+				throw getFunctionArgNumberError(c);
 			}
 			c.getArgument(0).resolveVariables(info);
 			c.getArgument(1).resolveVariables(info);
@@ -69,6 +70,13 @@ public class CmdCAStoOperation extends CommandProcessor {
 		default:
 			throw new Error("Unhandled operation " + op);
 		}
+	}
+
+	private MyError getFunctionArgNumberError(Command c) {
+		String message = loc.getCommandErrorMessageBuilder().buildArgumentNumberError(
+				c.getName(), c.getArgumentNumber());
+		return MyError.forCommand(loc, message, null,
+				null, MyError.Errors.IllegalArgumentNumber);
 	}
 
 }

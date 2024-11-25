@@ -223,7 +223,6 @@ public class BasicCommandProcessorFactory implements CommandProcessorFactory {
 			return new CmdOrthogonalVector(kernel);
 
 		case Random:
-			return new CmdRandom(kernel);
 		case RandomBetween:
 			return new CmdRandom(kernel);
 		case RandomPointIn:
@@ -235,7 +234,7 @@ public class BasicCommandProcessorFactory implements CommandProcessorFactory {
 		case Binomial:
 		case BinomialCoefficient:
 		case nCr:
-			return new CmdBinomial(kernel);
+			return new CmdCAStoOperation(kernel, Operation.NCR);
 
 		case Mod:
 			return new CmdMod(kernel);
