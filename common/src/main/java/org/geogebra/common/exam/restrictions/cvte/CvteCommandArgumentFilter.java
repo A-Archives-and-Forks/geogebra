@@ -1,5 +1,6 @@
 package org.geogebra.common.exam.restrictions.cvte;
 
+import org.geogebra.common.exam.restrictions.CvteExamRestrictions;
 import org.geogebra.common.kernel.arithmetic.Command;
 import org.geogebra.common.kernel.commands.CommandProcessor;
 import org.geogebra.common.kernel.commands.Commands;
@@ -86,26 +87,20 @@ public final class CvteCommandArgumentFilter implements CommandArgumentFilter {
 	}
 
 	private void checkIntersect(Command command, CommandProcessor commandProcessor) throws MyError {
-		// For Intersect( <Object>, <Object> ) and Intersect( <Object>, <Object>, <Number> ),
-		// the only Objects allowed are those that can be displayed in 2D graphics.
+		// Intersection commands are only allowed if the visibility of the arguments are not
+		// restricted. There are always at least 2 arguments,
+		// and the first 2 are always the geo elements that are potentially restricted:
+		// Intersect(<Object>, <Object>)
+		// Intersect(<Object>, <Object>, <Unrelated parameter>)
+		// Intersect(<Object>, <Object>, <Unrelated parameter>, <Unrelated parameter>)
 		GeoElement[] arguments = commandProcessor.resArgs(command);
-		if (arguments.length == 2 || arguments.length == 3) {
-			GeoElement firstArgument = arguments[0];
-			if (!isDisplayableIn2DGraphics(firstArgument)) {
-				throw commandProcessor.argErr(command, firstArgument);
-			}
-
-			GeoElement secondArgument = arguments[1];
-			if (!isDisplayableIn2DGraphics(secondArgument)) {
-				throw commandProcessor.argErr(command, secondArgument);
-			}
+		GeoElement firstArgument = arguments[0];
+		if (!CvteExamRestrictions.isVisibilityEnabled(firstArgument)) {
+			throw commandProcessor.argErr(command, firstArgument);
 		}
-	}
-
-	private boolean isDisplayableIn2DGraphics(GeoElement geoElement) {
-		return geoElement instanceof GeoLine
-				|| geoElement instanceof GeoFunction
-				|| geoElement instanceof GeoImplicitCurve || geoElement instanceof GeoCurveCartesian
-				|| geoElement instanceof GeoConic;
+		GeoElement secondArgument = arguments[1];
+		if (!CvteExamRestrictions.isVisibilityEnabled(secondArgument)) {
+			throw commandProcessor.argErr(command, secondArgument);
+		}
 	}
 }

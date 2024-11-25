@@ -123,4 +123,22 @@ public final class CvteExamTests extends BaseExamTests {
         assertNull(geoElementPropertiesFactory.createShowObjectProperty(
                 app.getLocalization(), List.of(restrictedGeoElement)));
     }
+
+    @Test
+    public void testIntersectCommandWithRestrictedObjects() {
+        // A line, a circle and 2 parabolas, all intersecting.
+        // The visibility of 'h' and 'i' are restricted.
+        assertTrue(isVisibilityEnabled(evaluateGeoElement("f(x) = x + 3")));
+        assertTrue(isVisibilityEnabled(evaluateGeoElement("g(x) = x^2")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("h: (x + 1)^2 = y")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("i: x^2 + y^2 = 5")));
+
+        // Intersection of any 2 unrestricted objects is allowed.
+        assertNotNull(evaluate("Intersect(f, g)"));
+        // Intersection of 2 objects where at least one of them is restricted is not allowed.
+        assertNull(evaluate("Intersect(f, h)"));
+        assertNull(evaluate("Intersect(g, h"));
+        assertNull(evaluate("Intersect(h, g)"));
+        assertNull(evaluate("Intersect(h, c"));
+    }
 }
