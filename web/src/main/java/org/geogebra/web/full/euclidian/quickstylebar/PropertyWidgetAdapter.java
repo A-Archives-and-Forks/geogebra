@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.properties.TextFontSize;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
-import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.web.full.euclidian.quickstylebar.components.BorderThicknessPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProperty;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
@@ -95,15 +94,15 @@ public class PropertyWidgetAdapter {
 	 * @param property - text font size property
 	 * @return menu based on text font size property
 	 */
-	public GPopupMenuW getMenuWidget(TextFontSizeProperty property) {
+	public GPopupMenuW getMenuWidget(NamedEnumeratedPropertyCollection<?, ?> property) {
 		GPopupMenuW fontSizeMenu = new GPopupMenuW(appW);
-		int selectedFontIdx = property.getValue().ordinal();
+		int selectedFontIdx = property.getIndex();
 		for (int i = 0; i < property.getValueNames().length; i++) {
 			String menuItemText = property.getValueNames()[i];
 			int finalI = i;
 			AriaMenuItem item = new AriaMenuItem(menuItemText, null,
 					() -> {
-				property.setValue(TextFontSize.values()[finalI]);
+				property.setIndex(finalI);
 				appW.closePopups();
 					});
 			if (selectedFontIdx == finalI) {

@@ -14,7 +14,6 @@ import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
-import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
@@ -103,11 +102,9 @@ public class IconButtonWithProperty extends IconButton {
 			parent.add(enumeratedPropertyButtonPanel);
 		}
 
-		if (property instanceof NamedEnumeratedPropertyCollection
-				&& ((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]
-				instanceof TextFontSizeProperty) {
-			GPopupMenuW fontSizeMenu = widgetAdapter.getMenuWidget((TextFontSizeProperty)
-					((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]);
+		if (property instanceof NamedEnumeratedPropertyCollection) {
+			GPopupMenuW fontSizeMenu = widgetAdapter.getMenuWidget(
+					(NamedEnumeratedPropertyCollection<?, ?>) property);
 			parent.add(fontSizeMenu.getPopupMenu());
 		}
 
@@ -138,21 +135,19 @@ public class IconButtonWithProperty extends IconButton {
 			}
 		}
 		if (property instanceof RangePropertyCollection<?>) {
-
-			RangeProperty<?> firstProperty
-					= ((RangePropertyCollection<?>) property).getFirstProperty();
+			RangePropertyCollection<?> rangeProperty = (RangePropertyCollection<?>) property;
+			RangeProperty<?> firstProperty = rangeProperty.getFirstProperty();
 			if (firstProperty instanceof NotesThicknessProperty) {
-				lineThicknessSlider = widgetAdapter.getSliderWidget(
-						(RangePropertyCollection<?>) property, geo);
+				lineThicknessSlider = widgetAdapter.getSliderWidget(rangeProperty, geo);
 				parent.add(lineThicknessSlider);
 			} else if (firstProperty instanceof CellBorderThicknessProperty
 					|| firstProperty instanceof BorderThicknessProperty) {
 				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
-						(RangePropertyCollection<?>) property);
+						rangeProperty);
 				parent.add(borderThickness);
 			} else {
 				SliderWithProperty sliderWithProperty = widgetAdapter.getSliderWidget(
-						(RangePropertyCollection<?>) property, geo);
+						rangeProperty, geo);
 				parent.add(sliderWithProperty);
 			}
 		}
