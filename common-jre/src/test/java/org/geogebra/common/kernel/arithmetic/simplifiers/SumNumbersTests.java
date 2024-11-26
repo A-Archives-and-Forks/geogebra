@@ -11,13 +11,16 @@ public class SumNumbersTests extends BaseSimplifyTest{
 	@Test
 	public void testSingleSums() {
 		shouldSimplify("3+2", "5");
+		shouldSimplify("3+sqrt(4)", "5");
 		shouldSimplify("3-2", "1");
+		shouldSimplify("3-2+6-4", "3");
 		shouldSimplify("3-2+6-4", "3");
 	}
 
 	@Test
-	public void name() {
-		shouldSimplify("3+2+2sqrt(6)", "5");
+	public void testMixedSums() {
+		shouldSimplify("3+2+2 +2sqrt(6)",  "7 + 2sqrt(6) ");
+		shouldSimplify("3+2 + 2sqrt(6) + 2sqrt(2)",  "5 + 2sqrt(6) + 2sqrt(2)");
 
 	}
 }

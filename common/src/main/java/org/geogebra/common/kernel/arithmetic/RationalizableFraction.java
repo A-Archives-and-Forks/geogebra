@@ -1,8 +1,10 @@
 package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
+import org.geogebra.common.util.debug.Log;
 
 public final class RationalizableFraction {
 
@@ -107,6 +109,7 @@ public final class RationalizableFraction {
 					: createFractionWithIntegerDenominator(node, kernel, denominatorValue);
 		}
 
+		Log.debug("start: " + node.toValueString(StringTemplate.defaultTemplate));
 		RationalizeFractionAlgo algo =
 				new RationalizeFractionAlgo(kernel, node.getLeftTree(),
 						node.getRightTree());

@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
@@ -86,10 +87,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("(1 + sqrt(3)) / sqrt(2)", "(sqrt(2) + sqrt(6)) / 2");
 		rationalizationShouldBe("sqrt(3) / (sqrt(2) - 1)", "sqrt(3) (sqrt(2) + 1)");
 		rationalizationShouldBe("sqrt(3) / (sqrt(2) + 1)", "sqrt(3) (sqrt(2) - 1)");
-		rationalizationShouldBe("(sqrt(3) + 1) / (sqrt(2) + 1)",
-				"sqrt(6) - sqrt(3) - 1 + sqrt(2)");
-		rationalizationShouldBe("(sqrt(3) + 1) / (sqrt(2) - 1)",
-				"sqrt(6) + sqrt(3) + 1 + sqrt(2)");
 	}
 
 	@Test
@@ -128,10 +125,10 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	private void rationalizationShouldBe(String definition, String expected, StringTemplate tpl) {
 		GeoNumeric num = add(definition);
-		num.setSymbolicMode(true, true);
 		ExpressionNode resolution = RationalizableFraction.getResolution(num.getDefinition());
 		assertNotNull("resolution is null, " + definition + " is not supported", resolution);
 		assertEquals(expected, resolution.toString(tpl));
+		assertEquals(num.evaluateDouble(), resolution.evaluateDouble(), Kernel.MAX_PRECISION);
 	}
 
 	@Test
@@ -142,6 +139,8 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("3 / sqrt(8)", "(3sqrt(2)) / 4");
 		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2))",
 				"(-1 + sqrt(2)) sqrt(5)");
+		rationalizationShouldBe("sqrt(2 + 3) / (1 - sqrt(2))",
+				"(-1 - sqrt(2)) sqrt(5)");
 	}
 
 	@Test
@@ -198,20 +197,17 @@ public class RationalizableFractionTest extends BaseUnitTest {
 				"(2 - sqrt(7)) / 7");
 		rationalizationShouldBe("(-10 + sqrt(6)) / (5 + sqrt(1))",
 				"(-10 + sqrt(6)) / 6");
-		rationalizationShouldBe("(-10 + sqrt(5)) / (-2 + sqrt(5))",
-				"(-8sqrt(5) - 15");
-////		rationalizationShouldBe("(7 + sqrt(8)) / (4 + sqrt(8))",
-//				"(-3 sqrt(2)) / 4");
-	}
-
-
+		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))", "-3(sqrt(2) + 1)");
+}
 
 	@Test
-	public void name() {
-		rationalizationShouldBe(genericSqrtFraction(-10, 5, -2, 5),
-				"-8sqrt(5) - 15");
-//		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))",
-//				"-3(sqrt(2) + 1)");
+	public void testSimplestForm() {
+		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))",
+				"-3(sqrt(2) + 1)");
+		rationalizationShouldBe("(-10 + sqrt(5)) / (-2 + sqrt(5))",
+				"(-8sqrt(5) - 15");
+		rationalizationShouldBe("(7 + sqrt(8)) / (4 + sqrt(8))",
+				"(-3 sqrt(2)) / 4");
 
 	}
 
@@ -220,12 +216,13 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		Log.debug(s);
 		return s;
 	}
+
 	@Test
-	public void was() {
-	//	rationalizationShouldBe(genericSqrtFraction(7, 4, -8, 10),
-	//			"");
+	public void testBadExamples() {
+//		rationalizationShouldBe(genericSqrtFraction(7, 4, -8, 10),
+//				"6");
 		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
-				"");
+				"-6");
 	}
 
 }

@@ -18,6 +18,8 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 	protected final void shouldSimplify(String actualDef, String expectedDef, SimplifyNode simplifier) {
 		GeoNumeric expected = newSymbolicNumeric(expectedDef);
 		GeoNumeric actual = newSymbolicNumeric(actualDef);
+		assertTrue(actualDef + " is not accepted by " + simplifier.name(),
+				simplifier.isAccepted(actual.getDefinition()));
 		assertEquals(expected.getDefinition().toString(StringTemplate.defaultTemplate),
 				simplifier.apply(actual.getDefinition())
 						.toString(StringTemplate.defaultTemplate));

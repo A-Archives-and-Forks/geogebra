@@ -5,14 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.arithmetic.simplifiers.FactorizeTags;
+import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
-import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyToRadical;
-import org.geogebra.common.kernel.arithmetic.simplifiers.SumNumbers;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
+import org.geogebra.common.util.debug.Log;
 
 public final class RationalizeFractionAlgo {
 	private final Kernel kernel;
@@ -26,10 +25,12 @@ public final class RationalizeFractionAlgo {
 		this.numerator = numerator;
 		this.denominator = denominator;
 		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
-				new ReduceRoot(kernel), new CancelGCDInFraction(kernel),
-				new SimplifyMultiplication(kernel),
-				new SumNumbers(kernel),
-				new FactorizeTags(kernel)
+				new ReduceRoot(kernel),
+				new CancelGCDInFraction(kernel),
+//				new SimplifyMultiplication(kernel),
+//				new SumNumbers(kernel)
+				new TidyNumbers(kernel)
+//				new FactorizeTags(kernel)
 		);
 	}
 
@@ -38,10 +39,18 @@ public final class RationalizeFractionAlgo {
 		if (node == null) {
 			return null;
 		}
+		Log.debug("rationalize: " + node.toValueString(StringTemplate.defaultTemplate));
 
 		for (SimplifyNode simplifier : simplifiers) {
 			if (simplifier.isAccepted(node)) {
+				String before = node.toValueString(StringTemplate.defaultTemplate);
 				node = simplifier.apply(node);
+				String after = node.toValueString(StringTemplate.defaultTemplate);
+				if (before.equals(after)) {
+					Log.debug(simplifier.name() + ": no change");
+				} else {
+					Log.debug(simplifier.name() + ": " + after);
+				}
 			}
 		}
 
