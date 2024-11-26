@@ -73,8 +73,7 @@ public class CmdCAStoOperation extends CommandProcessor {
 	}
 
 	private MyError getFunctionArgNumberError(Command c) {
-		String message = loc.getCommandErrorMessageBuilder().buildArgumentNumberError(
-				c.getName(), c.getArgumentNumber());
+		String message = c.getName() + ":\n" + MyError.Errors.IllegalArgumentNumber.getError(loc);
 		return MyError.forCommand(loc, message, null,
 				null, MyError.Errors.IllegalArgumentNumber);
 	}
