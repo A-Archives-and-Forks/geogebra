@@ -28,7 +28,9 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -42,6 +44,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.gui.view.algebra.AlgebraView;
 import org.geogebra.common.kernel.LayerView;
 import org.geogebra.common.kernel.ModeSetter;
@@ -1074,4 +1077,21 @@ public class AlgebraViewD extends AlgebraTree
 	public void updateHighlight(GeoElementND geo) {
 		// nothing to do here
 	}
+
+	// ExamRestrictable
+
+	@Override
+	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+			// TODO
+		}
+	}
+
+	@Override
+	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+			// TODO
+		}
+	}
+
 } // AlgebraView

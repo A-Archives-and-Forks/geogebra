@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.gui.view.algebra.AlgebraController;
 import org.geogebra.common.gui.view.algebra.AlgebraItem;
 import org.geogebra.common.gui.view.algebra.AlgebraView;
@@ -2305,6 +2307,22 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 	public void resetInputItemHeader() {
 		if (inputPanelLatex != null) {
 			inputPanelLatex.resetItemHeader();
+		}
+	}
+
+	// ExamRestrictable
+
+	@Override
+	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+			// TODO
+		}
+	}
+
+	@Override
+	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+			// TODO
 		}
 	}
 }

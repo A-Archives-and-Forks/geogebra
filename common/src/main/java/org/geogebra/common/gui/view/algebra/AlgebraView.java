@@ -12,6 +12,7 @@ the Free Software Foundation.
 
 package org.geogebra.common.gui.view.algebra;
 
+import org.geogebra.common.exam.restrictions.ExamRestrictable;
 import org.geogebra.common.gui.Editing;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -20,7 +21,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
  * Algebra view -- shows algebraic representation of the objects either as
  * value, definition or command
  */
-public interface AlgebraView extends Editing, SetLabels {
+public interface AlgebraView extends Editing, SetLabels, ExamRestrictable {
 	/**
 	 * Returns whether this view is currently visible
 	 * 
