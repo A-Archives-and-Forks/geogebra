@@ -1,6 +1,8 @@
 package org.geogebra.common.properties.impl.objects.delegate;
 
+import org.geogebra.common.gui.dialog.options.model.ConicEqnModel;
 import org.geogebra.common.gui.dialog.options.model.LineEqnModel;
+import org.geogebra.common.gui.dialog.options.model.PlaneEqnModel;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.geos.GeoList;
@@ -30,6 +32,15 @@ public class EquationFormDelegate extends AbstractGeoElementDelegate {
 	}
 
 	private boolean isEnforcedEquationForm(GeoElement element) {
-		return LineEqnModel.forceInputForm(element);
+		if (LineEqnModel.forceInputForm(element)) {
+			return true;
+		}
+		if (PlaneEqnModel.forceInputForm(element)) {
+			return true;
+		}
+		if (ConicEqnModel.forceInputForm(element)) {
+			return true;
+		}
+		return false;
 	}
 }

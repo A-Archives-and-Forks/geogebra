@@ -14,12 +14,14 @@ import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.cvte.CvteCommandArgumentFilter;
+import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
 import org.geogebra.common.exam.restrictions.cvte.CvteSyntaxFilter;
 import org.geogebra.common.exam.restrictions.cvte.MatrixExpressionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
 import org.geogebra.common.kernel.algos.ConstructionElement;
@@ -71,7 +73,8 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createToolsFilter(),
 				null,
 				createPropertyFilters(),
-				createConstructionElementSetups());
+				createConstructionElementSetups(),
+				createEquationBehaviour());
 	}
 
 	@Override
@@ -272,12 +275,20 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new MatrixExpressionFilter());
 	}
 
+//	private static Set<PropertyRestriction> createPropertyRestrictions() {
+//		return Set.of(new PropertyRestriction());
+//	}
+
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
 		return Set.of(new ShowObjectPropertyFilter());
 	}
 
 	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
 		return Set.of(new EuclidianVisibilitySetup());
+	}
+
+	private static EquationBehaviour createEquationBehaviour() {
+		return new CvteEquationBehaviour();
 	}
 
 	private static final class ShowObjectPropertyFilter implements GeoElementPropertyFilter {

@@ -40,6 +40,7 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 				createToolsFilter(),
 				null,
 				null,
+				null,
 				null);
 	}
 

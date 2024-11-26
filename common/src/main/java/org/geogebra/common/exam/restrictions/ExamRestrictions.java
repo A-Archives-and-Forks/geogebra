@@ -15,6 +15,7 @@ import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
@@ -74,6 +75,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	private final Map<String, PropertyRestriction> propertyRestrictions;
 	private final Set<GeoElementPropertyFilter> geoElementPropertyFilters;
 	private final Set<ConstructionElementSetup> constructionElementSetups;
+	private final EquationBehaviour equationBehaviour;
+	private EquationBehaviour originalEquationBehaviour;
 
 	/**
 	 * Factory for ExamRestrictions.
@@ -140,7 +143,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			@Nullable ToolCollectionFilter toolsFilter,
 			@Nullable Map<String, PropertyRestriction> propertyRestrictions,
 			@Nullable Set<GeoElementPropertyFilter> geoElementPropertyFilters,
-			@Nullable Set<ConstructionElementSetup> constructionElementSetups) {
+			@Nullable Set<ConstructionElementSetup> constructionElementSetups,
+			@Nullable EquationBehaviour equationBehaviour) {
 		this.examType = examType;
 		this.disabledSubApps = disabledSubApps != null ? disabledSubApps : Set.of();
 		this.defaultSubApp = defaultSubApp != null ? defaultSubApp : SuiteSubApp.GRAPHING;
@@ -163,6 +167,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				? geoElementPropertyFilters : Set.of();
 		this.constructionElementSetups = constructionElementSetups != null
 				? constructionElementSetups : Set.of();
+		this.equationBehaviour = equationBehaviour;
 	}
 
 	/**
@@ -229,6 +234,10 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				algebraProcessor.addOutputExpressionFilter(expressionFilter);
 			}
 			algebraProcessor.reinitCommands();
+			if (equationBehaviour != null) {
+				originalEquationBehaviour = algebraProcessor.getKernel().getEquationBehaviour();
+				algebraProcessor.getKernel().setEquationBehaviour(equationBehaviour);
+			}
 		}
 		if (syntaxFilter != null) {
 			if (autoCompleteProvider != null) {
@@ -305,6 +314,9 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				algebraProcessor.removeOutputExpressionFilter(expressionFilter);
 			}
 			algebraProcessor.reinitCommands();
+			if (equationBehaviour != null) { // only restore it if we overwrote it
+				algebraProcessor.getKernel().setEquationBehaviour(originalEquationBehaviour);
+			}
 		}
 		if (syntaxFilter != null) {
 			if (autoCompleteProvider != null) {

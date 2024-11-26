@@ -12,8 +12,10 @@ import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.exam.restrictions.ExamRestrictions;
 import org.geogebra.common.exam.restrictions.PropertyRestriction;
+import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.Command;
 import org.geogebra.common.kernel.arithmetic.filter.ComplexExpressionFilter;
@@ -52,7 +54,8 @@ final class TestExamRestrictions extends ExamRestrictions {
 				createToolCollectionFilter(),
 				createPropertyRestrictions(),
 				createGeoElementPropertyFilters(),
-				createConstructionElementSetups());
+				createConstructionElementSetups(),
+				createEquationBehaviour());
 	}
 
 	private static Set<CommandFilter> createCommandFilters() {
@@ -120,5 +123,9 @@ final class TestExamRestrictions extends ExamRestrictions {
 				geoPoint.setAlphaValue(1.0);
 			}
 		});
+	}
+
+	private static EquationBehaviour createEquationBehaviour() {
+		return new CvteEquationBehaviour();
 	}
 }
