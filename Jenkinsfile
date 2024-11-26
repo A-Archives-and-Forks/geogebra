@@ -21,6 +21,7 @@ def nodeLabel = isGiac ? "Ubuntu" : "posix"
 def s3buildDir = "geogebra/branches/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
 // to run in docker, add docker run --ipc=host --shm-size=1gb -u $(id -u):$(id -g) -e HOME=/work -w /work -v $PWD:/work openjdk:11.0.16-jdk
 def gradleCmd = './gradlew'
+def dependentBuildIds
 
 def s3uploadDefault = { dir, pattern, encoding, excludes="**/*.mjs", contentType="" ->
     withAWS (region:'eu-central-1', credentials:'aws-credentials') {
@@ -60,6 +61,13 @@ pipeline {
                 sh label: 'build web', script: "$gradleCmd :web:prepareS3Upload :web:mergeDeploy ${modules} -Pgdraft=true -PdeployggbRoot=https://apps-builds.s3-eu-central-1.amazonaws.com/${s3buildDir}"
             }
         }
+        stage('build dependents') {
+            steps {
+                script {
+                    dependentBuildIds = autotestDependencies()
+                }
+            }
+        }
         stage('tests and reports') {
             when {
                expression {return !isGiac}
@@ -68,7 +76,7 @@ pipeline {
                 sh "$gradleCmd test :common-jre:jacocoTestReport spotbugsMain pmdMain checkStyleMain checkStyleTest -x renderer-base:spotbugsMain"
                 junit '**/build/test-results/test/*.xml'
                 recordIssues qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [
-                    spotBugs(pattern: '**/build/reports/spotbugs/*.xml', useRankAsPriority: true), 
+                    spotBugs(pattern: '**/build/reports/spotbugs/*.xml', useRankAsPriority: true),
                     pmdParser(pattern: '**/build/reports/pmd/main.xml'),
                     checkStyle(pattern: '**/build/reports/checkstyle/*.xml')
                 ]
@@ -147,6 +155,13 @@ pipeline {
                     s3uploadDefault("web/war", "geogebra-live.js", "")
                     s3uploadDefault("web/war", "platform.js", "")
                     s3uploadDefault("web/war", "css/**", "")
+                }
+            }
+        }
+        stage('wait dependents') {
+            steps {
+                script {
+                    waitForDependencies buildIds: dependentBuildIds
                 }
             }
         }
