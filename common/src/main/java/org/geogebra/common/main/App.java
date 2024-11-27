@@ -62,6 +62,7 @@ import org.geogebra.common.gui.view.algebra.GeoElementValueConverter;
 import org.geogebra.common.gui.view.algebra.ProtectiveGeoElementValueConverter;
 import org.geogebra.common.gui.view.algebra.fiter.AlgebraOutputFilter;
 import org.geogebra.common.gui.view.algebra.fiter.DefaultAlgebraOutputFilter;
+import org.geogebra.common.gui.view.algebra.fiter.HideEquationOutputFilter;
 import org.geogebra.common.gui.view.algebra.fiter.ProtectiveAlgebraOutputFilter;
 import org.geogebra.common.gui.view.properties.PropertiesView;
 import org.geogebra.common.io.MyXMLio;
@@ -4942,11 +4943,15 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	@Override
 	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		resetCommandDict();
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+			algebraOutputFilter = new HideEquationOutputFilter(getAlgebraOutputFilter());
+		}
 	}
 
 	@Override
 	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
-		// probably nothing to do here
+		// null out algebraOutputFilter (to recreate on next use)
+		outputFilter = null;
 	}
 
 	/**
