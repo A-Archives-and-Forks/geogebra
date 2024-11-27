@@ -21,7 +21,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
  * Algebra view -- shows algebraic representation of the objects either as
  * value, definition or command
  */
-public interface AlgebraView extends Editing, SetLabels, ExamRestrictable {
+public interface AlgebraView extends Editing, SetLabels {
 	/**
 	 * Returns whether this view is currently visible
 	 * 

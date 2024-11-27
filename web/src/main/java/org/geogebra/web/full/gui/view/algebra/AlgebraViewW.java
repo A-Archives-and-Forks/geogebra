@@ -2309,20 +2309,4 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 			inputPanelLatex.resetItemHeader();
 		}
 	}
-
-	// ExamRestrictable
-
-	@Override
-	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
-		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
-			// TODO
-		}
-	}
-
-	@Override
-	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
-		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
-			// TODO
-		}
-	}
 }

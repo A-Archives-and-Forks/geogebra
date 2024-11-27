@@ -1077,21 +1077,4 @@ public class AlgebraViewD extends AlgebraTree
 	public void updateHighlight(GeoElementND geo) {
 		// nothing to do here
 	}
-
-	// ExamRestrictable
-
-	@Override
-	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
-		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
-			// TODO
-		}
-	}
-
-	@Override
-	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
-		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
-			// TODO
-		}
-	}
-
 } // AlgebraView
