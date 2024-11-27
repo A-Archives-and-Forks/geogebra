@@ -49,7 +49,8 @@ public class ErrorHelper {
 			handler.showError(Errors.CircularDefinition.getError(loc));
 		} else if (e.getCause() instanceof MyError) {
 			handleError((MyError) e.getCause(), null, loc, handler);
-		} else if (loc.getReverseCommand(handler.getCurrentCommand()) != null) {
+		} else if (loc.getReverseCommand(handler.getCurrentCommand()) != null
+				&& !app.getParserFunctions().isReserved(handler.getCurrentCommand())) {
 			handleCommandError(loc, handler.getCurrentCommand(), handler);
 		} else {
 			handler.showError(loc.getInvalidInputError());

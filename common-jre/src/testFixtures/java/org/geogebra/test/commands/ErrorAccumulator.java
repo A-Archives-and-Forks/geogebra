@@ -4,8 +4,9 @@ import org.geogebra.common.main.error.ErrorLogger;
 import org.geogebra.common.util.AsyncOperation;
 
 public class ErrorAccumulator implements ErrorLogger {
-	String errors = "";
-	String errorsSinceReset = "";
+	private String errors = "";
+	private String errorsSinceReset = "";
+	private String currentCommand;
 
 	@Override
 	public void showError(String msg) {
@@ -20,8 +21,7 @@ public class ErrorAccumulator implements ErrorLogger {
 
 	@Override
 	public String getCurrentCommand() {
-		// TODO Auto-generated method stub
-		return null;
+		return currentCommand;
 	}
 
 	@Override
@@ -47,5 +47,9 @@ public class ErrorAccumulator implements ErrorLogger {
 	@Override
 	public void log(Throwable e) {
 		// errors expected, don't print
+	}
+
+	public void setCurrentCommand(String currentCommand) {
+		this.currentCommand = currentCommand;
 	}
 }
