@@ -1,10 +1,13 @@
 package org.geogebra.web.html5.main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.gui.AccessibilityManagerInterface;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoList;
+import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.GlobalKeyDispatcher;
 import org.geogebra.common.util.CopyPaste;
@@ -218,7 +221,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 		}
 
 		private void handleSpaceOrShiftKey(KeyCodes kc, boolean down) {
-			if (down && grabModeSet) {
+			if (!shouldHandleSpaceOrShiftKeyForGrabMode(kc, down)) {
 				return;
 			}
 			if (down) {
@@ -242,6 +245,39 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 		private boolean isShift(KeyCodes kc) {
 			return kc == KeyCodes.SHIFT;
+		}
+
+		/**
+		 * Checks whether the spaec/shift key should be handled.<br/>
+		 * In case the space key is pressed, checks whether the space key should toggle the
+		 * grab mode, by making sure no element is selected that needs special handling.
+		 * @see App#handleSpaceKey()
+		 * @param kc Key Code
+		 * @param down Whether the key is down or up
+		 * @return True if space/shift key should be handled for setting the grab mode, false else
+		 */
+		private boolean shouldHandleSpaceOrShiftKeyForGrabMode(KeyCodes kc, boolean down) {
+			if (down && grabModeSet) {
+				return false;
+			}
+
+			ArrayList<GeoElement> selectedGeos = app.getSelectionManager().getSelectedGeos();
+			if (isShift(kc) || selectedGeos.isEmpty() || selectedGeos.size() > 1
+					|| !app.getSelectionManager().isSelectableForEV(selectedGeos.get(0))) {
+				return true;
+			}
+
+			GeoElement selectedGeo = app.getSelectionManager().getSelectedGeos().get(0);
+			if (selectedGeo.isGeoBoolean()
+					|| selectedGeo.isGeoInputBox()
+					|| (selectedGeo.isGeoList() && ((GeoList) selectedGeo).drawAsComboBox())
+					|| (selectedGeo.isGeoNumeric() && ((GeoNumeric) selectedGeo).isAnimatable()
+					&& app.isRightClickEnabled())
+					|| selectedGeo.getAuralTextForSpace() != null
+					|| selectedGeo.hasScripts()) {
+				return false;
+			}
+			return true;
 		}
 	}
 
