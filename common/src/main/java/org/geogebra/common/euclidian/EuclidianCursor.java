@@ -10,7 +10,7 @@ public enum EuclidianCursor {
 	DEFAULT,
 	/** Hand */
 	DRAG,
-	/** Arrow */
+	/** Arrow cross */
 	MOVE,
 	/** invisible, eg. for pen */
 	TRANSPARENT,
@@ -43,5 +43,13 @@ public enum EuclidianCursor {
 	/** Table */
 	TABLE,
 	/** Text */
-	TEXT
+	TEXT,
+	/** Indicates grabbing is possible */
+	GRAB,
+	/** Grabbing is ongoing */
+	GRABBING,
+	/** Zoom in (desktop only) */
+	ZOOM_IN,
+	/** Zoom out (desktop only) */
+	ZOOM_OUT
 }

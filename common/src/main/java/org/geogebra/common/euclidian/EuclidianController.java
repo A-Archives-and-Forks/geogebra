@@ -13,10 +13,13 @@ the Free Software Foundation.
 package org.geogebra.common.euclidian;
 
 import static org.geogebra.common.euclidian.EuclidianCursor.CROSSHAIR;
-import static org.geogebra.common.euclidian.EuclidianCursor.DEFAULT;
+import static org.geogebra.common.euclidian.EuclidianCursor.HIT;
 import static org.geogebra.common.euclidian.EuclidianCursor.MINDMAP;
+import static org.geogebra.common.euclidian.EuclidianCursor.MOVE;
 import static org.geogebra.common.euclidian.EuclidianCursor.TABLE;
 import static org.geogebra.common.euclidian.EuclidianCursor.TEXT;
+import static org.geogebra.common.euclidian.EuclidianCursor.ZOOM_IN;
+import static org.geogebra.common.euclidian.EuclidianCursor.ZOOM_OUT;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -5251,7 +5254,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 						mindMap.setBorderColor(GColor.MIND_MAP_PARENT_BORDER_COLOR);
 					}
 
-					view.setCursor(DEFAULT);
+					view.setCursor(HIT);
 					return mindMap;
 				}
 			});
@@ -5400,7 +5403,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		case EuclidianConstants.MODE_ROOTS:
 			ret = roots(hits, selectionPreview);
 			break;
-
+		case EuclidianConstants.MODE_ZOOM_IN:
+			view.setCursor(ZOOM_IN);
+			break;
+		case EuclidianConstants.MODE_ZOOM_OUT:
+			view.setCursor(ZOOM_OUT);
+			break;
 		default:
 			// do nothing
 		}
@@ -6256,7 +6264,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		selectAndShowSelectionUI(inlineObject);
 		updateDrawableAndMoveToForeground(inlineObject);
 
-		view.setCursor(DEFAULT);
+		view.setCursor(HIT);
 		return true;
 	}
 
@@ -6298,7 +6306,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	protected void setHitCursor() {
-		view.setCursor(EuclidianCursor.HIT);
+		view.setCursor(HIT);
 	}
 
 	protected void processMouseMoved(AbstractEvent event) {
@@ -6374,18 +6382,26 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			hits = view.getHits();
 			switchModeForRemovePolygons(hits);
 		}
-
+		boolean shiftOrSpace = event.isShiftDown() || app.getGlobalKeyDispatcher().spaceDown;
 		if (hits.isEmpty()) {
 			view.setToolTipText(null);
-			view.setCursor(DEFAULT);
-			if (event.isShiftDown()
+			if (shiftOrSpace
 					|| mode == EuclidianConstants.MODE_TRANSLATEVIEW) {
 				setCursorForTranslateViewNoHit();
 			} else {
-				view.setCursor(DEFAULT);
+				switch (mode) {
+				case EuclidianConstants.MODE_ZOOM_IN:
+					view.setCursor(ZOOM_IN);
+					break;
+				case EuclidianConstants.MODE_ZOOM_OUT:
+					view.setCursor(ZOOM_OUT);
+					break;
+				default:
+					view.setCursor(app.isWhiteboardActive() ? HIT : CROSSHAIR);
+				}
 			}
 		} else {
-			if ((event.isShiftDown()
+			if ((shiftOrSpace
 					|| mode == EuclidianConstants.MODE_TRANSLATEVIEW)
 					&& (hits.size() >= 1)) {
 				setCursorForTranslateView(hits);
@@ -6451,7 +6467,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	protected void setCursorForTranslateViewNoHit() {
-		view.setCursor(DEFAULT);
+		view.setCursor(EuclidianCursor.GRAB);
 	}
 
 	/**
@@ -6464,7 +6480,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		} else if (hits.hasYAxis()) {
 			view.setCursor(EuclidianCursor.RESIZE_Y);
 		} else {
-			setHitCursor();
+			view.setCursor(EuclidianCursor.GRAB);
 		}
 	}
 
@@ -7647,7 +7663,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			if (repaint) {
 				if (temporaryMode
 						&& mode != EuclidianConstants.MODE_TRANSLATEVIEW) {
-					view.setCursor(EuclidianCursor.MOVE);
+					view.setCursor(MOVE);
 				}
 				moveView();
 			}
@@ -8844,7 +8860,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	protected void setDragCursorIfMoveView() {
 		if (moveMode == MOVE_VIEW) {
-			setDragCursor();
+			view.setCursor(EuclidianCursor.GRABBING);
 		}
 	}
 
@@ -9335,7 +9351,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		(event.isShiftDown() && !app.isControlDown(event)) // All Platforms: Shift key
 				|| (event.isControlDown() && app.isWindows()
 				// old Windows key: Ctrl key
-				) || app.isMiddleClick(event));
+				) || app.isMiddleClick(event)) || app.getGlobalKeyDispatcher().spaceDown;
 	}
 
 	protected void runScriptsIfNeeded(GeoElement geo1) {
@@ -10461,7 +10477,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	public void endOfWrapMouseReleased(Hits hits, boolean control, boolean alt,
 			PointerEventType type) {
 		if (!hits.isEmpty()) {
-			view.setCursor(DEFAULT);
+			view.setCursor(CROSSHAIR);
 		} else {
 			setHitCursor();
 		}

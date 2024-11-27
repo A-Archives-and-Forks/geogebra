@@ -29,6 +29,7 @@ import javax.swing.JDialog;
 import javax.swing.JPopupMenu;
 
 import org.geogebra.common.euclidian.EuclidianController;
+import org.geogebra.common.euclidian.EuclidianCursor;
 import org.geogebra.common.gui.view.data.PlotPanelEuclidianViewCommon;
 import org.geogebra.common.gui.view.data.PlotPanelEuclidianViewInterface;
 import org.geogebra.common.gui.view.data.PlotSettings;
@@ -339,15 +340,15 @@ public class PlotPanelEuclidianViewD extends EuclidianViewD
 	}
 
 	/**
-	 * Overrides EuclidianView.setDefaultCursor so that DnD grab hand cursors
+	 * Overrides EuclidianView.initCursor so that DnD grab hand cursors
 	 * are drawn when over the drag region.
 	 */
 	@Override
-	public void setDefaultCursor() {
+	public void setCursor(EuclidianCursor cursor) {
 		if (commonFields.isOverDragRegion()) {
 			setCursor(grabCursor);
 		} else {
-			setCursor(defaultCursor);
+			super.setCursor(cursor);
 		}
 	}
 

@@ -61,6 +61,7 @@ public abstract class GlobalKeyDispatcher {
 	private TreeSet<AlgoElement> tempSet;
 	private Coords tempVec;
 	private boolean hasUnsavedGeoChanges;
+	public boolean spaceDown;
 
 	/**
 	 * @param app2 app
@@ -421,7 +422,7 @@ public abstract class GlobalKeyDispatcher {
 		// toggle boolean or run script when Spacebar pressed
 		case SPACE:
 			// check not spreadsheet
-
+			spaceDown = false;
 			if (!fromSpreadsheet) {
 				consumed = app.handleSpaceKey();
 			}

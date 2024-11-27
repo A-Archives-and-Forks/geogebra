@@ -133,6 +133,10 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 		@Override
 		public void onBrowserEvent(Event event) {
+			if (DOM.eventGetType(event) == Event.ONKEYDOWN
+					&& event.getKeyCode() == GWTKeycodes.KEY_SPACE) {
+				app.getGlobalKeyDispatcher().spaceDown = true;
+			}
 			if (CopyPasteW.incorrectTarget(event.getEventTarget().cast())
 						&& !isGlobalEvent(event)) {
 					return;

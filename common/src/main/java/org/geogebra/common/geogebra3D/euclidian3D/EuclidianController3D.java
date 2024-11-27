@@ -1959,7 +1959,7 @@ public abstract class EuclidianController3D extends EuclidianController {
 		// remembers mouse location
 		startLoc = mouseLoc;
 		getView().rememberOrigins();
-		getView().setCursor(EuclidianCursor.DEFAULT);
+		((EuclidianView3D) getView()).setDefaultCursor();
 
 		rotationSpeedHandler.setStart(startLoc.x, pointerEventType);
 	}

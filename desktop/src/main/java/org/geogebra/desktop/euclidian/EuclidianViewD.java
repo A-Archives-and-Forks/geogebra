@@ -37,6 +37,8 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -48,7 +50,6 @@ import org.geogebra.common.awt.GDimension;
 import org.geogebra.common.awt.GFont;
 import org.geogebra.common.awt.GGraphics2D;
 import org.geogebra.common.euclidian.Drawable;
-import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianController;
 import org.geogebra.common.euclidian.EuclidianCursor;
 import org.geogebra.common.euclidian.EuclidianStyleBar;
@@ -95,8 +96,6 @@ public class EuclidianViewD extends EuclidianView
 	protected Image pauseImageHL;
 
 	// public Graphics2D lastGraphics2D;
-	/** default mouse cursor */
-	protected Cursor defaultCursor;
 
 	/** Java component for this view */
 	protected EuclidianViewJPanelD evjpanel;
@@ -107,6 +106,7 @@ public class EuclidianViewD extends EuclidianView
 					.createGraphics());
 	private boolean printScaleString;
 	private final ScreenReaderAdapter screenReader = new ScreenReaderAdapterD();
+	private final Map<ImageResourceD, Cursor> customCursors = new HashMap<>();
 
 	// set EuclidianView no - 2 for 2nd EulidianView, 1 for 1st EuclidianView
 	// and Applet
@@ -199,17 +199,11 @@ public class EuclidianViewD extends EuclidianView
 	 * Switch to drag cursor
 	 */
 	public void setDragCursor() {
-
-		if (getMode() == EuclidianConstants.MODE_TRANSLATEVIEW) {
-			setGrabbingCursor();
-		}
-
-		else if (getApplication().useTransparentCursorWhenDragging()) {
+		if (getApplication().useTransparentCursorWhenDragging()) {
 			setCursor(getApplication().getTransparentCursor());
 		} else {
 			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		}
-
 	}
 
 	private void setTransparentCursor() {
@@ -233,7 +227,6 @@ public class EuclidianViewD extends EuclidianView
 	 * Set the cursor to grabbing hand
 	 */
 	public void setGrabbingCursor() {
-		// TODO gui/image/cursor..
 		setCursor(getCursorForImage(GuiResourcesD.CURSOR_GRABBING));
 	}
 
@@ -241,46 +234,19 @@ public class EuclidianViewD extends EuclidianView
 	 * Switch to hit cursor
 	 */
 	public void setHitCursor() {
-		if (defaultCursor == null) {
-			setCursor(Cursor.getDefaultCursor());
-		} else {
-			setCursor(defaultCursor);
-		}
+		setCursor(Cursor.getDefaultCursor());
 	}
 
 	/**
 	 * Switch to default cursor
 	 */
 	public void setDefaultCursor() {
-		if (defaultCursor == null) {
-			setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-		} else {
-			setCursor(defaultCursor);
-		}
+
 	}
 
 	@Override
 	protected void initCursor() {
-		defaultCursor = null;
-
-		switch (getMode()) {
-		default:
-			// do nothing
-			break;
-		case EuclidianConstants.MODE_ZOOM_IN:
-			defaultCursor = getCursorForImage(GuiResourcesD.CURSOR_ZOOMIN);
-			break;
-
-		case EuclidianConstants.MODE_ZOOM_OUT:
-			defaultCursor = getCursorForImage(GuiResourcesD.CURSOR_ZOOMOUT);
-			break;
-
-		case EuclidianConstants.MODE_TRANSLATEVIEW:
-			defaultCursor = getCursorForImage(GuiResourcesD.CURSOR_GRAB);
-			break;
-		}
-
-		setDefaultCursor();
+		setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 	}
 
 	/**
@@ -289,9 +255,8 @@ public class EuclidianViewD extends EuclidianView
 	 * @return cursor
 	 */
 	protected Cursor getCursorForImage(ImageResourceD name) {
-
-		return getCursorForImage(getApplication().getInternalImage(name));
-
+		return customCursors.computeIfAbsent(name,
+				n -> getCursorForImage(getApplication().getInternalImage(name)));
 	}
 
 	/**
@@ -312,9 +277,8 @@ public class EuclidianViewD extends EuclidianView
 			// load cursor image
 			try {
 				// Create custom cursor from the image
-				Cursor cursor = tk.createCustomCursor(image, new Point(16, 16),
+				return tk.createCustomCursor(image, new Point(16, 16),
 						"custom cursor");
-				return cursor;
 			} catch (Exception exc) {
 				// Catch exceptions so that we don't try to set a null
 				// cursor
@@ -997,17 +961,18 @@ public class EuclidianViewD extends EuclidianView
 	@Override
 	public void setCursor(EuclidianCursor cursor) {
 		switch (cursor) {
+		case DEFAULT:
 		case HIT:
 			setHitCursor();
 			return;
 		case DRAG:
 			setDragCursor();
 			return;
+		case GRABBING:
+			setGrabbingCursor();
+			return;
 		case MOVE:
 			setMoveCursor();
-			return;
-		case DEFAULT:
-			setDefaultCursor();
 			return;
 		case RESIZE_X:
 			setResizeXAxisCursor();
@@ -1018,6 +983,20 @@ public class EuclidianViewD extends EuclidianView
 		case TRANSPARENT:
 			setTransparentCursor();
 			return;
+
+		case ZOOM_IN:
+			setCursor(getCursorForImage(GuiResourcesD.CURSOR_ZOOMIN));
+			break;
+
+		case ZOOM_OUT:
+			setCursor(getCursorForImage(GuiResourcesD.CURSOR_ZOOMOUT));
+			break;
+
+		case GRAB:
+			setCursor(getCursorForImage(GuiResourcesD.CURSOR_GRAB));
+			break;
+		case CROSSHAIR:
+			setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		}
 
 	}
