@@ -10,10 +10,10 @@ public interface CustomRowAndColumnSizeProvider {
 	/**
 	 * @return map column=>width containing all widths that are not the default
 	 */
-	Map<Integer, Integer> getCustomColumnWidths();
+	Map<Integer, Double> getCustomColumnWidths();
 
 	/**
 	 * @return map row=>height containing all heights that are not the default
 	 */
-	Map<Integer, Integer> getCustomRowHeights();
+	Map<Integer, Double> getCustomRowHeights();
 }

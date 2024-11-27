@@ -31,7 +31,7 @@ public class TableLayoutTest {
 	@Test
 	public void testFindRow() {
 		assertThat(layout.findRow(-5), equalTo(-1));
-		int colHeader = DEFAULT_CELL_HEIGHT;
+		int colHeader = (int) DEFAULT_CELL_HEIGHT;
 		assertThat(layout.findRow(colHeader - 1), equalTo(-1));
 		assertThat(layout.findRow(colHeader + 1), equalTo(0));
 		assertThat(layout.findRow(colHeader + 20), equalTo(1));

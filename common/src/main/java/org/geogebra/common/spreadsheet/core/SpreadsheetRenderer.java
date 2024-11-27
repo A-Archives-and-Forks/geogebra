@@ -80,8 +80,8 @@ public final class SpreadsheetRenderer {
 
 	private void drawCellBorder(int row, int column, GGraphics2D graphics) {
 		graphics.setStroke(borderStroke);
-		graphics.drawRect((int) Math.round(layout.getX(column)), (int) Math.round(layout.getY(row)),
-				(int) Math.round(layout.getWidth(column)), (int) Math.round(layout.getHeight(row)));
+		drawRectangleWithStraightLines(graphics, layout.getX(column), layout.getY(row),
+				layout.getWidth(column), layout.getHeight(row));
 	}
 
 	/**

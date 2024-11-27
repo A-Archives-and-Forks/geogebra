@@ -37,8 +37,8 @@ public class SpreadsheetSettings extends AbstractSettings implements Spreadsheet
 	private boolean enableAutoComplete = Defaults.ENABLE_AUTOCOMPLETE;
 
 	// row and column size
-	private Map<Integer, Integer> widthMap;
-	private Map<Integer, Integer> heightMap;
+	private Map<Integer, Double> widthMap;
+	private Map<Integer, Double> heightMap;
 	private int preferredColumnWidth = TABLE_CELL_WIDTH;
 	private int preferredRowHeight = TABLE_CELL_HEIGHT;
 
@@ -97,7 +97,7 @@ public class SpreadsheetSettings extends AbstractSettings implements Spreadsheet
 	}
 
 	@Override
-	public Map<Integer, Integer> getWidthMap() {
+	public Map<Integer, Double> getWidthMap() {
 		if (widthMap == null) {
 			widthMap = new HashMap<>();
 		}
@@ -110,12 +110,12 @@ public class SpreadsheetSettings extends AbstractSettings implements Spreadsheet
 	 * @param width
 	 *            width
 	 */
-	public void addWidth(int index, int width) {
+	public void addWidth(int index, double width) {
 		getWidthMap().put(index, width);
 		settingChanged();
 	}
 
-	public void addWidthNoFire(int index, int width) {
+	public void addWidthNoFire(int index, double width) {
 		getWidthMap().put(index, width);
 	}
 
@@ -136,7 +136,7 @@ public class SpreadsheetSettings extends AbstractSettings implements Spreadsheet
 	}
 
 	@Override
-	public Map<Integer, Integer> getHeightMap() {
+	public Map<Integer, Double> getHeightMap() {
 		if (heightMap == null) {
 			heightMap = new HashMap<>();
 		}
@@ -149,12 +149,12 @@ public class SpreadsheetSettings extends AbstractSettings implements Spreadsheet
 	 * @param height
 	 *            height in px
 	 */
-	public void addHeight(int index, int height) {
+	public void addHeight(int index, double height) {
 		getHeightMap().put(index, height);
 		settingChanged();
 	}
 
-	public void addHeightNoFire(int row, int height) {
+	public void addHeightNoFire(int row, double height) {
 		getHeightMap().put(row, height);
 	}
 
@@ -753,10 +753,10 @@ public class SpreadsheetSettings extends AbstractSettings implements Spreadsheet
 			heightMap = customRowAndColumnSizeProvider.getCustomRowHeights();
 		}
 		// column widths
-		Map<Integer, Integer> widthMap1 = getWidthMap();
-		for (Entry<Integer, Integer> entry : widthMap1.entrySet()) {
+		Map<Integer, Double> widthMap1 = getWidthMap();
+		for (Entry<Integer, Double> entry : widthMap1.entrySet()) {
 			Integer col = entry.getKey();
-			int colWidth = entry.getValue();
+			double colWidth = entry.getValue();
 			if (colWidth != preferredColumnWidth()) {
 				sb.append("\t<spreadsheetColumn id=\"").append(col)
 						.append("\" width=\"").append(colWidth).append("\"/>\n");
@@ -764,10 +764,10 @@ public class SpreadsheetSettings extends AbstractSettings implements Spreadsheet
 		}
 
 		// row heights
-		Map<Integer, Integer> heightMap1 = getHeightMap();
-		for (Entry<Integer, Integer> entry : heightMap1.entrySet()) {
+		Map<Integer, Double> heightMap1 = getHeightMap();
+		for (Entry<Integer, Double> entry : heightMap1.entrySet()) {
 			Integer row = entry.getKey();
-			int rowHeight = entry.getValue();
+			double rowHeight = entry.getValue();
 			if (rowHeight != preferredRowHeight()) {
 				sb.append("\t<spreadsheetRow id=\"").append(row)
 						.append("\" height=\"").append(rowHeight).append("\"/>\n");

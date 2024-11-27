@@ -490,11 +490,11 @@ public class SpreadsheetViewW implements SpreadsheetViewInterface,
 	public void setColumnWidthsFromSettings() {
 
 		int prefWidth = table.preferredColumnWidth();
-		Map<Integer, Integer> widthMap = settings().getWidthMap();
+		Map<Integer, Double> widthMap = settings().getWidthMap();
 
 		for (int col = 0; col < table.getColumnCount(); ++col) {
 			if (widthMap.containsKey(col)) {
-				table.setColumnWidthSilent(col, widthMap.get(col));
+				table.setColumnWidthSilent(col, widthMap.get(col).intValue());
 			} else {
 				table.setColumnWidthSilent(col, prefWidth);
 			}
@@ -511,11 +511,11 @@ public class SpreadsheetViewW implements SpreadsheetViewInterface,
 		table.setRowHeight(prefHeight, false);
 
 		// now set custom row heights
-		Map<Integer, Integer> heightMap = settings().getHeightMap();
+		Map<Integer, Double> heightMap = settings().getHeightMap();
 		Log.debug("height map size: " + heightMap.size());
 		for (int row = 0; row < table.getRowCount(); ++row) {
 			if (heightMap.containsKey(row)) {
-				table.setRowHeight(row, heightMap.get(row), false);
+				table.setRowHeight(row, heightMap.get(row).intValue(), false);
 			}
 		}
 	}

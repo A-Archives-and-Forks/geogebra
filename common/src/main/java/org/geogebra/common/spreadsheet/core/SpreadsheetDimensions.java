@@ -6,12 +6,12 @@ public interface SpreadsheetDimensions {
 	/**
 	 * @return column widths
 	 */
-	Map<Integer, Integer> getWidthMap();
+	Map<Integer, Double> getWidthMap();
 
 	/**
 	 * @return row heights
 	 */
-	Map<Integer, Integer> getHeightMap();
+	Map<Integer, Double> getHeightMap();
 
 	int getRows();
 

@@ -13,8 +13,8 @@ import org.geogebra.common.util.shape.Rectangle;
  * @Note: This type is not designed to be thread-safe.
  */
 public final class TableLayout implements CustomRowAndColumnSizeProvider {
-	public static final int DEFAULT_CELL_WIDTH = 120;
-	public static final int DEFAULT_CELL_HEIGHT = 36;
+	public static final double DEFAULT_CELL_WIDTH = 120;
+	public static final double DEFAULT_CELL_HEIGHT = 36;
 	public static final int DEFAULT_ROW_HEADER_WIDTH = 52;
 
 	private static final int MIN_CELL_SIZE = 10;
@@ -60,10 +60,10 @@ public final class TableLayout implements CustomRowAndColumnSizeProvider {
 		double offsetX = -viewport.getMinX() + getRowHeaderWidth();
 		double offsetY = -viewport.getMinY() + getColumnHeaderHeight();
 		if (selection.getMinColumn() >= 0 && selection.getMinRow() >= 0) {
-			int minX = (int) getX(selection.getMinColumn());
-			int minY = (int) getY(selection.getMinRow());
-			int maxX = (int) getX(selection.getMaxColumn() + 1);
-			int maxY = (int) getY(selection.getMaxRow() + 1);
+			double minX = getX(selection.getMinColumn());
+			double minY = getY(selection.getMinRow());
+			double maxX = getX(selection.getMaxColumn() + 1);
+			double maxY = getY(selection.getMaxRow() + 1);
 			return new Rectangle(minX + offsetX, maxX + offsetX,
 					minY + offsetY, maxY + offsetY);
 		}
@@ -158,22 +158,22 @@ public final class TableLayout implements CustomRowAndColumnSizeProvider {
 	}
 
 	@Override
-	public Map<Integer, Integer> getCustomColumnWidths() {
-		Map<Integer, Integer> widths = new HashMap<>();
+	public Map<Integer, Double> getCustomColumnWidths() {
+		Map<Integer, Double> widths = new HashMap<>();
 		for (int i = 0; i < columnWidths.length; i++) {
 			if (columnWidths[i] != DEFAULT_CELL_WIDTH) {
-				widths.put(i, (int) columnWidths[i]);
+				widths.put(i, columnWidths[i]);
 			}
 		}
 		return widths;
 	}
 
 	@Override
-	public Map<Integer, Integer> getCustomRowHeights() {
-		Map<Integer, Integer> heights = new HashMap<>();
+	public Map<Integer, Double> getCustomRowHeights() {
+		Map<Integer, Double> heights = new HashMap<>();
 		for (int i = 0; i < rowHeights.length; i++) {
 			if (rowHeights[i] != DEFAULT_CELL_HEIGHT) {
-				heights.put(i, (int) rowHeights[i]);
+				heights.put(i, rowHeights[i]);
 			}
 		}
 		return heights;

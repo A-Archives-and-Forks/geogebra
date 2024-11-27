@@ -60,8 +60,8 @@ public final class SpreadsheetController {
 		resetDragAction();
 		style = new SpreadsheetStyle(tabularData.getFormat());
 		layout = new TableLayout(tabularData.numberOfRows(),
-				tabularData.numberOfColumns(), TableLayout.DEFAULT_CELL_HEIGHT,
-				TableLayout.DEFAULT_CELL_WIDTH);
+				tabularData.numberOfColumns(), (float) TableLayout.DEFAULT_CELL_HEIGHT,
+				(float) TableLayout.DEFAULT_CELL_WIDTH);
 		contextMenuItems = new ContextMenuItems(this, selectionController);
 	}
 

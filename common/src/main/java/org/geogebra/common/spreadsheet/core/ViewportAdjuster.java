@@ -65,8 +65,8 @@ public final class ViewportAdjuster {
 			boolean extendVertically) {
 		double viewportWidth = viewport.getWidth();
 		double viewportHeight = viewport.getHeight();
-		int scrollAmountX = 0;
-		int scrollAmountY = 0;
+		double scrollAmountX = 0;
+		double scrollAmountY = 0;
 
 		if (extendVertically) {
 			scrollAmountY = getVerticalScrollAmountForDrag(viewportHeight, y);
@@ -159,7 +159,7 @@ public final class ViewportAdjuster {
 		viewportAdjusterDelegate.updateScrollableContentSize(size);
 	}
 
-	private int getVerticalScrollAmountForDrag(double viewportHeight, double y) {
+	private double getVerticalScrollAmountForDrag(double viewportHeight, double y) {
 		if (viewportHeight - y < viewportHeight / 10) {
 			return SCROLL_AMOUNT_FOR_PASTE_SELECTION;
 		} else if (y < viewportHeight / 10) {
@@ -168,7 +168,7 @@ public final class ViewportAdjuster {
 		return 0;
 	}
 
-	private int getHorizontalScrollAmountForDrag(double viewportWidth, double x) {
+	private double getHorizontalScrollAmountForDrag(double viewportWidth, double x) {
 		if (viewportWidth - x < viewportWidth / 10) {
 			return SCROLL_AMOUNT_FOR_PASTE_SELECTION;
 		} else if (x < viewportWidth / 10) {
