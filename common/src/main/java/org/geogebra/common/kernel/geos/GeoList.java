@@ -1553,6 +1553,8 @@ public class GeoList extends GeoElement
 	public String toLaTeXString(final boolean symbolic, StringTemplate tpl) {
 		if (isMatrix()) {
 			return toMatrixString(symbolic, tpl);
+		} else if (isEngineeringNotationMode()) {
+			return toValueString(tpl);
 		}
 
 		return super.toLaTeXString(symbolic, tpl);

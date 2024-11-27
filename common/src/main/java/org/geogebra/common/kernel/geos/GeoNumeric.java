@@ -688,6 +688,9 @@ public class GeoNumeric extends GeoElement
 				return kernel.format(rd.toDouble(), tpl);
 			}
 		}
+		if (engineeringNotationMode) {
+			return kernel.format(value, tpl.deriveWithEngineeringNotation());
+		}
 		// in general toFractionString falls back to printing evaluation result if not a fraction
 		// do not rely on it for leaf nodes: MySpecialDouble overrides rounding
 		if ((symbolicMode || DoubleUtil.isInteger(value))
@@ -695,9 +698,6 @@ public class GeoNumeric extends GeoElement
 				&& !getDefinition().isLeaf()
 				&& tpl.supportsFractions()) {
 			return getDefinition().toFractionString(tpl);
-		}
-		if (engineeringNotationMode) {
-			return kernel.format(value, tpl.deriveWithEngineeringNotation());
 		}
 		return kernel.format(value, tpl);
 	}

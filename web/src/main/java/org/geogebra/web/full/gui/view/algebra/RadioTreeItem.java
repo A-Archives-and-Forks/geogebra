@@ -403,11 +403,8 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 				getFontSize());
 		if (geo != null && shouldShowOutputButton(geo)) {
 			addControls();
-			if (shouldShowSymbolicAndEngineeringOutputButton(geo)) {
-				symbolicButton = AlgebraOutputPanel.createTriStateToggleButton(controls, geo);
-			} else {
-				symbolicButton = AlgebraOutputPanel.createToggleButton(controls, geo);
-			}
+			createOutputButtonIfNeeded();
+			AlgebraOutputPanel.updateOutputPanelButton(symbolicButton, controls, geo);
 		} else if (controls != null) {
 			AlgebraOutputPanel.removeSymbolicButton(controls);
 		}
@@ -417,6 +414,17 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	private boolean shouldShowOutputButton(GeoElement geo) {
 		return AlgebraItem.shouldShowSymbolicOutputButton(geo)
 				|| AlgebraItem.shouldShowEngineeringNotationOutputButton(geo);
+	}
+
+	private void createOutputButtonIfNeeded() {
+		symbolicButton = AlgebraOutputPanel.getSymbolicButtonIfExists(controls);
+		if (symbolicButton == null) {
+			if (shouldShowSymbolicAndEngineeringOutputButton(geo)) {
+				symbolicButton = AlgebraOutputPanel.createTriStateToggleButton(controls, geo);
+			} else {
+				symbolicButton = AlgebraOutputPanel.createToggleButton(controls, geo);
+			}
+		}
 	}
 
 	private boolean shouldShowSymbolicAndEngineeringOutputButton(GeoElement geo) {

@@ -85,61 +85,36 @@ public class AlgebraOutputPanel extends FlowPanel {
 	 */
 	public static ToggleButton createToggleButton(FlowPanel parent,
 			final GeoElement geo) {
-
-		ToggleButton toggleButton;
-		Widget existingButton = getSymbolicButtonIfExists(parent);
-
-		if (existingButton == null || existingButton instanceof TriStateToggleButton) {
-			toggleButton = newToggleButton(geo);
-		} else {
-			toggleButton = (ToggleButton) existingButton;
-		}
-
-		updateToggleButtonIcons(geo, toggleButton);
-
-		toggleButton.addStyleName("symbolicButton");
-
-		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC
-				&& !SymbolicUtil.isEngineeringNotationMode(geo)) {
-			toggleButton.setSelected(false);
-		} else {
-			toggleButton.setSelected(true);
-			toggleButton.addStyleName("btn-prefix");
-		}
-
-		parent.add(toggleButton);
+		ToggleButton toggleButton = newToggleButton(geo);
+		updateOutputPanelButton(toggleButton, parent, geo);
 		return toggleButton;
 	}
 
+	/**
+	 * @param parent Parent panel
+	 * @param geo GeoElement
+	 * @return The Tri-State toggle button (symbolic, engineering mode)
+	 */
 	public static TriStateToggleButton createTriStateToggleButton(FlowPanel parent,
 			final GeoElement geo) {
-
-		TriStateToggleButton button;
-		Widget existingButton = getSymbolicButtonIfExists(parent);
-
-		if (existingButton == null || existingButton instanceof ToggleButton) {
-			button = newEngineeringButton(geo);
-		} else {
-			button = (TriStateToggleButton) existingButton;
-		}
-
-		updateTriStateToggleButtonIcons(geo, button);
-		button.addStyleName("symbolicButton");
-
-		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC
-				&& button.getIndex() != 2) {
-			button.select(0);
-		} else if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.SYMBOLIC) {
-			button.select(1);
-		} else {
-			button.select(2);
-		}
-
-		parent.add(button);
+		TriStateToggleButton button = newEngineeringButton(geo);
+		updateOutputPanelButton(button, parent, geo);
 		return button;
 	}
 
-	private static void updateToggleButtonIcons(GeoElement geo, ToggleButton toggleButton) {
+	public static void updateOutputPanelButton(Widget button, FlowPanel parent, GeoElement geo) {
+		if (button instanceof ToggleButton) {
+			updateToggleButtonIcons((ToggleButton) button, geo);
+			selectIconForToggleButton((ToggleButton) button, geo);
+		} else if (button instanceof TriStateToggleButton) {
+			updateTriStateToggleButtonIcons(geo, (TriStateToggleButton) button);
+			selectIconForTriStateToggleButton((TriStateToggleButton) button, geo);
+		}
+		button.addStyleName("symbolicButton");
+		parent.add(button);
+	}
+
+	private static void updateToggleButtonIcons(ToggleButton toggleButton, GeoElement geo) {
 		if (AlgebraItem.shouldShowEngineeringNotationOutputButton(geo)) {
 			toggleButton.updateIcons(MaterialDesignResources.INSTANCE.engineering_notation_white(),
 					MaterialDesignResources.INSTANCE.modeToggleSymbolic());
@@ -218,7 +193,28 @@ public class AlgebraOutputPanel extends FlowPanel {
 		return button;
 	}
 
-	private static Widget getSymbolicButtonIfExists(FlowPanel parent) {
+	private static void selectIconForToggleButton(ToggleButton toggleButton, GeoElement geo) {
+		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC
+				|| SymbolicUtil.isEngineeringNotationMode(geo)) {
+			toggleButton.setSelected(false);
+		} else {
+			toggleButton.setSelected(true);
+			toggleButton.addStyleName("btn-prefix");
+		}
+	}
+
+	private static void selectIconForTriStateToggleButton(TriStateToggleButton button,
+			GeoElement geo) {
+		if (SymbolicUtil.isEngineeringNotationMode(geo)) {
+			button.select(1);
+		} else if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC || geo.isGeoList()) {
+			button.select(2);
+		} else {
+			button.select(0);
+		}
+	}
+
+	public static Widget getSymbolicButtonIfExists(FlowPanel parent) {
 		for (int i = 0; i < parent.getWidgetCount(); i++) {
 			if (parent.getWidget(i).getStyleName().contains("symbolicButton")) {
 				return parent.getWidget(i);

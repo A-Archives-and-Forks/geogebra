@@ -24,10 +24,12 @@ import com.himamis.retex.editor.share.util.Unicode;
 public class GeoNumericTest extends BaseUnitTest {
 
 	private StringTemplate scientificTemplate;
+	private StringTemplate engineeringNotationTemplate;
 
 	@Before
 	public void setupTemplate() {
 		scientificTemplate = StringTemplate.printFigures(StringType.GEOGEBRA, 3, false);
+		engineeringNotationTemplate = StringTemplate.latexTemplate.deriveWithEngineeringNotation();
 	}
 
 	@Test
@@ -211,5 +213,34 @@ public class GeoNumericTest extends BaseUnitTest {
 		GeoNumeric a = addAvInput("a=1E-30+1E-30");
 		assertThat(a.toValueString(scientificTemplate),
 				is("2.00 " + Unicode.CENTER_DOT + " 10" + StringUtil.numberToIndex(-30)));
+	}
+
+	@Test
+	public void geoNumericShouldDisplayCorrectEngineeringNotation1() {
+		GeoNumeric a = addAvInput("7344000");
+		assertThat(a.toValueString(engineeringNotationTemplate),
+				is("7.3440 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_6));
+	}
+
+	@Test
+	public void geoNumericShouldDisplayCorrectEngineeringNotation2() {
+		GeoNumeric a = addAvInput("7");
+		assertThat(a.toValueString(engineeringNotationTemplate),
+				is("7.0 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_0));
+	}
+
+	@Test
+	public void geoNumericShouldDisplayCorrectEngineeringNotation3() {
+		GeoNumeric a = addAvInput("0.002");
+		assertThat(a.toValueString(engineeringNotationTemplate),
+				is("2 " + Unicode.CENTER_DOT + " 10"
+						+ Unicode.SUPERSCRIPT_MINUS + Unicode.SUPERSCRIPT_3));
+	}
+
+	@Test
+	public void geoNumericShouldDisplayCorrectEngineeringNotation4() {
+		GeoNumeric a = addAvInput("-1234");
+		assertThat(a.toValueString(engineeringNotationTemplate),
+				is("-1.2340 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_3));
 	}
 }

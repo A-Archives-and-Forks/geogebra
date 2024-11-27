@@ -184,6 +184,11 @@ public class SymbolicUtil {
 		return geo instanceof HasSymbolicMode && ((HasSymbolicMode) geo).isSymbolicMode();
 	}
 
+	/**
+	 * Changes the engineering notation mode flag of a geo
+	 * @param geo Element
+	 * @return Whether the engineering notation mode flag is set to true after the toggle
+	 */
 	public static boolean toggleEngineeringNotation(GeoElement geo) {
 		if (geo instanceof HasSymbolicMode) {
 			HasSymbolicMode hasSymbolicGeo = (HasSymbolicMode) geo;
@@ -194,6 +199,10 @@ public class SymbolicUtil {
 		return false;
 	}
 
+	/**
+	 * @param geo Element
+	 * @return Whether the element has the engineering notation mode activated
+	 */
 	public static boolean isEngineeringNotationMode(GeoElement geo) {
 		return geo instanceof HasSymbolicMode
 				&& ((HasSymbolicMode) geo).isEngineeringNotationMode();

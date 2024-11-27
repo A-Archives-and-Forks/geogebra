@@ -10,18 +10,28 @@ import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.awt.GGraphicsCommon;
 import org.geogebra.common.euclidian.draw.dropdown.DrawDropDownList;
 import org.geogebra.common.kernel.StringTemplate;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.himamis.retex.editor.share.util.Unicode;
 
 public class GeoListTest extends BaseUnitTest {
 
+	private StringTemplate latexTemplate;
+	private StringTemplate engineeringNotationTemplate;
+
+	@Before
+	public  void setupTemplate() {
+		latexTemplate = StringTemplate.latexTemplate;
+		engineeringNotationTemplate = latexTemplate.deriveWithEngineeringNotation();
+	}
+
 	@Test
 	public void latexValueStringShouldContainValues() {
 		add("a=1");
 		GeoList matrix = add("{{a,2},{a+2,4}}");
 		assertEquals("\\left(\\begin{array}{rr}1&2\\\\3&4\\\\ \\end{array}\\right)",
-				matrix.toLaTeXString(false, StringTemplate.latexTemplate));
+				matrix.toLaTeXString(false, latexTemplate));
 	}
 
 	@Test
@@ -29,7 +39,7 @@ public class GeoListTest extends BaseUnitTest {
 		add("a=1");
 		GeoList matrix = add("{{a,2},{a+2,4}}");
 		assertEquals("\\left(\\begin{array}{rr}a&2\\\\a + 2&4\\\\ \\end{array}\\right)",
-				matrix.toLaTeXString(true, StringTemplate.latexTemplate));
+				matrix.toLaTeXString(true, latexTemplate));
 	}
 
 	@Test
@@ -37,10 +47,9 @@ public class GeoListTest extends BaseUnitTest {
 		add("a=3");
 		GeoList matrix = add("{0..a}");
 		assertEquals("\\left(\\begin{array}{rrrr}0&1&2&3\\\\ \\end{array}\\right)",
-				matrix.toLaTeXString(true, StringTemplate.latexTemplate));
+				matrix.toLaTeXString(true, latexTemplate));
 		assertEquals("\\left\\{0" + Unicode.ELLIPSIS + "a\\right\\}",
-				matrix.getDefinition().unwrap()
-						.toString(StringTemplate.latexTemplate));
+				matrix.getDefinition().unwrap().toString(latexTemplate));
 	}
 
 	@Test
@@ -67,5 +76,29 @@ public class GeoListTest extends BaseUnitTest {
 		add("SetValue(a,1)");
 		drawList.draw(new GGraphicsCommon());
 		assertThat(list.getSelectedElement(), hasValue("1"));
+	}
+
+	@Test
+	public void listShouldDisplayCorrectEngineeringNotation1() {
+		GeoList list = add("{1, 2, 3}");
+		list.setEngineeringNotationMode(true);
+		assertThat(list.get(0).toValueString(engineeringNotationTemplate),
+				is("1.0 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_0));
+	}
+
+	@Test
+	public void listShouldDisplayCorrectEngineeringNotation2() {
+		GeoList list = add("{1 / 2, 2 / 4}");
+		list.setEngineeringNotationMode(true);
+		assertThat(list.get(1).toValueString(engineeringNotationTemplate),
+				is("0.5 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_0));
+	}
+
+	@Test
+	public void listShouldDisplayCorrectEngineeringNotation3() {
+		GeoList list = add("{17 * 100}");
+		list.setEngineeringNotationMode(true);
+		assertThat(list.get(0).toValueString(engineeringNotationTemplate),
+				is("1.70 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_3));
 	}
 }

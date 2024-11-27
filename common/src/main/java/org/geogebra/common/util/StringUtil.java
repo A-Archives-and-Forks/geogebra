@@ -1101,22 +1101,6 @@ public class StringUtil extends com.himamis.retex.editor.share.input.Character {
 	}
 
 	/**
-	 *
-	 * @param input String
-	 * @return The passed string without any trailing zeros
-	 */
-	public static String removeTrailingZeros(String input) {
-		int newEndIndex = input.length();
-		for (int i = input.length() - 1; i >= 0; i--) {
-			if (input.charAt(i) != '0') {
-				return input.substring(0, newEndIndex);
-			}
-			newEndIndex--;
-		}
-		return input.substring(0, newEndIndex);
-	}
-
-	/**
 	 * @param color
 	 *            color
 	 * @return hex string with # prefix

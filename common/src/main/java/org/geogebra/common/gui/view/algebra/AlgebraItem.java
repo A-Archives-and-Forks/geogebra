@@ -28,6 +28,7 @@ import org.geogebra.common.main.settings.AlgebraStyle;
 import org.geogebra.common.main.settings.CoordinatesFormat;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.ownership.GlobalScope;
+import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.IndexHTMLBuilder;
 import org.geogebra.common.util.IndexLaTeXBuilder;
@@ -417,7 +418,8 @@ public class AlgebraItem {
 	 */
 	public static boolean shouldShowEngineeringNotationOutputButton(GeoElement geo) {
 		return GlobalScope.examController.getExamType() == ExamType.REALSCHULE
-				&& geo instanceof HasSymbolicMode && !isTextItem(geo);
+				&& geo instanceof HasSymbolicMode && !isTextItem(geo)
+				&& (!(geo instanceof GeoList) || ((GeoList) geo).getElementType() != GeoClass.TEXT);
 	}
 
 	/**

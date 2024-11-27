@@ -3136,7 +3136,8 @@ public class StringTemplate implements ExpressionNodeConstants {
 		String sign = "";
 
 		if (valueString.contains(".")) {
-			decimalsString = valueString.substring(valueString.indexOf(".") + 1, valueString.length());
+			decimalsString = valueString.substring(valueString.indexOf(".") + 1,
+					valueString.length());
 			predecimalsString = valueString.substring(0, valueString.indexOf('.'));
 		}
 
@@ -3145,8 +3146,8 @@ public class StringTemplate implements ExpressionNodeConstants {
 			sign = "-";
 		}
 
-		int exponent = getExponentForEngineeringNotation(predecimalsString.length());
-		if (exponent == 0 && number < 1 && number > -1) {
+		int exponent = getPositiveExponentForEngineeringNotation(predecimalsString.length());
+		if (exponent == 0 && number < 0.01 && number > -0.01) {
 			exponent = getNegativeExponentForEngineeringNotation(decimalsString);
 		}
 
@@ -3158,7 +3159,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 				predecimalsString, decimalsString, exponent);
 	}
 
-	private int getExponentForEngineeringNotation(int amountOfPredecimals) {
+	private int getPositiveExponentForEngineeringNotation(int amountOfPredecimals) {
 		if (amountOfPredecimals % 3 == 0) {
 			return amountOfPredecimals - 3;
 		}
@@ -3188,8 +3189,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 			engineeringNotation.append(".");
 		}
 
-		engineeringNotation.append(StringUtil.removeTrailingZeros(
-				predecimalsString.substring(shiftBy)));
+		engineeringNotation.append(predecimalsString.substring(shiftBy));
 		engineeringNotation.append(decimalsString);
 
 		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
