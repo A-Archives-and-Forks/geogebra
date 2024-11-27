@@ -277,10 +277,6 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new MatrixExpressionFilter());
 	}
 
-//	private static Set<PropertyRestriction> createPropertyRestrictions() {
-//		return Set.of(new PropertyRestriction());
-//	}
-
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
 		return Set.of(new ShowObjectPropertyFilter());
 	}
