@@ -202,8 +202,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 				}
 				handled = true;
 			} else if (isSpace(kc) || isShift(kc)) {
-				handleSpaceOrShiftKey(kc, true);
-				handled = true;
+				handled = handleSpaceOrShiftKey(kc, true);
 			} else {
 				handled = handled || handleSelectedGeosKeys(event);
 			}
@@ -214,15 +213,14 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 			boolean handled = false;
 			KeyCodes kc = NavigatorUtil.translateGWTcode(event.getKeyCode());
 			if (isSpace(kc) || isShift(kc)) {
-				handleSpaceOrShiftKey(kc, false);
-				handled = true;
+				handled = handleSpaceOrShiftKey(kc, false);
 			}
 			return handled;
 		}
 
-		private void handleSpaceOrShiftKey(KeyCodes kc, boolean down) {
+		private boolean handleSpaceOrShiftKey(KeyCodes kc, boolean down) {
 			if (!shouldHandleSpaceOrShiftKeyForGrabMode(kc, down)) {
-				return;
+				return false;
 			}
 			if (down) {
 				oldMode = app.getMode();
@@ -237,6 +235,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 			} else {
 				shiftDown = down;
 			}
+			return true;
 		}
 
 		private boolean isSpace(KeyCodes kc) {
@@ -268,16 +267,13 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 			}
 
 			GeoElement selectedGeo = app.getSelectionManager().getSelectedGeos().get(0);
-			if (selectedGeo.isGeoBoolean()
-					|| selectedGeo.isGeoInputBox()
-					|| (selectedGeo.isGeoList() && ((GeoList) selectedGeo).drawAsComboBox())
-					|| (selectedGeo.isGeoNumeric() && ((GeoNumeric) selectedGeo).isAnimatable()
+			return (!selectedGeo.isGeoBoolean()
+					&& !selectedGeo.isGeoInputBox()
+					&& !(selectedGeo.isGeoList() && ((GeoList) selectedGeo).drawAsComboBox())
+					&& !(selectedGeo.isGeoNumeric() && ((GeoNumeric) selectedGeo).isAnimatable()
 					&& app.isRightClickEnabled())
-					|| selectedGeo.getAuralTextForSpace() != null
-					|| selectedGeo.hasScripts()) {
-				return false;
-			}
-			return true;
+					&& selectedGeo.getAuralTextForSpace() == null
+					&& !selectedGeo.hasScripts());
 		}
 	}
 
