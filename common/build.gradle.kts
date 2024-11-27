@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.geogebra.javacc)
 }
 
-description = "Common parts of GeoGebra for various platforms"
+description = "Common parts of GeoGebra for various platforms "
 
 dependencies {
     javacc(libs.javacc)

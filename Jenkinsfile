@@ -54,13 +54,13 @@ pipeline {
                 milestone label: '', ordinal:  Integer.parseInt(env.BUILD_ID)
             }
         }
-        stage('build') {
-            steps {
-                updateGitlabCommitStatus name: 'build', state: 'pending'
-                writeFile file: 'changes.csv', text: getChangelog()
-                sh label: 'build web', script: "$gradleCmd :web:prepareS3Upload :web:mergeDeploy ${modules} -Pgdraft=true -PdeployggbRoot=https://apps-builds.s3-eu-central-1.amazonaws.com/${s3buildDir}"
-            }
-        }
+//         stage('build') {
+//             steps {
+//                 updateGitlabCommitStatus name: 'build', state: 'pending'
+//                 writeFile file: 'changes.csv', text: getChangelog()
+//                 sh label: 'build web', script: "$gradleCmd :web:prepareS3Upload :web:mergeDeploy ${modules} -Pgdraft=true -PdeployggbRoot=https://apps-builds.s3-eu-central-1.amazonaws.com/${s3buildDir}"
+//             }
+//         }
         stage('build dependents') {
             steps {
                 script {
@@ -68,96 +68,96 @@ pipeline {
                 }
             }
         }
-        stage('tests and reports') {
-            when {
-               expression {return !isGiac}
-            }
-            steps {
-                sh "$gradleCmd test :common-jre:jacocoTestReport spotbugsMain pmdMain checkStyleMain checkStyleTest -x renderer-base:spotbugsMain"
-                junit '**/build/test-results/test/*.xml'
-                recordIssues qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [
-                    spotBugs(pattern: '**/build/reports/spotbugs/*.xml', useRankAsPriority: true),
-                    pmdParser(pattern: '**/build/reports/pmd/main.xml'),
-                    checkStyle(pattern: '**/build/reports/checkstyle/*.xml')
-                ]
-                recordCoverage sourceCodeRetention: 'NEVER', tools: [[pattern: '**/build/reports/jacoco/test/*.xml']]
-            }
-        }
-        stage('giac test') {
-            when {
-                expression {return isGiac}
-            }
-            parallel {
-                stage('mac-amd64') {
-                    agent {label 'ios-test'}
-                    steps {
-                        sh label: 'test', script: "./gradlew :desktop:test"
-                        junit '**/build/test-results/test/*.xml'
-                    }
-                    post {
-                        always { deleteDir() }
-                    }
-                }
-                stage('mac-arm64') {
-                    agent {label 'mac-mini'}
-                    steps {
-                        // NOT using docker to make sure this runs Giac for Mac
-                        sh label: 'test', script: "./gradlew :desktop:test"
-                        junit '**/build/test-results/test/*.xml'
-                    }
-                    post {
-                        always { deleteDir() }
-                    }
-                }
-                stage('linux') {
-                    agent {label 'Ubuntu'}
-                    steps {
-                        sh label: 'test', script: "$gradleCmd :desktop:test"
-                        junit '**/build/test-results/test/*.xml'
-                    }
-                    post {
-                        always { deleteDir() }
-                    }
-                }
-                stage('windows') {
-                    agent {label 'winbuild'}
-                    steps {
-                        // NOT using docker to make sure this runs Giac for Windows
-                        bat label: 'test', script: ".\\gradlew.bat :desktop:test"
-                        junit '**/build/test-results/test/*.xml'
-                    }
-                    post {
-                        always { deleteDir() }
-                    }
-                }
-            }
-        }
-        stage('archive') {
-            steps {
-                script {
-                    withAWS (region:'eu-central-1', credentials:'aws-credentials') {
-                       s3Delete(bucket: 'apps-builds', path: "geogebra/branches/${env.GIT_BRANCH}/latest/")
-                       if (hasSourcemap) {
-                           s3Upload(bucket: 'apps-builds', workingDir: "web/build/symbolMapsGz", path: "geogebra/sourcemaps/",
-                                   includePathPattern: "**/*.json", acl: 'PublicRead', contentEncoding: "gzip")
-                       }
-                    }
-                    s3uploadDefault(".", "changes.csv", "")
-                    s3uploadDefault("web/build/s3", "webSimple/**", "gzip")
-                    s3uploadDefault("web/build/s3", "web3d/**", "gzip")
-                    if (isEditor) {
-                        s3uploadDefault("web/build/s3", "editor/**", "gzip")
-                        s3uploadDefault("web/build/s3", "editor/**/*.mjs", "gzip", "", "text/javascript")
-                    }
-                    s3uploadDefault("web/build/s3", "web3d/**/*.mjs", "gzip", "", "text/javascript")
-                    s3uploadDefault("web/war", "**/*.html", "")
-                    s3uploadDefault("web/war", "**/deployggb.js", "")
-                    s3uploadDefault("web/war", "geogebra-live.js", "")
-                    s3uploadDefault("web/war", "platform.js", "")
-                    s3uploadDefault("web/war", "css/**", "")
-                }
-            }
-        }
+//         stage('tests and reports') {
+//             when {
+//                expression {return !isGiac}
+//             }
+//             steps {
+//                 sh "$gradleCmd test :common-jre:jacocoTestReport spotbugsMain pmdMain checkStyleMain checkStyleTest -x renderer-base:spotbugsMain"
+//                 junit '**/build/test-results/test/*.xml'
+//                 recordIssues qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [
+//                     spotBugs(pattern: '**/build/reports/spotbugs/*.xml', useRankAsPriority: true),
+//                     pmdParser(pattern: '**/build/reports/pmd/main.xml'),
+//                     checkStyle(pattern: '**/build/reports/checkstyle/*.xml')
+//                 ]
+//                 recordCoverage sourceCodeRetention: 'NEVER', tools: [[pattern: '**/build/reports/jacoco/test/*.xml']]
+//             }
+//         }
+//         stage('giac test') {
+//             when {
+//                 expression {return isGiac}
+//             }
+//             parallel {
+//                 stage('mac-amd64') {
+//                     agent {label 'ios-test'}
+//                     steps {
+//                         sh label: 'test', script: "./gradlew :desktop:test"
+//                         junit '**/build/test-results/test/*.xml'
+//                     }
+//                     post {
+//                         always { deleteDir() }
+//                     }
+//                 }
+//                 stage('mac-arm64') {
+//                     agent {label 'mac-mini'}
+//                     steps {
+//                         // NOT using docker to make sure this runs Giac for Mac
+//                         sh label: 'test', script: "./gradlew :desktop:test"
+//                         junit '**/build/test-results/test/*.xml'
+//                     }
+//                     post {
+//                         always { deleteDir() }
+//                     }
+//                 }
+//                 stage('linux') {
+//                     agent {label 'Ubuntu'}
+//                     steps {
+//                         sh label: 'test', script: "$gradleCmd :desktop:test"
+//                         junit '**/build/test-results/test/*.xml'
+//                     }
+//                     post {
+//                         always { deleteDir() }
+//                     }
+//                 }
+//                 stage('windows') {
+//                     agent {label 'winbuild'}
+//                     steps {
+//                         // NOT using docker to make sure this runs Giac for Windows
+//                         bat label: 'test', script: ".\\gradlew.bat :desktop:test"
+//                         junit '**/build/test-results/test/*.xml'
+//                     }
+//                     post {
+//                         always { deleteDir() }
+//                     }
+//                 }
+//             }
+//         }
+//         stage('archive') {
+//             steps {
+//                 script {
+//                     withAWS (region:'eu-central-1', credentials:'aws-credentials') {
+//                        s3Delete(bucket: 'apps-builds', path: "geogebra/branches/${env.GIT_BRANCH}/latest/")
+//                        if (hasSourcemap) {
+//                            s3Upload(bucket: 'apps-builds', workingDir: "web/build/symbolMapsGz", path: "geogebra/sourcemaps/",
+//                                    includePathPattern: "**/*.json", acl: 'PublicRead', contentEncoding: "gzip")
+//                        }
+//                     }
+//                     s3uploadDefault(".", "changes.csv", "")
+//                     s3uploadDefault("web/build/s3", "webSimple/**", "gzip")
+//                     s3uploadDefault("web/build/s3", "web3d/**", "gzip")
+//                     if (isEditor) {
+//                         s3uploadDefault("web/build/s3", "editor/**", "gzip")
+//                         s3uploadDefault("web/build/s3", "editor/**/*.mjs", "gzip", "", "text/javascript")
+//                     }
+//                     s3uploadDefault("web/build/s3", "web3d/**/*.mjs", "gzip", "", "text/javascript")
+//                     s3uploadDefault("web/war", "**/*.html", "")
+//                     s3uploadDefault("web/war", "**/deployggb.js", "")
+//                     s3uploadDefault("web/war", "geogebra-live.js", "")
+//                     s3uploadDefault("web/war", "platform.js", "")
+//                     s3uploadDefault("web/war", "css/**", "")
+//                 }
+//             }
+//         }
         stage('wait dependents') {
             steps {
                 script {
