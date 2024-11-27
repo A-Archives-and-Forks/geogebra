@@ -4830,10 +4830,10 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * Creates an AlgebraOutputFilter based on the AppConfig if it doesn't exist yet and returns it.
-	 * @return AlgebraOutputFilter instance
+	 * @return The current {@link AlgebraOutputFilter}. DO NOT CACHE THIS VALUE, the filter
+	 * may change at run time (e.g., for certain exams).
 	 */
-	public AlgebraOutputFilter getAlgebraOutputFilter() {
+	public @Nonnull AlgebraOutputFilter getAlgebraOutputFilter() {
 		if (algebraOutputFilter == null) {
 			if (getConfig().shouldHideEquations()) {
 				algebraOutputFilter = new ProtectiveAlgebraOutputFilter();
@@ -4944,7 +4944,8 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		resetCommandDict();
 		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
-			algebraOutputFilter = new HideEquationOutputFilter(getAlgebraOutputFilter());
+			AlgebraOutputFilter wrapped = getAlgebraOutputFilter();
+			algebraOutputFilter = new HideEquationOutputFilter(wrapped);
 		}
 	}
 

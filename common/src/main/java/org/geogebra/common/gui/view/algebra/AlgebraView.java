@@ -12,7 +12,6 @@ the Free Software Foundation.
 
 package org.geogebra.common.gui.view.algebra;
 
-import org.geogebra.common.exam.restrictions.ExamRestrictable;
 import org.geogebra.common.gui.Editing;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.kernel.geos.GeoElement;

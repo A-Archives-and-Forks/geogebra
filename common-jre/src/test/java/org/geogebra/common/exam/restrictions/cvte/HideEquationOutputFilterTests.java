@@ -1,6 +1,5 @@
 package org.geogebra.common.exam.restrictions.cvte;
 
-import static org.geogebra.common.exam.restrictions.CvteExamRestrictions.isVisibilityEnabled;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
