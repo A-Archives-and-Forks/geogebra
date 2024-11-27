@@ -267,13 +267,13 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 			}
 
 			GeoElement selectedGeo = app.getSelectionManager().getSelectedGeos().get(0);
-			return (!selectedGeo.isGeoBoolean()
+			return !selectedGeo.isGeoBoolean()
 					&& !selectedGeo.isGeoInputBox()
 					&& !(selectedGeo.isGeoList() && ((GeoList) selectedGeo).drawAsComboBox())
 					&& !(selectedGeo.isGeoNumeric() && ((GeoNumeric) selectedGeo).isAnimatable()
 					&& app.isRightClickEnabled())
 					&& selectedGeo.getAuralTextForSpace() == null
-					&& !selectedGeo.hasScripts());
+					&& !selectedGeo.hasScripts();
 		}
 	}
 
