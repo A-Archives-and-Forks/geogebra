@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
@@ -25,7 +26,7 @@ public class SuiteTest {
 		app = AppMocker.mockApplet(new AppletParameters("suite"));
 		GlobalHeader.INSTANCE.setApp(app);
 		app.startExam(ExamType.GENERIC);
-		app.switchToSubapp("geometry");
+		app.switchToSubapp(SuiteSubApp.GEOMETRY);
 		GlobalScope.examController.finishExam();
 		app.endExam();
 		assertTrue(app.getSettings().getCasSettings().isEnabled());
@@ -39,7 +40,7 @@ public class SuiteTest {
 		algebraProcessor.processAlgebraCommand("l={1}*2", false);
 		assertThat(getValueString("h"), equalTo("h(x) = x"));
 		assertThat(getValueString("l"), equalTo("l = {2}"));
-		app.switchToSubapp("scientific");
+		app.switchToSubapp(SuiteSubApp.SCIENTIFIC);
 		algebraProcessor.processAlgebraCommand("h(x)=x", false);
 		algebraProcessor.processAlgebraCommand("l={1}*2", false);
 		assertThat(app.getKernel().lookupLabel("h"), nullValue());

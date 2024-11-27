@@ -1,6 +1,6 @@
 package org.geogebra.web.full.gui.dialog;
 
-import org.geogebra.common.GeoGebraConstants;
+import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.exam.ExamController;
 import org.geogebra.common.main.PreviewFeature;
 import org.geogebra.common.ownership.GlobalScope;
@@ -50,23 +50,24 @@ public class CalculatorSwitcherDialog extends GPopupPanel implements Persistable
 	}
 
 	private void addButtons() {
-		buildAndAddCalcButton(GeoGebraConstants.GRAPHING_APPCODE, contentPanel);
+		buildAndAddCalcButton(SuiteSubApp.GRAPHING, contentPanel);
 		if (app.getSettings().getEuclidian(-1).isEnabled()) {
-			buildAndAddCalcButton(GeoGebraConstants.G3D_APPCODE, contentPanel);
+			buildAndAddCalcButton(SuiteSubApp.G3D, contentPanel);
 		}
-		buildAndAddCalcButton(GeoGebraConstants.GEOMETRY_APPCODE, contentPanel);
+		buildAndAddCalcButton(SuiteSubApp.GEOMETRY, contentPanel);
 		if (app.getSettings().getCasSettings().isEnabled()) {
-			buildAndAddCalcButton(GeoGebraConstants.CAS_APPCODE, contentPanel);
+			buildAndAddCalcButton(SuiteSubApp.CAS, contentPanel);
 		}
-		buildAndAddCalcButton(GeoGebraConstants.PROBABILITY_APPCODE, contentPanel);
+		buildAndAddCalcButton(SuiteSubApp.PROBABILITY, contentPanel);
 		if (PreviewFeature.isAvailable(PreviewFeature.SCICALC_IN_SUITE)) {
-			buildAndAddCalcButton(GeoGebraConstants.SCIENTIFIC_APPCODE, contentPanel);
+			buildAndAddCalcButton(SuiteSubApp.SCIENTIFIC, contentPanel);
 		}
 		add(contentPanel);
 	}
 
-	private void buildAndAddCalcButton(String subAppCode, FlowPanel contentPanel) {
-		if (examController.isExamActive() && examController.isDisabledSubApp(subAppCode)) {
+	private void buildAndAddCalcButton(SuiteSubApp subAppCode, FlowPanel contentPanel) {
+		if (examController.isExamActive()
+				&& examController.isDisabledSubApp(subAppCode)) {
 			return;
 		}
 		AppDescription description = AppDescription.get(subAppCode) ;
@@ -74,7 +75,7 @@ public class CalculatorSwitcherDialog extends GPopupPanel implements Persistable
 		StandardButton button =  new StandardButton(72, description.getIcon(),
 				app.getLocalization().getMenu(appNameKey));
 		button.setStyleName("calcBtn");
-		if (subAppCode.equals(app.getConfig().getSubAppCode())) {
+		if (subAppCode.equals(app.getConfig().getSubApp())) {
 			button.addStyleName("selected");
 		}
 

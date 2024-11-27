@@ -1,6 +1,7 @@
 package org.geogebra.web.full.main.activity;
 
 import org.geogebra.common.GeoGebraConstants;
+import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.settings.config.AppConfigCas;
 import org.geogebra.common.main.settings.config.AppConfigGeometry;
@@ -24,28 +25,28 @@ public class SuiteActivity extends BaseActivity {
 	/**
 	 * New Suite activity
 	 */
-	public SuiteActivity(String subAppCode, boolean casDisabled) {
+	public SuiteActivity(SuiteSubApp subAppCode, boolean casDisabled) {
 		super(getAppConfig(subAppCode, casDisabled));
 	}
 
-	private static AppConfig getAppConfig(String subAppCode, boolean casDisabled) {
+	private static AppConfig getAppConfig(SuiteSubApp subAppCode, boolean casDisabled) {
 		switch (subAppCode) {
 		default:
-		case GeoGebraConstants.GRAPHING_APPCODE:
+		case GRAPHING:
 			if (casDisabled) {
 				return new AppConfigGraphing(GeoGebraConstants.SUITE_APPCODE);
 			} else {
 				return new AppConfigUnrestrictedGraphing(GeoGebraConstants.SUITE_APPCODE);
 			}
-		case GeoGebraConstants.GEOMETRY_APPCODE:
+		case GEOMETRY:
 			return new AppConfigGeometry(GeoGebraConstants.SUITE_APPCODE);
-		case GeoGebraConstants.CAS_APPCODE:
+		case CAS:
 			return new AppConfigCas(GeoGebraConstants.SUITE_APPCODE);
-		case GeoGebraConstants.G3D_APPCODE:
+		case G3D:
 			return new AppConfigGraphing3D(GeoGebraConstants.SUITE_APPCODE);
-		case GeoGebraConstants.PROBABILITY_APPCODE:
+		case PROBABILITY:
 			return new AppConfigProbability(GeoGebraConstants.SUITE_APPCODE);
-		case GeoGebraConstants.SCIENTIFIC_APPCODE:
+		case SCIENTIFIC:
 			return new AppConfigScientific(GeoGebraConstants.SUITE_APPCODE);
 		}
 	}

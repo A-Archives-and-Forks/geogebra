@@ -1,6 +1,6 @@
 package org.geogebra.web.full.gui.contextmenu;
 
-import org.geogebra.common.GeoGebraConstants;
+import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.euclidian.EmbedManager;
 import org.geogebra.common.main.App;
 import org.geogebra.web.full.gui.ContextMenuItemFactory;
@@ -22,18 +22,18 @@ public class CalculatorSubMenu extends AriaMenuBar {
 		embedManager = app.getEmbedManager();
 
 		if (embedManager != null) {
-			addItem(GeoGebraConstants.GRAPHING_APPCODE);
-			addItem(GeoGebraConstants.G3D_APPCODE);
-			addItem(GeoGebraConstants.GEOMETRY_APPCODE);
-			addItem(GeoGebraConstants.CAS_APPCODE);
-			addItem(GeoGebraConstants.PROBABILITY_APPCODE);
+			addItem(SuiteSubApp.GRAPHING);
+			addItem(SuiteSubApp.G3D);
+			addItem(SuiteSubApp.GEOMETRY);
+			addItem(SuiteSubApp.CAS);
+			addItem(SuiteSubApp.PROBABILITY);
 		}
 	}
 
-	private void addItem(String subApp) {
+	private void addItem(SuiteSubApp subApp) {
 		AppDescription description = AppDescription.get(subApp);
 		addItem(factory.newAriaMenuItem(null,
 				app.getLocalization().getMenu(description.getNameKey()),
-				() -> embedManager.addSuiteCalcWithPreselectedApp(subApp)));
+				() -> embedManager.addSuiteCalcWithPreselectedApp(subApp.appCode)));
 	}
 }
