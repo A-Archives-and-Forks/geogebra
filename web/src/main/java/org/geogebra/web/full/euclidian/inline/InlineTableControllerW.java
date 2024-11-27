@@ -23,6 +23,7 @@ import org.geogebra.web.html5.util.CopyPasteW;
 import org.geogebra.web.html5.util.EventUtil;
 import org.geogebra.web.richtext.EditorChangeListener;
 import org.geogebra.web.richtext.impl.Carota;
+import org.geogebra.web.richtext.impl.CarotaSelection;
 import org.geogebra.web.richtext.impl.CarotaTable;
 import org.geogebra.web.richtext.impl.CarotaUtil;
 import org.geogebra.web.richtext.impl.EventThrottle;
@@ -34,11 +35,10 @@ import org.gwtproject.user.client.DOM;
 
 import elemental2.core.Global;
 import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 
 public class InlineTableControllerW implements InlineTableController {
 
-	private GeoInlineTable table;
+	private final GeoInlineTable table;
 	private final EuclidianView view;
 
 	private Element tableElement;
@@ -101,6 +101,7 @@ public class InlineTableControllerW implements InlineTableController {
 	public void setBackgroundColor(GColor backgroundColor) {
 		tableImpl.setCellProperty("bgcolor",
 				backgroundColor == null ? null : backgroundColor.toString());
+		saveContent();
 	}
 
 	@Override
@@ -183,7 +184,7 @@ public class InlineTableControllerW implements InlineTableController {
 	@Override
 	public void format(String key, Object val) {
 		tableImpl.setFormatting(key, val);
-		table.setContent(getContent());
+		saveContent();
 		table.updateRepaint();
 		if ("font".equals(key)) {
 			FontLoader.loadFont(String.valueOf(val), getCallback());
@@ -324,6 +325,7 @@ public class InlineTableControllerW implements InlineTableController {
 	@Override
 	public void setVerticalAlignment(VerticalAlignment alignment) {
 		tableImpl.setCellProperty("valign", alignment.toString());
+		saveContent();
 		table.updateVisualStyleRepaint(GProperty.TABLE_STYLE);
 	}
 
@@ -335,21 +337,22 @@ public class InlineTableControllerW implements InlineTableController {
 	@Override
 	public void setHorizontalAlignment(HorizontalAlignment alignment) {
 		tableImpl.setCellProperty("halign", alignment.toString(), null);
+		saveContent();
 		table.updateVisualStyleRepaint(GProperty.TABLE_STYLE);
 	}
 
 	@Override
 	public void setHeading(GColor color, boolean isRow) {
-		JsPropertyMap<Object> range = JsPropertyMap.of();
-		range.set("col0", 0);
-		range.set("row0", 0);
+		CarotaSelection range = new CarotaSelection();
+		range.col0 = 0;
+		range.row0 = 0;
 
 		if (isRow) {
-			range.set("col1", tableImpl.getCols());
-			range.set("row1", 1);
+			range.col1 = tableImpl.getCols();
+			range.row1 = 1;
 		} else {
-			range.set("col1", 1);
-			range.set("row1", tableImpl.getRows());
+			range.col1 = 1;
+			range.row1 = tableImpl.getRows();
 		}
 
 		tableImpl.setCellProperty("bgcolor", color.toString(), range);

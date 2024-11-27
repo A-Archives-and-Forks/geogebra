@@ -6,7 +6,6 @@ import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.ThicknessProperty;
-import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.gui.util.LineStylePreview;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.main.AppW;
@@ -72,8 +71,6 @@ public class SliderWithProperty extends FlowPanel {
 			preview.addStyleName("preview");
 			parent.add(preview);
 		} else if (getFirstProperty() instanceof OpacityProperty) {
-			Log.error(((OpacityProperty)
-					getFirstProperty()).getValue() + "preview");
 			unitLabel = BaseWidgetFactory.INSTANCE.newPrimaryText(((OpacityProperty)
 					getFirstProperty()).getValue() + "%", "sliderLabel");
 			parent.add(unitLabel);

@@ -24,7 +24,6 @@ import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
-import org.geogebra.common.util.debug.Log;
 
 public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFontSize> {
 	private final List<TextFontSize> fontSizes = Arrays.asList(
@@ -57,7 +56,6 @@ public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFo
 
 	@Override
 	protected void doSetValue(TextFontSize value) {
-		Log.warn("do set");
 		GeoElement element = delegate.getElement();
 		double size = GeoText.getRelativeFontSize(fontSizes.indexOf(value)) * ev.getFontSize();
 		if (element instanceof HasTextFormatter) {
