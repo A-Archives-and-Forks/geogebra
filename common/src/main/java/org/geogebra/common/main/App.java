@@ -4952,7 +4952,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	@Override
 	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		// null out algebraOutputFilter (to recreate on next use)
-		outputFilter = null;
+		algebraOutputFilter = null;
 	}
 
 	/**
