@@ -7,6 +7,7 @@ import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.Surds;
 import org.geogebra.common.kernel.arithmetic.Traversing;
 import org.geogebra.common.plugin.Operation;
+import org.geogebra.common.util.DoubleUtil;
 
 public class ReduceRoot implements SimplifyNode {
 	private final Kernel kernel;
@@ -25,8 +26,16 @@ public class ReduceRoot implements SimplifyNode {
 			@Override
 			public ExpressionValue process(ExpressionValue ev) {
 				if (ev.isOperation(Operation.SQRT)) {
-					MyDouble evalUnderSqrt = new MyDouble(kernel, ev.wrap().getLeftTree()
-							.evaluateDouble());
+					ExpressionValue surd = Surds.getResolution(ev.wrap(), kernel);
+					if (surd != null) {
+						return surd;
+					}
+					double valUnderSqrt = ev.wrap().getLeftTree().evaluateDouble();
+					double sqrt = Math.sqrt(valUnderSqrt);
+					if (DoubleUtil.isInteger(sqrt)) {
+						return new MyDouble(kernel, sqrt);
+					}
+					MyDouble evalUnderSqrt = new MyDouble(kernel, valUnderSqrt);
 					ev.wrap().setLeft(evalUnderSqrt);
 				}
 				return ev;

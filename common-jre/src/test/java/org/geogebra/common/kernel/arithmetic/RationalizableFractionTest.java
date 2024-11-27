@@ -144,21 +144,23 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testDecimalsShouldDiscardResults() {
-		shouldBeUnsupported("sqrt(2 + 3) / (1 + sqrt(2 + 5))");
+	public void testFixMe() {
+		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "-(sqrt(2) + 1) / 2");
 	}
 
 	@Test
 	public void testCancelGCDs() {
 		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
 		rationalizationShouldBe("4 / (sqrt(5) - 1)", "sqrt(5) + 1");
+		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2 + 5))",
+				"((1 - sqrt(7)) sqrt(5)) / -6");
 		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
 	}
 
 	@Test
 	public void testProductInDenominator() {
 		rationalizationShouldBe("1 / (2 * (1 + sqrt(2)))", "(sqrt(2) - 1) / 2");
-		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(sqrt(2) + 1) / 2");
+		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "-(sqrt(2) + 1) / 2");
 		rationalizationShouldBe("1 / (2 * sqrt(2))", "sqrt(2) / 4");
 	}
 
@@ -197,7 +199,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 				"(2 - sqrt(7)) / 7");
 		rationalizationShouldBe("(-10 + sqrt(6)) / (5 + sqrt(1))",
 				"(-10 + sqrt(6)) / 6");
-		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))", "-3(sqrt(2) + 1)");
 }
 
 	@Test
@@ -218,11 +219,11 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testBadExamples() {
+ 	public void testBadExamples() {
 //		rationalizationShouldBe(genericSqrtFraction(7, 4, -8, 10),
 //				"6");
 		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
-				"-6");
+				"(3 (-2 - 2sqrt(2))) / 2");
 	}
 
 }

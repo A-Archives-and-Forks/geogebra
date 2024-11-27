@@ -13,6 +13,7 @@ public class TidyNumbersTest extends BaseSimplifyTest {
 	public void testTidyNumbers() {
 		shouldSimplify("sqrt(4)sqrt(2)", "2sqrt(2)");
 		shouldSimplify("(-(-2) + sqrt(5)) (-10 + sqrt(5))", "(2 + sqrt(5)) (-10 + sqrt(5))");
+		shouldSimplify("((-2 - sqrt(8)) (-6)) / -4", "((-2 - sqrt(8)) (-6)) / -4");
 	}
 
 	@Test

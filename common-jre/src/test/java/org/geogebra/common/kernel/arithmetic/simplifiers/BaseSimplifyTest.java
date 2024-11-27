@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.StringTemplate;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 
 public abstract class BaseSimplifyTest extends BaseUnitTest {
@@ -20,8 +21,11 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 		GeoNumeric actual = newSymbolicNumeric(actualDef);
 		assertTrue(actualDef + " is not accepted by " + simplifier.name(),
 				simplifier.isAccepted(actual.getDefinition()));
+		ExpressionNode applied = simplifier.apply(actual.getDefinition());
+//		assertEquals(expected.getDefinition().evaluateDouble(), applied.evaluateDouble(),
+//				Kernel.MAX_PRECISION);
 		assertEquals(expected.getDefinition().toString(StringTemplate.defaultTemplate),
-				simplifier.apply(actual.getDefinition())
+				applied
 						.toString(StringTemplate.defaultTemplate));
 	}
 

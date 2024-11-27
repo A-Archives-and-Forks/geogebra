@@ -19,4 +19,9 @@ public class ReduceRootTest extends BaseSimplifyTest {
 		shouldSimplify("3  * sqrt(4)", "6");
 		shouldSimplify("1 + 12 + 3  * sqrt(4)", "19");
 	}
+
+	@Test
+	public void name() {
+		shouldSimplify("(-8 + sqrt(4)) / (-2 + sqrt(8))", "(-8 + 2) / (-2 + 2sqrt(2))");
+	}
 }

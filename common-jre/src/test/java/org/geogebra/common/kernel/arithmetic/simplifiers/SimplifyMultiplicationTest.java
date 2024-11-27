@@ -22,6 +22,8 @@ public class SimplifyMultiplicationTest extends BaseSimplifyTest {
 
 	@Test
 	public void name() {
-		shouldSimplify("(-8 - sqrt(10))(7 + sqrt(4))", "9(-sqrt(10) - 8)");
+
+		shouldSimplify("(-8 - sqrt(10))(sqrt(4) + 7)", "-72 - (2sqrt(10)) - 7sqrt(10)");
+		shouldSimplify("(-8 - sqrt(10))(sqrt(4) + 7)", "9(-sqrt(10) - 8)");
 	}
 }

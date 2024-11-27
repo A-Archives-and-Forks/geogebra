@@ -3,6 +3,11 @@ package org.geogebra.common.kernel.arithmetic.simplifiers;
 import static org.geogebra.common.kernel.arithmetic.Surds.getResolution;
 import static org.geogebra.common.util.DoubleUtil.isInteger;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
@@ -35,8 +40,34 @@ public class SimplifyMultiplication implements SimplifyNode {
 		ExpressionNode a1b2 = multiplyValues(a1, b2, signB2).wrap();
 		ExpressionNode a2b1 = multiplyValues(a2, b1, signA2).wrap();
 		ExpressionNode a2b2 = multiplyValues(a2, b2, signA2 * signB2).wrap();
-		return a1b1.plus(a1b2).plus(a2b2).plus(a2b1);
+		List<ExpressionNode> list = Arrays.asList(a1b1, a1b2, a2b1, a2b2);
+		Collections.sort(list, new Comparator<ExpressionNode>() {
+			@Override
+			public int compare(ExpressionNode o1, ExpressionNode o2) {
+				return isInteger(o1.evaluateDouble()) ? -1 : 1;
+			}
+		});
+		double num = 0;
+		int i = 0;
+		double eval = list.get(0).evaluateDouble();
+		while (i < list.size() && isInteger(eval)){
+			num += eval;
+			i++;
+			eval = list.get(i).evaluateDouble();
+		}
+
+		ExpressionNode rest = list.get(i);
+
+		while (i < list.size() - 1) {
+			i++;
+			rest = rest.plus(list.get(i));
+		}
+		return new ExpressionNode(kernel,
+				new MyDouble(kernel, num),
+				Operation.PLUS,
+				rest);
 	}
+
 
 	@Override
 	public boolean isAccepted(ExpressionNode node) {
