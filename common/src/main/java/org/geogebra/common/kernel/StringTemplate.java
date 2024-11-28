@@ -3124,7 +3124,6 @@ public class StringTemplate implements ExpressionNodeConstants {
 
 	/**
 	 * Converts e.g. 1234 to 1.234 * 10³, 1234567 to 1.234567 * 10^6
-	 * @param scientificStr String in scientific notation
 	 * @param number Number
 	 * @return Formatted string in engineering notation using m*10^n, where n is restricted
 	 * to multiples of three
@@ -3152,8 +3151,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 		}
 
 		if (exponent < 0) {
-			return sign + createEngineeringNotationWithNegativeExponent(
-					predecimalsString, decimalsString, exponent);
+			return sign + createEngineeringNotationWithNegativeExponent(decimalsString, exponent);
 		}
 		return sign + createEngineeringNotationWithPositiveExponent(
 				predecimalsString, decimalsString, exponent);
@@ -3206,8 +3204,8 @@ public class StringTemplate implements ExpressionNodeConstants {
 		return engineeringNotation.toString();
 	}
 
-	private String createEngineeringNotationWithNegativeExponent(String predecimalsString,
-			String decimalsString, int exponent) {
+	private String createEngineeringNotationWithNegativeExponent(String decimalsString,
+			int exponent) {
 		StringBuilder engineeringNotation = new StringBuilder();
 		int shiftBy = Math.abs(exponent);
 		engineeringNotation.append(StringUtil.removeLeadingZeros(

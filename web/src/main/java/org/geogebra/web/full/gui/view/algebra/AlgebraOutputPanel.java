@@ -102,6 +102,12 @@ public class AlgebraOutputPanel extends FlowPanel {
 		return button;
 	}
 
+	/**
+	 * Updates the buttons icons and sets the correct icon
+	 * @param button {@link ToggleButton} OR {@link TriStateToggleButton}
+	 * @param parent Parent panel
+	 * @param geo GeoElement
+	 */
 	public static void updateOutputPanelButton(Widget button, FlowPanel parent, GeoElement geo) {
 		if (button instanceof ToggleButton) {
 			updateToggleButtonIcons((ToggleButton) button, geo);
@@ -128,7 +134,8 @@ public class AlgebraOutputPanel extends FlowPanel {
 		}
 	}
 
-	private static void updateTriStateToggleButtonIcons(GeoElement geo, TriStateToggleButton button) {
+	private static void updateTriStateToggleButtonIcons(GeoElement geo,
+			TriStateToggleButton button) {
 		if (AlgebraItem.evaluatesToFraction(geo)) {
 			button.updateIcons(MaterialDesignResources.INSTANCE.fraction_white(),
 					MaterialDesignResources.INSTANCE.engineering_notation_white(),
@@ -205,8 +212,8 @@ public class AlgebraOutputPanel extends FlowPanel {
 	}
 
 	private static boolean shouldSelectToggleButton(ToggleButton toggleButton, GeoElement geo) {
-		return (toggleButton.getText().equals("symbolicToggleButton") &&
-				AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC)
+		return (toggleButton.getText().equals("symbolicToggleButton")
+				&& AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC)
 				|| (toggleButton.getText().equals("engineeringToggleButton")
 				&& SymbolicUtil.isEngineeringNotationMode(geo));
 	}
@@ -222,6 +229,10 @@ public class AlgebraOutputPanel extends FlowPanel {
 		}
 	}
 
+	/**
+	 * @param parent Parent Panel
+	 * @return The symbolic button if it exists, null otherwise
+	 */
 	public static Widget getSymbolicButtonIfExists(FlowPanel parent) {
 		for (int i = 0; i < parent.getWidgetCount(); i++) {
 			if (parent.getWidget(i).getStyleName().contains("symbolicButton")) {

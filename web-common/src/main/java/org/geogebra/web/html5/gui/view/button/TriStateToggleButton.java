@@ -27,7 +27,7 @@ public class TriStateToggleButton extends StandardButton {
 
 	/**
 	 * Selects on the three different button states and updates the icon
-	 * @param index
+	 * @param index Index
 	 */
 	public void select(int index) {
 		this.index = index;
