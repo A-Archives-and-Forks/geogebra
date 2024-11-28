@@ -4,6 +4,7 @@ import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Re
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics1;
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics2;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -71,7 +72,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
-				null,
+				createPropertyRestrictions(),
 				createPropertyFilters(),
 				createConstructionElementSetups(),
 				createEquationBehaviour());
@@ -275,6 +276,23 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 
 	private static Set<ExpressionFilter> createOutputExpressionFilters() {
 		return Set.of(new MatrixExpressionFilter());
+	}
+
+	private static Map<String, PropertyRestriction> createPropertyRestriction() {
+		return Map.of(
+				// For Lines, Rays, Conics, Implicit Equations and Functions created with a
+				// command or tool:
+				// When choosing "Value" or "Name & Value" for the caption style the "definition"
+				// is shown.
+				"CaptionStyle", new PropertyRestriction(false, value ->
+						false
+				),
+				// For any Conic, Line, Equation, Function or Implicit Equation manually entered
+				// by the user:
+				// restrict the equation form to “Input Form”.
+				"EquationForm", new PropertyRestriction(false, value ->
+						false
+				));
 	}
 
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
