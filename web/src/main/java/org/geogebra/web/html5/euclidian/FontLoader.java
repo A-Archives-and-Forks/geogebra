@@ -16,7 +16,19 @@ import jsinterop.base.JsPropertyMap;
 public final class FontLoader {
 	private static Map<String, FontState> injected = new HashMap<>();
 	private static FontFamily[] bundled = new FontFamily[]{FontFamily.DYSLEXIC,
-			FontFamily.QUICKSAND, FontFamily.SOURCE_SANS_PRO, FontFamily.TITILLIUM};
+			FontFamily.QUICKSAND, FontFamily.SOURCE_SANS_PRO, FontFamily.TITILLIUM,
+			FontFamily.ABeZehBlueRedEDUBold, FontFamily.ABeZehBlueRedEDULight,
+			FontFamily.ABeZehBlueRedEDURegular, FontFamily.ABeZehEDUBold,
+			FontFamily.ABeZehEDUBoldItalic, FontFamily.ABeZehEDUItalic,
+			FontFamily.ABeZehEDULight, FontFamily.ABeZehEDULightItalic,
+			FontFamily.ABeZehEDURegular, FontFamily.ABeZehHokuspokusEDUDEBold,
+			FontFamily.ABeZehHokuspokusEDUDERegular, FontFamily.ABeZehHokuspokusEDUENBold,
+			FontFamily.ABeZehHokuspokusEDUENRegular, FontFamily.ABeZehIconsEDUDeutsch,
+			FontFamily.ABeZehIconsEDUEnglish, FontFamily.ABeZehIconsEDUFrancais,
+			FontFamily.ABeZehLinieEDULight, FontFamily.ABeZehLinieEDURegular,
+			FontFamily.ABeZehPfeilEDULight, FontFamily.ABeZehPfeilEDURegular,
+			FontFamily.ABeZehPfeilEDULINKSLight, FontFamily.ABeZehPunktEDULight,
+			FontFamily.ABeZehPunktEDURegular};
 
 	private enum FontState { LOADING, ACTIVE }
 
@@ -44,7 +56,7 @@ public final class FontLoader {
 
 	private static void loadFontFile(String familyName, final Runnable callback) {
 		if (!injected.containsKey(familyName)) {
-			String fileName = GWT.getModuleBaseURL() + "webfont/" + familyName;
+			String fileName = GWT.getHostPageBaseURL() + "public/assets/webfonts/" + familyName;
 			String css = "@font-face {  font-family: \"" + familyName + "\";"
 					+ "src: url(\"" + fileName + ".woff2\") format(\"woff2\");"
 					+ "font-weight: normal; font-style: normal;}";
