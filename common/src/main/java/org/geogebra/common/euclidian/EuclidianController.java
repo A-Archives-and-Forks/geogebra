@@ -6382,7 +6382,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			hits = view.getHits();
 			switchModeForRemovePolygons(hits);
 		}
-		boolean shiftOrSpace = event.isShiftDown() || app.getGlobalKeyDispatcher().spaceDown;
+		boolean shiftOrSpace = event.isShiftDown()
+				|| (app.getGlobalKeyDispatcher() != null && app.getGlobalKeyDispatcher().spaceDown);
 		if (hits.isEmpty()) {
 			view.setToolTipText(null);
 			if (shiftOrSpace
@@ -9351,7 +9352,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		(event.isShiftDown() && !app.isControlDown(event)) // All Platforms: Shift key
 				|| (event.isControlDown() && app.isWindows()
 				// old Windows key: Ctrl key
-				) || app.isMiddleClick(event)) || app.getGlobalKeyDispatcher().spaceDown;
+				) || app.isMiddleClick(event))
+				|| (app.getGlobalKeyDispatcher() != null && app.getGlobalKeyDispatcher().spaceDown);
 	}
 
 	protected void runScriptsIfNeeded(GeoElement geo1) {
