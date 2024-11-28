@@ -7,16 +7,19 @@ import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
 import org.geogebra.common.kernel.arithmetic.Inspecting;
 import org.geogebra.common.kernel.arithmetic.MyDouble;
+import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 
 public class CancelGCDInFraction implements SimplifyNode {
+	private final SimplifyUtils utils;
 	private final Kernel kernel;
 	private ExpressionNode numerator;
 	private ExpressionNode denominator;
 
-	public CancelGCDInFraction(Kernel kernel) {
-		this.kernel = kernel;
+	public CancelGCDInFraction(SimplifyUtils utils) {
+		this.utils = utils;
+		kernel = utils.kernel;
 	}
 
 	@Override
@@ -35,10 +38,12 @@ public class CancelGCDInFraction implements SimplifyNode {
 		denominator = node.getRightTree();
 
 		if (isCancelable(numerator, denominator)) {
-			return doCancel(numerator, denominator);
+			ExpressionNode canceled = doCancel(numerator, denominator);
+			return canceled != null ? canceled: node;
 		}
 		if (isCancelable(denominator, numerator)) {
-			return doCancel(denominator, numerator);
+			ExpressionNode canceled = doCancel(denominator, numerator);
+			return canceled != null ? canceled : node;
 		}
 		return node;
 	}
@@ -61,11 +66,8 @@ public class CancelGCDInFraction implements SimplifyNode {
 				return cancel(node1, node2, evalCanceled, evalRight);
 			}
 		} else if (node1.isOperation(Operation.DIVIDE)) {
-			ExpressionNode expressionNode = new ExpressionNode(kernel,
-					node1.getLeftTree(),
-					Operation.DIVIDE,
-					new MyDouble(kernel, node1.getRight().evaluateDouble() / evalCanceled
-					));
+			ExpressionNode expressionNode = utils.div(node1.getLeftTree(),
+					node1.getRight().evaluateDouble() / evalCanceled);
 			return expressionNode;
 		}
 		return node1.divide(canceled);
@@ -74,6 +76,9 @@ public class CancelGCDInFraction implements SimplifyNode {
 	private ExpressionNode cancel(ExpressionNode node1, ExpressionNode node2,
 			double evalCanceled, double eval) {
 		long gcd = Kernel.gcd((long) evalCanceled, (long) eval);
+		if (DoubleUtil.isEqual(gcd, -1)) {
+			return null;
+		}
 		if (DoubleUtil.isEqual(gcd, evalCanceled)) {
 			if (node1 == numerator) {
 				if (node1.getLeft().evaluateDouble() == evalCanceled) {

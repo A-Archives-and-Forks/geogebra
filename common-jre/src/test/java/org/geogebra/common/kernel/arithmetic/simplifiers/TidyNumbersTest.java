@@ -18,6 +18,7 @@ public class TidyNumbersTest extends BaseSimplifyTest {
 
 	@Test
 	public void testShouldNotChange() {
+		shouldSimplify("(-(2sqrt(2)) - 2) / 4", "(-(2sqrt(2)) - 2) / 4");
 		shouldSimplify("(-1 + sqrt(2)) sqrt(5)", "(-1 + sqrt(2)) sqrt(5)");
 	}
 }

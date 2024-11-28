@@ -20,16 +20,18 @@ public final class RationalizeFractionAlgo {
 	private final ExpressionNode numerator;
 	private final ExpressionNode denominator;
 	private final List<SimplifyNode> simplifiers;
+	private final SimplifyUtils utils;
 
 	public RationalizeFractionAlgo(Kernel kernel, ExpressionNode numerator,
 			ExpressionNode denominator) {
 		this.kernel = kernel;
 		this.numerator = numerator;
 		this.denominator = denominator;
+		utils = new SimplifyUtils(kernel);
 		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
 				new ReduceRoot(kernel),
 				new TidyNumbers(kernel),
-				new CancelGCDInFraction(kernel),
+				new CancelGCDInFraction(utils),
 				new SimplifyMultiplication(kernel)
 //				new FactorizeTags(kernel)
 		);
@@ -116,15 +118,15 @@ public final class RationalizeFractionAlgo {
 	}
 
 	private ExpressionNode handleProductInDenominator() {
-		ExpressionNode rightOperand = denominator.getRight().wrap();
+		ExpressionNode expanded = utils.expand(denominator);
+		ExpressionNode rightOperand = expanded;
 		Operation rightOperandOperation = rightOperand.getOperation();
 		if (hasTwoTags(rightOperand)) {
-			ExpressionNode node = doFactorize(denominator.getRightTree());
-			return node.divide(denominator.getLeftTree());
+ 			return doFactorize(expanded);
 		} else {
-			ExpressionNode numerator = new ExpressionNode(kernel, denominator.getLeftTree(),
+			ExpressionNode numerator = new ExpressionNode(kernel, expanded.getLeftTree(),
 					rightOperandOperation, null);
-			ExpressionNode denominator = this.denominator.getLeftTree().getLeftTree()
+			ExpressionNode denominator = expanded.getLeftTree().getLeftTree()
 					.multiply(rightOperand.getLeft());
 			return new ExpressionNode(kernel, numerator, Operation.DIVIDE,
 					newNumber(denominator));
@@ -144,8 +146,7 @@ public final class RationalizeFractionAlgo {
 	private ExpressionNode rationalizeAsLeafNumerator() {
 		if (denominator.isOperation(Operation.SQRT)) {
 			ExpressionNode sqrtOf = simplifyUnderSqrt(denominator, kernel);
-			return new ExpressionNode(kernel,
-					numerator.multiplyR(sqrtOf), Operation.DIVIDE, sqrtOf.getLeftTree());
+			return utils.div(numerator.multiplyR(sqrtOf), sqrtOf.getLeftTree());
 		}
 		return factorizeOrHandleProduct();
 	}
@@ -174,14 +175,25 @@ public final class RationalizeFractionAlgo {
 			result = new ExpressionNode(kernel, numerator.multiplyR(conjugate));
 		} else if (isMinusOne(newDenominatorValue)) {
 			ExpressionNode minusConjugate = getMinusConjugate(node, op);
-			result = new ExpressionNode(kernel, numerator.multiply(minusConjugate));
+			result = utils.multiply(numerator, minusConjugate);
+//			result = new ExpressionNode(kernel, numerator.multiplyR(minusConjugate));
 		} else if (DoubleUtil.isInteger(newDenominatorValue)) {
 			// if new denominator is integer but not 1 or -1
+			result = utils.div(numerator.multiply(conjugate), newDenominatorValue);
 
-			result = new ExpressionNode(kernel, numerator.multiply(conjugate),
-					Operation.DIVIDE, new MyDouble(kernel, newDenominatorValue));
+//			result = new ExpressionNode(kernel, numerator.multiply(conjugate),
+//					Operation.DIVIDE, new MyDouble(kernel, newDenominatorValue));
 		}
-		return getOperandOrder(result);
+		Operation operation = result.getOperation();
+		if (operation == Operation.PLUS || operation == Operation.MINUS) {
+			return getOperandOrder(result);
+		}
+//		if (operation == Operation.DIVIDE) {
+//			return utils.newNode(getOperandOrder(result.getLeftTree()), Operation.DIVIDE,
+//					result.getRight());
+//
+//		}
+		return result;
 	}
 
 	private ExpressionNode getMinusConjugate(ExpressionNode node, Operation op) {
@@ -218,14 +230,26 @@ public final class RationalizeFractionAlgo {
 		}
 
 		ExpressionNode leftTree = plusMinusNode.getLeftTree();
+		ExpressionNode rightTree = plusMinusNode.getRightTree();
+		double evalLeft = leftTree.evaluateDouble();
+		double evalRight = rightTree.evaluateDouble();
+		if (evalLeft < 0 && evalRight < 0 && !plusMinusNode.isOperation(Operation.MULTIPLY)) {
+			return utils.newInverseNode(leftTree, plusMinusNode.getOperation(), rightTree);
+		}
 		ExpressionNode operandLeft = leftTree.getLeftTree();
-		if (operandLeft.isLeaf() && operandLeft.evaluateDouble() < 0) {
-			ExpressionNode operandRight = leftTree.getRightTree();
-			return new ExpressionNode(kernel, operandRight.getLeft().evaluateDouble() == -1
-					? operandRight.getRightTree()
-					: operandRight,
-					Operation.inverse(leftTree.getOperation()),
-					operandLeft);
+		ExpressionNode operandRight = leftTree.getRightTree();
+		if (operandLeft.isLeaf() && operandLeft.evaluateDouble() < 0 && operandRight != null) {
+			ExpressionNode result =
+					new ExpressionNode(kernel, operandRight.getLeft().evaluateDouble() == -1
+							? operandRight.getRightTree()
+							: operandRight,
+							Operation.inverse(leftTree.getOperation()),
+							operandLeft);
+			if (operandRight.evaluateDouble() > 0) {
+				return result;
+			} else {
+				return result.wrap().multiply(-1);
+			}
 		}
 		return plusMinusNode;
 	}

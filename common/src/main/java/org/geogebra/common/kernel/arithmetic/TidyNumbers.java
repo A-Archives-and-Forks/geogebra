@@ -37,7 +37,7 @@ public class TidyNumbers implements SimplifyNode {
 					}
 				}
 				double v = ev.evaluateDouble();
-				if (Math.round(v) == v) {
+				if (Math.round(v) == v && v != -1) {
 					return new MyDouble(kernel, v);
 				}
 

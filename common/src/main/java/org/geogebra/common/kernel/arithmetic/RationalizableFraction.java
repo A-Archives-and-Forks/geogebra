@@ -1,5 +1,7 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isNodeSupported;
+
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.plugin.Operation;
@@ -35,7 +37,7 @@ public final class RationalizableFraction {
 		ExpressionNode numerator = stripFromIntegerMultiplication(root.getLeftTree());
 		ExpressionNode denominator = stripFromIntegerMultiplication(root.getRightTree());
 
-		return isSubtreeSupported(numerator) && isSubtreeSupported(denominator);
+		return isNodeSupported(numerator) && isNodeSupported(denominator);
 	}
 
 	private static ExpressionNode stripFromIntegerMultiplication(ExpressionNode leftTree) {
@@ -55,20 +57,6 @@ public final class RationalizableFraction {
 		return sqrtCountChecker.getCount();
 	}
 
-	private static boolean isSubtreeSupported(ExpressionNode node) {
-		return (node.isLeaf() && isIntegerEvaluation(node))
-				|| node.inspect(
-						v -> isSquareRootOfPositiveInteger(node) || isPlusMinusInteger(node));
-	}
-
-	private static boolean isPlusMinusInteger(ExpressionNode node) {
-		if (!(node.isOperation(Operation.PLUS) || node.isOperation(Operation.MINUS))) {
-			return false;
-		}
-		return isSquareRootPlusMinusInteger(node.getLeftTree(), node.getRightTree())
-				|| isSquareRootPlusMinusInteger(node.getRightTree(), node.getLeftTree());
-	}
-
 	private static boolean isIntegerEvaluation(ExpressionNode node) {
 		return evaluateAsInteger(node) != null;
 	}
@@ -76,14 +64,6 @@ public final class RationalizableFraction {
 	private static boolean isSquareRootPlusMinusInteger(ExpressionNode node1,
 			ExpressionNode node2) {
 		return node1.isOperation(Operation.SQRT) && isIntegerEvaluation(node2);
-	}
-
-	private static boolean isSquareRootOfPositiveInteger(ExpressionNode node) {
-		if (!node.isOperation(Operation.SQRT)) {
-			return false;
-		}
-		Integer value = evaluateAsInteger(node.getLeftTree());
-		return value != null && value >= 0;
 	}
 
 	/**
@@ -146,6 +126,6 @@ public final class RationalizableFraction {
 	}
 	private static Integer evaluateAsInteger(ExpressionNode node) {
 		double v = node.evaluateDouble();
-		return DoubleUtil.isEqual(v,  (int) v) ? (int) v : null;
+		return DoubleUtil.isEqual(v,  Math.round(v), Kernel.MAX_PRECISION) ? (int) v : null;
 	}
 }
