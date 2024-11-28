@@ -1,122 +1,81 @@
 package org.geogebra.web.full.euclidian;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
-import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.dialog.options.model.NameValueModel;
-import org.geogebra.common.gui.dialog.options.model.NameValueModel.INameValueListener;
+import org.geogebra.common.gui.dialog.options.model.ShowLabelModel;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
+import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.keyboard.base.KeyboardType;
 import org.geogebra.web.full.css.MaterialDesignResources;
-import org.geogebra.web.full.css.ToolbarSvgResourcesSync;
-import org.geogebra.web.full.gui.util.PopupMenuButtonW;
 import org.geogebra.web.full.gui.util.VirtualKeyboardGUI;
 import org.geogebra.web.full.gui.view.algebra.InputPanelW;
 import org.geogebra.web.full.javax.swing.GCheckMarkLabel;
 import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
-import org.geogebra.web.html5.gui.util.ClickEndHandler;
-import org.geogebra.web.html5.gui.util.ClickStartHandler;
-import org.geogebra.web.html5.gui.util.ImageOrText;
 import org.geogebra.web.html5.gui.util.LayoutUtilW;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.LocalizationW;
-import org.gwtproject.event.dom.client.MouseOverEvent;
-import org.gwtproject.event.dom.client.MouseOverHandler;
 import org.gwtproject.event.logical.shared.CloseEvent;
 import org.gwtproject.event.logical.shared.CloseHandler;
 import org.gwtproject.user.client.Command;
 import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 
-/**
- * label settings popup
- */
-public class LabelSettingsPopup extends PopupMenuButtonW
-		implements CloseHandler<GPopupPanel>, MouseOverHandler, SetLabels,
-		INameValueListener {
+public class LabelSettingsPanel extends FlowPanel
+		implements CloseHandler<GPopupPanel>, SetLabels, ShowLabelModel.IShowLabelListener {
+	private final AppW appW;
+	private final StringPropertyCollection<?> nameProperty;
 
-	/**
-	 * popup menu
-	 */
-	private FlowPanel main;
-	private LocalizationW loc;
+	private final LocalizationW loc;
 	private Label lblName;
 	private AutoCompleteTextFieldW tfName;
 
 	private GCheckMarkLabel cmName;
 	private GCheckMarkLabel cmValue;
-	private NameValueModel model;
+	private final NameValueModel model;
 	private VirtualKeyboardGUI kbd;
 	private FlowPanel namePanel;
 
 	/**
-	 * label related popup
-	 * 
-	 * @param app
-	 *            - application
+	 * Constructor
+	 * @param appW - application
+	 * @param nameProperty - name property
 	 */
-	public LabelSettingsPopup(AppW app) {
-		super(app, null, -1, -1, null, false, false);
-		this.app = app;
-		loc = app.getLocalization();
-		this.setIcon(
-				new ImageOrText(ToolbarSvgResourcesSync.INSTANCE
-						.mode_showhidelabel_32(), 24));
+	public LabelSettingsPanel(AppW appW, StringPropertyCollection<?> nameProperty) {
+		super();
+		this.appW = appW;
+		loc = appW.getLocalization();
+		this.nameProperty = nameProperty;
 		createPopup();
 
-		addStyleName("IconButton");
-		model = new NameValueModel(app, this);
+		model = new NameValueModel(appW, null);
+		init();
 	}
 
 	private void createPopup() {
-		ClickStartHandler.init(this, new ClickStartHandler(false, true) {
-
-			@Override
-			public void onClickStart(int x, int y, PointerEventType type) {
-				// handle click
-			}
-		});
-		ClickEndHandler.init(this, new ClickEndHandler(false, true) {
-
-			@Override
-			public void onClickEnd(int x, int y, PointerEventType type) {
-				// only stop
-			}
-		});
-
-		getMyPopup().addCloseHandler(this);
+		//getMyPopup().addCloseHandler(this);
 		createDialog();
 	}
 
 	private void createDialog() {
-
-		main = new FlowPanel();
 		lblName = new Label();
-		tfName = InputPanelW.newTextComponent(app);
+		tfName = InputPanelW.newTextComponent(appW);
 		tfName.setAutoComplete(false);
-		if (!app.isWhiteboardActive()) {
-			tfName.enableGGBKeyboard();
-		}
-		// remove focus, see GGB-
-		// tfName.setDeferredFocus(true);
+		tfName.enableGGBKeyboard();
 
 		tfName.addBlurHandler(event -> {
-			if (model.noLabelUpdateNeeded(tfName.getText())) {
-				return;
-			}
 			onEnter();
 		});
 
 		tfName.addKeyHandler(e -> {
 			if (e.isEnterKey()) {
 				onEnter();
-
 			}
 		});
 
-		Command nameValueCmd = () -> applyCheckboxes();
+		Command nameValueCmd = this::applyCheckboxes;
 		cmName = new GCheckMarkLabel("", MaterialDesignResources.INSTANCE
 				.check_black(), true, nameValueCmd);
 
@@ -124,19 +83,18 @@ public class LabelSettingsPopup extends PopupMenuButtonW
 				MaterialDesignResources.INSTANCE.check_black(),
 				true, nameValueCmd);
 
-		boolean isSelectionMode = app.getActiveEuclidianView()
+		boolean isSelectionMode = appW.getActiveEuclidianView()
 				.getEuclidianController()
 				.getMode() == EuclidianConstants.MODE_SELECT;
 		if (!isSelectionMode) {
 			namePanel = LayoutUtilW.panelRow(lblName, tfName);
-			main.add(namePanel);
+			add(namePanel);
 		}
-		main.add(cmName);
-		main.add(cmValue);
-		main.setStyleName("labelPopupPanel");
-		getMyPopup().setWidget(main);
-		kbd = ((AppWFull) app).getKeyboardManager().getOnScreenKeyboard();
-		getMyPopup().addAutoHidePartner(kbd.getElement());
+		add(cmName);
+		add(cmValue);
+		//main.setStyleName("labelPopupPanel");
+		kbd = ((AppWFull) appW).getKeyboardManager().getOnScreenKeyboard();
+		//getMyPopup().addAutoHidePartner(kbd.getElement());
 		setLabels();
 	}
 
@@ -144,7 +102,7 @@ public class LabelSettingsPopup extends PopupMenuButtonW
 	 * Submit the change
 	 */
 	protected void onEnter() {
-		model.applyNameChange(tfName.getText(), app.getErrorHandler());
+		nameProperty.setValue(tfName.getText());
 		applyCheckboxes();
 	}
 
@@ -154,12 +112,7 @@ public class LabelSettingsPopup extends PopupMenuButtonW
 			return;
 		}
 
-		model.applyNameChange(tfName.getText(), app.getErrorHandler());
-	}
-
-	@Override
-	public void onMouseOver(MouseOverEvent event) {
-		// TODO Auto-generated method stub
+		nameProperty.setValue(tfName.getText());
 	}
 
 	@Override
@@ -170,7 +123,7 @@ public class LabelSettingsPopup extends PopupMenuButtonW
 	}
 
 	/**
-	 * Apply settings to seleted geo(s).
+	 * Apply settings to selected geo(s).
 	 */
 	void applyCheckboxes() {
 		boolean name = cmName.isChecked();
@@ -187,7 +140,7 @@ public class LabelSettingsPopup extends PopupMenuButtonW
 		}
 		// !name && !value: hide, nothing to do.
 
-		model.applyModeChanges(mode, mode != -1);
+		// TODO PROPERTY APPLY model.applyModeChanges(mode, mode != -1);
 	}
 
 	@Override
@@ -218,53 +171,9 @@ public class LabelSettingsPopup extends PopupMenuButtonW
 								|| mode == GeoElementND.LABEL_NAME_VALUE));
 	}
 
-	@Override
-	protected void onClickAction() {
-		model.setGeos(app.getSelectionManager().getSelectedGeos().toArray());
-		model.updateProperties();
+	private void init() {
 		kbd.selectTab(KeyboardType.ABC);
+		tfName.setText(nameProperty.getValue());
 		tfName.requestFocus();
 	}
-
-	@Override
-	public void setNameText(String text) {
-		tfName.setValue(text);
-	}
-
-	@Override
-	public void setDefinitionText(String text) {
-		// not used here.
-	}
-
-	@Override
-	public void setCaptionText(String text) {
-		// not used here.
-	}
-
-	@Override
-	public void updateGUI(boolean showDefinition, boolean showCaption) {
-		// not used here.
-	}
-
-	@Override
-	public void updateDefLabel() {
-		// not used here.
-	}
-
-	@Override
-	public void updateCaption(String text) {
-		if (!model.isForceCaption()) {
-			return;
-		}
-		tfName.setText(text);
-	}
-
-	@Override
-	public void updateName(String text) {
-		if (model.isForceCaption()) {
-			return;
-		}
-		tfName.setText(text);
-	}
-
 }

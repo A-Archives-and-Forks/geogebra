@@ -298,9 +298,6 @@ public interface MaterialDesignResources extends ClientBundle, ResourceIconProvi
 	@Source("org/geogebra/common/icons/svg/web/matDesignIcons/av/baseline-timeline-24px.svg")
 	SVGResource special_points();
 
-	@Source("org/geogebra/common/icons/svg/web/matDesignIcons/av/baseline-label-24px.svg")
-	SVGResource label();
-
 	// ev icons
 	@Source("org/geogebra/common/icons/svg/web/matDesignIcons/ev/ic_settings_black_24px.svg")
 	SVGResource gear();

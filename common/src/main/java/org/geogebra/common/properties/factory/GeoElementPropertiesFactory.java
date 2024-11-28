@@ -692,7 +692,7 @@ public class GeoElementPropertiesFactory {
 		}
 	}
 
-	private static StringPropertyCollection<NameProperty> createNameProperty(
+	public static StringPropertyCollection<NameProperty> createNameProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
 			List<NameProperty> nameProperties = new ArrayList<>();

@@ -9,7 +9,9 @@ import org.geogebra.common.kernel.geos.properties.TextFontSize;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
+import org.geogebra.web.full.euclidian.LabelSettingsPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.components.BorderThicknessPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProperty;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
@@ -114,5 +116,9 @@ public class PropertyWidgetAdapter {
 		}
 		fontSizeMenu.setVisible(true);
 		return fontSizeMenu;
+	}
+
+	public FlowPanel getLabelPanel(StringPropertyCollection<?> property) {
+		return new LabelSettingsPanel(appW, property);
 	}
 }

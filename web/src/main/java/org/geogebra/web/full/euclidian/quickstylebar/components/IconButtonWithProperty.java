@@ -9,6 +9,7 @@ import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
@@ -154,6 +155,11 @@ public class IconButtonWithProperty extends IconButton {
 						(RangePropertyCollection<?>) property, geo);
 				parent.add(sliderWithProperty);
 			}
+		}
+
+		if (property instanceof StringPropertyCollection<?>) {
+			FlowPanel labelPanel = widgetAdapter.getLabelPanel((StringPropertyCollection<?>) property);
+			parent.add(labelPanel);
 		}
 	}
 

@@ -3,6 +3,7 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianStyleBar;
@@ -17,6 +18,8 @@ import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
+import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
+import org.geogebra.common.properties.impl.objects.NameProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperty;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
@@ -138,6 +141,12 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		Property verticalAlignmentProperty = GeoElementPropertiesFactory
 				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList.get(0), null, true, verticalAlignmentProperty);
+
+		if (!getApp().isWhiteboardActive()) {
+			StringPropertyCollection<NameProperty> nameProperty = GeoElementPropertiesFactory
+					.createNameProperty(getApp().getLocalization(), activeGeoList);
+			addPropertyPopupButton(activeGeoList.get(0), "label", true, nameProperty);
+		}
 
 		addDivider();
 
