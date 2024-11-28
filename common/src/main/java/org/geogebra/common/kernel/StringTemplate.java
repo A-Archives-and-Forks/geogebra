@@ -23,6 +23,7 @@ import org.geogebra.common.main.ScreenReader;
 import org.geogebra.common.main.settings.GeneralSettings;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
+import org.geogebra.common.util.EngineeringNotationString;
 import org.geogebra.common.util.NumberFormatAdapter;
 import org.geogebra.common.util.ScientificFormatAdapter;
 import org.geogebra.common.util.StringUtil;
@@ -3129,103 +3130,8 @@ public class StringTemplate implements ExpressionNodeConstants {
 	 * to multiples of three
 	 */
 	public String convertEngineeringNotationForDisplay(double number) {
-		String valueString = Double.toString(number);
-		String decimalsString = "";
-		String predecimalsString = valueString;
-		String sign = "";
-
-		if (valueString.contains(".")) {
-			decimalsString = valueString.substring(valueString.indexOf(".") + 1,
-					valueString.length());
-			predecimalsString = valueString.substring(0, valueString.indexOf('.'));
-		}
-
-		if (predecimalsString.contains("-")) {
-			predecimalsString = predecimalsString.replace("-", "");
-			sign = "-";
-		}
-
-		int exponent = getPositiveExponentForEngineeringNotation(predecimalsString.length());
-		if (exponent == 0 && number < 0.01 && number > -0.01) {
-			exponent = getNegativeExponentForEngineeringNotation(decimalsString);
-		}
-
-		if (exponent < 0) {
-			return sign + createEngineeringNotationWithNegativeExponent(decimalsString, exponent);
-		}
-		return sign + createEngineeringNotationWithPositiveExponent(
-				predecimalsString, decimalsString, exponent);
-	}
-
-	private int getPositiveExponentForEngineeringNotation(int amountOfPredecimals) {
-		if (amountOfPredecimals % 3 == 0) {
-			return amountOfPredecimals - 3;
-		}
-		return amountOfPredecimals % 3 == 2 ? amountOfPredecimals - 2 : amountOfPredecimals - 1;
-	}
-
-	private int getNegativeExponentForEngineeringNotation(String decimalsString) {
-		boolean nonZeroFound = false;
-		int exponent = 0;
-		for (int i = 0; i < decimalsString.length(); i++) {
-			if (!nonZeroFound && decimalsString.charAt(i) != '0') {
-				nonZeroFound = true;
-			}
-			if (nonZeroFound && i > 1) {
-				exponent = -(i + 1) / 3 * 3;
-			}
-		}
-		return exponent;
-	}
-
-	private String createEngineeringNotationWithPositiveExponent(String predecimalsString,
-			String decimalsString, int exponent) {
-		StringBuilder engineeringNotation = new StringBuilder();
-		int shiftBy = predecimalsString.length() - exponent;
-		engineeringNotation.append(predecimalsString.substring(0, shiftBy));
-
-		String remainingPredecimals = predecimalsString.substring(shiftBy);
-		if (decimalsString.isEmpty()) {
-			remainingPredecimals = StringUtil.removeTrailingZeros(remainingPredecimals);
-		}
-
-		if (!remainingPredecimals.isEmpty() || !decimalsString.isEmpty()) {
-			engineeringNotation.append(".");
-		}
-
-		engineeringNotation.append(remainingPredecimals);
-		engineeringNotation.append(decimalsString);
-
-		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
-		String exponentString = String.valueOf(exponent);
-		for (int i = 0; i < exponentString.length(); i++) {
-			engineeringNotation.append(Unicode.numberToSuperscript(exponentString.charAt(i) - '0'));
-		}
-		return engineeringNotation.toString();
-	}
-
-	private String createEngineeringNotationWithNegativeExponent(String decimalsString,
-			int exponent) {
-		StringBuilder engineeringNotation = new StringBuilder();
-		int shiftBy = Math.abs(exponent);
-		engineeringNotation.append(StringUtil.removeLeadingZeros(
-				decimalsString.substring(0, shiftBy)));
-		if (engineeringNotation.length() == 0) {
-			engineeringNotation.append("0");
-		}
-		if (!decimalsString.substring(shiftBy).isEmpty()) {
-			engineeringNotation.append(".");
-		}
-
-		engineeringNotation.append(decimalsString.substring(shiftBy));
-		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
-		engineeringNotation.append(Unicode.SUPERSCRIPT_MINUS);
-		String exponentString = String.valueOf(exponent);
-		for (int i = 1; i < exponentString.length(); i++) {
-			engineeringNotation.append(Unicode.numberToSuperscript(exponentString.charAt(i) - '0'));
-		}
-
-		return engineeringNotation.toString();
+		EngineeringNotationString ret = new EngineeringNotationString(number);
+		return ret.getResult();
 	}
 
 	/**
