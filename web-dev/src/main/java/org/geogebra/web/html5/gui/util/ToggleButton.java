@@ -85,7 +85,14 @@ public class ToggleButton extends FocusWidget {
 	}
 
 	public void setText(String labelStr) {
+		if (label == null) {
+			label = new Label();
+		}
 		label.setText(labelStr);
+	}
+
+	public String getText() {
+		return label.getText();
 	}
 
 	/**

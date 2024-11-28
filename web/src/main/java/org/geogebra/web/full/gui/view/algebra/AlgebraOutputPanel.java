@@ -159,6 +159,7 @@ public class AlgebraOutputPanel extends FlowPanel {
 				Dom.toggleClass(button, "show-fraction", !symbolic);
 			}
 		});
+		button.setText("symbolicToggleButton");
 		return button;
 	}
 
@@ -170,6 +171,7 @@ public class AlgebraOutputPanel extends FlowPanel {
 				button.setSelected(engineeringMode);
 			}
 		});
+		button.setText("engineeringToggleButton");
 		return button;
 	}
 
@@ -194,23 +196,29 @@ public class AlgebraOutputPanel extends FlowPanel {
 	}
 
 	private static void selectIconForToggleButton(ToggleButton toggleButton, GeoElement geo) {
-		if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC
-				|| SymbolicUtil.isEngineeringNotationMode(geo)) {
-			toggleButton.setSelected(false);
-		} else {
+		if (shouldSelectToggleButton(toggleButton, geo)) {
 			toggleButton.setSelected(true);
 			toggleButton.addStyleName("btn-prefix");
+		} else {
+			toggleButton.setSelected(false);
 		}
+	}
+
+	private static boolean shouldSelectToggleButton(ToggleButton toggleButton, GeoElement geo) {
+		return (toggleButton.getText().equals("symbolicToggleButton") &&
+				AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC)
+				|| (toggleButton.getText().equals("engineeringToggleButton")
+				&& SymbolicUtil.isEngineeringNotationMode(geo));
 	}
 
 	private static void selectIconForTriStateToggleButton(TriStateToggleButton button,
 			GeoElement geo) {
 		if (SymbolicUtil.isEngineeringNotationMode(geo)) {
-			button.select(1);
-		} else if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC || geo.isGeoList()) {
 			button.select(2);
-		} else {
+		} else if (AlgebraItem.getCASOutputType(geo) == AlgebraItem.CASOutputType.NUMERIC) {
 			button.select(0);
+		} else {
+			button.select(1);
 		}
 	}
 

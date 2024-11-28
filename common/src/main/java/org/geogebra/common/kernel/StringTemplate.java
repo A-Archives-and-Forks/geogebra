@@ -3185,11 +3185,17 @@ public class StringTemplate implements ExpressionNodeConstants {
 		StringBuilder engineeringNotation = new StringBuilder();
 		int shiftBy = predecimalsString.length() - exponent;
 		engineeringNotation.append(predecimalsString.substring(0, shiftBy));
-		if (!predecimalsString.substring(shiftBy).isEmpty() || !decimalsString.isEmpty()) {
+
+		String remainingPredecimals = predecimalsString.substring(shiftBy);
+		if (decimalsString.isEmpty()) {
+			remainingPredecimals = StringUtil.removeTrailingZeros(remainingPredecimals);
+		}
+
+		if (!remainingPredecimals.isEmpty() || !decimalsString.isEmpty()) {
 			engineeringNotation.append(".");
 		}
 
-		engineeringNotation.append(predecimalsString.substring(shiftBy));
+		engineeringNotation.append(remainingPredecimals);
 		engineeringNotation.append(decimalsString);
 
 		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");

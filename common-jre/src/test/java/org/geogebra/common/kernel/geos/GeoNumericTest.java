@@ -219,7 +219,7 @@ public class GeoNumericTest extends BaseUnitTest {
 	public void geoNumericShouldDisplayCorrectEngineeringNotation1() {
 		GeoNumeric a = addAvInput("7344000");
 		assertThat(a.toValueString(engineeringNotationTemplate),
-				is("7.3440 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_6));
+				is("7.3440000 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_6));
 	}
 
 	@Test

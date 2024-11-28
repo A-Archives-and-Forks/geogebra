@@ -81,7 +81,6 @@ public class GeoListTest extends BaseUnitTest {
 	@Test
 	public void listShouldDisplayCorrectEngineeringNotation1() {
 		GeoList list = add("{1, 2, 3}");
-		list.setEngineeringNotationMode(true);
 		assertThat(list.get(0).toValueString(engineeringNotationTemplate),
 				is("1.0 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_0));
 	}
@@ -89,7 +88,6 @@ public class GeoListTest extends BaseUnitTest {
 	@Test
 	public void listShouldDisplayCorrectEngineeringNotation2() {
 		GeoList list = add("{1 / 2, 2 / 4}");
-		list.setEngineeringNotationMode(true);
 		assertThat(list.get(1).toValueString(engineeringNotationTemplate),
 				is("0.5 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_0));
 	}
@@ -97,8 +95,7 @@ public class GeoListTest extends BaseUnitTest {
 	@Test
 	public void listShouldDisplayCorrectEngineeringNotation3() {
 		GeoList list = add("{17 * 100}");
-		list.setEngineeringNotationMode(true);
 		assertThat(list.get(0).toValueString(engineeringNotationTemplate),
-				is("1.70 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_3));
+				is("1.7000 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_3));
 	}
 }
