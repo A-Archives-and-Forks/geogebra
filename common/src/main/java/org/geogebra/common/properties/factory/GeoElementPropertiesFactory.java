@@ -1,13 +1,16 @@
 package org.geogebra.common.properties.factory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.geogebra.common.exam.restrictions.PropertyRestriction;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
@@ -46,7 +49,9 @@ import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropert
  * Creates the list of properties for a GeoElement or for a list of GeoElements.
  */
 public final class GeoElementPropertiesFactory {
+
 	private final Set<GeoElementPropertyFilter> propertyFilters = new HashSet<>();
+	private final Map<String, List<PropertyRestriction>> propertyRestrictions = new HashMap<>();
 
 	/**
 	 * Adds a {@link GeoElementPropertyFilter} which can modify the returned properties by
@@ -65,6 +70,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public void removeFilter(GeoElementPropertyFilter filter) {
 		propertyFilters.remove(filter);
+	}
+
+	public void addRestrictions(Map<String, PropertyRestriction> restrictions) {
+
 	}
 
 	/**

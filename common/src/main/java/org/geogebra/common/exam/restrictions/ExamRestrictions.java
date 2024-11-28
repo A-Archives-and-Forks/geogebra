@@ -256,6 +256,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				if (property != null) {
 					restriction.applyTo(property);
 				}
+				// also add to GeoElementPropertiesFactory
 			});
 		}
 		if (toolsProvider != null && toolsFilter != null) {
