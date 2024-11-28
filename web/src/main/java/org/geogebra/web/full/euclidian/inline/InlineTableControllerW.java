@@ -19,6 +19,7 @@ import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.html5.awt.GGraphics2DW;
 import org.geogebra.web.html5.euclidian.FontLoader;
 import org.geogebra.web.html5.gui.util.Dom;
+import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.CopyPasteW;
 import org.geogebra.web.html5.util.EventUtil;
 import org.geogebra.web.richtext.EditorChangeListener;
@@ -75,13 +76,19 @@ public class InlineTableControllerW implements InlineTableController {
 					JSONObject cell = row.getJSONObject(j);
 					if (cell.has("content")) {
 						InlineTextControllerW
-								.checkFonts(cell.getJSONArray("content"), getCallback());
+								.checkFonts(cell.getJSONArray("content"),
+										getBaseUrlForMebisFonts(), getCallback());
 					}
 				}
 			}
 		} catch (JSONException | RuntimeException e) {
 			Log.debug("cannot parse fonts");
 		}
+	}
+
+	private String getBaseUrlForMebisFonts() {
+		return ((AppW) table.getApp()).getAppletParameters()
+				.getParamBackendURL().replace("/api", "");
 	}
 
 	@Override
@@ -186,7 +193,7 @@ public class InlineTableControllerW implements InlineTableController {
 		table.setContent(getContent());
 		table.updateRepaint();
 		if ("font".equals(key)) {
-			FontLoader.loadFont(String.valueOf(val), getCallback());
+			FontLoader.loadFont(String.valueOf(val), getBaseUrlForMebisFonts(), getCallback());
 		}
 	}
 

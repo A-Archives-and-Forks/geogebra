@@ -23,6 +23,7 @@ import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.html5.euclidian.FontLoader;
 import org.geogebra.web.html5.euclidian.GGraphics2DWI;
 import org.geogebra.web.html5.gui.util.Dom;
+import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.CopyPasteW;
 import org.geogebra.web.html5.util.EventUtil;
 import org.geogebra.web.richtext.Editor;
@@ -66,7 +67,7 @@ public class InlineTextControllerW implements InlineTextController {
 			CarotaUtil.setSelectionColor(GColor.MOW_SELECTION_COLOR.toString());
 		}
 		this.contentDefaultSize = getCurrentFontSize();
-		checkFonts(getFormat(geo.getContent()), getCallback());
+		checkFonts(getFormat(geo.getContent()), getBaseUrlForMebisFonts(), getCallback());
 	}
 
 	/**
@@ -125,17 +126,22 @@ public class InlineTextControllerW implements InlineTextController {
 		return new JSONArray();
 	}
 
+	private String getBaseUrlForMebisFonts() {
+		return ((AppW) geo.getApp()).getAppletParameters().getParamBackendURL().replace("/api", "");
+	}
+
 	/**
 	 * Check for bundled fonts in content, and load them
 	 * @param words array of Murok runs
+	 * @param baseUrl Url from where to load the font from
 	 * @param callback to be executed after font is loaded
 	 */
-	public static void checkFonts(JSONArray words, Runnable callback) {
+	public static void checkFonts(JSONArray words, String baseUrl, Runnable callback) {
 		try {
 			for (int i = 0; i < words.length(); i++) {
 				JSONObject word = words.optJSONObject(i);
 				if (word.has("font")) {
-					FontLoader.loadFont(word.getString("font"), callback);
+					FontLoader.loadFont(word.getString("font"), baseUrl, callback);
 				}
 			}
 		} catch (JSONException | RuntimeException e) {
@@ -294,7 +300,7 @@ public class InlineTextControllerW implements InlineTextController {
 		saveContent();
 		geo.updateRepaint();
 		if ("font".equals(key)) {
-			FontLoader.loadFont(String.valueOf(val), getCallback());
+			FontLoader.loadFont(String.valueOf(val), getBaseUrlForMebisFonts(), getCallback());
 		}
 	}
 
