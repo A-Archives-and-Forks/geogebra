@@ -75,7 +75,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property inlineBackgroundColorProperty = GeoElementPropertiesFactory
 				.createInlineBackgroundColorProperty(getApp().getLocalization(), activeGeoList);
-		addColorPropertyButton(activeGeoList, UndoActionType.STYLE, inlineBackgroundColorProperty);
+		addColorPropertyButton(activeGeoList, UndoActionType.STYLE_OR_TABLE_CONTENT,
+				inlineBackgroundColorProperty);
 
 		PropertiesArray pointStyleProperty = GeoElementPropertiesFactory
 				.createPointStyleExtendedProperties(getApp().getLocalization(), activeGeoList);
@@ -102,7 +103,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		PropertiesArray cellBorderProperty = GeoElementPropertiesFactory
 				.createCellBorderStyleProperties(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, "cellBorderStyle", true,
-				cellBorderProperty.getProperties());
+				UndoActionType.STYLE_OR_TABLE_CONTENT, cellBorderProperty.getProperties());
 
 		PropertiesArray objectBorderProperty = GeoElementPropertiesFactory
 				.createObjectBorderProperties(getApp().getLocalization(), activeGeoList);
@@ -140,7 +141,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 		Property verticalAlignmentProperty = GeoElementPropertiesFactory
 				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
-		addPropertyPopupButton(activeGeoList, null, true, verticalAlignmentProperty);
+		addPropertyPopupButton(activeGeoList, null, true,
+				UndoActionType.STYLE_OR_TABLE_CONTENT, verticalAlignmentProperty);
 
 		addDivider();
 

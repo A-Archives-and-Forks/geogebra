@@ -1,10 +1,12 @@
 package org.geogebra.web.full.euclidian.quickstylebar;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInline;
+import org.geogebra.common.kernel.geos.GeoInlineTable;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.main.undo.UndoManager;
 import org.geogebra.common.main.undo.UpdateContentActionStore;
@@ -28,23 +30,28 @@ public class UndoActionObserver
 	 */
 	public UndoActionObserver(List<GeoElement> geos, UndoActionType type) {
 		this.undoManager = geos.get(0).getConstruction().getUndoManager();
-		if (type == UndoActionType.STYLE_OR_CONTENT) {
-			this.styleableGeos = skipTextObjects(geos);
-			this.inlines = keepOnlyTextObjects(geos);
+		Predicate<GeoElement> inlineFilter;
+		if (type == UndoActionType.STYLE_OR_TABLE_CONTENT) {
+			inlineFilter = geo -> geo instanceof GeoInlineTable;
+		} else if (type == UndoActionType.STYLE_OR_CONTENT) {
+			inlineFilter = geo -> geo instanceof HasTextFormatter;
 		} else {
-			this.styleableGeos = geos;
-			this.inlines = List.of();
+			inlineFilter = geo -> false;
 		}
+		this.styleableGeos = skipTextObjects(geos, inlineFilter);
+		this.inlines = keepOnlyTextObjects(geos, inlineFilter);
 	}
 
-	private static List<GeoElement> skipTextObjects(List<GeoElement> geos) {
-		return geos.stream().filter(geo -> !(geo instanceof HasTextFormatter))
+	private static List<GeoElement> skipTextObjects(List<GeoElement> geos,
+			Predicate<GeoElement> filter) {
+		return geos.stream().filter(geo -> !filter.test(geo))
 				.collect(Collectors.toList());
 	}
 
-	private static List<GeoInline> keepOnlyTextObjects(List<GeoElement> geos) {
+	private static List<GeoInline> keepOnlyTextObjects(List<GeoElement> geos,
+			Predicate<GeoElement> filter) {
 		return geos.stream()
-				.filter(geo1 -> geo1 instanceof HasTextFormatter)
+				.filter(filter)
 				.map(geo -> (GeoInline) geo).collect(Collectors.toList());
 	}
 
@@ -70,7 +77,7 @@ public class UndoActionObserver
 	}
 
 	private void storeUndoAndReset() {
-		if (store != null) {
+		if (store != null && store.needUndo()) {
 			store.storeUndo();
 		}
 		if (contentStore != null) {

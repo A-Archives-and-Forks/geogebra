@@ -174,6 +174,7 @@ public class InlineTableControllerW implements InlineTableController {
 			if (isInEditMode()) {
 				table.unlockForMultiuser();
 			}
+			onEditorChanged(getContent());
 			style.setVisibility(Visibility.HIDDEN);
 			textareaWrapper.removeFromParent();
 			tableImpl.stopEditing();
@@ -287,6 +288,7 @@ public class InlineTableControllerW implements InlineTableController {
 	@Override
 	public void setBorderStyle(BorderType borderType) {
 		tableImpl.setBorderStyle(borderType.toString());
+		saveContent();
 		table.updateVisualStyleRepaint(GProperty.TABLE_STYLE);
 	}
 
