@@ -8,20 +8,17 @@ import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.keyboard.base.KeyboardType;
 import org.geogebra.web.full.css.MaterialDesignResources;
+import org.geogebra.web.full.gui.components.ComponentInputField;
 import org.geogebra.web.full.gui.util.VirtualKeyboardGUI;
-import org.geogebra.web.full.gui.view.algebra.InputPanelW;
 import org.geogebra.web.full.javax.swing.GCheckMarkLabel;
 import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.gui.GPopupPanel;
-import org.geogebra.web.html5.gui.inputfield.AutoCompleteTextFieldW;
-import org.geogebra.web.html5.gui.util.LayoutUtilW;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.LocalizationW;
 import org.gwtproject.event.logical.shared.CloseEvent;
 import org.gwtproject.event.logical.shared.CloseHandler;
 import org.gwtproject.user.client.Command;
 import org.gwtproject.user.client.ui.FlowPanel;
-import org.gwtproject.user.client.ui.Label;
 
 public class LabelSettingsPanel extends FlowPanel
 		implements CloseHandler<GPopupPanel>, SetLabels, ShowLabelModel.IShowLabelListener {
@@ -29,14 +26,11 @@ public class LabelSettingsPanel extends FlowPanel
 	private final StringPropertyCollection<?> nameProperty;
 
 	private final LocalizationW loc;
-	private Label lblName;
-	private AutoCompleteTextFieldW tfName;
-
+	private ComponentInputField tfName;
 	private GCheckMarkLabel cmName;
 	private GCheckMarkLabel cmValue;
 	private final NameValueModel model;
 	private VirtualKeyboardGUI kbd;
-	private FlowPanel namePanel;
 
 	/**
 	 * Constructor
@@ -60,16 +54,13 @@ public class LabelSettingsPanel extends FlowPanel
 	}
 
 	private void createDialog() {
-		lblName = new Label();
-		tfName = InputPanelW.newTextComponent(appW);
-		tfName.setAutoComplete(false);
-		tfName.enableGGBKeyboard();
+		tfName = new ComponentInputField(appW, null, "Label", null, nameProperty.getValue(),
+				-1, null, false);
+		tfName.getTextField().getTextComponent().setAutoComplete(false);
+		tfName.getTextField().getTextComponent().enableGGBKeyboard();
 
-		tfName.addBlurHandler(event -> {
-			onEnter();
-		});
-
-		tfName.addKeyHandler(e -> {
+		tfName.getTextField().getTextComponent().addBlurHandler(event -> onEnter());
+		tfName.getTextField().getTextComponent().addKeyHandler(e -> {
 			if (e.isEnterKey()) {
 				onEnter();
 			}
@@ -87,8 +78,7 @@ public class LabelSettingsPanel extends FlowPanel
 				.getEuclidianController()
 				.getMode() == EuclidianConstants.MODE_SELECT;
 		if (!isSelectionMode) {
-			namePanel = LayoutUtilW.panelRow(lblName, tfName);
-			add(namePanel);
+			add(tfName);
 		}
 		add(cmName);
 		add(cmValue);
@@ -108,16 +98,12 @@ public class LabelSettingsPanel extends FlowPanel
 
 	@Override
 	public void onClose(CloseEvent<GPopupPanel> event) {
-		if (model.noLabelUpdateNeeded(tfName.getText())) {
-			return;
-		}
-
 		nameProperty.setValue(tfName.getText());
 	}
 
 	@Override
 	public void setLabels() {
-		lblName.setText(loc.getMenu("Label") + ":");
+		tfName.setLabels();
 		cmName.setText(loc.getMenu("ShowLabel"));
 		cmValue.setText(loc.getMenu("ShowValue"));
 	}
@@ -150,8 +136,8 @@ public class LabelSettingsPanel extends FlowPanel
 
 	@Override
 	public void update(boolean isEqualVal, boolean isEqualMode, int mode) {
-		if (namePanel != null) {
-			namePanel.setVisible(model.getGeosLength() == 1);
+		if (tfName != null) {
+			tfName.setVisible(model.getGeosLength() == 1);
 		}
 		if (!model.isLabelVisible()) {
 			cmName.setChecked(false);
@@ -173,7 +159,7 @@ public class LabelSettingsPanel extends FlowPanel
 
 	private void init() {
 		kbd.selectTab(KeyboardType.ABC);
-		tfName.setText(nameProperty.getValue());
-		tfName.requestFocus();
+		tfName.setInputText(nameProperty.getValue());
+		tfName.focusDeferred();
 	}
 }

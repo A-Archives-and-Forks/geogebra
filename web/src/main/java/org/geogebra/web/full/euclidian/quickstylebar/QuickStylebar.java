@@ -3,7 +3,6 @@ package org.geogebra.web.full.euclidian.quickstylebar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianStyleBar;
@@ -145,7 +144,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		if (!getApp().isWhiteboardActive()) {
 			StringPropertyCollection<NameProperty> nameProperty = GeoElementPropertiesFactory
 					.createNameProperty(getApp().getLocalization(), activeGeoList);
-			addPropertyPopupButton(activeGeoList.get(0), "label", true, nameProperty);
+			addPropertyPopupButton(activeGeoList.get(0), "labelStyle", true, nameProperty);
 		}
 
 		addDivider();
