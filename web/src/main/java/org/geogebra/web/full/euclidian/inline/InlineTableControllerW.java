@@ -77,7 +77,7 @@ public class InlineTableControllerW implements InlineTableController {
 					if (cell.has("content")) {
 						InlineTextControllerW
 								.checkFonts(cell.getJSONArray("content"),
-										getBaseUrlForMebisFonts(), getCallback());
+										getWebFontsUrl(), getCallback());
 					}
 				}
 			}
@@ -86,9 +86,8 @@ public class InlineTableControllerW implements InlineTableController {
 		}
 	}
 
-	private String getBaseUrlForMebisFonts() {
-		return ((AppW) table.getApp()).getAppletParameters()
-				.getParamBackendURL().replace("/api", "");
+	private String getWebFontsUrl() {
+		return ((AppW) table.getApp()).getAppletParameters().getParamWebfontsUrl();
 	}
 
 	@Override
@@ -193,7 +192,7 @@ public class InlineTableControllerW implements InlineTableController {
 		table.setContent(getContent());
 		table.updateRepaint();
 		if ("font".equals(key)) {
-			FontLoader.loadFont(String.valueOf(val), getBaseUrlForMebisFonts(), getCallback());
+			FontLoader.loadFont(String.valueOf(val), getWebFontsUrl(), getCallback());
 		}
 	}
 

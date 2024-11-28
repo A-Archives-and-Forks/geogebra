@@ -67,7 +67,7 @@ public class InlineTextControllerW implements InlineTextController {
 			CarotaUtil.setSelectionColor(GColor.MOW_SELECTION_COLOR.toString());
 		}
 		this.contentDefaultSize = getCurrentFontSize();
-		checkFonts(getFormat(geo.getContent()), getBaseUrlForMebisFonts(), getCallback());
+		checkFonts(getFormat(geo.getContent()), getWebFontsUrl(), getCallback());
 	}
 
 	/**
@@ -126,8 +126,8 @@ public class InlineTextControllerW implements InlineTextController {
 		return new JSONArray();
 	}
 
-	private String getBaseUrlForMebisFonts() {
-		return ((AppW) geo.getApp()).getAppletParameters().getParamBackendURL().replace("/api", "");
+	private String getWebFontsUrl() {
+		return ((AppW) geo.getApp()).getAppletParameters().getParamWebfontsUrl();
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class InlineTextControllerW implements InlineTextController {
 		saveContent();
 		geo.updateRepaint();
 		if ("font".equals(key)) {
-			FontLoader.loadFont(String.valueOf(val), getBaseUrlForMebisFonts(), getCallback());
+			FontLoader.loadFont(String.valueOf(val), getWebFontsUrl(), getCallback());
 		}
 	}
 

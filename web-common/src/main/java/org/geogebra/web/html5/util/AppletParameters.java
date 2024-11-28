@@ -784,6 +784,13 @@ public class AppletParameters {
 	}
 
 	/**
+	 * @return Url for the location of the web fonts
+	 */
+	public String getParamWebfontsUrl() {
+		return getStringDataParam("webfonts", "");
+	}
+
+	/**
 	 * List of disabled categories in ToolboxMow
 	 * @return the data-param-customToolbox (default: empty list)
 	 */

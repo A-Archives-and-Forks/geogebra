@@ -45,6 +45,9 @@ public final class FontLoader {
 	 * @param callback kernel to be notified on font load
 	 */
 	public static void loadFont(String familyName, String baseUrl, final Runnable callback) {
+		if (baseUrl.isEmpty()) {
+			return;
+		}
 		for (FontFamily family: bundled) {
 			if (family.cssName().equals(familyName)) {
 				loadFontFile(familyName.split(",")[0], baseUrl, callback);
