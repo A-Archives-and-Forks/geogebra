@@ -17,13 +17,13 @@ public class EngineeringNotationString {
 	 */
 	public EngineeringNotationString(double number) {
 		String valueString = Double.toString(number);
-		String predecimalsString = getPredecimalsStringForEngineeringNotation(valueString);
-		String decimalsString = getDecimalsStringForEngineeringNotation(valueString);
-
-		if (predecimalsString.contains("-")) {
-			predecimalsString = predecimalsString.replace("-", "");
+		if (valueString.charAt(0) == '-') {
+			valueString = valueString.substring(1);
 			sign = "-";
 		}
+
+		String predecimalsString = getPredecimalsStringForEngineeringNotation(valueString);
+		String decimalsString = getDecimalsStringForEngineeringNotation(valueString);
 
 		int exponent = getPositiveExponentForEngineeringNotation(predecimalsString.length());
 		if (exponent == 0 && number < 0.01 && number > -0.01) {
