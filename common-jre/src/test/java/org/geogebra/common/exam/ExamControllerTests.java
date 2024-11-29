@@ -1,5 +1,7 @@
 package org.geogebra.common.exam;
 
+import static org.geogebra.common.contextmenu.InputContextMenuItem.Help;
+import static org.geogebra.common.contextmenu.InputContextMenuItem.Text;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -153,6 +155,8 @@ public final class ExamControllerTests extends BaseExamTests {
                 List.of(new GeoPoint(app.getKernel().getConstruction()))));
         // construction element setup
         assertEquals(GColor.RED, evaluate("(1, 1)")[0].getFillColor());
+        // context menu restrictions
+        assertEquals(List.of(Text, Help), contextMenuFactory.makeInputContextMenu(true));
 
         examController.finishExam();
         assertFalse(commandDispatcher.isAllowedByCommandFilters(Commands.Derivative));
