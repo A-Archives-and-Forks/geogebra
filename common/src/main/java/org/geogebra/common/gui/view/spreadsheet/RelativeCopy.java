@@ -441,8 +441,7 @@ public class RelativeCopy {
 						continue;
 					}
 
-					doCopyNoStoringUndoInfo0(geo,
-							getValue(app, p.column, dy1 + iy), 0, y - sy);
+					doCopyNoStoringUndoInfo0(geo, vOld, 0, y - sy);
 				}
 			}
 		}
