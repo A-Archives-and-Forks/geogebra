@@ -58,7 +58,7 @@ public final class FontLoader {
 
 	private static void loadFontFile(String familyName, String baseUrl, final Runnable callback) {
 		if (!injected.containsKey(familyName)) {
-			String fileName = baseUrl + "/public/assets/webfonts/" + familyName;
+			String fileName = baseUrl + familyName;
 			String css = "@font-face {  font-family: \"" + familyName + "\";"
 					+ "src: url(\"" + fileName + ".woff2\") format(\"woff2\");"
 					+ "font-weight: normal; font-style: normal;}";
