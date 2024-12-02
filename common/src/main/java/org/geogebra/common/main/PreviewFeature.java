@@ -13,6 +13,8 @@ public enum PreviewFeature {
 	ALL_LANGUAGES,
 	RESOURCES_API_BETA,
 	IMPLICIT_SURFACES,
+	/** APPS-5763 */
+	IMPLICIT_PLOTTER,
 	/** MOB-1537 */
 	MOB_PREVIEW_WHEN_EDITING,
 	/** SolveQuartic in CAS GGB-1635 */
