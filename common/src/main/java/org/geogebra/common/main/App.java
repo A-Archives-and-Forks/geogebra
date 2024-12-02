@@ -62,7 +62,7 @@ import org.geogebra.common.gui.view.algebra.GeoElementValueConverter;
 import org.geogebra.common.gui.view.algebra.ProtectiveGeoElementValueConverter;
 import org.geogebra.common.gui.view.algebra.fiter.AlgebraOutputFilter;
 import org.geogebra.common.gui.view.algebra.fiter.DefaultAlgebraOutputFilter;
-import org.geogebra.common.gui.view.algebra.fiter.HideEquationOutputFilter;
+import org.geogebra.common.exam.restrictions.cvte.CvteAlgebraOutputFilter;
 import org.geogebra.common.gui.view.algebra.fiter.ProtectiveAlgebraOutputFilter;
 import org.geogebra.common.gui.view.properties.PropertiesView;
 import org.geogebra.common.io.MyXMLio;
@@ -4944,8 +4944,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		resetCommandDict();
 		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
-			AlgebraOutputFilter wrapped = getAlgebraOutputFilter();
-			algebraOutputFilter = new HideEquationOutputFilter(wrapped);
+			algebraOutputFilter = new CvteAlgebraOutputFilter();
 		}
 	}
 

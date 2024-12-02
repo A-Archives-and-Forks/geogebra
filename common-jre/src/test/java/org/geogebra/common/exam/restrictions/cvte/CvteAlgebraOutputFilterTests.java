@@ -6,11 +6,10 @@ import static org.junit.Assert.assertTrue;
 import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.exam.BaseExamTests;
 import org.geogebra.common.gui.view.algebra.fiter.AlgebraOutputFilter;
-import org.geogebra.common.gui.view.algebra.fiter.HideEquationOutputFilter;
 import org.junit.Before;
 import org.junit.Test;
 
-public class HideEquationOutputFilterTests extends BaseExamTests {
+public class CvteAlgebraOutputFilterTests extends BaseExamTests {
 
     @Before
     public void setup() {
@@ -19,7 +18,7 @@ public class HideEquationOutputFilterTests extends BaseExamTests {
 
     @Test
     public void testAlgebraViewRestriction() {
-        AlgebraOutputFilter outputFilter = new HideEquationOutputFilter(null);
+        AlgebraOutputFilter outputFilter = new CvteAlgebraOutputFilter();
 
         // For Lines, Rays, Conics, Implicit Equations and Functions created with command or tool,
         // we do not show the calculated equation.

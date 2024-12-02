@@ -1,25 +1,15 @@
-package org.geogebra.common.gui.view.algebra.fiter;
+package org.geogebra.common.exam.restrictions.cvte;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import org.geogebra.common.gui.view.algebra.fiter.AlgebraOutputFilter;
 import org.geogebra.common.kernel.arithmetic.Equation;
 import org.geogebra.common.kernel.arithmetic.EquationValue;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
-import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 
 /**
- * Output filter (specifically) for APPS-5926 (don't try to adapt to other use cases!).
+ * Algebra output filter for APPS-5926 (don't try to adapt to other use cases!).
  */
-public final class HideEquationOutputFilter implements AlgebraOutputFilter {
-
-    private final @Nullable AlgebraOutputFilter wrappedFilter;
-
-    public HideEquationOutputFilter(@Nullable AlgebraOutputFilter wrappedFilter) {
-        this.wrappedFilter = wrappedFilter;
-    }
+public final class CvteAlgebraOutputFilter implements AlgebraOutputFilter {
 
     /**
      * "For Lines, Rays, Conics, Implicit Equations and Functions created with a command or tool,
@@ -35,9 +25,6 @@ public final class HideEquationOutputFilter implements AlgebraOutputFilter {
                 && element.getParentAlgorithm() != null
         ) {
             return false;
-        }
-        if (wrappedFilter != null) {
-            return wrappedFilter.isAllowed(element);
         }
         return true;
     }
