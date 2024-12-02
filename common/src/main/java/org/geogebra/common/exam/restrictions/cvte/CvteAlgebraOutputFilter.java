@@ -26,35 +26,13 @@ public final class CvteAlgebraOutputFilter implements AlgebraOutputFilter {
      */
     @Override
     public boolean isAllowed(GeoElementND element) {
-        if (((element.isGeoLine()
-                || element.isGeoRay()
-                || element.isGeoConic())
-                || isImplicitEquation(element)
-                || isFunction(element))
-                && element.getParentAlgorithm() != null
-        ) {
+        if (Cvte.isLineConicEquationOrFunction(element)
+                && Cvte.isCreatedByToolOrCmd(element)) {
             return false;
         }
         if (wrappedFilter != null) {
             return wrappedFilter.isAllowed(element);
         }
         return true;
-    }
-
-    private static boolean isImplicitEquation(GeoElementND geoElement) {
-        if (geoElement instanceof EquationValue) {
-            EquationValue equationValue = (EquationValue) geoElement;
-            return equationValue.getEquation().isImplicit();
-        }
-        ExpressionNode definition = geoElement.getDefinition();
-        if (definition != null && definition.unwrap() instanceof Equation) {
-            Equation equation = (Equation) definition.unwrap();
-            return equation.isImplicit();
-        }
-        return false;
-    }
-
-    private static boolean isFunction(GeoElementND geoElement) {
-        return geoElement.isGeoFunction();
     }
 }

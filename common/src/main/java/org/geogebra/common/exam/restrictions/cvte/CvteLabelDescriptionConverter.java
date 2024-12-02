@@ -9,8 +9,6 @@ import org.geogebra.common.util.ToStringConverter;
 
 public class CvteLabelDescriptionConverter implements ToStringConverter<GeoElement> {
 
-    private final CvteAlgebraOutputFilter algebraOutputFilter
-            = new CvteAlgebraOutputFilter(null);
     private final ToStringConverter<GeoElement> wrappedConverter;
 
     public CvteLabelDescriptionConverter(ToStringConverter<GeoElement> wrappedConverter) {
@@ -26,7 +24,8 @@ public class CvteLabelDescriptionConverter implements ToStringConverter<GeoEleme
     }
 
     private boolean shouldRestrictValue(GeoElement element) {
-        return !algebraOutputFilter.isAllowed(element);
+        return Cvte.isLineConicEquationOrFunction(element)
+                && Cvte.isCreatedByToolOrCmd(element);
     }
 
     private String convertRestricted(GeoElement element) {
