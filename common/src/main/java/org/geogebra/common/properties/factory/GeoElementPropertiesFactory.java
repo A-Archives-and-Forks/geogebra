@@ -238,6 +238,20 @@ public class GeoElementPropertiesFactory {
 	}
 
 	/**
+	 * Create label property array
+	 * @param localization localization
+	 * @param elements elements
+	 * @return label property
+	 */
+	public static PropertiesArray createLabelProperties(Localization localization,
+			List<GeoElement> elements) {
+		List<Property> properties = new ArrayList<>();
+		addPropertyIfNotNull(properties, createNameProperty(localization, elements));
+	//	addPropertyIfNotNull(properties, createLabelStyleProperty(localization, elements));
+		return createPropertiesArray(localization, properties, elements);
+	}
+
+	/**
 	 * Creates a color property for the elements
 	 * @param localization localization
 	 * @param elements elements
@@ -704,6 +718,20 @@ public class GeoElementPropertiesFactory {
 			return null;
 		}
 	}
+
+	/*public static AbstractValuedPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
+			Localization localization, List<GeoElement> elements) {
+		try {
+			List<LabelStyleProperty> labelStyleProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				labelStyleProperties.add(new LabelStyleProperty(localization, element.getKernel(),
+						element));
+			}
+			return new AbstractValuedPropertyCollection<>(labelStyleProperties.toArray(new LabelStyleProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}*/
 
 	private static BooleanPropertyCollection<ShowObjectProperty> createShowObjectProperty(
 			Localization localization, List<GeoElement> elements) {

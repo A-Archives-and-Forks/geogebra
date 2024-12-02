@@ -126,7 +126,7 @@ public class LabelSettingsPanel extends FlowPanel
 		}
 		// !name && !value: hide, nothing to do.
 
-		// TODO PROPERTY APPLY model.applyModeChanges(mode, mode != -1);
+		//model.applyModeChanges(mode, mode != -1);
 	}
 
 	@Override
