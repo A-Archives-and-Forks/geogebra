@@ -282,13 +282,6 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	//  GeoElementProeprtiesFactory) while an exam is running (e.g., Android SettingsPanel)
 	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
 		return Map.of(
-				// For Lines, Rays, Conics, Implicit Equations and Functions created with a
-				// command or tool:
-				// When choosing "Value" or "Name & Value" for the caption style the "definition"
-				// is shown.
-				"stylebar.Caption", new PropertyRestriction(false, value ->
-						false
-				),
 				// For any Conic, Line, Equation, Function or Implicit Equation manually entered
 				// by the user:
 				// restrict the equation form to “Input Form”.
