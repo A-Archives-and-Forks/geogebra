@@ -22,7 +22,6 @@ import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
-import org.geogebra.common.kernel.algos.ConstructionElement;
 import org.geogebra.common.kernel.arithmetic.Equation;
 import org.geogebra.common.kernel.arithmetic.EquationValue;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
@@ -36,8 +35,9 @@ import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.commands.selector.CommandNameFilter;
-import org.geogebra.common.kernel.geos.ConstructionElementSetup;
+import org.geogebra.common.kernel.geos.GeoElementSetup;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.kernelND.GeoPlaneND;
 import org.geogebra.common.main.Localization;
@@ -71,7 +71,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createToolsFilter(),
 				null,
 				createPropertyFilters(),
-				createConstructionElementSetups());
+				createGeoElementSetup());
 	}
 
 	@Override
@@ -85,7 +85,6 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 			@Nullable AutocompleteProvider autoCompleteProvider,
 			@Nullable ToolsProvider toolsProvider,
 			@Nullable GeoElementPropertiesFactory geoElementPropertiesFactory,
-			@Nullable Construction construction,
 			@Nullable ScheduledPreviewFromInputBar scheduledPreviewFromInputBar,
 			@Nullable ContextMenuFactory contextMenuFactory) {
 		if (settings != null) {
@@ -102,8 +101,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		}
 		super.applyTo(commandDispatcher, algebraProcessor, propertiesRegistry, context,
 				localization, settings, autoCompleteProvider, toolsProvider,
-				geoElementPropertiesFactory, construction, scheduledPreviewFromInputBar,
-				contextMenuFactory);
+				geoElementPropertiesFactory, scheduledPreviewFromInputBar, contextMenuFactory);
 	}
 
 	@Override
@@ -117,13 +115,11 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 			@Nullable AutocompleteProvider autoCompleteProvider,
 			@Nullable ToolsProvider toolsProvider,
 			@Nullable GeoElementPropertiesFactory geoElementPropertiesFactory,
-			@Nullable Construction construction,
 			@Nullable ScheduledPreviewFromInputBar scheduledPreviewFromInputBar,
 			@Nullable ContextMenuFactory contextMenuFactory) {
 		super.removeFrom(commandDispatcher, algebraProcessor, propertiesRegistry, context,
 				localization, settings, autoCompleteProvider, toolsProvider,
-				geoElementPropertiesFactory, construction, scheduledPreviewFromInputBar,
-				contextMenuFactory);
+				geoElementPropertiesFactory, scheduledPreviewFromInputBar, contextMenuFactory);
 		if (settings != null) {
 			settings.getCasSettings().setEnabled(casEnabled);
 		}
@@ -276,7 +272,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new ShowObjectPropertyFilter());
 	}
 
-	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
+	private static Set<GeoElementSetup> createGeoElementSetup() {
 		return Set.of(new EuclidianVisibilitySetup());
 	}
 
@@ -290,15 +286,11 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		}
 	}
 
-	private static final class EuclidianVisibilitySetup implements ConstructionElementSetup {
+	private static final class EuclidianVisibilitySetup implements GeoElementSetup {
 		@Override
-		public void applyTo(ConstructionElement constructionElement) {
-			if (constructionElement instanceof GeoElement) {
-				GeoElement geoElement = (GeoElement) constructionElement;
-
-				if (!isVisibilityEnabled(geoElement)) {
-					geoElement.setRestrictedEuclidianVisibility(true);
-				}
+		public void applyTo(GeoElement geoElement) {
+			if (!isVisibilityEnabled(geoElement)) {
+				geoElement.setRestrictedEuclidianVisibility(true);
 			}
 		}
 	}
@@ -378,6 +370,8 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		//       x < y
 		//       x - y > 2
 		//       x^2 + 2y^2 < 1
+		//       f(x) = x > 5
+		//       f: x > 0
 		if (geoElement.isInequality()) {
 			return false;
 		}

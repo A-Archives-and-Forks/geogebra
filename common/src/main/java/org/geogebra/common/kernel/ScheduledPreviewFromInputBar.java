@@ -9,7 +9,7 @@ import org.geogebra.common.kernel.arithmetic.Inspecting;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.geogebra.common.kernel.commands.EvalInfo;
-import org.geogebra.common.kernel.geos.ConstructionElementSetup;
+import org.geogebra.common.kernel.geos.GeoElementSetup;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
@@ -42,7 +42,7 @@ public class ScheduledPreviewFromInputBar implements Runnable {
 	private GeoElement[] previewGeos;
 	private String[] sliders;
 
-	private final Set<ConstructionElementSetup> constructionElementSetups = new HashSet<>();
+	private final Set<GeoElementSetup> geoElementSetups = new HashSet<>();
 
 	/**
 	 * @param kernel
@@ -59,25 +59,25 @@ public class ScheduledPreviewFromInputBar implements Runnable {
 	}
 
 	/**
-	 * Adds a {@link ConstructionElementSetup} which can modify the initial setup of elements
+	 * Adds a {@link GeoElementSetup} which can modify the initial setup of elements
 	 * for the preview.
 	 *
-	 * @param constructionElementSetup The {@link ConstructionElementSetup} to be added
+	 * @param geoElementSetup The {@link GeoElementSetup} to be added
 	 */
 	public void addConstructionElementSetup(
-			ConstructionElementSetup constructionElementSetup) {
-		constructionElementSetups.add(constructionElementSetup);
+			GeoElementSetup geoElementSetup) {
+		geoElementSetups.add(geoElementSetup);
 	}
 
 	/**
-	 * Removes the previously added {@link ConstructionElementSetup} from this
+	 * Removes the previously added {@link GeoElementSetup} from this
 	 * {@code ScheduledPreviewFromInputBar}. Once removed, it will no longer affect
 	 * the initial setup of elements for the preview.
 	 *
-	 * @param constructionElementSetup The {@link ConstructionElementSetup} to be removed
+	 * @param geoElementSetup The {@link GeoElementSetup} to be removed
 	 */
-	public void removeConstructionElementSetup(ConstructionElementSetup constructionElementSetup) {
-		constructionElementSetups.remove(constructionElementSetup);
+	public void removeConstructionElementSetup(GeoElementSetup geoElementSetup) {
+		geoElementSetups.remove(geoElementSetup);
 	}
 
 	private void setInput(String str, ErrorHandler validation) {
@@ -211,8 +211,7 @@ public class ScheduledPreviewFromInputBar implements Runnable {
 						for (GeoElementND geo : inputGeos) {
 							if (!geo.isLabelSet()) {
 								GeoElement geoElement = geo.toGeoElement();
-								constructionElementSetups.forEach(setup ->
-										setup.applyTo(geoElement));
+								geoElementSetups.forEach(setup -> setup.applyTo(geoElement));
 								previewGeos[i++] = geoElement;
 							}
 						}

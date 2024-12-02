@@ -377,7 +377,9 @@ public class GeoFunction extends GeoElement implements VarString, Translateable,
 			if (geo instanceof GeoFunction) {
 				setForceInequality(((GeoFunction) geo).isForceInequality());
 			}
-			isInequality = null;
+			isInequality = geoFun.getIneqs() != null
+					? geoFun.getIneqs().isValid()
+					: geoFun.initIneqs(geoFun.getExpression());
 		} else {
 			setUndefined();
 		}

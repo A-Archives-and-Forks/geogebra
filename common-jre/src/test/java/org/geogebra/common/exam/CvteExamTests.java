@@ -110,6 +110,8 @@ public final class CvteExamTests extends BaseExamTests {
         assertFalse(isVisibilityEnabled(evaluateGeoElement("x < y")));
         assertFalse(isVisibilityEnabled(evaluateGeoElement("x - y > 2")));
         assertFalse(isVisibilityEnabled(evaluateGeoElement("x^2 + 2y^2 < 1")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("f: x > 0")));
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("f(x) = x > 2")));
     }
 
     @Test
@@ -129,5 +131,24 @@ public final class CvteExamTests extends BaseExamTests {
         assertFalse(restrictedGeoElement.isEuclidianToggleable());
         assertNull(geoElementPropertiesFactory.createShowObjectProperty(
                 app.getLocalization(), List.of(restrictedGeoElement)));
+    }
+
+    @Test
+    public void testRestrictedVisibilityInEuclidianViewAfterEditingUnrestrictedInput() {
+        GeoElement geoElement = evaluateGeoElement("f(x) = x");
+
+        assertTrue(isVisibilityEnabled(geoElement));
+        assertTrue(geoElement.isEuclidianVisible());
+        assertTrue(geoElement.isEuclidianToggleable());
+        assertNotNull(geoElementPropertiesFactory.createShowObjectProperty(
+                app.getLocalization(), List.of(geoElement)));
+
+        editGeoElement(geoElement, "f(x) = x > 2");
+
+        assertFalse(isVisibilityEnabled(geoElement));
+        assertFalse(geoElement.isEuclidianVisible());
+        assertFalse(geoElement.isEuclidianToggleable());
+        assertNull(geoElementPropertiesFactory.createShowObjectProperty(
+                app.getLocalization(), List.of(geoElement)));
     }
 }

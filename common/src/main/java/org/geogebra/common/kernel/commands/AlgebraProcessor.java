@@ -15,13 +15,16 @@ package org.geogebra.common.kernel.commands;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
+import org.geogebra.common.exam.restrictions.CvteExamRestrictions;
 import org.geogebra.common.io.MathMLParser;
 import org.geogebra.common.kernel.CircularDefinitionException;
 import org.geogebra.common.kernel.Construction;
@@ -89,6 +92,7 @@ import org.geogebra.common.kernel.geos.GeoCasCell;
 import org.geogebra.common.kernel.geos.GeoConic;
 import org.geogebra.common.kernel.geos.GeoDummyVariable;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoElementSetup;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
 import org.geogebra.common.kernel.geos.GeoFunctionable;
@@ -184,8 +188,8 @@ public class AlgebraProcessor {
 	protected ParametricProcessor paramProcessor;
 
 	private final List<ExpressionFilter> inputExpressionFilters = new ArrayList<>();
-
 	private final List<ExpressionFilter> outputExpressionFilters = new ArrayList<>();
+	private final Set<GeoElementSetup> geoElementSetups = new HashSet<>();
 
 	/** TODO use the selector from CommandDispatcher instead. */
 	@Deprecated
@@ -1137,6 +1141,8 @@ public class AlgebraProcessor {
 				Arrays.stream(geos).forEach(geo -> geo.remove());
 				throw new MyError(loc, MyError.Errors.InvalidInput);
 			}
+			Arrays.stream(geos).forEach(geoElement ->
+					geoElementSetups.forEach(setup -> setup.applyTo(geoElement)));
 		}
 
 		runCallback(callback0, geos, step);
@@ -2204,6 +2210,7 @@ public class AlgebraProcessor {
 						+ ret[0].getGeoClassType());
 				// Set undefined
 				ret[0] = replaceable;
+				geoElementSetups.forEach(setup -> setup.applyTo(replaceable));
 				replaceable.setUndefined();
 				replaceable.updateRepaint();
 				throw new MyError(loc, Errors.ReplaceFailed);
@@ -2218,10 +2225,12 @@ public class AlgebraProcessor {
 				try {
 					if (compatibleFunctions(replaceable, ret[0])) {
 						replaceable.set(ret[0]);
-						replaceable.updateRepaint();
 						ret[0] = replaceable;
+						geoElementSetups.forEach(setup -> setup.applyTo(replaceable));
+						replaceable.updateRepaint();
 					} else {
 						ret[0] = replaceable;
+						geoElementSetups.forEach(setup -> setup.applyTo(replaceable));
 						replaceable.setUndefined();
 						replaceable.updateRepaint();
 						throw new MyError(loc, Errors.ReplaceFailed);
@@ -2244,6 +2253,7 @@ public class AlgebraProcessor {
 						// copy equation style
 						ret[0].setVisualStyle(replaceable);
 						replaceable.set(ret[0]);
+						geoElementSetups.forEach(setup -> setup.applyTo(replaceable));
 						if (replaceable instanceof GeoFunction
 								&& !((GeoFunction) replaceable)
 										.validate(true)) {
@@ -2284,6 +2294,7 @@ public class AlgebraProcessor {
 					} else {
 						// Set undefined
 						ret[0] = replaceable;
+						geoElementSetups.forEach(setup -> setup.applyTo(replaceable));
 						replaceable.setUndefined();
 						replaceable.updateRepaint();
 						throw new MyError(loc, Errors.ReplaceFailed);
@@ -2419,6 +2430,11 @@ public class AlgebraProcessor {
 		// ret = processAssignment((Assignment) ve);
 		// }
 
+		if (ret != null) {
+			GeoElement[] finalRet = ret;
+			geoElementSetups.forEach(setup -> setup.applyTo(finalRet[0]));
+		}
+
 		return ret;
 	}
 
@@ -2508,8 +2524,9 @@ public class AlgebraProcessor {
 			if (label == null) {
 				label = AlgoDependentFunction.getDerivativeLabel(fun);
 			}
-
 		}
+
+		geoElementSetups.forEach(setup -> setup.applyTo(f));
 
 		if (f.validate(label == null)) {
 			f.setShortLHS(fun.getShortLHS());
@@ -3890,5 +3907,23 @@ public class AlgebraProcessor {
 		params.put(Analytics.Param.STATUS, validatedParam);
 		params.put(Analytics.Param.OBJECT_CREATION, objectCreation);
 		Analytics.logEvent(Analytics.Event.COMMAND_VALIDATED, params);
+	}
+
+	/**
+	 * Adds a {@link GeoElementSetup} which can modify the initial setup of elements TODO
+	 * @param geoElementSetup The {@link GeoElementSetup} to be added
+	 */
+	public void addGeoElementSetup(GeoElementSetup geoElementSetup) {
+		geoElementSetups.add(geoElementSetup);
+	}
+
+	/**
+	 * Removes the previously added {@link GeoElementSetup} from the {@code AlgebraProcessor}.
+	 * Once removed, it will no longer affect the initial setup of elements.
+	 *
+	 * @param geoElementSetup The {@link GeoElementSetup} to be removed
+	 */
+	public void removeGeoElementSetup(GeoElementSetup geoElementSetup) {
+		geoElementSetups.remove(geoElementSetup);
 	}
 }

@@ -15,7 +15,6 @@ import org.geogebra.common.exam.restrictions.ExamRestrictable;
 import org.geogebra.common.exam.restrictions.ExamRestrictions;
 import org.geogebra.common.factories.FormatFactory;
 import org.geogebra.common.gui.toolcategorization.ToolsProvider;
-import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.commands.CommandDispatcher;
@@ -145,7 +144,6 @@ public final class ExamController {
 			@Nonnull Settings settings,
 			@CheckForNull AutocompleteProvider autocompleteProvider,
 			@CheckForNull ToolsProvider toolsProvider,
-			@CheckForNull Construction construction,
 			@CheckForNull ScheduledPreviewFromInputBar scheduledPreviewFromInputBar) {
 		// remove restrictions for current dependencies, if exam is active
 		if (examRestrictions != null && activeDependencies != null) {
@@ -158,7 +156,6 @@ public final class ExamController {
 				settings,
 				autocompleteProvider,
 				toolsProvider,
-				construction,
 				scheduledPreviewFromInputBar);
 		// apply restrictions to new dependencies, if exam is active
 		if (examRestrictions != null) {
@@ -397,7 +394,7 @@ public final class ExamController {
 	 *
 	 * @apiNote Make sure to call {@link #setActiveContext(Object, CommandDispatcher,
 	 * AlgebraProcessor, Localization, Settings, AutocompleteProvider, ToolsProvider,
-	 * Construction, ScheduledPreviewFromInputBar)} before attempting to start an exam.
+	 * ScheduledPreviewFromInputBar)} before attempting to start an exam.
 	 *
 	 * @param examType The exam type.
 	 * @param options Additional options (optional).
@@ -525,7 +522,6 @@ public final class ExamController {
 					dependencies.autoCompleteProvider,
 					dependencies.toolsProvider,
 					geoElementPropertiesFactory,
-					dependencies.construction,
 					dependencies.scheduledPreviewFromInputBar,
 					contextMenuFactory);
 			if (options != null && !options.casEnabled) {
@@ -548,7 +544,6 @@ public final class ExamController {
 					dependencies.autoCompleteProvider,
 					dependencies.toolsProvider,
 					geoElementPropertiesFactory,
-					dependencies.construction,
 					dependencies.scheduledPreviewFromInputBar,
 					contextMenuFactory);
 			if (options != null && !options.casEnabled) {
@@ -627,9 +622,6 @@ public final class ExamController {
 		final ToolsProvider toolsProvider;
 		@NonOwning
 		@CheckForNull
-		final Construction construction;
-		@NonOwning
-		@CheckForNull
 		final ScheduledPreviewFromInputBar scheduledPreviewFromInputBar;
 
 		ContextDependencies(@Nonnull Object context,
@@ -639,7 +631,6 @@ public final class ExamController {
 				@Nonnull Settings settings,
 				@CheckForNull AutocompleteProvider autoCompleteProvider,
 				@CheckForNull ToolsProvider toolsProvider,
-				@CheckForNull Construction construction,
 				@CheckForNull ScheduledPreviewFromInputBar scheduledPreviewFromInputBar) {
 			this.context = context;
 			this.commandDispatcher = commandDispatcher;
@@ -648,7 +639,6 @@ public final class ExamController {
 			this.settings = settings;
 			this.autoCompleteProvider = autoCompleteProvider;
 			this.toolsProvider = toolsProvider;
-			this.construction = construction;
 			this.scheduledPreviewFromInputBar = scheduledPreviewFromInputBar;
 		}
 	}

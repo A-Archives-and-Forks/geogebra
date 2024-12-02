@@ -19,6 +19,7 @@ import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.main.AppConfig;
+import org.geogebra.common.main.error.ErrorHelper;
 import org.geogebra.common.main.localization.AutocompleteProvider;
 import org.geogebra.common.main.settings.config.AppConfigCas;
 import org.geogebra.common.main.settings.config.AppConfigGeometry;
@@ -86,7 +87,7 @@ public abstract class BaseExamTests implements ExamControllerDelegate {
         autocompleteProvider = new AutocompleteProvider(app, false);
         examController.setActiveContext(app, commandDispatcher, algebraProcessor,
                 app.getLocalization(), app.getSettings(), autocompleteProvider, app,
-                app.getKernel().getConstruction(), app.getKernel().getInputPreviewHelper());
+                app.getKernel().getInputPreviewHelper());
     }
 
     protected void setInitialApp(SuiteSubApp subApp) {
@@ -97,13 +98,20 @@ public abstract class BaseExamTests implements ExamControllerDelegate {
         autocompleteProvider = new AutocompleteProvider(app, false);
         examController.setActiveContext(app, commandDispatcher, algebraProcessor,
                 app.getLocalization(), app.getSettings(), autocompleteProvider, app,
-                app.getKernel().getConstruction(), app.getKernel().getInputPreviewHelper());
+                app.getKernel().getInputPreviewHelper());
     }
 
     protected GeoElementND[] evaluate(String expression) {
         EvalInfo evalInfo = EvalInfoFactory.getEvalInfoForAV(app, false);
         return algebraProcessor.processAlgebraCommandNoExceptionHandling(
                 expression, false, errorAccumulator, evalInfo, null);
+    }
+
+    protected void editGeoElement(GeoElement geoElement, String newExpression) {
+        EvalInfo evalInfo = EvalInfoFactory.getEvalInfoForRedefinition(
+                app.getKernel(), geoElement, true);
+        algebraProcessor.changeGeoElementNoExceptionHandling(
+                geoElement, newExpression, evalInfo, false, null, ErrorHelper.silent());
     }
 
     protected GeoElement evaluateGeoElement(String expression) {

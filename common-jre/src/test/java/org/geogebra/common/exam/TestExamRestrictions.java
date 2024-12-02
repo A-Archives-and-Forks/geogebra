@@ -26,7 +26,7 @@ import org.geogebra.common.kernel.commands.filter.BaseCommandArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
 import org.geogebra.common.kernel.commands.selector.CommandFilter;
 import org.geogebra.common.kernel.commands.selector.CommandNameFilter;
-import org.geogebra.common.kernel.geos.ConstructionElementSetup;
+import org.geogebra.common.kernel.geos.GeoElementSetup;
 import org.geogebra.common.kernel.geos.GeoPoint;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.syntax.suggestionfilter.LineSelectorSyntaxFilter;
@@ -52,7 +52,7 @@ final class TestExamRestrictions extends ExamRestrictions {
 				createToolCollectionFilter(),
 				createPropertyRestrictions(),
 				createGeoElementPropertyFilters(),
-				createConstructionElementSetups());
+				createGeoElementSetups());
 	}
 
 	private static Set<CommandFilter> createCommandFilters() {
@@ -112,10 +112,10 @@ final class TestExamRestrictions extends ExamRestrictions {
 		);
 	}
 
-	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
-		return Set.of(constructionElement -> {
-			if (constructionElement instanceof GeoPoint) {
-				GeoPoint geoPoint = (GeoPoint) constructionElement;
+	private static Set<GeoElementSetup> createGeoElementSetups() {
+		return Set.of(geoElement -> {
+			if (geoElement instanceof GeoPoint) {
+				GeoPoint geoPoint = (GeoPoint) geoElement;
 				geoPoint.setObjColor(GColor.RED);
 				geoPoint.setAlphaValue(1.0);
 			}
