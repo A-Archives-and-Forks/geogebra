@@ -7,6 +7,7 @@ import java.util.List;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.simplifiers.CancelGCDInFraction;
+import org.geogebra.common.kernel.arithmetic.simplifiers.FactorOut;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
@@ -31,9 +32,10 @@ public final class RationalizeFractionAlgo {
 		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
 				new ReduceRoot(kernel),
 				new TidyNumbers(kernel),
-				new CancelGCDInFraction(utils),
-				new SimplifyMultiplication(kernel)
-//				new FactorizeTags(kernel)
+				new SimplifyMultiplication(kernel),
+				new FactorOut(utils),
+	        	new CancelGCDInFraction(utils),
+				new OperandOrder(utils)
 		);
 	}
 
@@ -49,8 +51,9 @@ public final class RationalizeFractionAlgo {
 				String before = node.toValueString(StringTemplate.defaultTemplate);
 				node = simplifier.apply(node);
 				String after = node.toValueString(StringTemplate.defaultTemplate);
-				Log.debug(simplifier.name() + ": " + after
-						+ ((after.equals(before)) ? " (no change)" : ""));
+				if (!after.equals(before)) {
+					Log.debug(simplifier.name() + ": " + after);
+				}
 			}
 		}
 

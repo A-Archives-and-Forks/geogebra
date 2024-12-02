@@ -102,4 +102,23 @@ public class SimplifyUtilsTest extends BaseSimplifyTest {
 		assertFalse(def + " should not be supported",
 				SimplifyUtils.isNodeSupported(numeric.getDefinition()));
 	}
+
+	@Test
+	public void testNegative() {
+		negativeShouldBe("-3 - sqrt(2)", "-(3 + sqrt(2))");
+		negativeShouldBe("-sqrt(2) - 3", "-(sqrt(2) + 3)");
+	}
+
+	@Test
+	public void fixMe() {
+		mulShouldBe("1 + sqrt(2)", "-1 - sqrt(2)");
+
+	}
+
+	private void negativeShouldBe(String from, String to) {
+		GeoNumeric original = newSymbolicNumeric(from);
+		GeoNumeric expected = newSymbolicNumeric(to);
+		ExpressionValue actual = utils.negative(original.getDefinition());
+		shouldSerialize(expected.getDefinition(), actual.wrap());
+	}
 }

@@ -5,10 +5,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
-import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.junit.Before;
 
@@ -33,13 +33,15 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 		assertTrue(actualDef + " is not accepted by " + simplifier.name(),
 				simplifier.isAccepted(actual.getDefinition()));
 		ExpressionNode applied = simplifier.apply(actual.getDefinition());
-//		assertEquals(expected.getDefinition().evaluateDouble(), applied.evaluateDouble(),
-//				Kernel.MAX_PRECISION);
+		assertEquals("Values do not equal! \n\nDefinitions:\n Expected: "
+						+ expectedDef + "\n Actual: " + applied,
+				expected.getDefinition().evaluateDouble(), applied.evaluateDouble(),
+				Kernel.MAX_PRECISION);
 		shouldSerialize(expected.getDefinition(), applied);
 	}
 
-	protected static void shouldSerialize(GeoElement expected, GeoElement actual) {
-		shouldSerialize(expected.getDefinition(), actual.getDefinition());
+	protected void shouldNotChange(String def) {
+		shouldSimplify(def, def);
 	}
 
 	protected static void shouldSerialize(ExpressionNode expected, ExpressionNode actual) {

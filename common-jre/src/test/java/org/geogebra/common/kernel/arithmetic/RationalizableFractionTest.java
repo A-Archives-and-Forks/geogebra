@@ -157,14 +157,19 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void testCancelGCDs() {
 		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
 		rationalizationShouldBe("4 / (sqrt(5) - 1)", "sqrt(5) + 1");
-		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2 + 5))",
-				"((1 - sqrt(7)) sqrt(5)) / -6");
 		rationalizationShouldBe("8 / (sqrt(5) - 1)", "2 (sqrt(5) + 1)");
 	}
 
 	@Test
-	public void testProductInDenominator() {
+	public void testShouldBeSimpler() {
+		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2 + 5))",
+				"(-((1 - sqrt(7)) sqrt(5))) / 6");
 		rationalizationShouldBe("1 / (2 * (1 + sqrt(2)))", "(sqrt(2) - 1) / 2");
+
+	}
+
+	@Test
+	public void testProductInDenominator() {
 		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(-1 - sqrt(2)) / 2");
 		rationalizationShouldBe("1 / (2 * sqrt(2))", "sqrt(2) / 4");
 	}

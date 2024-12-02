@@ -11,6 +11,10 @@ public class SimplifyUtils {
 		this.kernel = kernel;
 	}
 
+	public ExpressionNode flipTrees(ExpressionNode node) {
+		return newNode(node.getRightTree(), node.getOperation(), node.getLeftTree());
+	}
+
 	public MyDouble newDouble(double v) {
 		return new MyDouble(kernel, v);
 	}
@@ -23,7 +27,7 @@ public class SimplifyUtils {
 		ExpressionNode expanded = expand(numerator.wrap());
 		return number > 0
 				? newNode(numerator, Operation.DIVIDE, newDouble(number))
-				: newNode(mulByMinusOne(numerator), Operation.DIVIDE, newDouble(-number));
+				: newNode(negate(numerator.wrap()), Operation.DIVIDE, newDouble(-number));
 	}
 
 	public ExpressionNode div(ExpressionValue numerator, ExpressionNode denominator) {
@@ -33,7 +37,7 @@ public class SimplifyUtils {
 				return newNode(numerator, Operation.DIVIDE, newDouble(valDenominator));
 			}
 
-			return newNode(mulByMinusOne(numerator), Operation.DIVIDE, newDouble(-valDenominator));
+			return newNode(mulByMinusOneL(numerator), Operation.DIVIDE, newDouble(-valDenominator));
 		}
 		return newNode(numerator, Operation.DIVIDE, denominator);
 	}
@@ -182,22 +186,67 @@ public class SimplifyUtils {
 
 	}
 
-	public ExpressionValue mulByMinusOne(ExpressionValue ev) {
-		return mulByMinusOne(ev.wrap());
-	}
-	public ExpressionValue mulByMinusOne(ExpressionNode node) {
-		ExpressionValue left = node.getLeftTree().multiplyR(-1);
+	public ExpressionValue mulByMinusOneL(ExpressionValue ev) {
+		ExpressionNode node = ev.wrap();
+		ExpressionNode left = node.getLeftTree();
 		ExpressionValue right = node.getRight();
-		if (node.isOperation(Operation.PLUS)) {
-			return newNode(left, Operation.MINUS, right);
+		ExpressionNode leftNumber = negate(left);
+		return mulByMinusOne(node, leftNumber, right);
+	}
+
+	public ExpressionValue mulByMinusOneR(ExpressionValue ev) {
+		ExpressionNode node = ev.wrap();
+		ExpressionValue left =node.getLeftTree().getRight().isOperation(Operation.MULTIPLY)
+				? node.getLeftTree().getRight()
+				: node.getLeftTree();
+		ExpressionValue right = node.getRightTree();
+		ExpressionNode number = newDouble(right.evaluateDouble()).wrap();
+		ExpressionNode tree = left.wrap();
+		return mulByMinusOne(node, negate(tree), number);
+	}
+
+	public ExpressionNode negate(ExpressionNode node) {
+		if (node.isOperation(Operation.MULTIPLY) && node.getLeftTree().evaluateDouble() == -1) {
+			return node.getRightTree();
 		}
-		if (node.isOperation(Operation.MINUS)) {
-			return newNode(left, Operation.PLUS, right);
+		double v = node.evaluateDouble();
+		if (isIntegerValue(v)) {
+			return newDouble(-v).wrap();
+		}
+		return node.isOperation(Operation.MINUS) ? node.multiplyR(-1) : node;
+	}
+
+	public ExpressionValue mulByMinusOne(ExpressionNode node,
+			ExpressionNode leftNumber, ExpressionValue right) {
+		Operation operation = node.getOperation();
+		if (Operation.PLUS.equals(operation)) {
+			return newNode(leftNumber, Operation.MINUS, right);
+		}
+		if (Operation.MINUS.equals(operation)) {
+			return newNode(leftNumber, Operation.PLUS, right);
 		}
 
 		return node.multiplyR(-1);
 	}
 
+	public ExpressionNode negative(ExpressionValue ev) {
+		return negative(ev.wrap());
+	}
+	public ExpressionNode negative(ExpressionNode node) {
+		ExpressionValue mul = mulByMinusOne(node);
+		return mul.wrap().multiply(minusOne());
+	}
+
+	public ExpressionValue mulByMinusOne(ExpressionNode node) {
+		return isIntegerValue(node.getLeft())
+				? mulByMinusOneL(node)
+				: mulByMinusOneR(node);
+	}
+
+	private ExpressionValue newValue(ExpressionValue ev) {
+		double v = ev.evaluateDouble();
+		return isIntegerValue(v) ? newDouble(v) : ev;
+	}
 	public static boolean isSquareRootValidInteger(ExpressionValue ev) {
 		if (!ev.isOperation(Operation.SQRT)) {
 			return false;
@@ -222,4 +271,41 @@ public class SimplifyUtils {
 				&& isSquareRootValidInteger(node.getRightTree()));
 	}
 
+	public MinusOne minusOne() {
+		return new MinusOne(kernel);
+	}
+
+	public static Operation flip(Operation operation) {
+		if (operation == Operation.PLUS) {
+			return Operation.MINUS;
+		}
+		if (operation == Operation.MINUS) {
+			return Operation.PLUS;
+		}
+		return operation;
+	}
+
+	public ExpressionNode makeNegative(ExpressionNode node) {
+		if (node == null) {
+			return null;
+		}
+
+		ExpressionNode leftTree = node.getLeftTree();
+		double leftNumber = leftTree.evaluateDouble();
+		if (leftNumber < 0) {
+			return node;
+		}
+
+		if (node.isOperation(Operation.MULTIPLY) && isIntegerValue(leftTree)) {
+			node.setLeft(newDouble(-leftNumber));
+			return node;
+		}
+		return new ExpressionNode(kernel, minusOne(), Operation.MULTIPLY, node);
+	}
+
+	public int getLeftMultiplier(ExpressionNode expr) {
+		return expr.isOperation(Operation.MULTIPLY) && isIntegerValue(expr.getLeft())
+				? (int) expr.getLeft().evaluateDouble()
+				: 1;
+	}
 }

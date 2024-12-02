@@ -112,7 +112,7 @@ public final class RationalizableFraction {
 					return ev;
 				}
 			});
-			numerator.setOperation(flip(numerator.getOperation()));
+			numerator.setOperation(SimplifyUtils.flip(numerator.getOperation()));
 
 				return new ExpressionNode(kernel, numerator,
 					Operation.DIVIDE, new MyDouble(kernel, -denominatorValue));
@@ -121,9 +121,6 @@ public final class RationalizableFraction {
 				new MyDouble(kernel, denominatorValue));
 	}
 
-	private static Operation flip(Operation operation) {
-		return Operation.PLUS.equals(operation) ? Operation.MINUS : Operation.PLUS;
-	}
 	private static Integer evaluateAsInteger(ExpressionNode node) {
 		double v = node.evaluateDouble();
 		return DoubleUtil.isEqual(v,  Math.round(v), Kernel.MAX_PRECISION) ? (int) v : null;
