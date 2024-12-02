@@ -1,46 +1,127 @@
 package org.geogebra.web.html5.gui.menu;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
+import org.geogebra.common.util.AttributedString;
+import org.geogebra.common.util.Range;
+import org.geogebra.web.html5.gui.util.HasResource;
+import org.geogebra.web.html5.gui.util.NoDragImage;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.dom.client.Document;
+import org.gwtproject.resources.client.ResourcePrototype;
 import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtproject.user.client.ui.Widget;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
+import elemental2.dom.Text;
+import jsinterop.base.Js;
 
 /**
  * Accessible menu item: use &lt;li&gt; instead of &lt;td&gt; as a tag
  *
  */
-public class AriaMenuItem extends SimplePanel {
+public class AriaMenuItem extends SimplePanel implements HasResource {
 	private ScheduledCommand cmd;
 	private AriaMenuBar submenu;
 	private boolean enabled = true;
 	private boolean focusable = true;
 	private Widget submenuHeading;
+	private Node textNode;
+	private HTMLElement img;
 
 	/**
 	 * @param text
 	 *            content
-	 * @param asHTML
-	 *            whether to use it as raw HTML
+	 * @param icon
+	 *            icon
 	 * @param cmd
 	 *            command to run when clicked
 	 */
-	public AriaMenuItem(String text, boolean asHTML, ScheduledCommand cmd) {
+	public AriaMenuItem(String text, ResourcePrototype icon, ScheduledCommand cmd) {
 		this();
-		setContent(text, asHTML);
+		setContent(text, icon);
 		this.cmd = cmd;
+	}
+
+	/**
+	 * @param text formatted text
+	 * @param icon icon
+	 * @param cmd item action
+	 */
+	public AriaMenuItem(AttributedString text, @Nullable ResourcePrototype icon,
+			ScheduledCommand cmd) {
+		this();
+		Set<Range> attribute = text.getAttribute(AttributedString.Attribute.Subscript);
+		if (attribute == null) {
+			setContent(text.getRawValue(), icon);
+		} else {
+			setHTMLContent(addSubscript(text.getRawValue(), attribute), icon);
+		}
+		this.cmd = cmd;
+	}
+
+	private Node addSubscript(String rawValue, Set<Range> attribute) {
+		List<Integer> splits = new ArrayList<>();
+		splits.add(0);
+		for (Range range: attribute) {
+			splits.add(range.getStart());
+			splits.add(range.getEnd());
+		}
+		Node span = DomGlobal.document.createElement("span");
+		for (int i = 0; i + 2 < splits.size(); i += 2) {
+			addPlainText(span, rawValue.substring(splits.get(i), splits.get(i + 1)));
+			Element subscript = DomGlobal.document.createElement("sub");
+			subscript.textContent = rawValue.substring(splits.get(i + 1), splits.get(i + 2));
+			span.appendChild(subscript);
+		}
+		addPlainText(span, rawValue.substring(splits.get(splits.size() - 1)));
+		return span;
+	}
+
+	private void addPlainText(Node span, String s) {
+		Text plain = DomGlobal.document.createTextNode(s);
+		span.appendChild(plain);
 	}
 
 	/**
 	 * @param text
 	 *            content
-	 * @param asHTML
-	 *            whether to use it as raw HTML
+	 * @param icon
+	 *            icon
 	 * @param submenu
 	 *            submenu to open when clicked
 	 */
-	public AriaMenuItem(String text, boolean asHTML, AriaMenuBar submenu) {
+	public AriaMenuItem(String text, ResourcePrototype icon, AriaMenuBar submenu) {
 		this();
-		setContent(text, asHTML);
+		setContent(text, icon);
+		this.submenu = submenu;
+	}
+
+	/**
+	 * @param renderer contained widget
+	 * @param command action
+	 */
+	public AriaMenuItem(Widget renderer, ScheduledCommand command) {
+		this();
+		setWidget(renderer);
+		this.cmd = command;
+	}
+
+	/**
+	 * @param renderer contained widget
+	 * @param submenu submenu
+	 */
+	public AriaMenuItem(Widget renderer, AriaMenuBar submenu) {
+		this();
+		setWidget(renderer);
 		this.submenu = submenu;
 	}
 
@@ -57,14 +138,28 @@ public class AriaMenuItem extends SimplePanel {
 	/**
 	 * @param text
 	 *            content
-	 * @param asHTML
-	 *            whether to parse it as HTML
+	 * @param icon
+	 *            icon
 	 */
-	public void setContent(String text, boolean asHTML) {
-		if (asHTML) {
-			getElement().setInnerHTML(text);
-		} else {
-			getElement().setInnerText(text);
+	private void setContent(String text, @CheckForNull ResourcePrototype icon) {
+		this.textNode = DomGlobal.document.createTextNode(text == null ? "" : text);
+		setHTMLContent(textNode, icon);
+	}
+
+	private void setHTMLContent(Node textNode, ResourcePrototype icon) {
+		getElement().removeAllChildren();
+		try {
+			elemental2.dom.Element el = Js.uncheckedCast(getElement());
+			if (icon != null) {
+				img = Js.uncheckedCast(DomGlobal.document.createElement("img"));
+				img.setAttribute("src", NoDragImage.safeURI(icon));
+				img.setAttribute("draggable", "false");
+				img.classList.add("menuImg");
+				el.appendChild(img);
+			}
+			el.appendChild(textNode);
+		} catch (ClassCastException ex) {
+			// mockito
 		}
 	}
 
@@ -103,23 +198,8 @@ public class AriaMenuItem extends SimplePanel {
 		return submenu;
 	}
 
-	/**
-	 * @return content as HTML
-	 */
-	public String getHTML() {
-		return getElement().getInnerHTML();
-	}
-
 	public String getText() {
 		return getElement().getInnerText();
-	}
-
-	/**
-	 * @param string
-	 *            content as HTML
-	 */
-	public void setHTML(String string) {
-		setContent(string, true);
 	}
 
 	/**
@@ -143,5 +223,19 @@ public class AriaMenuItem extends SimplePanel {
 
 	public Widget getSubmenuHeading() {
 		return submenuHeading;
+	}
+
+	/**
+	 * @param text new text content
+	 */
+	public void setTextContent(String text) {
+		if (textNode != null) {
+			textNode.textContent = text;
+		}
+	}
+
+	@Override
+	public void setResource(ResourcePrototype icon) {
+		img.setAttribute("src", NoDragImage.safeURI(icon));
 	}
 }

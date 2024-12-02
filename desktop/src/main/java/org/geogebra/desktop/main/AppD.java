@@ -386,13 +386,6 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 		this.loc = loc;
 		loc.setApp(this);
 		this.cmdArgs = args;
-		this.prerelease = args != null && args.containsArg("prerelease");
-
-		if (prerelease) {
-			Log.error("*********************************");
-			Log.error("*** Running with --prerelease ***");
-			Log.error("*********************************");
-		}
 
 		setFileVersion(GeoGebraConstants.VERSION_STRING,
 				getConfig().getAppCode());
@@ -2003,7 +1996,8 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 
 	@Override
 	public void setTooltipLanguage(String ttLanguage) {
-		setTooltipLanguage(Language.fromLanguageTagOrLocaleString(ttLanguage));
+		setTooltipLanguage(StringUtil.empty(ttLanguage) ? null
+				: Language.fromLanguageTagOrLocaleString(ttLanguage));
 	}
 
 	/**
@@ -2311,7 +2305,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 				return getMenuBarPanel(this, applicationPanel);
 			}
 
-			getSettingsUpdater().getFontSettingsUpdater().resetFonts();
+			getFontSettingsUpdater().resetFonts();
 			// Standard case: return application panel
 			return applicationPanel;
 		}
@@ -4257,7 +4251,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 	 */
 	protected void initSignInEventFlow() {
 		// Inizialize the login operation -- stub only, no sign in UI in desktop
-		loginOperation = new LoginOperationD(this);
+		loginOperation = new LoginOperationD();
 	}
 
 	@Override
@@ -4806,17 +4800,19 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 	@Override
 	public void exportStringToFile(String ext, String content, boolean showDialog) {
 		try {
-			StringBuilder fileName = new StringBuilder();
-			fileName.append("test.");
-			fileName.append(ext);
+			File exportFile = getGuiManager().showSaveDialog(FileExtensions.get(ext),
+					null, ext + " " + loc.getMenu("Files"), true, false);
+			if (exportFile == null) {
+				return;
+			}
 			BufferedWriter objBufferedWriter = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(fileName.toString()),
+					new OutputStreamWriter(new FileOutputStream(exportFile),
 							StandardCharsets.UTF_8));
-			Log.debug("Export to " + fileName);
+			Log.debug("Export to " + exportFile.getName());
 			objBufferedWriter.write(content);
 			objBufferedWriter.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.debug(e);
 		}
 	}
 	

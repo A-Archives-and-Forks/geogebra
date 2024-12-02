@@ -1,6 +1,6 @@
 package org.geogebra.web.full.main.activity;
 
-import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.gui.view.table.ScientificDataTableController;
 import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.MaterialVisibility;
 import org.geogebra.common.main.OptionType;
@@ -11,11 +11,8 @@ import org.geogebra.web.full.gui.layout.DockPanelW;
 import org.geogebra.web.full.gui.layout.panels.ToolbarDockPanelW;
 import org.geogebra.web.full.gui.view.algebra.AVErrorHandler;
 import org.geogebra.web.full.gui.view.algebra.AlgebraItemHeader;
-import org.geogebra.web.full.gui.view.algebra.AlgebraViewW;
 import org.geogebra.web.full.gui.view.algebra.MarblePanel;
-import org.geogebra.web.full.gui.view.algebra.MenuItemCollection;
 import org.geogebra.web.full.gui.view.algebra.RadioTreeItem;
-import org.geogebra.web.full.gui.view.algebra.contextmenu.AlgebraMenuItemCollection;
 import org.geogebra.web.full.main.HeaderResizer;
 import org.geogebra.web.html5.gui.GeoGebraFrameW;
 import org.geogebra.web.html5.main.AppW;
@@ -62,13 +59,8 @@ public class BaseActivity implements GeoGebraActivity {
 	}
 
 	@Override
-	public AlgebraItemHeader createAVItemHeader(RadioTreeItem radioTreeItem) {
-		return new MarblePanel(radioTreeItem);
-	}
-
-	@Override
-	public MenuItemCollection<GeoElement> getAVMenuItems(AlgebraViewW view) {
-		return new AlgebraMenuItemCollection(view);
+	public AlgebraItemHeader createAVItemHeader(RadioTreeItem radioTreeItem, boolean forInput) {
+		return new MarblePanel(radioTreeItem, forInput);
 	}
 
 	@Override
@@ -112,11 +104,6 @@ public class BaseActivity implements GeoGebraActivity {
 	}
 
 	@Override
-	public SVGResource getExamIcon() {
-		return null;
-	}
-
-	@Override
 	public void markSearchOpen() {
 		// nothing to do
 	}
@@ -129,5 +116,10 @@ public class BaseActivity implements GeoGebraActivity {
 	@Override
 	public void markSaveProcess(String title, MaterialVisibility visibility) {
 		// nothing to do
+	}
+
+	@Override
+	public ScientificDataTableController getTableController() {
+		return null;
 	}
 }

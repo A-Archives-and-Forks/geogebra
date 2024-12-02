@@ -40,6 +40,8 @@ public class MySpecialDouble extends MyDouble {
 	private final boolean scientificNotation;
 	private boolean setFromOutside;
 	BigDecimal bd;
+	// 0 = unitialized, NaN = not a fraction, power of 10 otherwise
+	private double denominator = 0;
 
 	/**
 	 * @param kernel
@@ -79,8 +81,7 @@ public class MySpecialDouble extends MyDouble {
 	public MySpecialDouble(Kernel kernel, double val, String str, boolean fromCas) {
 		super(kernel, val);
 
-		// Reduce can't handle .5*8
-		originalString = StringUtil.canonicalNumber(str);
+		originalString = fromCas ? StringUtil.canonicalNumber(str) : str;
 
 		strToString = originalString;
 
@@ -164,7 +165,8 @@ public class MySpecialDouble extends MyDouble {
 			// serializing to CAS -- simply print input
 
 			if (tpl.hasCASType()) {
-				return tpl.convertScientificNotationGiac(originalString);
+				return tpl.convertScientificNotationGiac(
+						StringUtil.canonicalNumber(originalString));
 			}
 
 			if (isPercentage()) {
@@ -216,12 +218,9 @@ public class MySpecialDouble extends MyDouble {
 		super.set(val);
 		setFromOutside = true;
 		bd = null;
+		denominator = Double.NaN;
 	}
 
-	/**
-	 * Set precise value
-	 * @param val value as BigDecimal
-	 */
 	@Override
 	public void set(BigDecimal val) {
 		super.set(val.doubleValue());
@@ -251,10 +250,15 @@ public class MySpecialDouble extends MyDouble {
 			return super.unaryMinus(kernel);
 		}
 		if (!isLetterConstant && !scientificNotation) {
-			return new MySpecialDouble(kernel, -getDouble(), "-" + originalString);
+			return new MySpecialDouble(kernel, -getDouble(), flipSign(originalString));
 		}
 		return new ExpressionNode(kernel, new MinusOne(kernel),
 				Operation.MULTIPLY, this);
+	}
+
+	private String flipSign(String originalString) {
+		return originalString.startsWith("-")
+				? originalString.substring(1) : "-" + originalString;
 	}
 
 	public boolean isScientificNotation() {
@@ -292,6 +296,60 @@ public class MySpecialDouble extends MyDouble {
 	}
 
 	public boolean isDecimal() {
-		return strToString != null && strToString.contains(".");
+		return strToString != null && strToString.contains(".") && !isFraction();
+	}
+
+	/**
+	 * @return whether this can be converted to fraction
+	 */
+	public boolean isFraction() {
+		if (denominator == 0) {
+			initFraction();
+		}
+		return !Double.isNaN(denominator);
+	}
+
+	/**
+	 * Converts decimal to a fraction
+	 * @param fractionV output array [numerator, denominator]
+	 * @return whether this could be converted
+	 */
+	public boolean asFraction(ExpressionValue[] fractionV) {
+		if (denominator == 0) {
+			initFraction();
+		}
+		if (!Double.isNaN(denominator)) {
+			fractionV[0] = new MyDouble(kernel, denominator * getDouble());
+			fractionV[1] = new MyDouble(kernel, denominator);
+			return true;
+		}
+		fractionV[0] = this;
+		fractionV[1] = null;
+		return false;
+	}
+
+	private void initFraction() {
+		if (strToString == null) {
+			denominator = Double.NaN;
+			return;
+		}
+		int afterLastDigit = isPercentage() ? strToString.length() - 1 : strToString.length();
+		int ePosition = strToString.contains("E") ? strToString.indexOf('E') : afterLastDigit;
+		int dotPosition = strToString.indexOf('.');
+		int shift = 0;
+
+		if (ePosition < afterLastDigit) {
+			shift = -Integer.parseInt(strToString.substring(ePosition + 1, afterLastDigit));
+		}
+		if (isPercentage()) {
+			shift += 2;
+		}
+		int decimals = dotPosition == -1 ? 0 : ePosition - dotPosition - 1;
+		int denominatorZeros = decimals + Math.max(shift, 0);
+		if (decimals > 3 || ePosition > 8 || denominatorZeros > 8 || denominatorZeros == 0) {
+			denominator = Double.NaN;
+			return;
+		}
+		denominator = Math.pow(10, denominatorZeros);
 	}
 }

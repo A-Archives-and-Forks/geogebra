@@ -1,5 +1,7 @@
 package org.geogebra.web.full.gui.layout.panels;
 
+import static org.geogebra.web.full.gui.pagecontrolpanel.PageListPanel.PAGE_OVERVIEW_WIDTH;
+
 import javax.annotation.CheckForNull;
 
 import org.geogebra.common.euclidian.EuclidianView;
@@ -7,7 +9,7 @@ import org.geogebra.common.euclidian.GetViewId;
 import org.geogebra.web.full.gui.layout.DockManagerW;
 import org.geogebra.web.full.gui.layout.DockPanelW;
 import org.geogebra.web.full.gui.layout.ViewCounter;
-import org.geogebra.web.full.gui.util.ZoomPanelMow;
+import org.geogebra.web.full.gui.pagecontrolpanel.PageListPanel;
 import org.geogebra.web.full.gui.view.consprotocol.ConstructionProtocolNavigationW;
 import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.euclidian.EuclidianViewW;
@@ -38,13 +40,8 @@ import jsinterop.base.Js;
  */
 public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 		implements GetViewId {
-
 	private ConstructionProtocolNavigationW consProtNav;
-
-	private boolean mayHaveZoomButtons;
-
-	/** Zoom panel for MOW */
-	@CheckForNull ZoomPanelMow mowZoomPanel;
+	private final boolean mayHaveZoomButtons;
 
 	/**
 	 * default constructor
@@ -163,6 +160,14 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 				int h = dockPanel.getComponentInteriorHeight()
 						- dockPanel.navHeightIfShown();
 				int w = dockPanel.getComponentInteriorWidth();
+				if (dockPanel.getApp().isWhiteboardActive()) {
+					PageListPanel pageControlPanel =
+							((AppWFull) dockPanel.getApp()).getAppletFrame()
+									.getPageControlPanel();
+					if (pageControlPanel != null && pageControlPanel.isVisible()) {
+						w = w - PAGE_OVERVIEW_WIDTH;
+					}
+				}
 				// TODO handle this better?
 				// exit if new size cannot be determined
 				// one dimension may be intentionally 0, resize to avoid DOM
@@ -239,9 +244,6 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 		if (allowZoomPanel()) {
 			dockLayoutPanel.addSouth(zoomPanel, 0);
 		}
-		if (app.isWhiteboardActive() && mowZoomPanel != null) {
-			controls.add(mowZoomPanel);
-		}
 	}
 
 	@Override
@@ -264,23 +266,11 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 				zoomPanel.setFullScreen(true);
 			}
 		}
-		tryBuildMowZoomPanel();
 	}
 
 	private boolean isBottomRight() {
 		DockManagerW dm = (DockManagerW) app.getGuiManager().getLayout().getDockManager();
 		return dm.getRoot() == null || dm.getRoot().isBottomRight(this);
-	}
-
-	private void tryBuildMowZoomPanel() {
-		if (mowZoomPanel != null) {
-			mowZoomPanel.removeFromParent();
-			mowZoomPanel = null;
-		}
-		if (ZoomPanel.needsZoomButtons(app) && app.isWhiteboardActive()) {
-			mowZoomPanel = new ZoomPanelMow(app);
-			((AppWFull) app).setMowZoomPanel(mowZoomPanel);
-		}
 	}
 
 	/**
@@ -304,9 +294,6 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 		if (zoomPanel != null) {
 			zoomPanel.setLabels();
 		}
-		if (mowZoomPanel != null) {
-			mowZoomPanel.setLabels();
-		}
 	}
 
 	/**
@@ -316,9 +303,6 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 		if (zoomPanel != null) {
 			zoomPanel.setHidden(true);
 		}
-		if (mowZoomPanel != null) {
-			mowZoomPanel.addStyleName("hidden");
-		}
 	}
 
 	/**
@@ -327,9 +311,6 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 	public void showZoomPanel() {
 		if (zoomPanel != null) {
 			zoomPanel.setHidden(false);
-		}
-		if (mowZoomPanel != null) {
-			mowZoomPanel.removeStyleName("hidden");
 		}
 	}
 

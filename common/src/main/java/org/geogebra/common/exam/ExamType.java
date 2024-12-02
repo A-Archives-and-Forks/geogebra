@@ -1,16 +1,14 @@
 package org.geogebra.common.exam;
 
-import static org.geogebra.common.GeoGebraConstants.CAS_APPCODE;
-import static org.geogebra.common.GeoGebraConstants.G3D_APPCODE;
-import static org.geogebra.common.GeoGebraConstants.GEOMETRY_APPCODE;
-import static org.geogebra.common.GeoGebraConstants.GRAPHING_APPCODE;
-import static org.geogebra.common.GeoGebraConstants.PROBABILITY_APPCODE;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.geogebra.common.GeoGebraConstants;
-import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.Localization;
-import org.geogebra.common.main.exam.restriction.ExamRestrictionModel;
+import org.geogebra.common.main.PreviewFeature;
 
 public enum ExamType {
 
@@ -27,19 +25,34 @@ public enum ExamType {
 					: config.getAppNameShort();
 			return loc.getMenu(shortAppName);
 		}
+	},
 
-		@Deprecated
+	CVTE() {
 		@Override
-		public void applyRestrictions(ExamRestrictionModel model) {
-			// no specific restrictions
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "CvTE goedgekeurde examenstand";
 		}
 
 		@Override
-		public void setDefaultSubAppCode(ExamRestrictionModel model) {
-			// no restrictions -> no default needed
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "CvTE";
 		}
 	},
-	/*MMS() {
+
+	REALSCHULE() {
+		@Override
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "Bayern Realschulrechner";
+		}
+
+		@Override
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "Realschule";
+		}
+	},
+
+	MMS() {
+
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
 			return "Deutschland IQB MMS Abitur";
@@ -49,18 +62,20 @@ public enum ExamType {
 		public String getShortDisplayName(Localization loc, AppConfig config) {
 			return "MMS Abitur";
 		}
+	},
 
+	IB() {
 		@Override
-		public void applyRestrictions(ExamRestrictionModel model) {
-			model.setSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE);
-			model.setCommandFilter(CommandFilterFactory.createMmsFilter());
+		public String getDisplayName(Localization loc, AppConfig config) {
+			return "IB Exam";
 		}
 
 		@Override
-		public void setDefaultSubAppCode(ExamRestrictionModel model) {
-			model.setDefaultAppCode(CAS_APPCODE);
+		public String getShortDisplayName(Localization loc, AppConfig config) {
+			return "IB Exam";
 		}
-	},*/
+	},
+
 	NIEDERSACHSEN() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
@@ -71,18 +86,8 @@ public enum ExamType {
 		public String getShortDisplayName(Localization loc, AppConfig config) {
 			return "Niedersachsen";
 		}
-
-		@Deprecated
-		@Override
-		public void applyRestrictions(ExamRestrictionModel model) {
-			model.setRestrictedSubAppCodes(G3D_APPCODE);
-		}
-
-		@Override
-		public void setDefaultSubAppCode(ExamRestrictionModel model) {
-			model.setDefaultAppCode(GRAPHING_APPCODE);
-		}
 	},
+
 	BAYERN_CAS() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
@@ -93,20 +98,8 @@ public enum ExamType {
 		public String getShortDisplayName(Localization loc, AppConfig config) {
 			return "Schulversuch CAS";
 		}
-
-		@Deprecated
-		@Override
-		public void applyRestrictions(ExamRestrictionModel model) {
-			model.setRestrictedSubAppCodes(GRAPHING_APPCODE, GEOMETRY_APPCODE, G3D_APPCODE,
-					PROBABILITY_APPCODE);
-			model.setCommandFilter(CommandFilterFactory.createBayernCasFilter());
-		}
-
-		@Override
-		public void setDefaultSubAppCode(ExamRestrictionModel model) {
-			model.setDefaultAppCode(CAS_APPCODE);
-		}
 	},
+
 	VLAANDEREN() {
 		@Override
 		public String getDisplayName(Localization loc, AppConfig config) {
@@ -116,18 +109,6 @@ public enum ExamType {
 		@Override
 		public String getShortDisplayName(Localization loc, AppConfig config) {
 			return "Vlaanderen";
-		}
-
-		@Deprecated
-		@Override
-		public void applyRestrictions(ExamRestrictionModel model) {
-			model.setRestrictedSubAppCodes(CAS_APPCODE);
-			model.setCommandFilter(CommandFilterFactory.createVlaanderenFilter());
-		}
-
-		@Override
-		public void setDefaultSubAppCode(ExamRestrictionModel model) {
-			model.setDefaultAppCode(GRAPHING_APPCODE);
 		}
 	};
 
@@ -151,9 +132,31 @@ public enum ExamType {
 
 	public abstract String getShortDisplayName(Localization loc, AppConfig config);
 
-	@Deprecated
-	public abstract void applyRestrictions(ExamRestrictionModel model);
+	/**
+	 * List of exam types sorted by localized names (except GENERIC goes first)
+	 * @param loc localization
+	 * @param config app config
+	 * @return available types
+	 */
+	public static List<ExamType> getAvailableValues(Localization loc, AppConfig config) {
+		Comparator<ExamType> genericFirst = Comparator.comparing(type -> !GENERIC.equals(type));
+		return Arrays.stream(values()).filter(ExamType::isAvailable)
+				.sorted(genericFirst.thenComparing(type -> type.getDisplayName(loc, config)))
+				.collect(Collectors.toList());
+	}
 
-	@Deprecated
-	public abstract void setDefaultSubAppCode(ExamRestrictionModel model);
+	private boolean isAvailable() {
+		switch (this) {
+		case CVTE:
+			return PreviewFeature.isAvailable(PreviewFeature.CVTE_EXAM);
+		case IB:
+			return PreviewFeature.isAvailable(PreviewFeature.IB_EXAM);
+		case MMS:
+			return PreviewFeature.isAvailable(PreviewFeature.MMS_EXAM);
+		case REALSCHULE:
+			return PreviewFeature.isAvailable(PreviewFeature.REALSCHULE_EXAM);
+		default:
+			return true;
+		}
+	}
 }

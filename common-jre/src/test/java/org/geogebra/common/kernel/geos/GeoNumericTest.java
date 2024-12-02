@@ -7,14 +7,28 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.gui.view.algebra.EvalInfoFactory;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionNodeConstants.StringType;
 import org.geogebra.common.kernel.arithmetic.RecurringDecimal;
+import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.main.settings.config.AppConfigCas;
+import org.geogebra.common.util.StringUtil;
 import org.geogebra.test.annotation.Issue;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.himamis.retex.editor.share.util.Unicode;
+
 public class GeoNumericTest extends BaseUnitTest {
+
+	private StringTemplate scientificTemplate;
+
+	@Before
+	public void setupTemplate() {
+		scientificTemplate = StringTemplate.printFigures(StringType.GEOGEBRA, 3, false);
+	}
 
 	@Test
 	public void euclidianShowabilityOfOperationResult() {
@@ -153,9 +167,49 @@ public class GeoNumericTest extends BaseUnitTest {
 	}
 
 	@Test
+	@Issue("APPS-5699")
+	public void shouldKeepTrailingZerosForIntegers() {
+		GeoNumeric withTrailing = addAvInput("1.00");
+		assertThat(withTrailing.getXML(), containsString("1.00"));
+	}
+
+	@Test
 	@Issue("APPS-5531")
 	public void shouldKeepENotation() {
 		GeoNumeric withTrailing = addAvInput("1.20E3");
 		assertThat(withTrailing.getXML(), containsString("1.20E3"));
+	}
+
+	@Test
+	@Issue("APPS-1889")
+	public void shouldNotStoreStyleIfNotInitialized() {
+		addAvInput("a=3");
+		reload();
+		GeoElement slider = lookup("a");
+		slider.setEuclidianVisible(true);
+		slider.updateRepaint();
+		assertThat(slider.getLineThickness(), is(10));
+	}
+
+	@Test
+	public void testAutoCreatedSliderAlgebraVisibility() {
+		EvalInfo info = EvalInfoFactory.getEvalInfoForAV(getApp(), true);
+		assertThat(((GeoNumeric) add("a", info)).isAVSliderOrCheckboxVisible(), equalTo(true));
+		assertThat(((GeoNumeric) add("3", info)).isAVSliderOrCheckboxVisible(), equalTo(false));
+	}
+
+	@Test
+	public void shouldPrintUnicodePowerOf10() {
+		GeoNumeric a = addAvInput("a=1E30+1E30");
+
+		assertThat(a.toValueString(scientificTemplate),
+				is("2.00 " + Unicode.CENTER_DOT + " 10" + StringUtil.numberToIndex(30)));
+	}
+
+	@Test
+	public void shouldPrintUnicodeNegativePowerOf10() {
+		GeoNumeric a = addAvInput("a=1E-30+1E-30");
+		assertThat(a.toValueString(scientificTemplate),
+				is("2.00 " + Unicode.CENTER_DOT + " 10" + StringUtil.numberToIndex(-30)));
 	}
 }

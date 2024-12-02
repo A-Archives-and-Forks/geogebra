@@ -13,6 +13,7 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoConic;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInlineText;
+import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.EventListener;
 import org.geogebra.common.plugin.EventType;
 import org.geogebra.test.TestEvent;
@@ -39,9 +40,10 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 
 	@Before
 	public void clearEvents() {
-		// TODO AlgebraTest.enableCAS(app, true);
 		events.clear();
 		getApp().setAppletFlag(false);
+		getApp().getSettings().getEuclidian(1)
+				.setPointCapturing(EuclidianStyleConstants.POINT_CAPTURING_AUTOMATIC);
 	}
 
 	/**
@@ -275,6 +277,53 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		click(0, 0);
 		click(100, 100);
 		checkContent("A = (0, 0)", "B = (2, -2)", "f = 2.82843");
+	}
+
+	@Test
+	@Issue("APPS-5779")
+	public void segmentWithDrag3Points() {
+		setMode(EuclidianConstants.MODE_SEGMENT);
+		click(0, 0);
+		dragStart(100, 100);
+		pointerRelease(200, 150);
+		checkContent("A = (0, 0)", "B = (4, -3)", "f = 5");
+		events.clear();
+	}
+
+	@Test
+	@Issue("APPS-5779")
+	public void segmentWithDrag3PointsFixed() {
+		getApp().getSettings().getEuclidian(1).setPointCapturing(
+				EuclidianStyleConstants.POINT_CAPTURING_ON_GRID);
+		setMode(EuclidianConstants.MODE_SEGMENT);
+		click(10, 10);
+		dragStart(110, 110);
+		pointerRelease(210, 160);
+		checkContent("A = (0, 0)", "B = (4, -3)", "f = 5");
+		events.clear();
+	}
+
+	@Test
+	@Issue("APPS-5779")
+	public void segmentWithDragPreExisting() {
+		add("B=(2,-2)");
+		setMode(EuclidianConstants.MODE_SEGMENT);
+		click(0, 0);
+		dragStart(100, 100);
+		pointerRelease(200, 150);
+		checkContent("B = (4, -3)", "A = (0, 0)",  "f = 5");
+		events.clear();
+	}
+
+	@Test
+	public void segmentWithDrag() {
+		setMode(EuclidianConstants.MODE_SEGMENT);
+		dragStart(0, 0);
+		dragEnd(200, 150);
+		checkContent("A = (0, 0)", "B = (4, -3)", "f = 5");
+		dragStart(0, 0);
+		dragEnd(400, 300);
+		checkContent("A = (0, 0)", "B = (4, -3)", "f = 5", "C = (8, -6)", "g = 10");
 	}
 
 	@Test
@@ -826,12 +875,6 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 	}
 
 	@Test
-	public void shapeRoundedRectangleTool() {
-		setMode(EuclidianConstants.MODE_SHAPE_RECTANGLE_ROUND_EDGES); // TODO
-																			// 105
-	}
-
-	@Test
 	public void shapePolygonTool() {
 		setMode(EuclidianConstants.MODE_SHAPE_PENTAGON); // TODO 106
 	}
@@ -882,7 +925,7 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		click(30, 40);
 		setMode(EuclidianConstants.MODE_MEDIA_TEXT);
 		dragStart(70, 80);
-		dragEnd(140, 220);
+		dragEnd(80, 220); // try to make the text 10x140px
 		events.clear();
 
 		checkContent("a", "b");
@@ -898,9 +941,9 @@ public class EuclidianControllerTest extends BaseEuclidianControllerTest {
 		Assert.assertEquals(b.getLocation().getY(), -1.6, Kernel.MAX_PRECISION);
 
 		Assert.assertEquals(100, a.getWidth(), Kernel.MAX_PRECISION);
-		Assert.assertEquals(30, a.getHeight(), Kernel.MAX_PRECISION);
+		Assert.assertEquals(36, a.getHeight(), Kernel.MAX_PRECISION);
 
-		Assert.assertEquals(100, b.getWidth(), Kernel.MAX_PRECISION);
+		Assert.assertEquals(36, b.getWidth(), Kernel.MAX_PRECISION);
 		Assert.assertEquals(140, b.getHeight(), Kernel.MAX_PRECISION);
 	}
 

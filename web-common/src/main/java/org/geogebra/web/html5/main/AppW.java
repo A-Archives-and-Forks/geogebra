@@ -179,7 +179,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	public static final String EDIT_MACRO_URL_PARAM_NAME = "editMacroName";
 	public static final String EDITED_MACRO_NAME_KEY = "editedMacroName";
 	public static final String EDITED_MACRO_XML_KEY = "editedMacroXML";
-	private static final int LOWER_HEIGHT = 350;
 	/*
 	 * Note: the following numbers need to be in sync with deploygbb to scale
 	 * screenshots
@@ -272,9 +271,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		super(getPlatform(appletParameters, dimension, laf));
 		this.geoGebraElement = geoGebraElement;
 		this.appletParameters = appletParameters;
-
-		setPrerelease(appletParameters.getDataParamPrerelease());
-
 		// laf = null in webSimple
 		boolean hasUndo = appletParameters.getDataParamEnableUndoRedo()
 				&& (laf == null || laf.undoRedoSupported());
@@ -482,6 +478,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 * parts of the code that have been split by the GWT compiler
 	 * @return the instance of the AsyncManager
 	 */
+	@Override
 	public final AsyncManager getAsyncManager() {
 		if (asyncManager == null) {
 			asyncManager = new AsyncManager(this);
@@ -616,7 +613,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 		Log.debug("setting language to:" + languageTag + ", browser languageTag:"
 				+ browserLang);
-		getLocalization().loadScript(languageTag, this);
+		getLocalization().loadScript(language1, this);
 	}
 
 	/**
@@ -626,15 +623,13 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *            country or country_variant
 	 */
 	public void setLanguage(String language, String country) {
-
-		if (language == null || "".equals(language)) {
+		if (StringUtil.empty(language)) {
 			Log.warn("error calling setLanguage(), setting to English (US): "
 					+ language + "_" + country);
 			setLanguage("en");
 			return;
 		}
-
-		if (country == null || "".equals(country)) {
+		if (StringUtil.empty(country)) {
 			setLanguage(language);
 			return;
 		}
@@ -651,15 +646,15 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 * differs from translateCommand somehow and either document it or remove
 	 * this method
 	 *
-	 * @param cmd
+	 * @param localizedCommandName
 	 *            localized command name
 	 * @return internal command name
 	 */
 	@Override
-	final public String getInternalCommand(String cmd) {
+	final public String getInternalCommand(String localizedCommandName) {
 		initTranslatedCommands();
 		String s;
-		String cmdLower = StringUtil.toLowerCaseUS(cmd);
+		String cmdLower = StringUtil.toLowerCaseUS(localizedCommandName);
 		Commands[] values = Commands.values();
 		if (revTranslateCommandTable.isEmpty()) { // we should clear this cache
 													// on language change!
@@ -758,7 +753,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 			getAppletParameters().setAttribute("appName", "notes");
 			getAppletFrame().initPageControlPanel(this);
 			euclidianController.clearMeasurementTools();
-			getAppletFrame().setNotesMode(getMode());
 			if (getPageController() != null) {
 				getPageController().loadSlides(archiveContent);
 				return;
@@ -1026,6 +1020,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		resetUrl();
 		if (examController.isExamActive()) {
 			examController.createNewTempMaterial();
+			examController.reapplySettingsRestrictions();
 		}
 		setSaved();
 	}
@@ -1300,17 +1295,13 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *         finished already.
 	 */
 	public boolean doOpenFile(File fileToHandle) {
-		String ggbRegEx = ".*\\.(ggb|ggt|ggs|csv|off|pdf|h5p)$";
+		String ggbRegEx = ".*\\.(ggb|ggt|ggs|csv|off|pdf)$";
 		String fileName = fileToHandle.name.toLowerCase();
 		if (!fileName.matches(ggbRegEx)) {
 			return false;
 		}
 		if (fileName.endsWith(".pdf")) {
 			openPDF(fileToHandle);
-			return true;
-		}
-		if (fileName.endsWith(".h5p")) {
-			openH5P(fileToHandle);
 			return true;
 		}
 
@@ -1475,7 +1466,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		SafeGeoImageFactory factory =
 				new SafeGeoImageFactory(this).withAutoCorners(corner1 == null)
 						.withCorners(corner1, corner2, corner4);
-		GeoImage geoImage = factory.create(imgFileName, url);
+		GeoImage geoImage = factory.create(imgFileName, url, null);
 		if (insertImageCallback != null) {
 			this.insertImageCallback.run();
 		}
@@ -1493,7 +1484,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	public void imageDropHappened(String fileName, String content) {
 		SafeGeoImageFactory factory = new SafeGeoImageFactory(this);
 		String path = ImageManagerW.getMD5FileName(fileName, content);
-		factory.create(path, content);
+		factory.create(path, content, StringUtil.getFileExtension(fileName));
 	}
 
 	/**
@@ -1507,7 +1498,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		SafeGeoImageFactory factory =
 				new SafeGeoImageFactory(this, imageOld).withAutoCorners(c1 == null)
 						.withCorners(c1, c2);
-		return factory.create(imgFileName, imageAsString);
+		return factory.create(imgFileName, imageAsString, null);
 	}
 
 	/**
@@ -1520,8 +1511,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *         file opening was successful, and the opening finished already.
 	 */
 	public boolean openFileAsImage(File fileToHandle) {
-		String imageRegEx = ".*(png|jpg|jpeg|gif|bmp|svg)$";
-		if (!fileToHandle.name.toLowerCase().matches(imageRegEx)) {
+		if (!StringUtil.getFileExtension(fileToHandle.name).isImage()) {
 			return false;
 		}
 		if (getGuiManager() == null || !getGuiManager().toolbarHasImageMode()) {
@@ -1863,9 +1853,11 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	protected EuclidianView newEuclidianView(boolean[] showEvAxes,
 			boolean showEvGrid) {
 
-		return euclidianView = newEuclidianView(euclidianViewPanel,
+		euclidianView = newEuclidianView(euclidianViewPanel,
 				getEuclidianController(), showEvAxes, showEvGrid, 1,
 				getSettings().getEuclidian(1));
+		GlobalScope.examController.registerRestrictable(euclidianView);
+		return euclidianView;
 	}
 
 	/**
@@ -1963,16 +1955,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	// ========================================================
 	// Languages
 	// ========================================================
-
-	/**
-	 * Checks for GeoGebraLangUI in URL, then in cookie, then checks browser
-	 * language
-	 *
-	 * @return user preferred language
-	 */
-	public String getLanguageFromCookie() {
-		return UserPreferredLanguage.get(this);
-	}
 
 	@Override
 	public void setLabels() {
@@ -2175,7 +2157,19 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 * @param asSlide
 	 *            whether jus a slide is loaded
 	 */
-	public abstract void afterLoadFileAppOrNot(boolean asSlide);
+	public void afterLoadFileAppOrNot(boolean asSlide) {
+		boolean commandsLoaded = false;
+		for (GeoElement geo : kernel.getConstruction().getGeoSetConstructionOrder()) {
+			if (!commandsLoaded && geo.hasScripts()) {
+				getAsyncManager().loadAllCommands();
+				commandsLoaded = true;
+			}
+			if (geo instanceof GeoText && geo.getLabelSimple() != null
+					&& geo.getLabelSimple().startsWith("altText")) {
+				getAccessibilityManager().preloadAltText((GeoText) geo);
+			}
+		}
+	}
 
 	/**
 	 * Recalculate offsets/transforms for graphics events
@@ -2347,24 +2341,21 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 */
 	public int getHeightForSplitPanel(int fallback) {
 		// border excluded
-		int windowHeight = getAppletHeight() - getAppletParameters().getBorderThickness();
-		// but we want to know the available height for the rootPane
-		// so we either use the above as a heuristic,
-		// or we should substract the height(s) of
-		// toolbar, menubar, and input bar;
-		// heuristics come from GeoGebraAppFrame
-		if (showAlgebraInput()
-				&& getInputPosition() != InputPosition.algebraView) {
-			windowHeight -= GLookAndFeelI.COMMAND_LINE_HEIGHT;
-		}
-		if (showToolBar() && !isUnbundledOrWhiteboard()) {
-			windowHeight -= GLookAndFeelI.TOOLBAR_HEIGHT;
-		}
+		int windowHeight = getAppletHeight() - getAppletParameters().getBorderThickness()
+				- getToolbarAndInputBarHeight();
+
 		// menubar height is always 0
 		if (windowHeight <= 0) {
 			windowHeight = fallback;
 		}
 		return windowHeight;
+	}
+
+	/**
+	 * @return toolbar height (if toolbar visible) + input bar height (if visible)
+	 */
+	protected int getToolbarAndInputBarHeight() {
+		return 0; // overridden with UI
 	}
 
 	/**
@@ -2382,17 +2373,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 			return (getSettings().getCasSettings().isEnabled())
 					&& getAppletParameters().getDataParamEnableCAS(true)
 					&& getCASFactory().isEnabled();
-		}
-
-		if ((getLAF() != null
-				&& getLAF().examSupported())
-				|| (getLAF() != null && getLAF().isTablet() && !isUnbundled()
-						&& !isWhiteboardActive())) {
-			if (viewID == App.VIEW_EUCLIDIAN) {
-				return getSettings().getEuclidian(1).isEnabled();
-			} else if (viewID == App.VIEW_EUCLIDIAN2) {
-				return getSettings().getEuclidian(2).isEnabled();
-			}
 		}
 
 		return viewID != App.VIEW_EUCLIDIAN3D;
@@ -2561,15 +2541,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		return getFrameElement().getOffsetHeight();
 	}
 
-	/**
-	 * @return whether small keyboard is needed
-	 */
-	public boolean needsSmallKeyboard() {
-		return (getHeight() > 0 && getHeight() < LOWER_HEIGHT)
-				|| (getHeight() == 0 && getAppletParameters()
-						.getDataParamHeight() < LOWER_HEIGHT);
-	}
-
 	@Override
 	public void updateMenubar() {
 		// TODO autogenerated
@@ -2704,7 +2675,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *            after the update the input of the keyboard is written into
 	 *            this field
 	 */
-	public void updateKeyBoardField(MathKeyboardListener field) {
+	public void updateKeyboardField(MathKeyboardListener field) {
 		// Overwritten in subclass - nothing to do here
 	}
 
@@ -2805,16 +2776,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		return this.appletParameters.getDataParamEnableFileFeatures();
 	}
 
-	/**
-	 * Update prerelease flag
-	 *
-	 * @param prerelease
-	 *            prerelease parameter
-	 */
-	public void setPrerelease(boolean prerelease) {
-		this.prerelease = prerelease;
-	}
-
 	@Override
 	public void hideMenu() {
 		// for applets with menubar
@@ -2871,10 +2832,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		// only makes sense in GUI
 	}
 
-	public void openH5P(File pdfFile) {
-		// only makes sense in GUI
-	}
-
 	/**
 	 *
 	 * @return Pixel ratio including external transforms
@@ -2912,7 +2869,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	public boolean allowStylebar() {
 		return !isApplet()
 				|| getAppletParameters().getDataParamShowMenuBar(false)
-				|| getAppletParameters().getDataParamAllowStyleBar(false);
+				|| getAppletParameters().getDataParamAllowStyleBar();
 	}
 
 	@Override
@@ -3174,7 +3131,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	/**
 	 * @return the sub app code, if it exists, or the app code
 	 */
-	private String getSubAppCode() {
+	public String getSubAppCode() {
 		return getConfig().getSubAppCode() != null
 				? getConfig().getSubAppCode()
 				: getConfig().getAppCode();
@@ -3263,6 +3220,9 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 	@Override
 	public String getSlideID() {
+		if (!isWhiteboardActive()) {
+			return super.getSlideID();
+		}
 		return getPageController() == null
 				? GgbFile.SLIDE_PREFIX + GgbFile.getCounter()
 				: getPageController().getSlideID();
@@ -3583,7 +3543,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 * @return check if category should be enabled based on customToolbox parameter
 	 */
 	public boolean isToolboxCategoryEnabled(String category) {
-		List tools = getAppletParameters().getDataParamCustomToolbox();
+		List<String> tools = getAppletParameters().getDataParamCustomToolbox();
 		return tools.contains(category) || tools.isEmpty();
 	}
 }

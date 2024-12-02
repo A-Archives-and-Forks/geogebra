@@ -3,11 +3,13 @@ package org.geogebra.web.html5.euclidian;
 import org.geogebra.common.euclidian.ScreenReaderAdapter;
 import org.geogebra.common.main.ScreenReader;
 import org.geogebra.web.html5.Browser;
+import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.FocusUtil;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.ui.SimplePanel;
 
+import elemental2.core.JsString;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
@@ -67,10 +69,11 @@ public class ReaderWidget extends SimplePanel implements ScreenReaderAdapter {
 	 *            to read.
 	 */
 	private void read(final String text) {
-		ScreenReader.debug(text);
+		String normalized = new JsString(text).normalize();
+		ScreenReader.debug(normalized);
 		// make sure text isn't truncated by <return>
 		// https://help.geogebra.org/topic/alttext-reading-stops-at-hard-return
-		setText(text.replace('\n', ' '));
+		setText(normalized.replace('\n', ' '));
 		focus();
 		resetWithDelay();
 	}
@@ -89,7 +92,7 @@ public class ReaderWidget extends SimplePanel implements ScreenReaderAdapter {
 	 */
 	@Override
 	public void readText(String text) {
-		if (!Browser.needsAccessibilityView()) {
+		if (!Browser.needsAccessibilityView() && !isDomSliderActive()) {
 			readTextImmediate(text);
 		}
 	}
@@ -119,6 +122,12 @@ public class ReaderWidget extends SimplePanel implements ScreenReaderAdapter {
 		read(text);
 		FocusUtil.focusNoScroll(anchor);
 		scrollElement.scrollTop = scrollTop;
+	}
+
+	private boolean isDomSliderActive() {
+		Element activeElement = Dom.getActiveElement();
+		return activeElement != null && activeElement.hasTagName("INPUT")
+				&& "range".equals(activeElement.getAttribute("type"));
 	}
 
 	private void updateScrollElement() {

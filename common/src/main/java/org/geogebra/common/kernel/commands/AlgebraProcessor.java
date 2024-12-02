@@ -13,13 +13,16 @@ the Free Software Foundation.
 package org.geogebra.common.kernel.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.geogebra.common.io.MathMLParser;
 import org.geogebra.common.kernel.CircularDefinitionException;
@@ -103,7 +106,6 @@ import org.geogebra.common.kernel.geos.GeoVec2D;
 import org.geogebra.common.kernel.geos.GeoVec3D;
 import org.geogebra.common.kernel.geos.GeoVector;
 import org.geogebra.common.kernel.geos.HasArbitraryConstant;
-import org.geogebra.common.kernel.geos.HasExtendedAV;
 import org.geogebra.common.kernel.geos.HasSymbolicMode;
 import org.geogebra.common.kernel.implicit.AlgoDependentImplicitPoly;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
@@ -124,8 +126,6 @@ import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.main.error.ErrorHelper;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.main.syntax.CommandSyntax;
-import org.geogebra.common.main.syntax.EnglishCommandSyntax;
-import org.geogebra.common.main.syntax.LocalizedCommandSyntax;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
@@ -185,15 +185,15 @@ public class AlgebraProcessor {
 	 */
 	protected ParametricProcessor paramProcessor;
 
-	private final List<ExpressionFilter> expressionFilters = new ArrayList<>();
+	private final List<ExpressionFilter> inputExpressionFilters = new ArrayList<>();
+
+	private final List<ExpressionFilter> outputExpressionFilters = new ArrayList<>();
 
 	/** TODO use the selector from CommandDispatcher instead. */
 	@Deprecated
 	private CommandFilter noCASfilter;
 
 	private SymbolicProcessor symbolicProcessor;
-	private CommandSyntax localizedCommandSyntax;
-	private CommandSyntax englishCommandSyntax;
 	private final SqrtMinusOneReplacer sqrtMinusOneReplacer;
 
 	// Somewhat duplicates EvalInfo.isRedefinition but propagating EvalInfo to constructors of
@@ -212,7 +212,6 @@ public class AlgebraProcessor {
 
 		this.cmdDispatcher = commandDispatcher;
 		app = kernel.getApplication();
-		app.onCommandDispatcherSet(cmdDispatcher);
 		loc = app.getLocalization();
 		parser = kernel.getParser();
 		setEnableStructures(app.getConfig().isEnableStructures());
@@ -257,27 +256,48 @@ public class AlgebraProcessor {
 	}
 
 	/**
-	 * Add an expression filter (used for dynamically filtering valid expressions).
-	 * @param filter An expression filter.
+	 * Add an input expression filter (used for dynamically filtering valid input expressions).
+	 * @param filter An input expression filter.
 	 */
-	public void addExpressionFilter(ExpressionFilter filter) {
+	public void addInputExpressionFilter(ExpressionFilter filter) {
 		if (filter != null) {
-			expressionFilters.add(filter);
+			inputExpressionFilters.add(filter);
 		}
 	}
 
 	/**
-	 * Remove an expression filter.
-	 * @param filter An expression filter.
+	 * Remove an input expression filter.
+	 * @param filter An input expression filter.
 	 */
-	public void removeExpressionFilter(ExpressionFilter filter) {
+	public void removeInputExpressionFilter(ExpressionFilter filter) {
 		if (filter != null) {
-			expressionFilters.remove(filter);
+			inputExpressionFilters.remove(filter);
 		}
 	}
 
-	private boolean isExpressionAllowed(ValidExpression expression) {
-		for (ExpressionFilter expressionFilter : expressionFilters) {
+	/**
+	 * Add an output expression filter (used for dynamically filtering output expressions).
+	 * @param filter An output expression filter.
+	 */
+	public void addOutputExpressionFilter(ExpressionFilter filter) {
+		if (filter != null) {
+			outputExpressionFilters.add(filter);
+		}
+	}
+
+	/**
+	 * Remove an output expression filter.
+	 * @param filter An output expression filter.
+	 */
+	public void removeOutputExpressionFilter(ExpressionFilter filter) {
+		if (filter != null) {
+			outputExpressionFilters.remove(filter);
+		}
+	}
+
+	private boolean isExpressionAllowed(ValidExpression expression,
+			List<ExpressionFilter> filters) {
+		for (ExpressionFilter expressionFilter : filters) {
 			if (!expressionFilter.isAllowed(expression)) {
 				return false;
 			}
@@ -404,8 +424,6 @@ public class AlgebraProcessor {
 				// so we don't need to call computeOutput,
 				// which also causes marble crashes
 
-				// casCell.computeOutput();
-				// casCell.updateCascade();
 			} catch (Exception e) {
 				app.getEventDispatcher().enableListeners();
 				Log.debug(e);
@@ -953,7 +971,7 @@ public class AlgebraProcessor {
 			final ErrorHandler handler,
 			final AsyncOperation<GeoElementND[]> callback0,
 			final EvalInfo info) {
-		if (!isExpressionAllowed(ve)) {
+		if (!isExpressionAllowed(ve, inputExpressionFilters)) {
 			return null;
 		}
 		// collect undefined variables
@@ -966,16 +984,15 @@ public class AlgebraProcessor {
 				undefinedVariables, callback0,
 				new EvalInfo(!cons.isSuppressLabelsActive())
 						.withSliders(info.isAutocreateSliders()));
-		final int step = cons.getStep();
 		if (ret != null) {
 			if (storeUndo) {
 				app.storeUndoInfo();
 			}
-			runCallback(callback0, ret, step);
-			return ret;
+			return postProcessCreatedElements(callback0, ret, handler, null);
 		}
 		EvalInfo newInfo = info;
-		if (undefinedVariables.size() > 0) {
+		Set<GeoNumeric> sliders = null;
+		if (!undefinedVariables.isEmpty()) {
 
 			// ==========================
 			// step0: check if there's an error on processing
@@ -996,12 +1013,7 @@ public class AlgebraProcessor {
 			}
 			if (geoElements != null) {
 				kernel.getConstruction().registerFunctionVariable(null);
-
-				// this was forgotten to do here, added by Arpad
-				// TODO: maybe need to add this to more places here?
-				runCallback(callback0, geoElements, step);
-
-				return geoElements;
+				return postProcessCreatedElements(callback0, geoElements, handler, null);
 			}
 
 			StringBuilder sb = new StringBuilder();
@@ -1010,11 +1022,8 @@ public class AlgebraProcessor {
 			// step3: make a list of undefined variables so we can ask the
 			// user
 			// ==========================
-			Iterator<String> it = undefinedVariables.iterator();
-			while (it.hasNext()) {
-				String label = it.next();
+			for (String label : undefinedVariables) {
 				if (kernel.lookupLabel(label) == null) {
-					// Log.debug("not found: " + label);
 					sb.append(label);
 					sb.append(", ");
 				}
@@ -1032,57 +1041,27 @@ public class AlgebraProcessor {
 				if (!info.isAutocreateSliders()) {
 					GeoElementND[] rett = tryReplacingProducts(ve, handler,
 							info);
-					runCallback(callback0, rett, step);
-					return rett;
+					return postProcessCreatedElements(callback0, rett, handler, null);
 				}
-
-				// boolean autoCreateSlidersAnswer = false;
 
 				// "Create sliders for a, b?" Create Sliders / Cancel
 				// Yes: create sliders and draw line
 				// No: go back into input bar and allow user to change input
-				final Localization loc2 = loc;
 
-				AsyncOperation<String[]> callback = null;
-
-				// final FunctionVariable fvX2 = fvX;
 				final ValidExpression ve2 = ve;
 
-				callback = new AsyncOperation<String[]>() {
-
-					@Override
-					public void callback(String[] dialogResult) {
-						GeoElement[] geos = null;
-
-						// TODO: need we to catch the Exception
-						// here,
-						// which can throw the
-						// processAlgebraInputCommandNoExceptionHandling
-						// function?
-						if (CREATE_SLIDER.equals(dialogResult[0])) {
-							// insertStarIfNeeded(undefinedVariables,
-							// ve2, fvX2);
-							replaceUndefinedVariables(ve2,
-									new TreeSet<>(), null,
-									info.isMultipleUnassignedAllowed());
-						}
-						try {
-							geos = processValidExpression(storeUndo, handler,
-									ve2, info);
-						} catch (MyError ee) {
-							ErrorHelper.handleError(ee,
-									ve2.toString(
-											StringTemplate.defaultTemplate),
-									loc2, handler);
-							return;
-						} catch (Exception ee) {
-							ErrorHelper.handleException(ee, app, handler);
-							return;
-						}
-
-						runCallback(callback0, geos, step);
+				AsyncOperation<String[]> callback = dialogResult -> {
+					Set<GeoNumeric> asyncSliders = new HashSet<>();
+					if (CREATE_SLIDER.equals(dialogResult[0])) {
+						replaceUndefinedVariables(ve2,
+								asyncSliders, null,
+								info.isMultipleUnassignedAllowed());
 					}
 
+					GeoElement[] geos = processValidExpression(storeUndo, handler,
+								ve2, info, asyncSliders);
+
+					postProcessCreatedElements(callback0, geos, handler, asyncSliders);
 				};
 				boolean autoCreateSlidersAnswer = handler
 						.onUndefinedVariables(sb.toString(), callback);
@@ -1092,12 +1071,11 @@ public class AlgebraProcessor {
 				}
 			}
 
-			// Log.debug("list of variables: "+sb.toString());
-
 			// ==========================
 			// step5: replace undefined variables
 			// ==========================
-			replaceUndefinedVariables(ve, new TreeSet<>(), null,
+			sliders = new HashSet<>();
+			replaceUndefinedVariables(ve, sliders, null,
 					info.isMultipleUnassignedAllowed());
 
 			// Do not copy plain variables, as
@@ -1108,9 +1086,11 @@ public class AlgebraProcessor {
 		// process ValidExpression (built by parser)
 
 		GeoElement[] geos = processValidExpression(storeUndo, handler, ve,
-				newInfo);
-		runCallback(callback0, geos, step);
-		return geos;
+				newInfo, sliders);
+
+		// Test output for filtered expression
+
+		return postProcessCreatedElements(callback0, geos, handler, sliders);
 	}
 
 	private GeoElement evalSymbolic(final ValidExpression ve, EvalInfo info) {
@@ -1171,19 +1151,41 @@ public class AlgebraProcessor {
 	}
 
 	/**
-	 * Run callbackl on new geos if there are any or empty array otherwise
+	 * Run callback on new geos if there are any or empty array otherwise
 	 *
 	 * @param callback0
 	 *            callback
-	 * @param ret
+	 * @param geos
 	 *            possible new geos
-	 * @param step
-	 *            construction step before geos were created
+	 * @param sliders
+	 *            auto-created sliders
 	 */
-	void runCallback(AsyncOperation<GeoElementND[]> callback0,
-			GeoElementND[] ret, int step) {
+	GeoElementND[] postProcessCreatedElements(AsyncOperation<GeoElementND[]> callback0,
+			GeoElementND[] geos, ErrorHandler handler, @Nullable Set<GeoNumeric> sliders) {
+		GeoElementND[] filteredGeos = geos;
+		if (geos != null) {
+			boolean containsRestrictedExpressions = Arrays.stream(geos)
+					.map(ExpressionValue::wrap)
+					.anyMatch(geo -> !isExpressionAllowed(geo, outputExpressionFilters));
+			if (containsRestrictedExpressions) {
+				// Remove filtered geos
+				Arrays.stream(geos).forEach(GeoElementND::remove);
+				filteredGeos = null;
+				MyError myError = new MyError(loc, Errors.InvalidInput);
+				ErrorHelper.handleError(myError, null, loc, handler);
+				removeSliders(sliders);
+			}
+		}
 		if (callback0 != null) {
-			callback0.callback(ret);
+			callback0.callback(filteredGeos);
+		}
+		return filteredGeos;
+	}
+
+	private void removeSliders(Set<GeoNumeric> sliders) {
+		if (sliders != null) {
+			sliders.forEach(GeoElementND::remove);
+			sliders.clear();
 		}
 	}
 
@@ -1341,7 +1343,7 @@ public class AlgebraProcessor {
 	 * @return processed expression
 	 */
 	public synchronized GeoElement[] processValidExpression(boolean storeUndo,
-			ErrorHandler handler, ValidExpression ve, EvalInfo info) {
+			ErrorHandler handler, ValidExpression ve, EvalInfo info, Set<GeoNumeric> sliders) {
 		GeoElement[] geoElements = null;
 		try {
 			geoElements = processValidExpression(ve, info);
@@ -1349,11 +1351,13 @@ public class AlgebraProcessor {
 				app.storeUndoInfo();
 			}
 		} catch (MyError e) {
+			removeSliders(sliders);
 			ErrorHelper.handleError(e,
 					ve == null ? null
 							: ve.toString(StringTemplate.defaultTemplate),
 					loc, handler);
 		} catch (Exception ex) {
+			removeSliders(sliders);
 			Log.debug("Exception" + ex.getLocalizedMessage());
 			ErrorHelper.handleException(ex, app, handler);
 		} finally {
@@ -1377,7 +1381,7 @@ public class AlgebraProcessor {
 	 *     more variables
 	 */
 	public void replaceUndefinedVariables(ValidExpression ve,
-			TreeSet<GeoNumeric> undefined, String[] except, boolean multiplication) {
+			Set<GeoNumeric> undefined, String[] except, boolean multiplication) {
 		ReplaceUndefinedVariables replacer = new Traversing.ReplaceUndefinedVariables(
 				this.kernel, undefined, except);
 		replacer.setSimplifyMultiplication(multiplication);
@@ -1788,7 +1792,21 @@ public class AlgebraProcessor {
 	 * @return resulting number
 	 */
 	public GeoNumberValue evaluateToNumeric(String str, ErrorHandler handler) {
+		EvalInfo info = new EvalInfo(!cons.isSuppressLabelsActive(), true);
+		return evaluateToNumeric(str, handler, info);
+	}
 
+	/**
+	 * Parses given String str and tries to evaluate it to a NumberValue Returns
+	 * null if something went wrong.
+	 *
+	 * @param str
+	 *            string to parse
+	 * @param handler
+	 *            callback for handling errors
+	 * @return resulting number
+	 */
+	public GeoNumberValue evaluateToNumeric(String str, ErrorHandler handler, EvalInfo info) {
 		if (str == null || "".equals(str)) {
 			ErrorHelper.handleInvalidInput(str, loc, handler);
 			return new GeoNumeric(cons, Double.NaN);
@@ -1800,7 +1818,7 @@ public class AlgebraProcessor {
 		GeoNumberValue num = null;
 		try {
 			ValidExpression ve = parser.parseGeoGebraExpression(str);
-			GeoElementND[] temp = processValidExpression(ve);
+			GeoElementND[] temp = processValidExpression(ve, info);
 
 			if (temp[0] instanceof GeoNumberValue) {
 				num = (GeoNumberValue) temp[0];
@@ -2533,7 +2551,8 @@ public class AlgebraProcessor {
 		if (!cx.containsDeep(loc2)) {
 			add(coefX, 0, mult.multiply(cx));
 			return 0;
-		} else if (cx.getOperation() == Operation.PLUS) {
+		} else if (cx.getOperation() == Operation.PLUS
+				|| cx.getOperation() == Operation.INVISIBLE_PLUS) {
 			int deg1 = getPolyCoeffs(cx.getLeftTree(), coefX, mult, loc2);
 			int deg2 = getPolyCoeffs(cx.getRightTree(), coefX, mult, loc2);
 			if (deg1 < 0 || deg2 < 0) {
@@ -3175,14 +3194,18 @@ public class AlgebraProcessor {
 
 		// ELSE: resolve variables and evaluate expressionnode
 		n.resolveVariables(info);
+
+		// Check for allowed expressions again, as resolving variables might end up creating
+		// expressions that otherwise are not allowed. See APPS-5138
+		if (!isExpressionAllowed(n, inputExpressionFilters)) {
+			return null;
+		}
 		if (n.isLeaf() && n.getLeft().isExpressionNode()) {
 			// we changed f' to f'(x) -> clean double wrap
-
-			boolean wasPoint = n.isForcedPoint();
-			n = n.getLeft().wrap();
-			if (wasPoint) {
-				n.setForcePoint();
-			}
+			ExpressionNode unwrapped = n.getLeft().wrap();
+			n.copyAttributesTo(unwrapped);
+			unwrapped.setLabels(n.getLabels());
+			n = unwrapped;
 		}
 
 		String label = n.getLabel();
@@ -3335,9 +3358,6 @@ public class AlgebraProcessor {
 
 		if (info.isSymbolic() && ret instanceof HasSymbolicMode) {
 			((HasSymbolicMode) ret).initSymbolicMode();
-		}
-		if (ret instanceof HasExtendedAV) {
-			((HasExtendedAV) ret).setShowExtendedAV(info.isAutocreateSliders());
 		}
 		if (info.isLabelOutput()) {
 			String label = n.getLabel();
@@ -3790,56 +3810,28 @@ public class AlgebraProcessor {
 	}
 
 	/**
-	 * @param cmdInt
-	 *            command name
-	 * @param settings
-	 *            settings
-	 * @return syntax
+	 * Returns the syntax for the given command, if the command is allowed.
+	 * @param syntax an abstraction for loading command syntax definitions
+	 * @param internalCommandName the internal command name (see {@link Commands}).
+	 * @param settings the current (application) settings.
+	 * @return the syntax for the command if the command is allowed, null otherwise.
 	 */
-	public String getSyntax(String cmdInt, Settings settings) {
-		if (localizedCommandSyntax == null) {
-			localizedCommandSyntax =
-					new LocalizedCommandSyntax(loc, app.getConfig().newCommandSyntaxFilter());
-		}
-		return getSyntax(localizedCommandSyntax, cmdInt, settings);
-	}
-
-	/**
-	 * @param cmdInt
-	 *            command name
-	 * @param settings
-	 *            settings
-	 * @return syntax in english // as fallback
-	 */
-	public String getEnglishSyntax(String cmdInt, Settings settings) {
-		if (englishCommandSyntax == null) {
-			englishCommandSyntax =
-					new EnglishCommandSyntax(loc, app.getConfig().newCommandSyntaxFilter());
-		}
-		return getSyntax(englishCommandSyntax, cmdInt, settings);
-	}
-
-	private String getSyntax(CommandSyntax syntax, String cmdInt, Settings settings) {
+	public String getSyntax(CommandSyntax syntax, String internalCommandName, Settings settings) {
 		int dim = settings.getEuclidian(-1).isEnabled() ? 3 : 2;
 		if (cmdDispatcher.isCASAllowed()) {
-			return syntax.getCommandSyntax(cmdInt, dim);
+			return syntax.getCommandSyntax(internalCommandName, dim);
 		}
 		Commands cmd = null;
 		try {
-			cmd = Commands.valueOf(cmdInt);
+			cmd = Commands.valueOf(internalCommandName);
 		} catch (Exception e) {
 			// macro or error
 		}
 		if (cmd == null) {
-			return syntax.getCommandSyntax(cmdInt, dim);
+			return syntax.getCommandSyntax(internalCommandName, dim);
 		}
-		if (!this.cmdDispatcher.isAllowedByCommandFilters(cmd)) {
+		if (!cmdDispatcher.isAllowedByCommandFilters(cmd)) {
 			return null;
-		}
-		// IntegralBetween gives all syntaxes. Typing Integral or NIntegral
-		// gives suggestions for NIntegral
-		if (cmd == Commands.Integral) {
-			return syntax.getCommandSyntaxCAS("NIntegral");
 		}
 		if (noCASfilter == null) {
 			noCASfilter = CommandFilterFactory.createNoCasCommandFilter();
@@ -3848,7 +3840,7 @@ public class AlgebraProcessor {
 			return null;
 		}
 
-		return syntax.getCommandSyntax(cmdInt, dim);
+		return syntax.getCommandSyntax(internalCommandName, dim);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package org.geogebra.web.full.main;
 
+import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.MaterialsManager;
 import org.geogebra.common.main.MyError.Errors;
@@ -236,8 +237,8 @@ public abstract class FileManager extends MaterialsManager {
 		this.fileHandle = handle;
 		this.provider = Provider.LOCAL;
 		handle.getFile().then(file -> {
-			app.getKernel().getConstruction()
-					.setTitle(StringUtil.removeFileExtension(file.name));
+			app.getKernel().getConstruction().setTitle(
+					StringUtil.removeFolderName(StringUtil.removeFileExtension(file.name)));
 			return null;
 		});
 	}
@@ -272,5 +273,9 @@ public abstract class FileManager extends MaterialsManager {
 
 	public void resetFileHandle() {
 		fileHandle = null;
+	}
+
+	public boolean isOfflinePlatform() {
+		return app.getPlatform() == GeoGebraConstants.Platform.OFFLINE;
 	}
 }

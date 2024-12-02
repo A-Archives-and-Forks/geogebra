@@ -182,6 +182,7 @@ public class ArbitraryConstantRegistry {
 	private GeoNumeric createNumericConstant(Construction cons,
 			String label, double initialValue, double increment) {
 		GeoNumeric numeric = new GeoNumeric(cons, initialValue);
+		numeric.setAVSliderOrCheckboxVisible(true);
 		numeric.setSendValueToCas(false);
 		if (!getKernel().getApplication().showAutoCreatedSlidersInEV()
 				&& !getKernel().getConstruction().isFileLoading()) {
@@ -417,8 +418,7 @@ public class ArbitraryConstantRegistry {
 		}
 
 		private ExpressionValue handleSpecialCase(ExpressionNode en) {
-			if (en.getOperation() == Operation.PLUS
-					|| en.getOperation() == Operation.MINUS) {
+			if (en.getOperation().isPlusorMinus()) {
 				if (isMultipleOfArbconst(en.getRight())) {
 					return en.getLeft();
 				}

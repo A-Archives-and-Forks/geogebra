@@ -425,8 +425,7 @@ public class ExpressionNode extends ValidExpression
 	private void doResolveVariables(EvalInfo info) {
 		// resolve left wing
 		if (left.isVariable()) {
-			left = ((Variable) left).resolveAsExpressionValue(info.getSymbolicMode(),
-					info.isMultipleUnassignedAllowed(), info.isMultiLetterVariablesAllowed());
+			left = ((Variable) left).resolveAsExpressionValue(info);
 			if (operation == Operation.POWER
 					|| operation == Operation.FACTORIAL) {
 				fixPowerFactorial(Operation.MULTIPLY);
@@ -444,8 +443,7 @@ public class ExpressionNode extends ValidExpression
 		// resolve right wing
 		if (right != null) {
 			if (right.isVariable()) {
-				right = ((Variable) right).resolveAsExpressionValue(info.getSymbolicMode(),
-						info.isMultipleUnassignedAllowed(), info.isMultiLetterVariablesAllowed());
+				right = ((Variable) right).resolveAsExpressionValue(info);
 				right = groupPowers(right);
 			} else {
 				right.resolveVariables(info);
@@ -489,7 +487,8 @@ public class ExpressionNode extends ValidExpression
 	}
 
 	private static ExpressionValue buildProduct(ExpressionNode power, ExpressionValue product) {
-		return product == null ? power : power.multiply(product);
+		return product == null ? power
+				: new ExpressionNode(power.kernel, product, Operation.MULTIPLY, power);
 	}
 
 	/**
@@ -2544,6 +2543,7 @@ public class ExpressionNode extends ValidExpression
 			break;
 
 		case PLUS:
+		case INVISIBLE_PLUS:
 			return wrap(left.integral(fv, kernel0))
 					.plus(right.integral(fv, kernel0));
 		case MINUS:
@@ -2891,7 +2891,7 @@ public class ExpressionNode extends ValidExpression
 			if (en.left.isNumberValue() && !en.left.contains(fv)) {
 				// strip off the "+1" etc
 				ev = en.right;
-				factor = op.equals(Operation.PLUS) ? 1 : -1;
+				factor = op.equals(Operation.MINUS) ? -1 : 1;
 			} else if (en.right.isNumberValue() && !en.right.contains(fv)) {
 				// strip off the "+1" etc
 				ev = en.left;
@@ -3142,9 +3142,13 @@ public class ExpressionNode extends ValidExpression
 	 */
 	public boolean containsFreeFunctionVariable(String name) {
 		return checkForFreeVars(left, name)
+				|| (operation == Operation.IF_LIST
+						&& left instanceof MyList && ((ValidExpression) left)
+								.containsFunctionVariable(name))
 				|| (right != null && checkForFreeVars(right, name))
 				|| ((operation == Operation.FUNCTION_NVAR
-						|| operation == Operation.ELEMENT_OF)
+						|| operation == Operation.ELEMENT_OF
+						|| operation == Operation.IF_LIST)
 						&& right instanceof MyList && ((ValidExpression) right)
 								.containsFunctionVariable(name));
 	}
@@ -3449,7 +3453,7 @@ public class ExpressionNode extends ValidExpression
 	 * @return this as fraction
 	 */
 	public String toFractionString(StringTemplate tpl) {
-		initFraction();
+		initFraction(tpl.allowPiHack());
 		return ((ExpressionNode) resolve).toFractionStringFlat(tpl,
 				kernel.getLocalization());
 	}
@@ -3458,7 +3462,7 @@ public class ExpressionNode extends ValidExpression
 	 * @return Whether this is a fraction (also true for 1/2+1/3)
 	 */
 	public boolean isFraction() {
-		initFraction();
+		initFraction(true);
 		return resolve.isOperation(Operation.DIVIDE);
 	}
 	
@@ -3469,9 +3473,9 @@ public class ExpressionNode extends ValidExpression
 		return isFraction() && !resolve.inspect(Inspecting.SpecialDouble.INSTANCE);
 	}
 
-	private void initFraction() {
+	private void initFraction(boolean allowPi) {
 		if (resolve == null || !resolve.isExpressionNode()) {
-			resolve = Fractions.getResolution(this, kernel, true);
+			resolve = Fractions.getResolution(this, kernel, allowPi);
 		}
 	}
 
@@ -3487,10 +3491,11 @@ public class ExpressionNode extends ValidExpression
 	}
 
 	/**
+	 * May return a simple fraction or a fraction (a*pi)/b, where a,b are integers.
 	 * @return simplified fraction if this is one; null otherwise
 	 */
 	public ExpressionNode asFraction() {
-		initFraction();
+		initFraction(true);
 		if (resolve.isExpressionNode()) {
 			return resolve.wrap();
 		}

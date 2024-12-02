@@ -40,6 +40,7 @@ import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.geogebra.common.kernel.arithmetic.ValueType;
 import org.geogebra.common.kernel.arithmetic.variable.Variable;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
+import org.geogebra.common.kernel.commands.CommandNotLoadedError;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.commands.EvalInfo;
 import org.geogebra.common.kernel.commands.SymbolicProcessor;
@@ -82,6 +83,7 @@ public class GeoSymbolic extends GeoElement
 	private int numericPrintFigures;
 	private int numericPrintDecimals;
 	private ConditionalSerializer conditionalSerializer;
+	private ExpressionNode excludedEquation;
 
 	/**
 	 * @param c construction
@@ -300,13 +302,8 @@ public class GeoSymbolic extends GeoElement
 	}
 
 	private boolean argumentsDefined(Command casInput) {
-		boolean argsDefined = casInput.inspect(new Inspecting() {
-			@Override
-			public boolean check(ExpressionValue v) {
-				return !v.toValueString(StringTemplate.defaultTemplate).contains("?");
-			}
-		});
-		return argsDefined;
+		return casInput.inspect(v ->
+				!v.toValueString(StringTemplate.defaultTemplate).contains("?"));
 	}
 
 	private String tryNumericCommand(Command casInput, String casResult) {
@@ -328,8 +325,8 @@ public class GeoSymbolic extends GeoElement
 		return result;
 	}
 
-	public void setWrapInNumeric(boolean input) {
-		wrapInNumeric = input;
+	public void setWrapInNumeric(boolean wrapInNumeric) {
+		this.wrapInNumeric = wrapInNumeric;
 	}
 
 	public boolean shouldWrapInNumeric() {
@@ -604,6 +601,13 @@ public class GeoSymbolic extends GeoElement
 		cons.setSuppressLabelCreation(true);
 		try {
 			return process(getTwinInput());
+		} catch (CommandNotLoadedError err) {
+			// by failing the whole twin creation we make sure this uses the same path
+			// in web and other platforms
+			if (!isLabelSet()) {
+				remove();
+			}
+			throw err;
 		} catch (Throwable throwable) {
 			try {
 				return process(getTwinFallbackInput());
@@ -630,7 +634,33 @@ public class GeoSymbolic extends GeoElement
 	}
 
 	private boolean useOutputAsMainTwin() {
-		return constant != null && constant.getTotalNumberOfConsts() > 0;
+		return (constant != null && constant.getTotalNumberOfConsts() > 0)
+				|| (getDefinition() != null && isCasForwardingCommand(getDefinition().unwrap()));
+	}
+
+	/**
+	 * @param unwrappedDefinition unwrapped definition of this element
+	 * @return whether running the input through AlgebraProcessor brings no value compared to
+	 * just processing output of the CAS computation
+	 */
+	private boolean isCasForwardingCommand(ExpressionValue unwrappedDefinition) {
+		Commands cmd = unwrappedDefinition instanceof Command
+				? Commands.stringToCommand(((Command) unwrappedDefinition).getName()) : null;
+		if (cmd == null) {
+			return false;
+		}
+		switch (cmd) {
+		case Simplify:
+		case Expand:
+		case Factor:
+		case TrigSimplify:
+		case TrigCombine:
+		case TrigExpand:
+		case Min:
+		case Max:
+			return true;
+		default: return false;
+		}
 	}
 
 	private ExpressionNode getNodeFromOutput() throws ParseException {
@@ -1162,10 +1192,25 @@ public class GeoSymbolic extends GeoElement
 		return super.getFormulaString(tpl, substituteNumbers);
 	}
 
+	@Override
+	protected void appendObjectColorXML(StringBuilder sb) {
+		if (isDefaultGeo() || isColorSet()) {
+			super.appendObjectColorXML(sb);
+		}
+	}
+
 	private ConditionalSerializer getConditionalSerializer() {
 		if (conditionalSerializer == null) {
 			conditionalSerializer = new ConditionalSerializer(kernel, this);
 		}
 		return conditionalSerializer;
+	}
+
+	public void setExcludedEquation(ExpressionNode excludedEquation) {
+		this.excludedEquation = excludedEquation;
+	}
+
+	public ExpressionNode getExcludedEquation() {
+		return this.excludedEquation;
 	}
 }

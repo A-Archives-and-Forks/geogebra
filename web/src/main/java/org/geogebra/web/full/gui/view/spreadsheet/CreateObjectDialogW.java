@@ -37,6 +37,7 @@ public class CreateObjectDialogW extends ComponentDialog implements ICreateObjec
 
 	private ComponentCheckbox ckTranspose;
 	private RadioButtonPanel<Boolean> objValRadioButtonPanel;
+
 	/** switch scan between rows and columns */
 	ListBox cbScanOrder;
 
@@ -74,7 +75,7 @@ public class CreateObjectDialogW extends ComponentDialog implements ICreateObjec
 		MyTableW table = view.getSpreadsheetTable();
 		coModel = new CreateObjectModel(app, objectType, this);
 		coModel.setCellRangeProcessor(table.getCellRangeProcessor());
-		coModel.setSelectedCellRanges(table.getSelectedCellRanges());
+		coModel.setSelectedRanges(table.getSelectedRanges());
 		loc = app.getLocalization();
 
 		createAdditionalGUI();
@@ -88,27 +89,6 @@ public class CreateObjectDialogW extends ComponentDialog implements ICreateObjec
 		updateGUI();
 		setOnNegativeAction(coModel::cancel);
 		setOnPositiveAction(coModel::ok);
-	}
-
-	/**
-	 * @param  objectType - type of object
-	 * @return title
-	 */
-	public String getTitle(int objectType) {
-		switch (objectType) {
-		default:
-			return null;
-		case 0:
-			return "CreateList";
-		case 1:
-			return "CreateListOfPoints";
-		case 3:
-			return "CreateTable";
-		case 4:
-			return "CreatePolyLine";
-		case 2:
-			return "CreateMatrix";
-		}
 	}
 
 	/**

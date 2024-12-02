@@ -20,6 +20,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -29,7 +31,6 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -482,7 +483,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 			textOptionsPanel.setEditPanel(null);
 		}
 
-		textTab = new TabPanel(textTabList);
+		textTab = new TabPanel(textTabList, true);
 		tabPanelList.add(textTab);
 
 		// slider tab
@@ -858,22 +859,52 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private ArrayList<JPanel> panelList;
 
 		public TabPanel(ArrayList<JPanel> pVec) {
+			this(pVec, false);
+		}
+
+		public TabPanel(ArrayList<JPanel> pVec, boolean fullHeight) {
 			panelList = pVec;
 
 			setLayout(new BorderLayout());
-
 			JPanel panel = new JPanel();
 			panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-			panel.setLayout(new FullWidthLayout());
+			panel.setLayout(new FullWidthLayout(5, fullHeight));
 
-			for (int i = 0; i < pVec.size(); i++) {
-				panel.add(pVec.get(i));
+			for (JPanel jPanel : pVec) {
+				panel.add(jPanel);
 			}
 
 			JScrollPane scrollPane = new JScrollPane(panel);
+			if (fullHeight) {
+				scrollPane.addComponentListener(getInvalidator(pVec.get(pVec.size() - 1)));
+			}
 			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			add(scrollPane, BorderLayout.CENTER);
+		}
+
+		private ComponentListener getInvalidator(JPanel jPanel) {
+			return new ComponentListener() {
+				@Override
+				public void componentResized(ComponentEvent e) {
+					jPanel.invalidate();
+				}
+
+				@Override
+				public void componentMoved(ComponentEvent e) {
+					// not needed
+				}
+
+				@Override
+				public void componentShown(ComponentEvent e) {
+					// not needed
+				}
+
+				@Override
+				public void componentHidden(ComponentEvent e) {
+					// not needed
+				}
+			};
 		}
 
 		public TabPanel(JPanel panel) {
@@ -881,17 +912,6 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 			panelList.add(panel);
 
 			setLayout(new BorderLayout());
-			/*
-			 * JPanel panel = new JPanel();
-			 * panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-			 * 
-			 * panel.setLayout(new FullWidthLayout());
-			 * 
-			 * for (int i = 0; i < pVec.size(); i++) { panel.add(pVec.get(i)); }
-			 * 
-			 * JScrollPane scrollPane = new JScrollPane(panel);
-			 * scrollPane.setBorder(BorderFactory.createEmptyBorder());
-			 */
 			add(panel, BorderLayout.CENTER);
 		}
 
@@ -1244,6 +1264,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private JLabel label;
 		private JComboBox cbLocation;
 		private DefaultComboBoxModel cbModel;
+		List<String> currentContent;
 
 		public StartPointPanel() {
 			// textfield for animation step
@@ -1283,14 +1304,11 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 			cbLocation.removeActionListener(this);
 
 			// repopulate model with names of points from the geoList's model
-			// take all points from construction
-			// TreeSet points =
-			// kernel.getConstruction().getGeoSetLabelOrder(GeoElement.GEO_CLASS_POINT);
-			TreeSet<GeoElement> points = kernel.getPointSet();
-			if (points.size() != cbModel.getSize() - 1) {
+			List<String> points = new ArrayList<>(model.getChoices(loc));
+			if (!points.equals(currentContent)) {
 				cbModel.removeAllElements();
-				// cbModel.addElement(null);
 				model.fillModes(loc);
+				currentContent = points;
 			}
 			model.updateProperties();
 			cbLocation.addActionListener(this);

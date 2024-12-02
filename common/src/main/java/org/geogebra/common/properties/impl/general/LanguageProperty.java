@@ -1,8 +1,14 @@
 package org.geogebra.common.properties.impl.general;
 
+import static java.util.Map.entry;
+import static org.geogebra.common.main.PreviewFeature.ALL_LANGUAGES;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.Feature;
 import org.geogebra.common.main.Localization;
+import org.geogebra.common.main.PreviewFeature;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
 import org.geogebra.common.util.lang.Language;
@@ -19,8 +25,6 @@ public class LanguageProperty extends AbstractNamedEnumeratedProperty<String> {
     @Weak
     private final App app;
 
-    private String[] languageCodes;
-
     /**
      * Constructs a language property.
      *
@@ -30,21 +34,15 @@ public class LanguageProperty extends AbstractNamedEnumeratedProperty<String> {
     public LanguageProperty(App app, Localization localization) {
         super(localization, "Language");
         this.app = app;
-        setupValues(app, localization);
+        setupValues(localization);
     }
 
-    private void setupValues(App app, Localization localization) {
+    private void setupValues(Localization localization) {
         Language[] languages = localization.getSupportedLanguages(
-                app.has(Feature.ALL_LANGUAGES));
-        String[] valueNames = new String[languages.length];
-        languageCodes = new String[languages.length];
-        for (int i = 0; i < languages.length; i++) {
-            Language language = languages[i];
-            valueNames[i] = language.name;
-            languageCodes[i] = language.toLanguageTag();
-        }
-        setValues(languageCodes);
-        setValueNames(valueNames);
+                PreviewFeature.isAvailable(ALL_LANGUAGES));
+        setNamedValues(Arrays.stream(languages)
+                .map(language -> entry(language.toLanguageTag(), language.name))
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -54,7 +52,7 @@ public class LanguageProperty extends AbstractNamedEnumeratedProperty<String> {
 
     @Override
     public String getValue() {
-        return getLocalization().getLanguageTag();
+        return getLocalization().getPreferredLanguageTag();
     }
 
     @Override

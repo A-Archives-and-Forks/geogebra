@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
@@ -44,6 +45,8 @@ import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.euclidian.plot.GeneralPathClippedForCurvePlotter;
 import org.geogebra.common.euclidian.plot.interval.IntervalPathPlotter;
 import org.geogebra.common.euclidian.plot.interval.IntervalPathPlotterImpl;
+import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
+import org.geogebra.common.exam.restrictions.ExamRestrictable;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.factories.FormatFactory;
 import org.geogebra.common.gui.EdgeInsets;
@@ -80,7 +83,6 @@ import org.geogebra.common.kernel.matrix.CoordSys;
 import org.geogebra.common.kernel.matrix.Coords;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.App.ExportType;
-import org.geogebra.common.main.Feature;
 import org.geogebra.common.main.GeoGebraColorConstants;
 import org.geogebra.common.main.GuiManagerInterface;
 import org.geogebra.common.main.ScreenReader;
@@ -107,7 +109,7 @@ import com.himamis.retex.editor.share.util.Unicode;
  * View containing graphic representation of construction elements
  */
 public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
-		SetLabels {
+		SetLabels, ExamRestrictable {
 
 	private boolean isCrashlyticsLoggingEnabled;
 
@@ -317,6 +319,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	protected boolean[] drawBorderAxes;
 
 	private boolean needsAllDrawablesUpdate;
+	private boolean restrictGraphSelectionForFunctions;
 	protected boolean batchUpdate;
 	/** kernel */
 	@Weak
@@ -488,8 +491,6 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	// keep same center after layout resize
 	private boolean keepCenter = false;
 
-	private boolean screenChanged = false;
-
 	private boolean tracing = false;
 
 	protected EuclidianViewCompanion companion;
@@ -501,7 +502,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	 */
 	protected double lockedAxesRatio = -1;
 	private boolean updateBackgroundOnNextRepaint;
-	
+
 	private List<GeoElement> specPoints;
 	private GRectangle exportFrame;
 	private GRectangle tempFrame;
@@ -517,7 +518,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	protected SymbolicEditor symbolicEditor = null;
 	private final CoordSystemInfo coordSystemInfo;
 
-	private Rectangle visibleRect;
+	private Rectangle visibleRect = new Rectangle();
 	private EdgeInsets safeAreaInsets = new EdgeInsets(MINIMUM_SAFE_AREA);
 
 	/** @return line types */
@@ -1965,16 +1966,14 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 			}
 
 			axesNumberFormat[axis] = axesNumberFormatsExponential[maxFractionDigits];
-			
+
 			// avoid 4.00000000000004E-11 due to rounding error when
-			// computing
-			// tick mark numbers
+			// computing tick mark numbers
 		} else {
 			if (axesNumberFormatsNormal[maxFractionDigits] == null) {
 				axesNumberFormatsNormal[maxFractionDigits] = FormatFactory.getPrototype()
 						.getNumberFormat("###0.##", maxFractionDigits);
 			}
-			
 			axesNumberFormat[axis] = axesNumberFormatsNormal[maxFractionDigits];
 		}
 
@@ -2131,7 +2130,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	}
 
 	protected void updatePreviewFromInputBar() {
-		if (app.getConfig().hasPreviewPoints()) {
+		if (app.getConfig().hasPreviewPoints() && !restrictGraphSelectionForFunctions) {
 			GeoElement geo0 = (previewFromInputBarGeos == null
 					|| previewFromInputBarGeos.length == 0) ? null
 					: previewFromInputBarGeos[0];
@@ -2557,13 +2556,11 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 		if (fontCoords == null) {
 			initFontCoords();
 		}
-		
 		// default while initing
 		if (fontCoords == null) {
 			return getApplication().getFontCommon(false, GFont.PLAIN,
 					(int) Math.max(Math.round(getFontSize() * 0.75), 10));
 		}
-		
 		return fontCoords;
 	}
 
@@ -3592,7 +3589,6 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 		if (previewDrawable != null) {
 			previewDrawable.drawPreview(g2);
 		}
-		adjustObjects();
 		drawMasks(g2);
 		drawMeasurementTools(g2);
 	}
@@ -5744,7 +5740,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 		addDynamicStylebarToEV(dynamicStyleBar);
 		return dynamicStyleBar;
 	}
-	
+
 	/**
 	 * @return whether dynamic stylebar is visible
 	 */
@@ -5980,7 +5976,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	 */
 	public GBufferedImage getExportImage(double scale, boolean transparency,
 			ExportType exportType) {
-		
+
 		int width = (int) Math.floor(getExportWidth() * scale);
 		int height = (int) Math.floor(getExportHeight() * scale);
 		try {
@@ -6149,15 +6145,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 
 	@Override
 	public void screenChanged() {
-		screenChanged = true;
-	}
-
-	private void adjustObjects() {
-		if (app.has(Feature.ADJUST_WIDGETS) && screenChanged) {
-			app.adjustScreen(true);
-			screenChanged = false;
-			repaint();
-		}
+		// ignore
 	}
 
 	public AutoCompleteTextField getTextField() {
@@ -6696,5 +6684,16 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 		if (bgGraphics != null) {
 			drawable.drawTrace(bgGraphics);
 		}
+	}
+
+	@Override
+	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
+		restrictGraphSelectionForFunctions = featureRestrictions
+				.contains(ExamFeatureRestriction.AUTOMATIC_GRAPH_SELECTION_FOR_FUNCTIONS);
+	}
+
+	@Override
+	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
+		restrictGraphSelectionForFunctions = false;
 	}
 }
