@@ -4944,7 +4944,8 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		resetCommandDict();
 		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
-			algebraOutputFilter = new CvteAlgebraOutputFilter();
+			AlgebraOutputFilter wrappedFilter = getAlgebraOutputFilter();
+			algebraOutputFilter = new CvteAlgebraOutputFilter(wrappedFilter);
 			ToStringConverter<GeoElement> wrappedLabelDescriptionConverter
 					= getLabelDescriptionConverter();
 			labelDescriptionConverter = new CvteLabelDescriptionConverter(
