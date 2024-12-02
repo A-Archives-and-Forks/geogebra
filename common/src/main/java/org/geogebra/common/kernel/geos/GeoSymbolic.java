@@ -83,6 +83,7 @@ public class GeoSymbolic extends GeoElement
 	private int numericPrintFigures;
 	private int numericPrintDecimals;
 	private ConditionalSerializer conditionalSerializer;
+	private ExpressionNode excludedEquation;
 
 	/**
 	 * @param c construction
@@ -301,13 +302,8 @@ public class GeoSymbolic extends GeoElement
 	}
 
 	private boolean argumentsDefined(Command casInput) {
-		boolean argsDefined = casInput.inspect(new Inspecting() {
-			@Override
-			public boolean check(ExpressionValue v) {
-				return !v.toValueString(StringTemplate.defaultTemplate).contains("?");
-			}
-		});
-		return argsDefined;
+		return casInput.inspect(v ->
+				!v.toValueString(StringTemplate.defaultTemplate).contains("?"));
 	}
 
 	private String tryNumericCommand(Command casInput, String casResult) {
@@ -329,8 +325,8 @@ public class GeoSymbolic extends GeoElement
 		return result;
 	}
 
-	public void setWrapInNumeric(boolean input) {
-		wrapInNumeric = input;
+	public void setWrapInNumeric(boolean wrapInNumeric) {
+		this.wrapInNumeric = wrapInNumeric;
 	}
 
 	public boolean shouldWrapInNumeric() {
@@ -660,6 +656,8 @@ public class GeoSymbolic extends GeoElement
 		case TrigSimplify:
 		case TrigCombine:
 		case TrigExpand:
+		case Min:
+		case Max:
 			return true;
 		default: return false;
 		}
@@ -1206,5 +1204,13 @@ public class GeoSymbolic extends GeoElement
 			conditionalSerializer = new ConditionalSerializer(kernel, this);
 		}
 		return conditionalSerializer;
+	}
+
+	public void setExcludedEquation(ExpressionNode excludedEquation) {
+		this.excludedEquation = excludedEquation;
+	}
+
+	public ExpressionNode getExcludedEquation() {
+		return this.excludedEquation;
 	}
 }

@@ -500,7 +500,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 			String text = previewGeo
 					.getAlgebraDescriptionForPreviewOutput();
 			outputPanel.showLaTeXPreview(text, previewGeo, getFontSize());
-			outputPanel.addArrowPrefix();
+			outputPanel.addEqualSignPrefix();
 			outputPanel.addValuePanel();
 
 			if (content.getWidgetIndex(definitionValuePanel) == -1) {
@@ -771,9 +771,14 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		}
 		return geo.getLaTeXAlgebraDescriptionWithFallback(
 				substituteNumbers
-						|| (geo instanceof GeoNumeric && geo.isSimple()),
+						|| isSimpleNumber(),
 				tpl, true);
 
+	}
+
+	private boolean isSimpleNumber() {
+		return geo instanceof GeoNumeric && geo.isSimple()
+				&& !((GeoNumeric) geo).isDecimalFraction();
 	}
 
 	private boolean isAlgebraStyleDefAndValue() {

@@ -34,6 +34,8 @@ public class AlgebraItemTest extends BaseUnitTest {
 
         checkShouldShowBothRowsFor(line);
         checkShouldShowBothRowsFor(fitLine);
+        checkShouldShowBothRowsFor("0.6");
+        checkShouldShowBothRowsFor("0.6+2");
     }
 
     private void checkShouldShowBothRowsFor(String definition) {
@@ -157,5 +159,12 @@ public class AlgebraItemTest extends BaseUnitTest {
         GeoElement element = add("17!");
         String definition = element.getAlgebraDescriptionForPreviewOutput();
         assertThat(definition, is("355687428096000"));
+    }
+
+    @Test
+    public void shouldShowEqualSignPrefixTest() {
+        assertThat(AlgebraItem.shouldShowEqualSignPrefix(add("1/2")), equalTo(true));
+        assertThat(AlgebraItem.shouldShowEqualSignPrefix(add("1/3")), equalTo(false));
+        assertThat(AlgebraItem.shouldShowEqualSignPrefix(add("sqrt(3)+1")), equalTo(true));
     }
 }

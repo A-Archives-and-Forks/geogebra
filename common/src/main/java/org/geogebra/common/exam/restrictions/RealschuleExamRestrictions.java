@@ -1,5 +1,6 @@
 package org.geogebra.common.exam.restrictions;
 
+import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Regression;
 import static org.geogebra.common.kernel.commands.Commands.*;
 
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import org.geogebra.common.SuiteSubApp;
+import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.exam.ExamType;
@@ -43,6 +45,7 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 				createCommandFilters(),
 				createCommandArgumentFilters(),
 				getFilteredOperations(),
+				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
 				null);
@@ -76,6 +79,10 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 
 	private static Set<CommandArgumentFilter> createCommandArgumentFilters() {
 		return Set.of(new RealschuleCommandArgumentFilter());
+	}
+
+	private static Set<ContextMenuItemFilter> createContextMenuItemFilters() {
+		return Set.of(contextMenuItem -> !Regression.isSameItemAs(contextMenuItem));
 	}
 
 	private static SyntaxFilter createSyntaxFilter() {
@@ -142,7 +149,6 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 
 	@Override
 	public void applySettingsRestrictions(@Nonnull Settings settings) {
-		super.applySettingsRestrictions(settings);
 		EuclidianSettings euclidian = settings.getEuclidian(1);
 		settings.getGeneral().setCoordFormat(Kernel.COORD_STYLE_AUSTRIAN);
 		euclidian.beginBatch();

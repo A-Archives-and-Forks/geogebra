@@ -1263,7 +1263,6 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 		if (isUnbundledOrWhiteboard()) {
 			boolean justClosed = menuShowing;
 			hideMenu();
-			justClosed = justClosed || closePageControlPanel();
 			if (justClosed) {
 				getEuclidianController().setPopupJustClosed(justClosed);
 			}
@@ -1441,14 +1440,6 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 		if (isPortrait() && toolbar != null && toolbar.isClosed()) {
 			toolbar.doCloseInPortrait();
 		}
-	}
-
-	/**
-	 * Closes the page control panel
-	 * @return whether it was closed
-	 */
-	public boolean closePageControlPanel() {
-		return frame.getPageControlPanel() != null && frame.getPageControlPanel().close();
 	}
 
 	/**
