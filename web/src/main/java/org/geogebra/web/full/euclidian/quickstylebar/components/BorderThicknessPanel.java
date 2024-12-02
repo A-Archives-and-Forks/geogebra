@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.euclidian.event.PointerEventType;
-import org.geogebra.common.main.undo.UpdateStyleActionStore;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.web.full.javax.swing.LineThicknessCheckMarkItem;
@@ -68,12 +67,7 @@ public class BorderThicknessPanel extends FlowPanel {
 					public void onClickStart(int x, int y, PointerEventType type) {
 						checkMarkItems.forEach(item -> item.setSelected(false));
 						checkMarkItem.setSelected(true);
-						UpdateStyleActionStore store = new UpdateStyleActionStore(appW
-								.getSelectionManager().getSelectedGeos(), appW.getUndoManager());
 						property.setValue(value);
-						if (store.needUndo()) {
-							store.storeUndo();
-						}
 						appW.closePopups();
 					}
 				});

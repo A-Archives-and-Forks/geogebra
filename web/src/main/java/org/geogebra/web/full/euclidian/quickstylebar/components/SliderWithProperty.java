@@ -22,20 +22,20 @@ public class SliderWithProperty extends FlowPanel {
 	private int rangeValue;
 	private int lineType;
 	private GColor color;
+	private boolean dragging;
 
 	/**
 	 * constructor
 	 * @param appW - application
 	 * @param property - range property
 	 * @param lineType - line type
-	 * @param rangeValue - range value
 	 * @param color - line color
 	 */
 	public SliderWithProperty(AppW appW, RangePropertyCollection<?> property,
-			int lineType, int rangeValue, GColor color) {
+			int lineType, GColor color) {
 		this.appW = appW;
 		this.property = property;
-		this.rangeValue = rangeValue;
+		this.rangeValue = property.getValue();
 		this.lineType = lineType;
 		this.color = color;
 
@@ -87,8 +87,7 @@ public class SliderWithProperty extends FlowPanel {
 		sliderPanel.getSlider().addStyleName("slider");
 		setInitialValue();
 		sliderPanel.getSlider().addValueChangeHandler(event -> {
-			onInputChange(sliderPanel.getSlider().getValue().intValue());
-			appW.storeUndoInfo();
+			onInputChangeFinished(sliderPanel.getSlider().getValue().intValue());
 		});
 		sliderPanel.getSlider().addInputHandler(()
 				-> onInputChange(sliderPanel.getSlider().getValue().intValue()));
@@ -97,16 +96,29 @@ public class SliderWithProperty extends FlowPanel {
 	private void setInitialValue() {
 		Integer val = property.getValue();
 		sliderPanel.setValue(val.doubleValue());
-		updatePreview(val, rangeValue, color);
+		updatePreview();
 	}
 
 	private void onInputChange(int val) {
+		if (!dragging) {
+			dragging = true;
+			property.beginSetValue();
+		}
 		property.setValue(val);
 
 		setRangeValue(val);
 	}
 
-	private void updatePreview(int rangeValue, int lineType, GColor color) {
+	private void onInputChangeFinished(int val) {
+		property.setValue(val);
+		if (dragging) {
+			dragging = false;
+			property.endSetValue();
+		}
+		setRangeValue(val);
+	}
+
+	private void updatePreview() {
 		if (preview != null) {
 			preview.update(rangeValue, lineType, color);
 		} else if (unitLabel != null) {
@@ -119,7 +131,7 @@ public class SliderWithProperty extends FlowPanel {
 	 */
 	public void setRangeValue(int rangeValue) {
 		this.rangeValue = rangeValue;
-		updatePreview(rangeValue, lineType, color);
+		updatePreview();
 	}
 
 	/**
@@ -127,7 +139,7 @@ public class SliderWithProperty extends FlowPanel {
 	 */
 	public void setLineType(int lineType) {
 		this.lineType = lineType;
-		updatePreview(rangeValue, lineType, color);
+		updatePreview();
 	}
 
 	/**
@@ -135,6 +147,6 @@ public class SliderWithProperty extends FlowPanel {
 	 */
 	public void setLineColor(GColor color) {
 		this.color = color;
-		updatePreview(rangeValue, lineType, color);
+		updatePreview();
 	}
 }

@@ -14,7 +14,6 @@ import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
-import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
@@ -23,6 +22,7 @@ import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.AriaHelper;
+import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
@@ -102,11 +102,9 @@ public class IconButtonWithProperty extends IconButton {
 			parent.add(enumeratedPropertyButtonPanel);
 		}
 
-		if (property instanceof NamedEnumeratedPropertyCollection
-				&& ((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]
-				instanceof TextFontSizeProperty) {
-			GPopupMenuW fontSizeMenu = widgetAdapter.getMenuWidget((TextFontSizeProperty)
-					((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]);
+		if (property instanceof NamedEnumeratedPropertyCollection) {
+			GPopupMenuW fontSizeMenu = widgetAdapter.getMenuWidget(
+					(NamedEnumeratedPropertyCollection<?, ?>) property);
 			parent.add(fontSizeMenu.getPopupMenu());
 		}
 
@@ -136,22 +134,20 @@ public class IconButtonWithProperty extends IconButton {
 				parent.add(noColorButton);
 			}
 		}
-
 		if (property instanceof RangePropertyCollection<?>) {
-			RangeProperty<?> firstProperty
-					= ((RangePropertyCollection<?>) property).getFirstProperty();
+			RangePropertyCollection<?> rangeProperty = (RangePropertyCollection<?>) property;
+			RangeProperty<?> firstProperty = rangeProperty.getFirstProperty();
 			if (firstProperty instanceof NotesThicknessProperty) {
-				lineThicknessSlider = widgetAdapter.getSliderWidget(
-						(RangePropertyCollection<?>) property, geo);
+				lineThicknessSlider = widgetAdapter.getSliderWidget(rangeProperty, geo);
 				parent.add(lineThicknessSlider);
 			} else if (firstProperty instanceof CellBorderThicknessProperty
 					|| firstProperty instanceof BorderThicknessProperty) {
 				FlowPanel borderThickness = widgetAdapter.getBorderThicknessWidget(
-						(RangePropertyCollection<?>) property);
+						rangeProperty);
 				parent.add(borderThickness);
 			} else {
 				SliderWithProperty sliderWithProperty = widgetAdapter.getSliderWidget(
-						(RangePropertyCollection<?>) property, geo);
+						rangeProperty, geo);
 				parent.add(sliderWithProperty);
 			}
 		}
@@ -187,10 +183,11 @@ public class IconButtonWithProperty extends IconButton {
 	}
 
 	/**
-	 * close popup of button
+	 * close popup of button if it doesn't contain sliders
 	 */
 	public void closePopup() {
-		if (propertyPopup != null) {
+		if (propertyPopup != null && Dom.querySelectorForElement(
+				propertyPopup.getElement(), "[type=range]") == null) {
 			propertyPopup.hide();
 		}
 	}
