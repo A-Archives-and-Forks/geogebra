@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
+
 import org.geogebra.common.exam.restrictions.PropertyRestriction;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -72,8 +74,37 @@ public final class GeoElementPropertiesFactory {
 		propertyFilters.remove(filter);
 	}
 
-	public void addRestrictions(Map<String, PropertyRestriction> restrictions) {
+	/**
+	 * TODO
+	 * @param restrictions The keys are expected to be raw names (i.e., match property.getRawName())
+	 */
+	public void addRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
+		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
+			List<PropertyRestriction> registeredRestrictions;
+			if (propertyRestrictions.containsKey(entry.getKey())) {
+				registeredRestrictions = propertyRestrictions.get(entry.getKey());
+			} else {
+				registeredRestrictions = new ArrayList<>();
+				propertyRestrictions.put(entry.getKey(), registeredRestrictions);
+			}
+			if (!registeredRestrictions.contains(entry.getValue())) {
+				registeredRestrictions.add(entry.getValue());
+			}
+		}
+	}
 
+	/**
+	 * TODO
+	 * @param restrictions
+	 */
+	public void removeRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
+		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
+			List<PropertyRestriction> registeredRestrictions =
+					propertyRestrictions.get(entry.getKey());
+			if (registeredRestrictions != null && registeredRestrictions.contains(entry.getValue())) {
+				registeredRestrictions.remove(entry.getValue());
+			}
+		}
 	}
 
 	/**
@@ -362,6 +393,14 @@ public final class GeoElementPropertiesFactory {
 				Prop property = propertyFactory.create(geoElement);
 				if (property != null && isAllowedByFilters(property, geoElement)) {
 					properties.add(property);
+					// apply restrictions
+					List<PropertyRestriction> restrictions = propertyRestrictions.get(
+							property.getRawName());
+					if (restrictions != null) {
+						for (PropertyRestriction restriction : restrictions) {
+							restriction.applyTo(property);
+						}
+					}
 				}
 			}
 			if (properties.isEmpty()) {

@@ -57,26 +57,26 @@ import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
  */
 public class ExamRestrictions implements PropertiesRegistryListener {
 
-	private final ExamType examType;
-	private final Set<SuiteSubApp> disabledSubApps;
-	private final SuiteSubApp defaultSubApp;
-	private final Set<ExamFeatureRestriction> featureRestrictions;
-	private final Set<ExpressionFilter> inputExpressionFilters;
-	private final Set<ExpressionFilter> outputExpressionFilters;
-	private final Set<CommandFilter> commandFilters;
-	private final Set<Operation> filteredOperations;
-	private final Set<CommandArgumentFilter> commandArgumentFilters;
-	private final Set<ContextMenuItemFilter> contextMenuItemFilters;
+	private final @Nonnull ExamType examType;
+	private final @Nonnull Set<SuiteSubApp> disabledSubApps;
+	private final @Nonnull SuiteSubApp defaultSubApp;
+	private final @Nonnull Set<ExamFeatureRestriction> featureRestrictions;
+	private final @Nonnull Set<ExpressionFilter> inputExpressionFilters;
+	private final @Nonnull Set<ExpressionFilter> outputExpressionFilters;
+	private final @Nonnull Set<CommandFilter> commandFilters;
+	private final @Nonnull Set<Operation> filteredOperations;
+	private final @Nonnull Set<CommandArgumentFilter> commandArgumentFilters;
+	private final @Nonnull Set<ContextMenuItemFilter> contextMenuItemFilters;
 	// filter independent of exam region
 	private final CommandArgumentFilter examCommandArgumentFilter =
 			new ExamCommandArgumentFilter();
-	private final SyntaxFilter syntaxFilter;
-	private final ToolCollectionFilter toolsFilter;
-	private final Map<String, PropertyRestriction> propertyRestrictions;
-	private final Set<GeoElementPropertyFilter> geoElementPropertyFilters;
-	private final Set<ConstructionElementSetup> constructionElementSetups;
-	private final EquationBehaviour equationBehaviour;
-	private EquationBehaviour originalEquationBehaviour;
+	private final @Nullable SyntaxFilter syntaxFilter;
+	private final @Nullable ToolCollectionFilter toolsFilter;
+	private final @Nonnull Map<String, PropertyRestriction> propertyRestrictions;
+	private final @Nonnull Set<GeoElementPropertyFilter> geoElementPropertyFilters;
+	private final @Nonnull Set<ConstructionElementSetup> constructionElementSetups;
+	private final @Nullable EquationBehaviour equationBehaviour;
+	private @Nullable EquationBehaviour originalEquationBehaviour;
 
 	/**
 	 * Factory for ExamRestrictions.
@@ -256,8 +256,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				if (property != null) {
 					restriction.applyTo(property);
 				}
-				// also add to GeoElementPropertiesFactory
 			});
+			geoElementPropertiesFactory.addRestrictions(propertyRestrictions);
 		}
 		if (toolsProvider != null && toolsFilter != null) {
 			toolsProvider.addToolsFilter(toolsFilter);
@@ -337,6 +337,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 					restriction.removeFrom(property);
 				}
 			});
+			geoElementPropertiesFactory.removeRestrictions(propertyRestrictions);
 		}
 		if (toolsProvider != null && toolsFilter != null) {
 			toolsProvider.removeToolsFilter(toolsFilter);
