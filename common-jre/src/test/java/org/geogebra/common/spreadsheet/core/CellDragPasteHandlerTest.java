@@ -232,10 +232,11 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 	@Test
 	@Issue("APPS-5987")
 	public void testDragPasteSHouldResultInNonEmptySpreadsheetCells2() {
+		getApp().setCasConfig();
+		getKernel().setSymbolicMode(SymbolicMode.SYMBOLIC_AV);
 		DefaultSpreadsheetCellProcessor processor
 				= new DefaultSpreadsheetCellProcessor(getAlgebraProcessor());
 		getKernel().attach(tabularData);
-		getKernel().setSymbolicMode(SymbolicMode.SYMBOLIC_AV);
 
 		processor.process("=3", 0, 0);
 		processor.process("=A2", 0, 1);
