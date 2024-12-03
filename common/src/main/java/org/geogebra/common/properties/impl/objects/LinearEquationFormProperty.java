@@ -42,17 +42,23 @@ public class LinearEquationFormProperty extends AbstractNamedEnumeratedProperty<
 
 	@Override
 	protected void doSetValue(Integer value) {
+		LinearEquationRepresentable.Form equationForm =
+				LinearEquationRepresentable.Form.valueOf(value);
 		GeoElement element = delegate.getElement();
-		if (element instanceof GeoVec3D) { // TODO what is this?
-			GeoVec3D vec3d = (GeoVec3D) element;
-			vec3d.setMode(value);
-			vec3d.updateRepaint();
+		if (equationForm != null && element instanceof LinearEquationRepresentable) {
+			((LinearEquationRepresentable) element).setEquationForm(equationForm);
+			element.updateRepaint();
 		}
 	}
 
 	@Override
 	public Integer getValue() {
-		return delegate.getElement().getToStringMode();
+		GeoElement element = delegate.getElement();
+		if (element instanceof LinearEquationRepresentable) {
+			return ((LinearEquationRepresentable) element).getEquationForm().rawValue;
+		}
+		return -1;
+//		return delegate.getElement().getToStringMode();
 	}
 
 	@Override

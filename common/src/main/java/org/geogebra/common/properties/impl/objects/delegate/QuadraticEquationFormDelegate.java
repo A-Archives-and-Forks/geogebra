@@ -21,13 +21,12 @@ public class QuadraticEquationFormDelegate extends AbstractGeoElementDelegate {
 		if (element instanceof GeoList) {
 			return isApplicableToGeoList((GeoList) element);
 		}
-		return hasEquationModeSetting(element);
+		return element instanceof QuadraticEquationRepresentable;
 	}
 
-	private boolean hasEquationModeSetting(GeoElement element) {
-		return (element.isGeoConic())
-				&& !isEnforcedEquationForm(element)
-				&& element.getDefinition() == null; // TODO why?
+	@Override
+	public boolean isEnabled() {
+		return super.isEnabled() && !isEnforcedEquationForm(element);
 	}
 
 	private boolean isEnforcedEquationForm(GeoElement element) {

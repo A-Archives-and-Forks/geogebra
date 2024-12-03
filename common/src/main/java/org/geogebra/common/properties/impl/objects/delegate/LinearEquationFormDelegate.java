@@ -22,23 +22,15 @@ public class LinearEquationFormDelegate extends AbstractGeoElementDelegate {
 
 	@Override
 	protected boolean checkIsApplicable(GeoElement element) {
-//		if (isTextOrInput(element)) { // TODO why this check?
-//			return false;
-//		}
 		if (element instanceof GeoList) {
 			return isApplicableToGeoList((GeoList) element);
 		}
-		return hasEquationModeSetting(element);
+		return element instanceof LinearEquationRepresentable;
 	}
 
-	private boolean hasEquationModeSetting(GeoElement element) {
-//		if (element.isGeoSegment()) { // TODO takene from LineEqnModel - needed?
-//			return false;
-//		}
-		return (element.isGeoLine() || element.isGeoPlane())
-				&& !isEnforcedEquationForm(element)
-//				&& !element.isNumberValue() // TODO needed?
-				&& element.getDefinition() == null; // TODO why?
+	@Override
+	public boolean isEnabled() {
+		return super.isEnabled() && !isEnforcedEquationForm(element);
 	}
 
 	private boolean isEnforcedEquationForm(GeoElement element) {

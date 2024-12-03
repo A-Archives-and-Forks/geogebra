@@ -2,10 +2,13 @@ package org.geogebra.common.properties.impl.objects;
 
 import static java.util.Map.entry;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.kernelND.GeoQuadric3DInterface;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
@@ -14,45 +17,72 @@ import org.geogebra.common.properties.impl.objects.delegate.QuadraticEquationFor
 
 public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProperty<Integer> {
 
-		private final GeoElementDelegate delegate;
+	private final GeoElementDelegate delegate;
 
-		/***/
-		public QuadraticEquationFormProperty(Localization localization, GeoElement element)
-				throws NotApplicablePropertyException {
-			super(localization, "Equation");
-			delegate = new QuadraticEquationFormDelegate(element);
-			setNamedValues(
-					List.of(
-							entry(QuadraticEquationRepresentable.Form.IMPLICIT.rawValue,
-									"ImplicitLineEquation"),
-							entry(QuadraticEquationRepresentable.Form.EXPLICIT.rawValue,
-									"ExplicitLineEquation"),
-							entry(QuadraticEquationRepresentable.Form.PARAMETRIC.rawValue,
-									"ParametricForm"),
-							entry(QuadraticEquationRepresentable.Form.GENERAL.rawValue,
-									"GeneralLineEquation"),
-							entry(QuadraticEquationRepresentable.Form.USER.rawValue,
-									"InputForm")
-					));
+	/***/
+	public QuadraticEquationFormProperty(Localization localization, GeoElement element)
+			throws NotApplicablePropertyException {
+		super(localization, "Equation");
+		delegate = new QuadraticEquationFormDelegate(element);
+
+		QuadraticEquationRepresentable quadratic = (QuadraticEquationRepresentable) element;
+
+		List<Map.Entry<Integer, String>> values = new ArrayList<>();
+		if (quadratic.isSpecificFormPossible()) {
+			values.add(entry(QuadraticEquationRepresentable.Form.SPECIFIC.rawValue,
+					quadratic.getSpecificEquationLabel()));
+		}
+		if (quadratic.isExplicitFormPossible()) {
+			values.add(entry(QuadraticEquationRepresentable.Form.EXPLICIT.rawValue,
+					"ExplicitConicEquation"));
+		}
+		if (element.getDefinition() != null) {
+			values.add(entry(QuadraticEquationRepresentable.Form.USER.rawValue,
+					"InputForm"));
+		}
+//		if (quadratic.isImplicitFormPossible()) { // TODO always?
+			values.add(entry(QuadraticEquationRepresentable.Form.IMPLICIT.rawValue,
+					quadratic.getImplicitEquationLabel()));
+//		}
+		if (quadratic.isVertexFormPossible()) {
+			values.add(entry(QuadraticEquationRepresentable.Form.VERTEX.rawValue,
+					"ParabolaVertexForm"));
+		}
+		if (quadratic.isConicFormPossible()) {
+			values.add(entry(QuadraticEquationRepresentable.Form.CONICFORM.rawValue,
+					"ParabolaConicForm"));
+		}
+		if (quadratic.isParametricFormPossible()) {
+			values.add(entry(QuadraticEquationRepresentable.Form.PARAMETRIC.rawValue,
+					"ParametricForm"));
 		}
 
-		@Override
-		protected void doSetValue(Integer value) {
-			GeoElement element = delegate.getElement();
-			if (element instanceof GeoVec3D) {
-				GeoVec3D vec3d = (GeoVec3D) element;
-				vec3d.setMode(value);
-				vec3d.updateRepaint();
-			}
-		}
+		setNamedValues(values);
+	}
 
-		@Override
-		public Integer getValue() {
-			return delegate.getElement().getToStringMode();
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return delegate.isEnabled();
+	@Override
+	protected void doSetValue(Integer value) {
+		QuadraticEquationRepresentable.Form equationForm =
+				QuadraticEquationRepresentable.Form.valueOf(value);
+		GeoElement element = delegate.getElement();
+		if (equationForm != null && element instanceof QuadraticEquationRepresentable) {
+			((QuadraticEquationRepresentable) element).setEquationForm(equationForm);
+			element.updateRepaint();
 		}
 	}
+
+	@Override
+	public Integer getValue() {
+		GeoElement element = delegate.getElement();
+		if (element instanceof QuadraticEquationRepresentable) {
+			return ((QuadraticEquationRepresentable) element).getEquationForm().rawValue;
+		}
+		return -1;
+//		return delegate.getElement().getToStringMode();
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return delegate.isEnabled();
+	}
+}

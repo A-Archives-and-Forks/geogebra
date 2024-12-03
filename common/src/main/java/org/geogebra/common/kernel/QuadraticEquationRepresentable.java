@@ -99,12 +99,22 @@ public interface QuadraticEquationRepresentable {
 	 */
 	void setEquationForm(int equationForm);
 
+	// TODO
+	boolean isImplicitFormPossibe();
+
 	/**
 	 * Set the equation form to {@code IMPLICIT}.
 	 */
+	// TODO rename to setToImplicitForm, also all others
 	default void setToImplicit() {
 		setEquationForm(Form.IMPLICIT);
 	}
+
+	// TODO
+	String getImplicitEquationLabel();
+
+	// TODO
+	boolean isExplicitFormPossible();
 
 	/**
 	 * Set the equation form to {@code EXPLICIT}.
@@ -113,12 +123,20 @@ public interface QuadraticEquationRepresentable {
 		setEquationForm(Form.EXPLICIT);
 	}
 
+	// TODO
+	boolean isSpecificFormPossible();
+
 	/**
 	 * Set the equation form to {@code SPECIFIC}.
 	 */
 	default void setToSpecific() {
 		setEquationForm(Form.SPECIFIC);
 	}
+
+	// TODO
+	String getSpecificEquationLabel();
+
+	boolean isParametricFormPossible();
 
 	/**
 	 * Set the equation form to {@code PARAMETRIC}.
@@ -133,12 +151,16 @@ public interface QuadraticEquationRepresentable {
 		setEquationForm(Form.USER);
 	}
 
+	boolean isVertexFormPossible();
+
 	/**
 	 * Set the equation form to {@code VERTEX}.
 	 */
 	default void setToVertex() {
 		setEquationForm(Form.VERTEX);
 	}
+
+	boolean isConicFormPossible();
 
 	/**
 	 * Set the equation form to {@code CONIC}.
