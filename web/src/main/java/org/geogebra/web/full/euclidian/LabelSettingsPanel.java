@@ -9,12 +9,9 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
-import org.geogebra.keyboard.base.KeyboardType;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.components.ComponentInputField;
-import org.geogebra.web.full.gui.util.VirtualKeyboardGUI;
 import org.geogebra.web.full.javax.swing.GCheckMarkLabel;
-import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.LocalizationW;
@@ -34,7 +31,6 @@ public class LabelSettingsPanel extends FlowPanel
 	private ComponentInputField tfName;
 	private GCheckMarkLabel cmName;
 	private GCheckMarkLabel cmValue;
-	private VirtualKeyboardGUI kbd;
 
 	/**
 	 * Constructor
@@ -49,15 +45,12 @@ public class LabelSettingsPanel extends FlowPanel
 		this.nameProperty = nameProperty;
 		this.geos = geos;
 
-		createPopup();
-		init();
-	}
-
-	private void createPopup() {
-		//getMyPopup().addCloseHandler(this);
 		createDialog();
 	}
 
+	/**
+	 * @param labelStyleProperty - label style property
+	 */
 	public void setLabelStyleProperty(ValuedPropertyCollection<?> labelStyleProperty) {
 		this.labelStyleProperty = labelStyleProperty;
 		updateUI();
@@ -84,17 +77,15 @@ public class LabelSettingsPanel extends FlowPanel
 				MaterialDesignResources.INSTANCE.check_black(),
 				true, nameValueCmd);
 
-		boolean isSelectionMode = appW.getActiveEuclidianView()
-				.getEuclidianController()
+		boolean isSelectionMode = appW.getActiveEuclidianView().getEuclidianController()
 				.getMode() == EuclidianConstants.MODE_SELECT;
 		if (!isSelectionMode) {
 			add(tfName);
 		}
 		add(cmName);
 		add(cmValue);
-		//main.setStyleName("labelPopupPanel");
-		kbd = ((AppWFull) appW).getKeyboardManager().getOnScreenKeyboard();
-		//getMyPopup().addAutoHidePartner(kbd.getElement());
+
+		init();
 		setLabels();
 	}
 
@@ -169,7 +160,6 @@ public class LabelSettingsPanel extends FlowPanel
 	}
 
 	private void init() {
-		kbd.selectTab(KeyboardType.ABC);
 		tfName.setInputText(nameProperty.getValue());
 		tfName.focusDeferred();
 	}

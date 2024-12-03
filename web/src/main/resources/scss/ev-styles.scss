@@ -226,19 +226,7 @@ $fullscreenBtn-transition: bottom 250ms cubic-bezier(0.4, 0, 1, 1) 0ms;
 				}
 			}
 
-			.checkMarkMenuItem {
-				cursor: pointer;
-				display: flex;
-				.gwt-HTML {
-					line-height: 32px;
-				}
-				img {
-					opacity: 0.54;
-					position: absolute;
-					right: 8px;
-					padding: 4px;
-				}
-			}
+
 		}
 	}
 

@@ -708,6 +708,13 @@ public class GeoElementPropertiesFactory {
 		}
 	}
 
+	/**
+	 * Returns an StringPropertyCollection controlling the label of geo or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
 	public static StringPropertyCollection<NameProperty> createNameProperty(
 			Localization localization, List<GeoElement> elements) {
 		try {
@@ -721,6 +728,13 @@ public class GeoElementPropertiesFactory {
 		}
 	}
 
+	/**
+	 * Returns an ValuedPropertyCollection controlling the label style or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
 	public static ValuedPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
 			Localization localization, List<GeoElement> elements) {
 		List<LabelStyleProperty> labelStyleProperties = new ArrayList<>();
