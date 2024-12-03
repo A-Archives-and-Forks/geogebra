@@ -240,13 +240,14 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 
 		processor.process("=3", 0, 0);
 		processor.process("=A2", 0, 1);
-		assertCellContentEquals("?", 1, 0);
+		assertCellContentEquals("0", 1, 0);
 
 		setRangeToCopy(0, 0, 1, 1);
 		pasteToDestination(1, 1);
 		setRangeToCopy(0, 0, 0, 0);
 		pasteToDestination(1, 0);
 
+		assertCellContentEquals("0", 2, 0);
 		assertCellContentEquals("3", 1, 0);
 	}
 
