@@ -24,7 +24,6 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
-import org.geogebra.common.exam.restrictions.CvteExamRestrictions;
 import org.geogebra.common.io.MathMLParser;
 import org.geogebra.common.kernel.CircularDefinitionException;
 import org.geogebra.common.kernel.Construction;
@@ -2270,6 +2269,7 @@ public class AlgebraProcessor {
 							|| compatibleTypes(replaceable,
 							ret[0])) {
 						GeoElement newGeo = ret[0];
+						geoElementSetups.forEach(setup -> setup.applyTo(newGeo));
 						GeoCasCell cell = replaceable.getCorrespondingCasCell();
 						if (cell != null) {
 							// this is a ValidExpression since we don't get
@@ -3910,7 +3910,8 @@ public class AlgebraProcessor {
 	}
 
 	/**
-	 * Adds a {@link GeoElementSetup} which can modify the initial setup of elements TODO
+	 * Adds a {@link GeoElementSetup} which can modify the
+	 * initial setup of elements when they are created or after they have been modified.
 	 * @param geoElementSetup The {@link GeoElementSetup} to be added
 	 */
 	public void addGeoElementSetup(GeoElementSetup geoElementSetup) {

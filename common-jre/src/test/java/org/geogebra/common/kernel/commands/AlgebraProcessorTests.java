@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -19,15 +20,21 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.awt.GColor;
 import org.geogebra.common.gui.view.algebra.EvalInfoFactory;
 import org.geogebra.common.kernel.algos.AlgoDependentGeoCopy;
 import org.geogebra.common.kernel.algos.AlgoElement;
+import org.geogebra.common.kernel.arithmetic.Equation;
+import org.geogebra.common.kernel.arithmetic.EquationValue;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoElementSetup;
 import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.main.error.ErrorHandler;
+import org.geogebra.common.main.error.ErrorHelper;
 import org.geogebra.common.util.debug.Analytics;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -143,12 +150,41 @@ public class AlgebraProcessorTests extends BaseUnitTest {
 		getAlgebraProcessor().removeOutputExpressionFilter(outputFilter);
 	}
 
+	@Test
+	public void testGeoElementSetups() {
+		GeoElementSetup paintEquationsRed = geoElement -> {
+			if (isEquation(geoElement)) {
+				geoElement.setObjColor(GColor.RED);
+			}
+		};
+		getAlgebraProcessor().addGeoElementSetup(paintEquationsRed);
+
+		add("eq1: x = 0");
+		assertEquals(GColor.RED, getKernel().lookupLabel("eq1").getObjectColor());
+
+		add("f(x) = x");
+		assertNotEquals(GColor.RED, getKernel().lookupLabel("f").getObjectColor());
+
+		// Editing the function to an equation should also trigger the setup
+		EvalInfo evalInfo = EvalInfoFactory.getEvalInfoForRedefinition(
+				getKernel(), getKernel().lookupLabel("f"), true);
+		getAlgebraProcessor().changeGeoElementNoExceptionHandling(
+				getKernel().lookupLabel("f"), "f: x = 0", evalInfo, false, null, ErrorHelper.silent());
+		assertEquals(GColor.RED, getKernel().lookupLabel("f").getObjectColor());
+    }
+
 	private GeoElementND[] evalCommand(String s, EvalInfo info) {
 		return processor.processAlgebraCommandNoExceptionHandling(s, false,
 				errorHandler, info, null);
 	}
 
 	private void shouldParseAs(String string, double i) {
-		Assert.assertEquals(processor.convertToDouble(string), i, DELTA);
+		assertEquals(processor.convertToDouble(string), i, DELTA);
+	}
+
+	private static boolean isEquation(GeoElement geoElement) {
+		ExpressionNode definition = geoElement.getDefinition();
+		return (definition != null && definition.unwrap() instanceof Equation)
+				|| geoElement instanceof EquationValue;
 	}
 }

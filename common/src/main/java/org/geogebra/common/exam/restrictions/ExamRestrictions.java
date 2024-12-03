@@ -14,7 +14,6 @@ import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
-import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
@@ -42,7 +41,7 @@ import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
  * Restrictions that apply to all exam types should be implemented in this class
  * (in {@link #applyTo(CommandDispatcher, AlgebraProcessor, PropertiesRegistry, Object,
  * Localization, Settings, AutocompleteProvider, ToolsProvider, GeoElementPropertiesFactory,
- * Construction, ScheduledPreviewFromInputBar, ContextMenuFactory)}).
+ * ScheduledPreviewFromInputBar, ContextMenuFactory)}).
  * <p/>
  * Any restrictions to be applied during exams should be implemented in here (so that
  * everything is one place):
