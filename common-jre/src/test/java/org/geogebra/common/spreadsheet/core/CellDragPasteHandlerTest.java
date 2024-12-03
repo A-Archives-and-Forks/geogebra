@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.StringTemplate;
+import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.geos.GeoElementSpreadsheet;
 import org.geogebra.common.spreadsheet.kernel.DefaultSpreadsheetCellProcessor;
 import org.geogebra.common.spreadsheet.kernel.KernelTabularDataAdapter;
@@ -187,7 +188,7 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 
 	@Test
 	@Issue("APPS-5987")
-	public void testDragPasteShouldResultInNonEmptySpreadsheetCells() {
+	public void testDragPasteShouldResultInNonEmptySpreadsheetCells1() {
 		DefaultSpreadsheetCellProcessor processor
 				= new DefaultSpreadsheetCellProcessor(getAlgebraProcessor());
 		getKernel().attach(tabularData);
@@ -203,6 +204,26 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 		pasteToDestination(1, 0);
 		assertFalse(lookup("A2").isEmptySpreadsheetCell());
 		assertTrue(lookup("A3").isEmptySpreadsheetCell());
+	}
+
+	@Test
+	@Issue("APPS-5987")
+	public void testDragPasteSHouldResultInNonEmptySpreadsheetCells2() {
+		DefaultSpreadsheetCellProcessor processor
+				= new DefaultSpreadsheetCellProcessor(getAlgebraProcessor());
+		getKernel().attach(tabularData);
+		getKernel().setSymbolicMode(SymbolicMode.SYMBOLIC_AV);
+
+		processor.process("=3", 0, 0);
+		processor.process("=A2", 0, 1);
+		assertCellContentEquals("?", 1, 0);
+
+		setRangeToCopy(0, 0, 1, 1);
+		pasteToDestination(1, 1);
+		setRangeToCopy(0, 0, 0, 0);
+		pasteToDestination(1, 0);
+
+		assertCellContentEquals("3", 1, 0);
 	}
 
 	private void setRangeToCopy(int fromRow, int toRow, int fromColumn, int toColumn) {

@@ -134,6 +134,7 @@ public class CellDragPasteHandler {
 		if (destinationRange == null) {
 			return;
 		}
+		unfixDestinationRange(destinationRange);
 		switch (pasteDirection) {
 		case UP:
 		case DOWN:
@@ -148,6 +149,15 @@ public class CellDragPasteHandler {
 			break;
 		}
 		setDestinationRangeToNonEmptySpreadsheetCells(destinationRange);
+	}
+
+	private void unfixDestinationRange(TabularRange destinationRange) {
+		destinationRange.forEach((row, column) -> {
+			GeoElement geo = tabularData.contentAt(row, column);
+			if (geo != null && geo.isLocked()) {
+				geo.setFixed(false);
+			}
+		});
 	}
 
 	private void pasteVertical(TabularRange destinationRange, int minOriginRow, int maxOriginRow,

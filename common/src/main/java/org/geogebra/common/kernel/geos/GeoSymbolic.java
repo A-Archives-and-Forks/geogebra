@@ -754,7 +754,7 @@ public class GeoSymbolic extends GeoElement
 		} else {
 			cons.unregisterEuclidianViewCE(this);
 		}
-		result.setFixed(result.getSpreadsheetCoords() == null);
+		result.setFixed(true);
 		return result;
 	}
 
