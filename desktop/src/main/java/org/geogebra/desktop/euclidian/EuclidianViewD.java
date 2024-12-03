@@ -963,6 +963,7 @@ public class EuclidianViewD extends EuclidianView
 		switch (cursor) {
 		case DEFAULT:
 		case HIT:
+		default:
 			setHitCursor();
 			return;
 		case DRAG:

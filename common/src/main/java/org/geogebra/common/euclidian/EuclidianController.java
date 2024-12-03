@@ -6511,6 +6511,83 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		processMouseMoved(event);
 	}
 
+	/**
+	 * Update cursor based on current mouse position and mode
+	 * @param shiftDown whether shift is pressed                         
+	 */
+	public void updateViewCursor(boolean shiftDown) {
+		if (mouseLoc == null) {
+			return;
+		}
+		GPoint lastLoc = mouseLoc;
+		this.wrapMouseMoved(new AbstractEvent() {
+			@Override
+			public GPoint getPoint() {
+				return lastLoc;
+			}
+
+			@Override
+			public boolean isAltDown() {
+				return false;
+			}
+
+			@Override
+			public boolean isShiftDown() {
+				return shiftDown;
+			}
+
+			@Override
+			public void release() {
+
+			}
+
+			@Override
+			public int getX() {
+				return lastLoc.x;
+			}
+
+			@Override
+			public int getY() {
+				return lastLoc.y;
+			}
+
+			@Override
+			public boolean isRightClick() {
+				return false;
+			}
+
+			@Override
+			public boolean isControlDown() {
+				return false;
+			}
+
+			@Override
+			public int getClickCount() {
+				return 0;
+			}
+
+			@Override
+			public boolean isMetaDown() {
+				return false;
+			}
+
+			@Override
+			public boolean isMiddleClick() {
+				return false;
+			}
+
+			@Override
+			public boolean isPopupTrigger() {
+				return false;
+			}
+
+			@Override
+			public PointerEventType getType() {
+				return PointerEventType.MOUSE;
+			}
+		});
+	}
+
 	protected abstract void resetToolTipManager();
 
     /**

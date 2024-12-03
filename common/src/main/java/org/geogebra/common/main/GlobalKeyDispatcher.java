@@ -422,7 +422,7 @@ public abstract class GlobalKeyDispatcher {
 		// toggle boolean or run script when Spacebar pressed
 		case SPACE:
 			// check not spreadsheet
-			spaceDown = false;
+			updateSpaceDown(false, isShiftDown);
 			if (!fromSpreadsheet) {
 				consumed = app.handleSpaceKey();
 			}
@@ -1775,6 +1775,17 @@ public abstract class GlobalKeyDispatcher {
 		if (hasUnsavedGeoChanges) {
 			app.storeUndoInfo();
 			hasUnsavedGeoChanges = false;
+		}
+	}
+
+	protected void updateSpaceDown(boolean spaceDown, boolean shiftDown) {
+		if (spaceDown == this.spaceDown) {
+			return;
+		}
+		this.spaceDown = spaceDown;
+		EuclidianView ev = app.getActiveEuclidianView();
+		if (ev.isDefault2D()) {
+			ev.getEuclidianController().updateViewCursor(shiftDown);
 		}
 	}
 }
