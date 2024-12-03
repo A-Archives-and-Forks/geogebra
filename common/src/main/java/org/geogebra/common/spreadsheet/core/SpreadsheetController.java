@@ -43,7 +43,7 @@ public final class SpreadsheetController {
 	private Rectangle viewport;
 	private @CheckForNull ViewportAdjuster viewportAdjuster;
 	private @CheckForNull UndoProvider undoProvider;
-	private CellDragPasteHandler cellDragPasteHandler;
+	private final CellDragPasteHandler cellDragPasteHandler;
 	private double lastPointerPositionX = -1;
 	private double lastPointerPositionY = -1;
 	private @CheckForNull CopyPasteCutTabularData copyPasteCut;
@@ -581,10 +581,14 @@ public final class SpreadsheetController {
 		Selection lastSelection = selectionController.getLastSelection();
 		if (lastSelection != null
 				&& lastSelection.getRange().getMaxColumn() == tabularData.numberOfColumns() - 1) {
-			tabularData.insertColumnAt(tabularData.numberOfColumns());
-			syncSize(tabularData.numberOfColumns() - 1, tabularData.numberOfRows());
+			insertColumnRight();
 		}
 		selectionController.moveRight(extendingCurrentSelection, layout.numberOfColumns());
+	}
+
+	private void insertColumnRight() {
+		tabularData.insertColumnAt(tabularData.numberOfColumns());
+		syncSize(tabularData.numberOfColumns() - 1, tabularData.numberOfRows());
 	}
 
 	/**
@@ -601,10 +605,14 @@ public final class SpreadsheetController {
 		Selection lastSelection = selectionController.getLastSelection();
 		if (lastSelection != null
 				&& lastSelection.getRange().getMaxRow() == tabularData.numberOfRows() - 1) {
-			tabularData.insertRowAt(tabularData.numberOfRows());
-			syncSize(tabularData.numberOfColumns(), tabularData.numberOfRows() - 1);
+			insertRowBottom();
 		}
 		selectionController.moveDown(extendingCurrentSelection, layout.numberOfRows());
+	}
+
+	private void insertRowBottom() {
+		tabularData.insertRowAt(tabularData.numberOfRows());
+		syncSize(tabularData.numberOfColumns(), tabularData.numberOfRows() - 1);
 	}
 
 	/**
@@ -612,7 +620,8 @@ public final class SpreadsheetController {
 	 */
 	private void adjustViewportIfNeeded() {
 		Selection lastSelection = getLastSelection();
-		if (lastSelection != null && viewportAdjuster != null) {
+		if (lastSelection != null && viewportAdjuster != null && (cellDragPasteHandler == null
+				|| cellDragPasteHandler.getDragPasteDestinationRange() == null)) {
 			viewport = viewportAdjuster.adjustViewportIfNeeded(
 					lastSelection.getRange().getToRow(),
 					lastSelection.getRange().getToColumn(),
@@ -777,7 +786,7 @@ public final class SpreadsheetController {
 	private void deleteRowsForMultiCellSelection() {
 		List<Integer> allRowIndexes = selectionController.getAllRowIndexes();
 		allRowIndexes.sort(Collections.reverseOrder());
-		allRowIndexes.stream().forEach(rowIndex -> deleteRowAndResizeRemainingRows(rowIndex));
+		allRowIndexes.forEach(this::deleteRowAndResizeRemainingRows);
 	}
 
 	/**
@@ -924,10 +933,13 @@ public final class SpreadsheetController {
 				&& cellDragPasteHandler.getDragPasteDestinationRange() != null) {
 			double oldViewportX = viewport.getMinX();
 			double oldViewportY = viewport.getMinY();
-			viewport = viewportAdjuster.scrollForDrag(
-					lastPointerPositionX, lastPointerPositionY, viewport,
-					cellDragPasteHandler.destinationShouldExtendVertically(
-							findRowOrHeader(lastPointerPositionY)));
+			adjustDataDimensionsForDrag();
+			if (viewportAdjuster != null) {
+				viewport = viewportAdjuster.scrollForDrag(
+						lastPointerPositionX, lastPointerPositionY, viewport,
+						cellDragPasteHandler.destinationShouldExtendVertically(
+								findRowOrHeader(lastPointerPositionY)));
+			}
 			setDestinationForDragPaste(lastPointerPositionX + viewport.getMinX() - oldViewportX,
 					lastPointerPositionY + viewport.getMinY() - oldViewportY);
 		} else if (autoscrollRow  || autoscrollColumn) {
@@ -936,6 +948,17 @@ public final class SpreadsheetController {
 					autoscrollRow);
 			extendSelectionByDrag(Math.max(lastPointerPositionX, layout.getRowHeaderWidth()),
 					Math.max(lastPointerPositionY, layout.getColumnHeaderHeight()), false, false);
+		}
+	}
+
+	private void adjustDataDimensionsForDrag() {
+		while (lastPointerPositionX + viewport.getMinX()
+				> layout.getTotalWidth() - layout.getRowHeaderWidth()) {
+			insertColumnRight();
+		}
+		while (lastPointerPositionY + viewport.getMinY()
+				> layout.getTotalHeight() - layout.getColumnHeaderHeight()) {
+			insertRowBottom();
 		}
 	}
 
