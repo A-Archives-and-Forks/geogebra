@@ -304,8 +304,8 @@ public final class KernelTabularDataAdapter implements UpdateLocationView, Tabul
 	}
 
 	@Override
-	public CellDragPasteHandler getCellDragPasteHandler() {
-		return new CellDragPasteHandler(this, kernel);
+	public CellDragPasteHandler<GeoElement> getCellDragPasteHandler() {
+		return new CellDragPasteHandler<>(this, kernel);
 	}
 
 	@Override

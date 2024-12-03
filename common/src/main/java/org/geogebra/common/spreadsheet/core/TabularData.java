@@ -75,7 +75,7 @@ public interface TabularData<T> extends HasTabularValues<T> {
 
 	String getErrorString();
 
-	CellDragPasteHandler getCellDragPasteHandler();
+	CellDragPasteHandler<T> getCellDragPasteHandler();
 
 	/**
 	 * Remove empty cell flag

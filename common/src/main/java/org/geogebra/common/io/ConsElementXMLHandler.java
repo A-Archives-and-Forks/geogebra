@@ -16,8 +16,10 @@ import org.geogebra.common.awt.GPoint2D;
 import org.geogebra.common.awt.GRectangle2D;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.Locateable;
 import org.geogebra.common.kernel.MacroConstruction;
+import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.SetRandomValue;
 import org.geogebra.common.kernel.algos.ChartStyle;
 import org.geogebra.common.kernel.arithmetic.Equation;
@@ -77,7 +79,6 @@ import org.geogebra.common.kernel.implicit.GeoImplicit;
 import org.geogebra.common.kernel.kernelND.CoordStyle;
 import org.geogebra.common.kernel.kernelND.GeoConicND;
 import org.geogebra.common.kernel.kernelND.GeoEvaluatable;
-import org.geogebra.common.kernel.kernelND.GeoLineND;
 import org.geogebra.common.kernel.kernelND.GeoPlaneND;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.kernel.kernelND.GeoQuadric3DInterface;
@@ -85,7 +86,6 @@ import org.geogebra.common.kernel.kernelND.SurfaceEvaluable;
 import org.geogebra.common.kernel.kernelND.SurfaceEvaluable.LevelOfDetail;
 import org.geogebra.common.kernel.prover.AlgoProve;
 import org.geogebra.common.main.App;
-import org.geogebra.common.main.GeoGebraColorConstants;
 import org.geogebra.common.main.error.ErrorHelper;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
@@ -449,12 +449,12 @@ public class ConsElementXMLHandler {
 			((GeoAngle) geo).setEmphasizeRightAngle(true);
 		} else if (geo instanceof GeoText) {
 			geo.setBackgroundColor(null);
+		} else if (geo instanceof GeoInputBox) {
+			geo.setBackgroundColor(null);
 		} else if (geo instanceof GeoButton) {
 			geo.setBackgroundColor(GColor.WHITE);
 			geo.setObjColor(GColor.BLACK);
 			((GeoButton) geo).setHeight(DEFAULT_BUTTON_HEIGHT);
-		} else if (geo instanceof GeoInputBox) {
-			geo.setObjColor(GeoGebraColorConstants.NEUTRAL_900);
 		}
 	}
 
@@ -1404,17 +1404,15 @@ public class ConsElementXMLHandler {
 	private boolean handleEqnStyle(LinkedHashMap<String, String> attrs) {
 		String style = attrs.get("style");
 		String parameter = attrs.get("parameter");
-		if (geo instanceof EquationValue) {
-			// GeoConic handled here
-			if (!((EquationValue) geo).setTypeFromXML(style, parameter, true)) {
-				Log.error("unknown style for conic in <eqnStyle>: " + style);
+		if (geo instanceof LinearEquationRepresentable) {
+			// e.g., GeoLine
+			if (!((LinearEquationRepresentable) geo).setEquationFormFromXML(style, parameter)) {
+				Log.error("unknown style for linear object in <eqnStyle>: " + style);
 			}
-		} else if (geo instanceof GeoLineND && "parametric".equals(style)) {
-			((GeoLineND) geo).setToParametric(parameter);
-		} else if (geo instanceof GeoConicND) {
-			// GeoConic3D handled here
-			if ("parametric".equals(style)) {
-				((GeoConicND) geo).setToParametric(parameter);
+		} else if (geo instanceof QuadraticEquationRepresentable) {
+			// e.g., GeoConic
+			if (!((QuadraticEquationRepresentable) geo).setEquationFormFromXML(style, parameter)) {
+				Log.error("unknown style for conic in <eqnStyle>: " + style);
 			}
 		} else {
 			Log.error("wrong element type for <eqnStyle>: " + geo.getClass());
@@ -1484,7 +1482,7 @@ public class ConsElementXMLHandler {
 			num.setSliderWidth(StringUtil.parseDouble(attrs.get("width")),
 					true);
 			num.setSliderFixed(MyXMLHandler.parseBoolean(attrs.get("fixed")));
-			num.setShowExtendedAV(
+			num.setAVSliderOrCheckboxVisible(
 					MyXMLHandler.parseBoolean(attrs.get("showAlgebra")));
 
 			num.setSliderHorizontal(
@@ -2023,7 +2021,7 @@ public class ConsElementXMLHandler {
 
 	protected void finish() {
 		if (!sliderTagProcessed && geo.isGeoNumeric()) {
-			((GeoNumeric) geo).setShowExtendedAV(false);
+			((GeoNumeric) geo).setAVSliderOrCheckboxVisible(false);
 		} else if (!fontTagProcessed && geo.isGeoText()) {
 			((TextProperties) geo).setFontSizeMultiplier(1);
 			((TextProperties) geo).setSerifFont(false);

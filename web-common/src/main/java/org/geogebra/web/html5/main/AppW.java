@@ -271,9 +271,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		super(getPlatform(appletParameters, dimension, laf));
 		this.geoGebraElement = geoGebraElement;
 		this.appletParameters = appletParameters;
-
-		setPrerelease(appletParameters.getDataParamPrerelease());
-
 		// laf = null in webSimple
 		boolean hasUndo = appletParameters.getDataParamEnableUndoRedo()
 				&& (laf == null || laf.undoRedoSupported());
@@ -1022,7 +1019,8 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		resetUI();
 		resetUrl();
 		if (examController.isExamActive()) {
-			examController.createNewTempMaterial();
+			setActiveMaterial(examController.getNewTempMaterial());
+			examController.reapplySettingsRestrictions();
 		}
 		setSaved();
 	}
@@ -1468,7 +1466,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		SafeGeoImageFactory factory =
 				new SafeGeoImageFactory(this).withAutoCorners(corner1 == null)
 						.withCorners(corner1, corner2, corner4);
-		GeoImage geoImage = factory.create(imgFileName, url);
+		GeoImage geoImage = factory.create(imgFileName, url, null);
 		if (insertImageCallback != null) {
 			this.insertImageCallback.run();
 		}
@@ -1486,7 +1484,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	public void imageDropHappened(String fileName, String content) {
 		SafeGeoImageFactory factory = new SafeGeoImageFactory(this);
 		String path = ImageManagerW.getMD5FileName(fileName, content);
-		factory.create(path, content);
+		factory.create(path, content, StringUtil.getFileExtension(fileName));
 	}
 
 	/**
@@ -1500,7 +1498,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		SafeGeoImageFactory factory =
 				new SafeGeoImageFactory(this, imageOld).withAutoCorners(c1 == null)
 						.withCorners(c1, c2);
-		return factory.create(imgFileName, imageAsString);
+		return factory.create(imgFileName, imageAsString, null);
 	}
 
 	/**
@@ -1513,8 +1511,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *         file opening was successful, and the opening finished already.
 	 */
 	public boolean openFileAsImage(File fileToHandle) {
-		String imageRegEx = ".*(png|jpg|jpeg|gif|bmp|svg)$";
-		if (!fileToHandle.name.toLowerCase().matches(imageRegEx)) {
+		if (!StringUtil.getFileExtension(fileToHandle.name).isImage()) {
 			return false;
 		}
 		if (getGuiManager() == null || !getGuiManager().toolbarHasImageMode()) {
@@ -1630,8 +1627,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *
 	 */
 	protected void initCoreObjects() {
-		kernel = newKernel(this);
-		kernel.setAngleUnit(kernel.getApplication().getConfig().getDefaultAngleUnit());
+		initKernel();
 
 		initSettings();
 
@@ -1859,7 +1855,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		euclidianView = newEuclidianView(euclidianViewPanel,
 				getEuclidianController(), showEvAxes, showEvGrid, 1,
 				getSettings().getEuclidian(1));
-		GlobalScope.examController.registerRestrictable(euclidianView);
 		return euclidianView;
 	}
 
@@ -2779,16 +2774,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		return this.appletParameters.getDataParamEnableFileFeatures();
 	}
 
-	/**
-	 * Update prerelease flag
-	 *
-	 * @param prerelease
-	 *            prerelease parameter
-	 */
-	public void setPrerelease(boolean prerelease) {
-		this.prerelease = prerelease;
-	}
-
 	@Override
 	public void hideMenu() {
 		// for applets with menubar
@@ -3144,7 +3129,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	/**
 	 * @return the sub app code, if it exists, or the app code
 	 */
-	private String getSubAppCode() {
+	public String getSubAppCode() {
 		return getConfig().getSubAppCode() != null
 				? getConfig().getSubAppCode()
 				: getConfig().getAppCode();
@@ -3547,8 +3532,16 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		return toolTipManager;
 	}
 
+	/**
+	 * @return whether the exam mode is set from the outside and we're in app mode
+	 */
 	public boolean isLockedExam() {
-		return !StringUtil.empty(getAppletParameters().getParamExamMode());
+		return !StringUtil.empty(getAppletParameters().getParamExamMode())
+				&& supportsExamUI();
+	}
+
+	protected boolean supportsExamUI() {
+		return appletParameters.getDataParamApp() && !isWhiteboardActive();
 	}
 
 	/**
@@ -3558,5 +3551,12 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	public boolean isToolboxCategoryEnabled(String category) {
 		List<String> tools = getAppletParameters().getDataParamCustomToolbox();
 		return tools.contains(category) || tools.isEmpty();
+	}
+
+	/**
+	 * Remove all connections to the global exam controller
+	 */
+	public void detachFromExamController() {
+		// only with UI
 	}
 }

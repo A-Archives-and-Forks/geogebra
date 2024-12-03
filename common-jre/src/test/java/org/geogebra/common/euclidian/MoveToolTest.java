@@ -13,13 +13,9 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.geogebra.common.cas.CASparser;
 import org.geogebra.common.cas.MockCASGiac;
-import org.geogebra.common.factories.CASFactory;
 import org.geogebra.common.gui.dialog.options.model.AbsoluteScreenPositionModel;
 import org.geogebra.common.jre.headless.EuclidianViewNoGui;
-import org.geogebra.common.kernel.CASGenericInterface;
-import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.geos.AbsoluteScreenLocateable;
 import org.geogebra.common.kernel.geos.GeoBoolean;
 import org.geogebra.common.kernel.geos.GeoCasCell;
@@ -89,7 +85,7 @@ public class MoveToolTest extends BaseEuclidianControllerTest {
 	@Test
 	public void casListShouldNotBeMoveable() {
 		MockCASGiac mockGiac = setupGiac();
-		mockGiac.memmorize("{(1, -1), (1, 1)}");
+		mockGiac.memorize("{(1, -1), (1, 1)}");
 		GeoCasCell f = new GeoCasCell(getConstruction());
 		getConstruction().addToConstructionList(f, false);
 		f.setInput("l5:=Intersect(x^2+y^2=2,(x-2)^2+y^2=2)");
@@ -104,7 +100,7 @@ public class MoveToolTest extends BaseEuclidianControllerTest {
 	@Test
 	public void casFreeListShouldNotBeMoveable() {
 		MockCASGiac mockGiac = setupGiac();
-		mockGiac.memmorize("{(1, -1), (1, 1)}");
+		mockGiac.memorize("{(1, -1), (1, 1)}");
 		GeoCasCell f = new GeoCasCell(getConstruction());
 		getConstruction().addToConstructionList(f, false);
 		f.setInput("l5:={(1, -1), (1, 1)}");
@@ -134,21 +130,14 @@ public class MoveToolTest extends BaseEuclidianControllerTest {
 	}
 
 	private MockCASGiac setupGiac() {
-		MockCASGiac mockGiac = new MockCASGiac((CASparser) getKernel()
-				.getGeoGebraCAS().getCASparser());
-		getApp().setCASFactory(new CASFactory() {
-			@Override
-			public CASGenericInterface newGiac(CASparser parser, Kernel kernel) {
-				return mockGiac;
-			}
-		});
-		return mockGiac;
+		return new MockCASGiac(getApp());
 	}
 
 	@Test
 	public void moveWithMouseShouldChangePolygon1() {
 		add("A = (0,0)");
 		add("q = Polygon(A, (0,-1), 4)");
+		add("SetVisibleInView(B,1,false)");
 		dragStart(50, 50);
 		dragEnd(100, 150);
 		checkContent("A = (1, -2)", "q = 1", "f = 1", "g = 1", "B = (2, -3)",

@@ -498,7 +498,9 @@ public class ConstructionDefaults implements SettingListener {
 		line.setObjColor(getLineColor());
 		// line.setLineThickness(getDefaultLineThickness());
 		line.setDefaultGeoType(DEFAULT_LINE);
-		line.setMode(GeoLine.EQUATION_IMPLICIT);
+		// note: at runtime (i.e., after createDefaultGeoElements() finishes), this default
+		// equation form also applies to subclasses of GeoLine (GeoRay, GeoSegment, etc)
+		line.setEquationForm(LinearEquationRepresentable.Form.IMPLICIT);
 		setDefaultLineStyle(line);
 		defaultGeoElements.put(DEFAULT_LINE, line);
 
@@ -520,7 +522,7 @@ public class ConstructionDefaults implements SettingListener {
 		setDefaultLineStyle(seg);
 		defaultGeoElements.put(DEFAULT_SEGMENT, seg);
 
-		// segment
+		// ray
 		GeoRay ray = new GeoRay(cons);
 		ray.setLocalVariableLabel("Segment");
 		ray.setObjColor(getLineColor());
@@ -974,15 +976,15 @@ public class ConstructionDefaults implements SettingListener {
 				geo.setAlphaValue(1);
 			}
 
-			if (geo instanceof GeoButton && !(geo instanceof GeoInputBox)
-					&& geo.getBackgroundColor() == null) {
+			if (geo instanceof GeoInputBox) {
+				geo.setBackgroundColor(GColor.WHITE);
+				geo.setObjColor(GeoGebraColorConstants.NEUTRAL_900);
+			} else if (geo instanceof GeoButton && geo.getBackgroundColor() == null) {
 				geo.setBackgroundColor(GeoGebraColorConstants.GEOGEBRA_ACCENT);
 				geo.setObjColor(GColor.WHITE);
 				((GeoButton) geo).setHeight(DEFAULT_BUTTON_HEIGHT);
 			}
-			if (geo instanceof GeoInputBox) {
-				geo.setObjColor(GeoGebraColorConstants.NEUTRAL_900);
-			}
+
 			if (geo instanceof GeoInlineText) {
 				((GeoInlineText) geo).setVerticalAlignment(VerticalAlignment.TOP);
 			}
