@@ -305,3 +305,4 @@ public class EuclidianControllerW extends EuclidianController implements
 		return toolImageW.create(mode, fileName);
 	}
 }
+

@@ -10,10 +10,6 @@ public enum EuclidianCursor {
 	DEFAULT,
 	/** Hand */
 	DRAG,
-	/** Grab */
-	GRAB,
-	/** Grabbing */
-	GRABBING,
 	/** Arrow */
 	MOVE,
 	/** invisible, eg. for pen */
