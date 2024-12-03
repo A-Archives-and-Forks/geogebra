@@ -286,10 +286,10 @@ public class ContextMenuGeoElementD extends ContextMenuGeoElement {
 
 		// there's no need to show implicit equation
 		// if you can't select the specific equation
-		boolean specificPossible = conic.isSpecificPossible();
-		boolean explicitPossible = conic.isExplicitPossible();
-		boolean vertexformPossible = conic.isVertexformPossible();
-		boolean conicformPossible = conic.isConicformPossible();
+		boolean specificPossible = conic.isSpecificFormPossible();
+		boolean explicitPossible = conic.isExplicitFormPossible();
+		boolean vertexformPossible = conic.isVertexFormPossible();
+		boolean conicformPossible = conic.isConicFormPossible();
 		boolean userPossible = conic.getDefinition() != null;
 		if (!(specificPossible || explicitPossible || userPossible)) {
 			return;
