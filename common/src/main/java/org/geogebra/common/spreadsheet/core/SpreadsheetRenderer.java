@@ -223,9 +223,7 @@ public final class SpreadsheetRenderer {
 			if (minX < maxX && minY < maxY) {
 				drawVisibleSelectionBorders(graphics, bounds, minX, minY, maxX, maxY);
 			}
-			if (dashed) {
-				setStroke(graphics, thickOutline, false);
-			}
+			setStroke(graphics, false, false);
 		}
 	}
 
