@@ -168,8 +168,8 @@ public class AlgebraProcessorTests extends BaseUnitTest {
 		// Editing the function to an equation should also trigger the setup
 		EvalInfo evalInfo = EvalInfoFactory.getEvalInfoForRedefinition(
 				getKernel(), getKernel().lookupLabel("f"), true);
-		getAlgebraProcessor().changeGeoElementNoExceptionHandling(
-				getKernel().lookupLabel("f"), "f: x = 0", evalInfo, false, null, ErrorHelper.silent());
+		getAlgebraProcessor().changeGeoElementNoExceptionHandling(getKernel().lookupLabel("f"),
+				"f: x = 0", evalInfo, false, null, ErrorHelper.silent());
 		assertEquals(GColor.RED, getKernel().lookupLabel("f").getObjectColor());
     }
 
