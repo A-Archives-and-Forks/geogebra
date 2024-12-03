@@ -16,8 +16,6 @@ import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.factory.PropertiesArray;
-import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
-import org.geogebra.common.properties.impl.objects.NameProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.quickstylebar.components.IconButtonWithProperty;
 import org.geogebra.web.full.gui.ContextMenuGeoElementW;
@@ -147,9 +145,10 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 				UndoActionType.STYLE_OR_TABLE_CONTENT, verticalAlignmentProperty);
 
 		if (!getApp().isWhiteboardActive()) {
-			StringPropertyCollection<NameProperty> nameProperty = GeoElementPropertiesFactory
-					.createNameProperty(getApp().getLocalization(), activeGeoList);
-			addPropertyPopupButton(activeGeoList.get(0), "labelStyle", true, nameProperty);
+			PropertiesArray labelProperties = GeoElementPropertiesFactory
+					.createLabelProperties(getApp().getLocalization(), activeGeoList);
+			addPropertyPopupButton(activeGeoList, "labelStyle", true,
+					labelProperties.getProperties());
 		}
 
 		addDivider();
@@ -167,7 +166,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		addUndoActionObserver(properties, geos, undoFiler);
 		IconButtonWithProperty colorButton = new IconButtonWithProperty(getApp(), "colorStyle",
 				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(),
-				geos.get(0), true, properties);
+				geos, true, properties);
 
 		setPopupHandlerWithUndoAction(colorButton);
 		styleAndRegisterButton(colorButton);
@@ -216,7 +215,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 		Property firstProperty = properties[0];
 		addUndoActionObserver(properties, geos, undoType);
 		IconButton button = new IconButtonWithProperty(getApp(), className,
-				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(), geos.get(0),
+				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(), geos,
 				closePopupOnAction, properties);
 		styleAndRegisterButton(button);
 	}

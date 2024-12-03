@@ -4,9 +4,11 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
-import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
+import org.geogebra.common.properties.ValuedProperty;
+import org.geogebra.common.properties.impl.AbstractValuedProperty;
 
-public class LabelStyleProperty extends AbstractNamedEnumeratedProperty<Integer> {
+public class LabelStyleProperty extends AbstractValuedProperty<Integer>
+		implements ValuedProperty<Integer> {
 	private final Kernel kernel;
 	private final GeoElement element;
 

@@ -2,20 +2,26 @@ package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import static org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar.POPUP_MENU_DISTANCE;
 
+import java.util.List;
+
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.RangeProperty;
+import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
+import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
+import org.geogebra.common.properties.impl.objects.LabelStyleProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
+import org.geogebra.web.full.euclidian.LabelSettingsPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
 import org.geogebra.web.full.gui.toolbar.mow.popupcomponents.ColorChooserPanel;
@@ -31,9 +37,10 @@ import org.gwtproject.user.client.ui.FlowPanel;
 
 public class IconButtonWithProperty extends IconButton {
 	private final AppW appW;
-	private final GeoElement geo;
+	private final List<GeoElement> geos;
 	private GPopupPanel propertyPopup;
 	private SliderWithProperty lineThicknessSlider;
+	private LabelSettingsPanel labelPanel;
 	private final PropertyWidgetAdapter widgetAdapter;
 	private PopupColorHandler popupHandler;
 
@@ -43,15 +50,15 @@ public class IconButtonWithProperty extends IconButton {
 	 * @param className - class name
 	 * @param icon - svg resource of button
 	 * @param ariaLabel - aria label
-	 * @param geo - geo element
+	 * @param geos - geo elements
 	 * @param closePopupOnAction - weather should close popup after clicking on popup element
 	 * @param properties - array of applicable properties
 	 */
 	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel,
-			GeoElement geo, boolean closePopupOnAction, Property... properties) {
+			List<GeoElement> geos, boolean closePopupOnAction, Property... properties) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
-		this.geo = geo;
+		this.geos = geos;
 		widgetAdapter = new PropertyWidgetAdapter(appW, closePopupOnAction);
 		AriaHelper.setAriaHasPopup(this);
 
@@ -139,7 +146,7 @@ public class IconButtonWithProperty extends IconButton {
 			RangePropertyCollection<?> rangeProperty = (RangePropertyCollection<?>) property;
 			RangeProperty<?> firstProperty = rangeProperty.getFirstProperty();
 			if (firstProperty instanceof NotesThicknessProperty) {
-				lineThicknessSlider = widgetAdapter.getSliderWidget(rangeProperty, geo);
+				lineThicknessSlider = widgetAdapter.getSliderWidget(rangeProperty, geos.get(0));
 				parent.add(lineThicknessSlider);
 			} else if (firstProperty instanceof CellBorderThicknessProperty
 					|| firstProperty instanceof BorderThicknessProperty) {
@@ -148,14 +155,22 @@ public class IconButtonWithProperty extends IconButton {
 				parent.add(borderThickness);
 			} else {
 				SliderWithProperty sliderWithProperty = widgetAdapter.getSliderWidget(
-						rangeProperty, geo);
+						rangeProperty, geos.get(0));
 				parent.add(sliderWithProperty);
 			}
 		}
 
 		if (property instanceof StringPropertyCollection<?>) {
-			FlowPanel labelPanel = widgetAdapter.getLabelPanel((StringPropertyCollection<?>) property);
+			labelPanel = widgetAdapter.getLabelPanel((StringPropertyCollection<?>) property, geos);
 			parent.add(labelPanel);
+		}
+
+		if (property instanceof ValuedPropertyCollection<?>) {
+			ValuedPropertyCollection<?> valuedProperty = (ValuedPropertyCollection<?>) property;
+			ValuedProperty<?> firstProperty = valuedProperty.getFirstProperty();
+			if (firstProperty instanceof LabelStyleProperty && labelPanel != null) {
+				labelPanel.setLabelStyleProperty(valuedProperty);
+			}
 		}
 	}
 
@@ -168,7 +183,7 @@ public class IconButtonWithProperty extends IconButton {
 
 	private void update() {
 		if (lineThicknessSlider != null) {
-			lineThicknessSlider.setLineColor(geo.getObjectColor());
+			lineThicknessSlider.setLineColor(geos.get(0).getObjectColor());
 		}
 	}
 

@@ -1,11 +1,14 @@
 package org.geogebra.web.full.euclidian;
 
+import java.util.List;
+
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.gui.SetLabels;
-import org.geogebra.common.gui.dialog.options.model.NameValueModel;
-import org.geogebra.common.gui.dialog.options.model.ShowLabelModel;
+import org.geogebra.common.kernel.StringTemplate;
+import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
+import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
 import org.geogebra.keyboard.base.KeyboardType;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.components.ComponentInputField;
@@ -21,15 +24,16 @@ import org.gwtproject.user.client.Command;
 import org.gwtproject.user.client.ui.FlowPanel;
 
 public class LabelSettingsPanel extends FlowPanel
-		implements CloseHandler<GPopupPanel>, SetLabels, ShowLabelModel.IShowLabelListener {
+		implements CloseHandler<GPopupPanel>, SetLabels {
 	private final AppW appW;
 	private final StringPropertyCollection<?> nameProperty;
+	private ValuedPropertyCollection<?> labelStyleProperty;
+	private final List<GeoElement> geos;
 
 	private final LocalizationW loc;
 	private ComponentInputField tfName;
 	private GCheckMarkLabel cmName;
 	private GCheckMarkLabel cmValue;
-	private final NameValueModel model;
 	private VirtualKeyboardGUI kbd;
 
 	/**
@@ -37,20 +41,26 @@ public class LabelSettingsPanel extends FlowPanel
 	 * @param appW - application
 	 * @param nameProperty - name property
 	 */
-	public LabelSettingsPanel(AppW appW, StringPropertyCollection<?> nameProperty) {
+	public LabelSettingsPanel(AppW appW, StringPropertyCollection<?> nameProperty,
+			List<GeoElement> geos) {
 		super();
 		this.appW = appW;
 		loc = appW.getLocalization();
 		this.nameProperty = nameProperty;
-		createPopup();
+		this.geos = geos;
 
-		model = new NameValueModel(appW, null);
+		createPopup();
 		init();
 	}
 
 	private void createPopup() {
 		//getMyPopup().addCloseHandler(this);
 		createDialog();
+	}
+
+	public void setLabelStyleProperty(ValuedPropertyCollection<?> labelStyleProperty) {
+		this.labelStyleProperty = labelStyleProperty;
+		updateUI();
 	}
 
 	private void createDialog() {
@@ -116,50 +126,57 @@ public class LabelSettingsPanel extends FlowPanel
 		boolean value = cmValue.isChecked();
 		int mode = -1;
 		if (name && !value) {
-			mode = model.isForceCaption() ? GeoElementND.LABEL_CAPTION
+			mode = isForceCaption() ? GeoElementND.LABEL_CAPTION
 					: GeoElementND.LABEL_NAME;
 		} else if (name && value) {
-			mode = model.isForceCaption() ? GeoElementND.LABEL_CAPTION_VALUE
+			mode = isForceCaption() ? GeoElementND.LABEL_CAPTION_VALUE
 					: GeoElementND.LABEL_NAME_VALUE;
 		} else if (!name && value) {
 			mode = GeoElementND.LABEL_VALUE;
 		}
-		// !name && !value: hide, nothing to do.
 
-		//model.applyModeChanges(mode, mode != -1);
+		setLabelStyle(mode);
 	}
 
-	@Override
-	public Object updatePanel(Object[] geos2) {
-		return null;
-	}
-
-	@Override
-	public void update(boolean isEqualVal, boolean isEqualMode, int mode) {
-		if (tfName != null) {
-			tfName.setVisible(model.getGeosLength() == 1);
+	private void setLabelStyle(int mode) {
+		if (labelStyleProperty != null) {
+			labelStyleProperty.setValue(mode);
+			updateUI();
 		}
-		if (!model.isLabelVisible()) {
+	}
+
+	private void updateUI() {
+		if (tfName != null) {
+			tfName.setVisible(geos.size() == 1);
+		}
+
+		if (!geos.get(0).isLabelVisible()) {
 			cmName.setChecked(false);
 			cmValue.setChecked(false);
 			return;
 		}
-		cmName.setChecked(
-				isEqualVal
-						&& (mode == GeoElementND.LABEL_NAME
-								|| mode == GeoElementND.LABEL_CAPTION_VALUE
-								|| mode == GeoElementND.LABEL_NAME_VALUE
-								|| mode == GeoElementND.LABEL_CAPTION));
-		cmValue.setChecked(
-				isEqualMode
-						&& (mode == GeoElementND.LABEL_VALUE
-								|| mode == GeoElementND.LABEL_CAPTION_VALUE
-								|| mode == GeoElementND.LABEL_NAME_VALUE));
+
+		if (labelStyleProperty != null) {
+			int labelStyle = labelStyleProperty.getValue();
+			cmName.setChecked(labelStyle == GeoElementND.LABEL_NAME
+					|| labelStyle == GeoElementND.LABEL_CAPTION_VALUE
+					|| labelStyle == GeoElementND.LABEL_NAME_VALUE
+					|| labelStyle == GeoElementND.LABEL_CAPTION);
+			cmValue.setChecked(labelStyle == GeoElementND.LABEL_VALUE
+							|| labelStyle == GeoElementND.LABEL_CAPTION_VALUE
+							|| labelStyle == GeoElementND.LABEL_NAME_VALUE);
+		}
 	}
 
 	private void init() {
 		kbd.selectTab(KeyboardType.ABC);
 		tfName.setInputText(nameProperty.getValue());
 		tfName.focusDeferred();
+	}
+
+	private boolean isForceCaption() {
+		return !geos.get(0)
+				.getLabel(StringTemplate.defaultTemplate)
+				.equals(geos.get(0).getCaption(StringTemplate.defaultTemplate));
 	}
 }

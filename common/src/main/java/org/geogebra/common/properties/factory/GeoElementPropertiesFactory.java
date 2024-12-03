@@ -19,6 +19,7 @@ import org.geogebra.common.properties.impl.collections.IconsEnumeratedPropertyCo
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
+import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
@@ -33,6 +34,7 @@ import org.geogebra.common.properties.impl.objects.HorizontalAlignmentProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.ItalicProperty;
+import org.geogebra.common.properties.impl.objects.LabelStyleProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
 import org.geogebra.common.properties.impl.objects.MinProperty;
@@ -247,7 +249,7 @@ public class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		List<Property> properties = new ArrayList<>();
 		addPropertyIfNotNull(properties, createNameProperty(localization, elements));
-	//	addPropertyIfNotNull(properties, createLabelStyleProperty(localization, elements));
+		addPropertyIfNotNull(properties, createLabelStyleProperty(localization, elements));
 		return createPropertiesArray(localization, properties, elements);
 	}
 
@@ -719,19 +721,16 @@ public class GeoElementPropertiesFactory {
 		}
 	}
 
-	/*public static AbstractValuedPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
+	public static ValuedPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
 			Localization localization, List<GeoElement> elements) {
-		try {
-			List<LabelStyleProperty> labelStyleProperties = new ArrayList<>();
-			for (GeoElement element : elements) {
-				labelStyleProperties.add(new LabelStyleProperty(localization, element.getKernel(),
-						element));
-			}
-			return new AbstractValuedPropertyCollection<>(labelStyleProperties.toArray(new LabelStyleProperty[0]));
-		} catch (NotApplicablePropertyException ignored) {
-			return null;
+		List<LabelStyleProperty> labelStyleProperties = new ArrayList<>();
+		for (GeoElement element : elements) {
+			labelStyleProperties.add(new LabelStyleProperty(localization, element.getKernel(),
+					element));
 		}
-	}*/
+		return new ValuedPropertyCollection<>(labelStyleProperties.toArray(
+				new LabelStyleProperty[0]));
+	}
 
 	private static BooleanPropertyCollection<ShowObjectProperty> createShowObjectProperty(
 			Localization localization, List<GeoElement> elements) {

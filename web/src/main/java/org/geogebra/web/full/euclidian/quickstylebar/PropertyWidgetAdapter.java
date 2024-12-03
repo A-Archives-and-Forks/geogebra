@@ -117,7 +117,8 @@ public class PropertyWidgetAdapter {
 		return fontSizeMenu;
 	}
 
-	public FlowPanel getLabelPanel(StringPropertyCollection<?> property) {
-		return new LabelSettingsPanel(appW, property);
+	public LabelSettingsPanel getLabelPanel(StringPropertyCollection<?> property,
+			List<GeoElement> geos) {
+		return new LabelSettingsPanel(appW, property, geos);
 	}
 }
