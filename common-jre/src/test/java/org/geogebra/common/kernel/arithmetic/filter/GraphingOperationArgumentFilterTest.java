@@ -38,7 +38,7 @@ public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testFiltersAbs() {
+	public void testFiltersAbs() throws ParseException {
 		ExpressionValue vector = getVector();
 		assertAllowed(Operation.ABS, vector, null, is(false));
 
@@ -48,6 +48,9 @@ public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 		ExpressionValue function = new Function(getKernel(),
 				new ExpressionNode(getKernel(), 0));
 		assertAllowed(Operation.ABS, function, null, is(true));
+		assertAllowed(Operation.ABS, add("2+i"), null, is(true));
+		ValidExpression complex = getKernel().getParser().parseGeoGebraExpression("1/i");
+		assertAllowed(Operation.ABS, complex, null, is(true));
 	}
 
 	@Test
