@@ -1,6 +1,7 @@
 package org.geogebra.common.properties.impl.objects;
 
 import org.geogebra.common.gui.dialog.options.model.LineStyleModel;
+import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.main.Localization;
@@ -65,6 +66,7 @@ public class ThicknessProperty extends AbstractRangeProperty<Integer> {
 		} else if (LineStyleModel.match(element)) {
 			element.setLineThickness(size);
 		}
+		element.updateVisualStyleRepaint(GProperty.LINE_STYLE);
 	}
 
 	@Override

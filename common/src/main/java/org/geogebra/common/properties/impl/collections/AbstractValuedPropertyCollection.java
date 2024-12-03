@@ -79,6 +79,7 @@ abstract class AbstractValuedPropertyCollection<T extends ValuedProperty<S>, S> 
 		if (isFrozen()) {
 			return;
 		}
+		notifyObservers(observer -> observer.onWillSetValue(this));
 		callProperty(property -> property.setValue(value));
 		notifyObservers(observer -> observer.onDidSetValue(this));
 	}

@@ -10,14 +10,13 @@ import static org.geogebra.common.kernel.geos.properties.TextFontSize.VERY_LARGE
 import static org.geogebra.common.kernel.geos.properties.TextFontSize.VERY_SMALL;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.geogebra.common.euclidian.EuclidianView;
-import org.geogebra.common.kernel.InlineTextFormatter;
 import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoText;
+import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.kernel.geos.TextStyle;
 import org.geogebra.common.kernel.geos.properties.TextFontSize;
 import org.geogebra.common.main.Localization;
@@ -31,7 +30,6 @@ public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFo
 			EXTRA_SMALL, VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE, EXTRA_LARGE);
 	private final GeoElementDelegate delegate;
 	private final EuclidianView ev;
-	private final InlineTextFormatter inlineTextFormatter;
 
 	/**
 	 * Text font size property
@@ -44,7 +42,6 @@ public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFo
 		super(localization, "FontSize");
 		delegate = new TextFormatterDelegate(element);
 		this.ev = ev;
-		inlineTextFormatter = new InlineTextFormatter();
 		setValues(fontSizes);
 		setNamedValues(List.of(
 				entry(EXTRA_SMALL, EXTRA_SMALL.getName()),
@@ -61,7 +58,9 @@ public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFo
 	protected void doSetValue(TextFontSize value) {
 		GeoElement element = delegate.getElement();
 		double size = GeoText.getRelativeFontSize(fontSizes.indexOf(value)) * ev.getFontSize();
-		inlineTextFormatter.formatInlineText(Collections.singletonList(element), "size", size);
+		if (element instanceof HasTextFormatter) {
+			((HasTextFormatter) element).getFormatter().format("size", size);
+		}
 		element.updateVisualStyleRepaint(GProperty.FONT);
 	}
 

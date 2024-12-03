@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.euclidian.EuclidianStyleBarStatic;
-import org.geogebra.common.kernel.InlineTextFormatter;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.color.ColorValues;
 import org.geogebra.common.main.color.GeoColorValues;
@@ -40,7 +40,8 @@ public class NotesFontColorProperty extends ElementColorProperty
 				List.of(element));
 
 		String htmlColor = StringUtil.toHtmlColor(value);
-		InlineTextFormatter inlineFormatter = new InlineTextFormatter();
-		inlineFormatter.formatInlineText(List.of(element), "color", htmlColor);
+		if (element instanceof HasTextFormatter) {
+			((HasTextFormatter) element).getFormatter().format("color", htmlColor);
+		}
 	}
 }
