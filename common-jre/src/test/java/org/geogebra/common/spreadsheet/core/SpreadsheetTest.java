@@ -21,8 +21,8 @@ import org.junit.Test;
 
 public class SpreadsheetTest extends BaseUnitTest {
 
-	private final int colHeader = (int) TableLayout.DEFAULT_CELL_HEIGHT;
-	private final int rowHeader = TableLayout.DEFAULT_ROW_HEADER_WIDTH;
+	private final double cellHeight = TableLayout.DEFAULT_CELL_HEIGHT;
+	private final double cellWidth = TableLayout.DEFAULT_ROW_HEADER_WIDTH;
 	private Spreadsheet spreadsheet;
 	private TestTabularData tabularData;
 
@@ -73,9 +73,9 @@ public class SpreadsheetTest extends BaseUnitTest {
 		spreadsheet.draw(graphics);
 		// initially we have 2 columns
 		assertThat(graphics.toString(), startsWith("col0,col1,1"));
-		spreadsheet.handlePointerDown(rowHeader + 40, 5, Modifiers.NONE);
-		spreadsheet.handlePointerMove(rowHeader + 10, 5, Modifiers.NONE);
-		spreadsheet.handlePointerUp(rowHeader + 10, 5, Modifiers.NONE);
+		spreadsheet.handlePointerDown(cellWidth + 40, 5, Modifiers.NONE);
+		spreadsheet.handlePointerMove(cellWidth + 10, 5, Modifiers.NONE);
+		spreadsheet.handlePointerUp(cellWidth + 10, 5, Modifiers.NONE);
 		graphics = new StringCapturingGraphics();
 		spreadsheet.draw(graphics);
 		// after resize, we have 3
@@ -93,9 +93,9 @@ public class SpreadsheetTest extends BaseUnitTest {
 		spreadsheet.selectColumn(2, true, false);
 		spreadsheet.selectColumn(3, true, false);
 		spreadsheet.selectColumn(4, true, false);
-		spreadsheet.handlePointerDown(rowHeader + 80, 5, Modifiers.NONE);
-		spreadsheet.handlePointerMove(rowHeader + 50, 5, Modifiers.NONE);
-		spreadsheet.handlePointerUp(rowHeader + 50, 5, Modifiers.NONE);
+		spreadsheet.handlePointerDown(cellWidth + 80, 5, Modifiers.NONE);
+		spreadsheet.handlePointerMove(cellWidth + 50, 5, Modifiers.NONE);
+		spreadsheet.handlePointerUp(cellWidth + 50, 5, Modifiers.NONE);
 		graphics = new StringCapturingGraphics();
 		spreadsheet.draw(graphics);
 		// after resize, we have 6
@@ -108,9 +108,9 @@ public class SpreadsheetTest extends BaseUnitTest {
 		spreadsheet.draw(graphics);
 		// initially we have 5 rows
 		assertThat(graphics.toString(), endsWith(",5"));
-		spreadsheet.handlePointerDown(15, colHeader + 20, Modifiers.NONE);
-		spreadsheet.handlePointerMove(15, colHeader + 40, Modifiers.NONE);
-		spreadsheet.handlePointerUp(15, colHeader + 40, Modifiers.NONE);
+		spreadsheet.handlePointerDown(15, cellHeight + 20, Modifiers.NONE);
+		spreadsheet.handlePointerMove(15, cellHeight + 40, Modifiers.NONE);
+		spreadsheet.handlePointerUp(15, cellHeight + 40, Modifiers.NONE);
 		graphics = new StringCapturingGraphics();
 		spreadsheet.draw(graphics);
 		// after resize, we have 4
@@ -144,9 +144,9 @@ public class SpreadsheetTest extends BaseUnitTest {
 		spreadsheet.selectRow(2, true, false);
 		spreadsheet.selectRow(3, true, false);
 		spreadsheet.selectRow(4, true, false);
-		spreadsheet.handlePointerDown(15, colHeader + 20, Modifiers.NONE);
-		spreadsheet.handlePointerMove(15, colHeader + 45, Modifiers.NONE);
-		spreadsheet.handlePointerUp(15, colHeader + 45, Modifiers.NONE);
+		spreadsheet.handlePointerDown(15, cellHeight + 20, Modifiers.NONE);
+		spreadsheet.handlePointerMove(15, cellHeight + 45, Modifiers.NONE);
+		spreadsheet.handlePointerUp(15, cellHeight + 45, Modifiers.NONE);
 		resetViewport();
 		graphics = new StringCapturingGraphics();
 		spreadsheet.draw(graphics);

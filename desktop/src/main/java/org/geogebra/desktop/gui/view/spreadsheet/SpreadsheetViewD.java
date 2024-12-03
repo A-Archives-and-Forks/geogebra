@@ -652,7 +652,7 @@ public class SpreadsheetViewD implements SpreadsheetViewInterface,
 		for (int i = 0; i < table.getColumnCount(); ++i) {
 			if (widthMap.containsKey(i)) {
 				table.getColumnModel().getColumn(i)
-						.setPreferredWidth(widthMap.get(i).intValue());
+						.setPreferredWidth((int) Math.round(widthMap.get(i)));
 			} else {
 				table.getColumnModel().getColumn(i)
 						.setPreferredWidth(table.preferredColumnWidth());
@@ -669,7 +669,7 @@ public class SpreadsheetViewD implements SpreadsheetViewInterface,
 		if (!heightMap.isEmpty()) {
 			for (Entry<Integer, Double> entry : heightMap.entrySet()) {
 				Integer r = entry.getKey();
-				table.setRowHeight(r, entry.getValue().intValue());
+				table.setRowHeight(r, (int) Math.round(entry.getValue()));
 			}
 		}
 	}

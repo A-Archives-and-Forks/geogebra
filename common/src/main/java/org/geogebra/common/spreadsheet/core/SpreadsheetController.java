@@ -59,9 +59,8 @@ public final class SpreadsheetController {
 		this.cellDragPasteHandler = tabularData.getCellDragPasteHandler();
 		resetDragAction();
 		style = new SpreadsheetStyle(tabularData.getFormat());
-		layout = new TableLayout(tabularData.numberOfRows(),
-				tabularData.numberOfColumns(), (float) TableLayout.DEFAULT_CELL_HEIGHT,
-				(float) TableLayout.DEFAULT_CELL_WIDTH);
+		layout = new TableLayout(tabularData.numberOfRows(), tabularData.numberOfColumns(),
+				TableLayout.DEFAULT_CELL_HEIGHT, TableLayout.DEFAULT_CELL_WIDTH);
 		contextMenuItems = new ContextMenuItems(this, selectionController);
 	}
 

@@ -31,9 +31,9 @@ import com.himamis.retex.editor.share.util.JavaKeyCodes;
 import com.himamis.retex.renderer.share.platform.FactoryProvider;
 
 public class SpreadsheetControllerTest implements SpreadsheetControlsDelegate {
-    private final int cellHeight = (int) TableLayout.DEFAULT_CELL_HEIGHT;
-    private final int cellWidth = 40;
-    private final int rowHeaderCellWidth = TableLayout.DEFAULT_ROW_HEADER_WIDTH;
+    private final double cellHeight = TableLayout.DEFAULT_CELL_HEIGHT;
+    private final double cellWidth = 40;
+    private final double rowHeaderCellWidth = TableLayout.DEFAULT_ROW_HEADER_WIDTH;
 
     private SpreadsheetController controller;
     private TabularData tabularData;

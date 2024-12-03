@@ -19,12 +19,12 @@ public class TableLayoutTest {
 	@Test
 	public void testFindColumn() {
 		assertThat(layout.findColumn(-5), equalTo(-1));
-		int rowHeader = TableLayout.DEFAULT_ROW_HEADER_WIDTH;
-		assertThat(layout.findColumn(rowHeader - 1), equalTo(-1));
-		assertThat(layout.findColumn(rowHeader + 1), equalTo(0));
-		assertThat(layout.findColumn(rowHeader + 40), equalTo(1));
-		assertThat(layout.findColumn(rowHeader + 41), equalTo(1));
-		assertThat(layout.findColumn(rowHeader + 80), equalTo(2));
+		double cellWidth = TableLayout.DEFAULT_ROW_HEADER_WIDTH;
+		assertThat(layout.findColumn(cellWidth - 1), equalTo(-1));
+		assertThat(layout.findColumn(cellWidth + 1), equalTo(0));
+		assertThat(layout.findColumn(cellWidth + 40), equalTo(1));
+		assertThat(layout.findColumn(cellWidth + 41), equalTo(1));
+		assertThat(layout.findColumn(cellWidth + 80), equalTo(2));
 		assertThat(layout.findColumn(10000), equalTo(5));
 	}
 

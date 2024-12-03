@@ -15,7 +15,7 @@ import org.geogebra.common.util.shape.Rectangle;
 public final class TableLayout implements CustomRowAndColumnSizeProvider {
 	public static final double DEFAULT_CELL_WIDTH = 120;
 	public static final double DEFAULT_CELL_HEIGHT = 36;
-	public static final int DEFAULT_ROW_HEADER_WIDTH = 52;
+	public static final double DEFAULT_ROW_HEADER_WIDTH = 52;
 
 	private static final int MIN_CELL_SIZE = 10;
 	private double[] columnWidths;
@@ -24,6 +24,21 @@ public final class TableLayout implements CustomRowAndColumnSizeProvider {
 	private double[] cumulativeHeights;
 	private double rowHeaderWidth = DEFAULT_ROW_HEADER_WIDTH;
 	private double columnHeaderHeight = DEFAULT_CELL_HEIGHT;
+
+	/**
+	 * @param rows Number of rows
+	 * @param columns Number of columns
+	 * @param defaultRowHeight Default row height
+	 * @param defaultColumnWidth Default column width
+	 */
+	TableLayout(int rows, int columns, double defaultRowHeight, double defaultColumnWidth) {
+		columnWidths = new double[columns];
+		cumulativeWidths = new double[columns + 1];
+		rowHeights = new double[rows];
+		cumulativeHeights = new double[rows + 1];
+		setWidthForColumns(defaultColumnWidth, 0, columns - 1);
+		setHeightForRows(defaultRowHeight, 0, rows - 1);
+	}
 
 	public double getWidth(int column) {
 		return columnWidths[column];
@@ -192,38 +207,6 @@ public final class TableLayout implements CustomRowAndColumnSizeProvider {
 		updateCumulativeWidths(0);
 	}
 
-	/**
-	 * A (rectangular) portion of the table layout.
-	 */
-	static final class Portion {
-
-		final int fromColumn;
-		final int fromRow;
-		final double xOffset; // cumulated column widths left of fromColumn
-		final double yOffset;
-		final int toRow;
-		final int toColumn;
-
-		Portion(int fromColumn, int fromRow, int toColumn, int toRow, double xOffset,
-				double yOffset) {
-			this.fromColumn = fromColumn;
-			this.fromRow = fromRow;
-			this.toRow = toRow;
-			this.toColumn = toColumn;
-			this.xOffset = xOffset;
-			this.yOffset = yOffset;
-		}
-	}
-
-	TableLayout(int rows, int columns, float defaultRowHeight, float defaultColumnWidth) {
-		columnWidths = new double[columns];
-		cumulativeWidths = new double[columns + 1];
-		rowHeights = new double[rows];
-		cumulativeHeights = new double[rows + 1];
-		setWidthForColumns(defaultColumnWidth, 0, columns - 1);
-		setHeightForRows(defaultRowHeight, 0, rows - 1);
-	}
-
 	void setTableSize(int rows, int columns) {
 		// TODO
 	}
@@ -382,6 +365,29 @@ public final class TableLayout implements CustomRowAndColumnSizeProvider {
 	public void resizeRemainingColumnsDescending(int resizeUntil, int numberOfColumns) {
 		for (int column = numberOfColumns - 1; column > resizeUntil; column--) {
 			setWidthForColumns(getWidth(column - 1), column, column);
+		}
+	}
+
+	/**
+	 * A (rectangular) portion of the table layout.
+	 */
+	static final class Portion {
+
+		final int fromColumn;
+		final int fromRow;
+		final double xOffset; // cumulated column widths left of fromColumn
+		final double yOffset;
+		final int toRow;
+		final int toColumn;
+
+		Portion(int fromColumn, int fromRow, int toColumn, int toRow, double xOffset,
+				double yOffset) {
+			this.fromColumn = fromColumn;
+			this.fromRow = fromRow;
+			this.toRow = toRow;
+			this.toColumn = toColumn;
+			this.xOffset = xOffset;
+			this.yOffset = yOffset;
 		}
 	}
 }
