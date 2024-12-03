@@ -15,7 +15,7 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.DescriptionMode;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoLine;
-import org.geogebra.common.properties.impl.objects.EquationFormProperty;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 import org.geogebra.ggbjdk.java.awt.geom.Rectangle;
 import org.junit.Assert;
@@ -184,7 +184,7 @@ public class FitTests extends BaseUnitTest {
 
         for (GeoElement geo : geos) {
             assertThrows(NotApplicablePropertyException.class,
-                    () -> new EquationFormProperty(getLocalization(), geo));
+                    () -> new LinearEquationFormProperty(getLocalization(), geo));
         }
     }
 
@@ -197,7 +197,7 @@ public class FitTests extends BaseUnitTest {
 
         try {
             for (GeoElement geo : geos) {
-                new EquationFormProperty(getLocalization(), geo);
+                new LinearEquationFormProperty(getLocalization(), geo);
             }
         } catch (NotApplicablePropertyException e) {
             fail(e.getMessage());

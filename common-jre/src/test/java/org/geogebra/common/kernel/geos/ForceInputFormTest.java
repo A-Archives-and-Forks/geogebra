@@ -10,7 +10,7 @@ import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.main.settings.config.AppConfigGeometry;
 import org.geogebra.common.main.settings.config.AppConfigGraphing;
-import org.geogebra.common.properties.impl.objects.EquationFormProperty;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -139,8 +139,8 @@ public class ForceInputFormTest extends BaseUnitTest {
 		Assert.assertFalse(ConicEqnModel.forceInputForm(hyperbola));
 
 		try {
-			new EquationFormProperty(getLocalization(), line);
-			new EquationFormProperty(getLocalization(), rayWithCommand);
+			new LinearEquationFormProperty(getLocalization(), line);
+			new LinearEquationFormProperty(getLocalization(), rayWithCommand);
 		} catch (NotApplicablePropertyException e) {
 			fail(e.getMessage());
 		}

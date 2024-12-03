@@ -31,7 +31,7 @@ import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
-import org.geogebra.common.properties.impl.objects.EquationFormProperty;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
@@ -145,9 +145,9 @@ public final class GeoElementPropertiesFactory {
 						properties -> new RangePropertyCollection<>(
 								properties.toArray(new SlopeSizeProperty[0]))),
 				createPropertyCollection(elements,
-						element -> new EquationFormProperty(localization, element),
+						element -> new LinearEquationFormProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(
-								properties.toArray(new EquationFormProperty[0]))),
+								properties.toArray(new LinearEquationFormProperty[0]))),
 				createPropertyCollection(elements,
 						element -> new CaptionStyleProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(

@@ -51,6 +51,7 @@ import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.properties.GeoElementPropertyFilter;
 import org.geogebra.common.properties.PropertiesRegistry;
 import org.geogebra.common.properties.Property;
+import org.geogebra.common.properties.ValueFilter;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 
@@ -281,13 +282,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	// TODO these PropertyRestrictions also need to be applied to properties created (e.g. by
 	//  GeoElementProeprtiesFactory) while an exam is running (e.g., Android SettingsPanel)
 	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
-		return Map.of(
-				// For any Conic, Line, Equation, Function or Implicit Equation manually entered
-				// by the user:
-				// restrict the equation form to “Input Form”.
-				"Equation", new PropertyRestriction(false, value ->
-						false
-				));
+		return Map.of("Equation", new EquationFormPropertyRestriction());
 	}
 
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
@@ -300,6 +295,19 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 
 	private static EquationBehaviour createEquationBehaviour() {
 		return new CvteEquationBehaviour();
+	}
+
+	/**
+	 * For any Conic, Line, Equation, Function or Implicit Equation manually entered
+	 * by the user, restrict the equation form to “Input Form”.
+	 */
+	private static final class EquationFormPropertyRestriction extends PropertyRestriction {
+
+		public EquationFormPropertyRestriction() {
+			super(false, value -> {
+				return true;
+			});
+		}
 	}
 
 	private static final class ShowObjectPropertyFilter implements GeoElementPropertyFilter {
