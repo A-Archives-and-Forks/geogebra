@@ -27,6 +27,11 @@ public interface HasSymbolicMode extends GeoElementND {
 	boolean isSymbolicMode();
 
 	/**
+	 * @return Whether the engineering notation is supported for this element
+	 */
+	boolean supportsEngineeringNotation();
+
+	/**
 	 * @param mode Engineering notation mode
 	 */
 	void setEngineeringNotationMode(boolean mode);

@@ -1927,6 +1927,11 @@ public class GeoNumeric extends GeoElement
 	}
 
 	@Override
+	public boolean supportsEngineeringNotation() {
+		return isFinite();
+	}
+
+	@Override
 	public void setEngineeringNotationMode(boolean mode) {
 		engineeringNotationMode = mode;
 	}

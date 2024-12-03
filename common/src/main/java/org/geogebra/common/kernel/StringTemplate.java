@@ -3130,8 +3130,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 	 * to multiples of three
 	 */
 	public String convertEngineeringNotationForDisplay(double number) {
-		EngineeringNotationString ret = new EngineeringNotationString(number);
-		return ret.getResult();
+		return EngineeringNotationString.format(number);
 	}
 
 	/**

@@ -50,7 +50,6 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	StringTemplate tpl = StringTemplate.defaultTemplate;
 
 	protected boolean symbolicMode = true;
-	private boolean engineeringNotationMode = false;
 
 	private HorizontalAlignment textAlignment = HorizontalAlignment.LEFT;
 
@@ -508,13 +507,18 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	}
 
 	@Override
+	public boolean supportsEngineeringNotation() {
+		return false;
+	}
+
+	@Override
 	public void setEngineeringNotationMode(boolean mode) {
-		engineeringNotationMode = mode;
+		// Not needed
 	}
 
 	@Override
 	public boolean isEngineeringNotationMode() {
-		return engineeringNotationMode;
+		return false;
 	}
 
 	boolean hasSymbolicFunction() {

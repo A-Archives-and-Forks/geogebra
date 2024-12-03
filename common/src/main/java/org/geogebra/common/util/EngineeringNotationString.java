@@ -7,16 +7,14 @@ import com.himamis.retex.editor.share.util.Unicode;
  * The engineering notation is similar to the scientific notation (m*10^n), with n
  * being restricted to multiples of three (3) only. <br/>
  */
-public class EngineeringNotationString {
-
-	private String engineeringNotation;
-	private String sign = "";
+public final class EngineeringNotationString {
 
 	/**
 	 * @param number Value
 	 */
-	public EngineeringNotationString(double number) {
+	public static String format(double number) {
 		String valueString = Double.toString(number);
+		String sign = "";
 		if (valueString.charAt(0) == '-') {
 			valueString = valueString.substring(1);
 			sign = "-";
@@ -26,27 +24,19 @@ public class EngineeringNotationString {
 		String decimalsString = getDecimalsStringForEngineeringNotation(valueString);
 
 		int exponent = getPositiveExponentForEngineeringNotation(predecimalsString.length());
-		if (exponent == 0 && number < 0.01 && number > -0.01) {
+		if (exponent == 0 && number < 1 && number > -1) {
 			exponent = getNegativeExponentForEngineeringNotation(decimalsString);
 		}
 
 		if (exponent < 0) {
-			engineeringNotation = sign + createEngineeringNotationWithNegativeExponent(
+			return sign + createEngineeringNotationWithNegativeExponent(
 					decimalsString, exponent);
-			return;
 		}
-		engineeringNotation = sign + createEngineeringNotationWithPositiveExponent(
+		return sign + createEngineeringNotationWithPositiveExponent(
 				predecimalsString, decimalsString, exponent);
 	}
 
-	/**
-	 * @return The engineering notation string
-	 */
-	public String getResult() {
-		return engineeringNotation;
-	}
-
-	private String getPredecimalsStringForEngineeringNotation(String valueString) {
+	private static String getPredecimalsStringForEngineeringNotation(String valueString) {
 		String predecimalsString = valueString;
 		if (valueString.contains("e")) {
 			if (valueString.contains("e+")) {
@@ -66,7 +56,7 @@ public class EngineeringNotationString {
 		return predecimalsString;
 	}
 
-	private String getDecimalsStringForEngineeringNotation(String valueString) {
+	private static String getDecimalsStringForEngineeringNotation(String valueString) {
 		String decimalsString = "";
 		if (valueString.contains("e")) {
 			if (valueString.contains("e-")) {
@@ -86,28 +76,28 @@ public class EngineeringNotationString {
 		return decimalsString;
 	}
 
-	private int getPositiveExponentForEngineeringNotation(int amountOfPredecimals) {
+	private static int getPositiveExponentForEngineeringNotation(int amountOfPredecimals) {
 		if (amountOfPredecimals % 3 == 0) {
 			return amountOfPredecimals - 3;
 		}
 		return amountOfPredecimals % 3 == 2 ? amountOfPredecimals - 2 : amountOfPredecimals - 1;
 	}
 
-	private int getNegativeExponentForEngineeringNotation(String decimalsString) {
+	private static int getNegativeExponentForEngineeringNotation(String decimalsString) {
 		boolean nonZeroFound = false;
 		int exponent = 0;
 		for (int i = 0; i < decimalsString.length(); i++) {
 			if (!nonZeroFound && decimalsString.charAt(i) != '0') {
 				nonZeroFound = true;
 			}
-			if (nonZeroFound && i > 1) {
-				return -(i + 1) / 3 * 3;
+			if (nonZeroFound) {
+				return i > 2 ? -(i + 1) / 3 * 3 : -3;
 			}
 		}
 		return exponent;
 	}
 
-	private String createEngineeringNotationWithPositiveExponent(String predecimalsString,
+	private static String createEngineeringNotationWithPositiveExponent(String predecimalsString,
 			String decimalsString, int exponent) {
 		StringBuilder engineeringNotation = new StringBuilder();
 		int shiftBy = predecimalsString.length() - exponent;
@@ -124,6 +114,7 @@ public class EngineeringNotationString {
 
 		engineeringNotation.append(remainingPredecimals);
 		engineeringNotation.append(decimalsString);
+		removeTrailingZerosAndCommaIfNeeded(engineeringNotation);
 
 		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
 		String exponentString = String.valueOf(exponent);
@@ -133,20 +124,30 @@ public class EngineeringNotationString {
 		return engineeringNotation.toString();
 	}
 
-	private String createEngineeringNotationWithNegativeExponent(String decimalsString,
+	private static String createEngineeringNotationWithNegativeExponent(String decimalsString,
 			int exponent) {
 		StringBuilder engineeringNotation = new StringBuilder();
 		int shiftBy = Math.abs(exponent);
+		String modifiedDecimalsString = decimalsString;
+
+		for (int i = shiftBy; i >= modifiedDecimalsString.length(); i--) {
+			modifiedDecimalsString += "0";
+		}
+
 		engineeringNotation.append(StringUtil.removeLeadingZeros(
-				decimalsString.substring(0, shiftBy)));
+				modifiedDecimalsString.substring(0, shiftBy)));
 		if (engineeringNotation.length() == 0) {
 			engineeringNotation.append("0");
 		}
-		if (!decimalsString.substring(shiftBy).isEmpty()) {
+		if (!modifiedDecimalsString.substring(shiftBy).isEmpty()) {
 			engineeringNotation.append(".");
 		}
 
-		engineeringNotation.append(decimalsString.substring(shiftBy));
+		engineeringNotation.append(modifiedDecimalsString.substring(shiftBy));
+		if (decimalsString.length() % 3 == 0) {
+			removeTrailingZerosAndCommaIfNeeded(engineeringNotation);
+		}
+
 		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
 		engineeringNotation.append(Unicode.SUPERSCRIPT_MINUS);
 		String exponentString = String.valueOf(exponent);
@@ -155,6 +156,14 @@ public class EngineeringNotationString {
 		}
 
 		return engineeringNotation.toString();
+	}
+
+	private static void removeTrailingZerosAndCommaIfNeeded(StringBuilder engineeringNotation) {
+		String modified = StringUtil.removeTrailingZeros(engineeringNotation.toString());
+		if (modified.charAt(modified.length() - 1) == '.') {
+			modified = modified.substring(0, modified.length() - 1);
+		}
+		engineeringNotation.replace(0, engineeringNotation.length(), modified);
 	}
 
 }

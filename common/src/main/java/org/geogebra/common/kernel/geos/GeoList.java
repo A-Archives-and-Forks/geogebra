@@ -3014,6 +3014,20 @@ public class GeoList extends GeoElement
 	}
 
 	@Override
+	public boolean supportsEngineeringNotation() {
+		if (getElementType() == GeoClass.TEXT) {
+			return false;
+		}
+		for (int i = 0; i < this.size(); i++) {
+			if (get(i) instanceof HasSymbolicMode
+					&& ((HasSymbolicMode) get(i)).supportsEngineeringNotation()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public void setEngineeringNotationMode(boolean mode) {
 		for (int i = 0; i < this.size(); i++) {
 			if (get(i) instanceof HasSymbolicMode) {

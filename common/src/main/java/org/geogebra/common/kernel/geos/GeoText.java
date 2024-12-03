@@ -126,7 +126,6 @@ public class GeoText extends GeoElement
 
 	private TraceModesEnum traceModes;
 	private boolean symbolicMode;
-	private boolean engineeringNotationMode = false;
 	private int totalHeight;
 	private int totalWidth;
 	private final List<GeoElement> updateListeners;
@@ -1431,13 +1430,18 @@ public class GeoText extends GeoElement
 	}
 
 	@Override
+	public boolean supportsEngineeringNotation() {
+		return false;
+	}
+
+	@Override
 	public void setEngineeringNotationMode(boolean mode) {
-		engineeringNotationMode = mode;
+		// Not needed
 	}
 
 	@Override
 	public boolean isEngineeringNotationMode() {
-		return engineeringNotationMode;
+		return false;
 	}
 
 	/**
