@@ -12,8 +12,7 @@ import org.geogebra.common.properties.impl.objects.delegate.FontStyleDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
 
-public class ItalicProperty extends AbstractValuedProperty<Boolean>
-		implements BooleanProperty {
+public class ItalicProperty extends AbstractValuedProperty<Boolean> implements BooleanProperty {
 	private final GeoElementDelegate delegate;
 
 	/**
@@ -53,7 +52,7 @@ public class ItalicProperty extends AbstractValuedProperty<Boolean>
 		GeoElement element = delegate.getElement();
 		if (element instanceof TextProperties) {
 			TextProperties textProperties = (TextProperties) element;
-			return(textProperties.getFontStyle() & GFont.ITALIC) != 0;
+			return (textProperties.getFontStyle() & GFont.ITALIC) != 0;
 		} else if (element instanceof HasTextFormatter) {
 			HasTextFormatter hasTextFormatter = (HasTextFormatter) element;
 			return hasTextFormatter.getFormatter().getFormat("italic", false);
