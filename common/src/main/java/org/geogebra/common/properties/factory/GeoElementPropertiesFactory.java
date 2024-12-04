@@ -19,7 +19,7 @@ import org.geogebra.common.properties.impl.collections.IconsEnumeratedPropertyCo
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
-import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
+import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
@@ -735,14 +735,14 @@ public class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return property or null
 	 */
-	public static ValuedPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
+	public static FlagListPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
 			Localization localization, List<GeoElement> elements) {
 		List<LabelStyleProperty> labelStyleProperties = new ArrayList<>();
 		for (GeoElement element : elements) {
 			labelStyleProperties.add(new LabelStyleProperty(localization, element.getKernel(),
 					element));
 		}
-		return new ValuedPropertyCollection<>(labelStyleProperties.toArray(
+		return new FlagListPropertyCollection<>(labelStyleProperties.toArray(
 				new LabelStyleProperty[0]));
 	}
 

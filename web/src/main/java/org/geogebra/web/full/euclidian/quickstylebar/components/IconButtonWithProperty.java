@@ -13,7 +13,7 @@ import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
-import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
+import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
@@ -165,8 +165,8 @@ public class IconButtonWithProperty extends IconButton {
 			parent.add(labelPanel);
 		}
 
-		if (property instanceof ValuedPropertyCollection<?>) {
-			ValuedPropertyCollection<?> valuedProperty = (ValuedPropertyCollection<?>) property;
+		if (property instanceof FlagListPropertyCollection<?>) {
+			FlagListPropertyCollection<?> valuedProperty = (FlagListPropertyCollection<?>) property;
 			ValuedProperty<?> firstProperty = valuedProperty.getFirstProperty();
 			if (firstProperty instanceof LabelStyleProperty && labelPanel != null) {
 				labelPanel.setLabelStyleProperty(valuedProperty);
