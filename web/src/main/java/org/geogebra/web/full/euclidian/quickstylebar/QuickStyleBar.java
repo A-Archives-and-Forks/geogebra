@@ -11,6 +11,7 @@ import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
+import org.geogebra.common.kernel.geos.TextProperties;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.aliases.BooleanProperty;
@@ -33,7 +34,7 @@ import org.gwtproject.user.client.ui.FlowPanel;
 /**
  * Quick style bar containing IconButtons with dynamic position
  */
-public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
+public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 	private final EuclidianView ev;
 	private final StylebarPositioner stylebarPositioner;
 	private final List<IconButton> quickButtons = new ArrayList<>();
@@ -43,7 +44,7 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 	/**
 	 * @param ev - parent view
 	 */
-	public QuickStylebar(EuclidianView ev) {
+	public QuickStyleBar(EuclidianView ev) {
 		this.ev = ev;
 		this.stylebarPositioner = new StylebarPositioner(ev.getApplication());
 
@@ -167,7 +168,8 @@ public class QuickStylebar extends FlowPanel implements EuclidianStyleBar {
 
 	private void addTextFormatPropertyButton(List<GeoElement> geos,
 			BooleanProperty property) {
-		if (property == null || !(geos.get(0) instanceof HasTextFormatter)) {
+		if (property == null || !(geos.get(0) instanceof HasTextFormatter
+				|| geos.get(0) instanceof TextProperties)) {
 			return;
 		}
 		property.addValueObserver(new UndoActionObserver(geos, UndoActionType.STYLE_OR_CONTENT));
