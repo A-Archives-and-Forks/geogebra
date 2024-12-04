@@ -89,7 +89,8 @@ public class GeoListTest extends BaseUnitTest {
 	public void listShouldDisplayCorrectEngineeringNotation2() {
 		GeoList list = add("{1 / 2, 2 / 4}");
 		assertThat(list.get(1).toValueString(engineeringNotationTemplate),
-				is("0.5 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_0));
+				is("500 " + Unicode.CENTER_DOT + " 10"
+						+ Unicode.SUPERSCRIPT_MINUS + Unicode.SUPERSCRIPT_3));
 	}
 
 	@Test

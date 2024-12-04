@@ -11,6 +11,7 @@ public final class EngineeringNotationString {
 
 	/**
 	 * @param number Value
+	 * @return The formatted engineering notation
 	 */
 	public static String format(double number) {
 		String valueString = Double.toString(number);
