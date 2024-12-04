@@ -62,6 +62,7 @@ import org.geogebra.common.gui.view.algebra.GeoElementValueConverter;
 import org.geogebra.common.gui.view.algebra.ProtectiveGeoElementValueConverter;
 import org.geogebra.common.gui.view.algebra.fiter.AlgebraOutputFilter;
 import org.geogebra.common.gui.view.algebra.fiter.DefaultAlgebraOutputFilter;
+import org.geogebra.common.exam.restrictions.cvte.CvteAlgebraOutputFilter;
 import org.geogebra.common.gui.view.algebra.fiter.ProtectiveAlgebraOutputFilter;
 import org.geogebra.common.gui.view.properties.PropertiesView;
 import org.geogebra.common.io.MyXMLio;
@@ -4829,10 +4830,10 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * Creates an AlgebraOutputFilter based on the AppConfig if it doesn't exist yet and returns it.
-	 * @return AlgebraOutputFilter instance
+	 * @return The current {@link AlgebraOutputFilter}. DO NOT CACHE THIS VALUE, the filter
+	 * may change at run time (e.g., for certain exams).
 	 */
-	public AlgebraOutputFilter getAlgebraOutputFilter() {
+	public @Nonnull AlgebraOutputFilter getAlgebraOutputFilter() {
 		if (algebraOutputFilter == null) {
 			if (getConfig().shouldHideEquations()) {
 				algebraOutputFilter = new ProtectiveAlgebraOutputFilter();
@@ -4942,11 +4943,16 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	@Override
 	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		resetCommandDict();
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+			AlgebraOutputFilter wrappedFilter = getAlgebraOutputFilter();
+			algebraOutputFilter = new CvteAlgebraOutputFilter(wrappedFilter);
+		}
 	}
 
 	@Override
 	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
-		// probably nothing to do here
+		// null out filters to recreate on next use
+		algebraOutputFilter = null;
 	}
 
 	/**

@@ -324,8 +324,6 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	private GeoText dynamicCaption;
 
-	private AlgebraOutputFilter algebraOutputFilter;
-
 	private Group parentGroup;
 
 	private double ordering = Double.NaN;
@@ -373,7 +371,6 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	private void initWith(@Nonnull App app) {
 		appConfig = app.getConfig();
 		graphicsadapter = app.newGeoElementGraphicsAdapter();
-        algebraOutputFilter = app.getAlgebraOutputFilter();
 		EuclidianViewInterfaceSlim ev  = app.getActiveEuclidianView();
 		if (ev != null && app.getActiveEuclidianView().getViewID() != App.VIEW_EUCLIDIAN) {
 			initWith(ev);
@@ -6689,7 +6686,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	@Override
 	public DescriptionMode getDescriptionMode() {
-		if (!algebraOutputFilter.isAllowed(this)) {
+		if (!app.getAlgebraOutputFilter().isAllowed(this)) {
 			return DescriptionMode.DEFINITION;
 		}
 		String def0 = getDefinition(StringTemplate.defaultTemplate);
@@ -7099,7 +7096,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	@Override
 	public boolean isAllowedToShowValue() {
-		return algebraOutputFilter.isAllowed(this);
+		return app.getAlgebraOutputFilter().isAllowed(this);
 	}
 
 	@Override
