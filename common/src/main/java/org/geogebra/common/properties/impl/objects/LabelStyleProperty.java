@@ -51,6 +51,9 @@ public class LabelStyleProperty extends FlagListProperty {
 
 	@Override
 	public List<Boolean> getValue() {
+		if (!element.isLabelVisible()) {
+			return List.of(false, false);
+		}
 		int labelStyle = element.getLabelMode();
 		boolean showName = labelStyle == GeoElementND.LABEL_NAME
 				|| labelStyle == GeoElementND.LABEL_CAPTION_VALUE
