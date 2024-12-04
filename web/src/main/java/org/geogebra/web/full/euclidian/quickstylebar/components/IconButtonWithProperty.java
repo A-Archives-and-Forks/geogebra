@@ -1,6 +1,6 @@
 package org.geogebra.web.full.euclidian.quickstylebar.components;
 
-import static org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar.POPUP_MENU_DISTANCE;
+import static org.geogebra.web.full.euclidian.quickstylebar.QuickStyleBar.POPUP_MENU_DISTANCE;
 
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
