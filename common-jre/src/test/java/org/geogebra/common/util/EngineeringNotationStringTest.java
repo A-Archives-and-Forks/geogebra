@@ -43,6 +43,12 @@ public class EngineeringNotationStringTest extends BaseUnitTest {
 	}
 
 	@Test
+	public void testCorrectEngineeringNotationForIntegerAsInput6() {
+		assertEquals("0 " + CENTER_DOT + " 10" + SUPERSCRIPT_0,
+				EngineeringNotationString.format(-0));
+	}
+
+	@Test
 	public void testCorrectEngineeringNotationForDecimalAsInput1() {
 		assertEquals("500 " + CENTER_DOT + " 10" + SUPERSCRIPT_MINUS + SUPERSCRIPT_3,
 				EngineeringNotationString.format(0.5));
@@ -70,5 +76,11 @@ public class EngineeringNotationStringTest extends BaseUnitTest {
 	public void testCorrectEngineeringNotationForDecimalAsInput5() {
 		assertEquals("126.3122 " + CENTER_DOT + " 10" + SUPERSCRIPT_0,
 				EngineeringNotationString.format(126.3122));
+	}
+
+	@Test
+	public void testCorrectEngineeringNotationForDecimalAsInput6() {
+		assertEquals("5.0001 " + CENTER_DOT + " 10" + SUPERSCRIPT_0,
+				EngineeringNotationString.format(5.000100));
 	}
 }

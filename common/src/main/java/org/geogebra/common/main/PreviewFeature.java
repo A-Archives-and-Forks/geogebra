@@ -29,7 +29,11 @@ public enum PreviewFeature {
 	/** APPS-5641 */
 	IB_EXAM,
 	/** APPS-5740 */
-	REALSCHULE_EXAM;
+	REALSCHULE_EXAM,
+	/**
+	 * APPS-6004
+	 */
+	ENGINEERING_BUTTON;
 
 	/**
 	 * Global flag to activate feature previews.

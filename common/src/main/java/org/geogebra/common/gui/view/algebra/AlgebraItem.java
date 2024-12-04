@@ -24,6 +24,7 @@ import org.geogebra.common.kernel.kernelND.GeoPlaneND;
 import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.MyError;
+import org.geogebra.common.main.PreviewFeature;
 import org.geogebra.common.main.settings.AlgebraStyle;
 import org.geogebra.common.main.settings.CoordinatesFormat;
 import org.geogebra.common.main.settings.Settings;
@@ -418,7 +419,8 @@ public class AlgebraItem {
 	public static boolean shouldShowEngineeringNotationOutputButton(GeoElement geo) {
 		return GlobalScope.examController.getExamType() == ExamType.REALSCHULE
 				&& geo instanceof HasSymbolicMode
-				&& ((HasSymbolicMode) geo).supportsEngineeringNotation();
+				&& ((HasSymbolicMode) geo).supportsEngineeringNotation()
+				&& PreviewFeature.isAvailable(PreviewFeature.ENGINEERING_BUTTON);
 	}
 
 	/**

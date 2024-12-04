@@ -91,7 +91,7 @@ public final class EngineeringNotationString {
 				nonZeroFound = true;
 			}
 			if (nonZeroFound) {
-				return i > 2 ? -(i + 1) / 3 * 3 : -3;
+				return -(i + 3) / 3 * 3;
 			}
 		}
 		return exponent;
@@ -159,6 +159,9 @@ public final class EngineeringNotationString {
 	}
 
 	private static void removeTrailingZerosAndCommaIfNeeded(StringBuilder engineeringNotation) {
+		if (engineeringNotation.length() < 2) {
+			return;
+		}
 		String modified = StringUtil.removeTrailingZeros(engineeringNotation.toString());
 		if (modified.charAt(modified.length() - 1) == '.') {
 			modified = modified.substring(0, modified.length() - 1);
