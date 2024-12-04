@@ -1,12 +1,8 @@
 package org.geogebra.common.exam.restrictions.cvte;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
 import org.geogebra.common.gui.view.algebra.fiter.AlgebraOutputFilter;
-import org.geogebra.common.kernel.arithmetic.Equation;
-import org.geogebra.common.kernel.arithmetic.EquationValue;
-import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 
 /**
