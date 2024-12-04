@@ -219,6 +219,7 @@ public final class ExamController {
 				construction,
 				scheduledPreviewFromInputBar);
 		activeDependencies = contextDependencies;
+		activeDependencies = contextDependencies;
 		// apply restrictions to new dependencies, if exam is active
 		if (examRestrictions != null) {
 			applyRestrictionsToDelegates();
@@ -477,14 +478,18 @@ public final class ExamController {
 
 		this.examType = examType;
 		this.options = options;
-		if (examRestrictions == null) {
-			examRestrictions = ExamRestrictions.forExamType(examType);
-		}
-		propertiesRegistry.addListener(examRestrictions);
+
 		forEachDelegate(delegate -> {
 			delegate.examClearClipboard();
 			delegate.examClearApps();
 		});
+		tempStorage.clearTempMaterials();
+		createNewTempMaterial();
+
+		if (examRestrictions == null) {
+			examRestrictions = ExamRestrictions.forExamType(examType);
+		}
+		propertiesRegistry.addListener(examRestrictions);
 		applyRestrictionsToDelegates();
 		if (activeDependencies != null) {
 			applyRestrictionsToContextDependencies(activeDependencies);
@@ -492,10 +497,6 @@ public final class ExamController {
 			registeredDependencies.forEach(this::applyRestrictionsToContextDependencies);
 		}
 		applyRestrictionsToRestrictables();
-		tempStorage.clearTempMaterials();
-		createNewTempMaterial();
-
-		propertiesRegistry.addListener(examRestrictions);
 
 		cheatingEvents = new CheatingEvents();
 		cheatingEvents.delegate = (cheatingEvent) -> {

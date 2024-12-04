@@ -1017,6 +1017,9 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		}
 		resetFileHandle();
 		resetUI();
+		if (pageController != null) {
+			pageController.updatePreviewImage();
+		}
 		resetUrl();
 		if (examController.isExamActive()) {
 			setActiveMaterial(examController.getNewTempMaterial());
