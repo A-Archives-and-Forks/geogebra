@@ -40,6 +40,7 @@ import org.geogebra.common.euclidian.smallscreen.AdjustViews;
 import org.geogebra.common.euclidian3D.EuclidianView3DInterface;
 import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.exam.restrictions.ExamRestrictable;
+import org.geogebra.common.exam.restrictions.cvte.CvteAlgebraOutputFilter;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.Format;
@@ -4829,10 +4830,11 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * Creates an AlgebraOutputFilter based on the AppConfig if it doesn't exist yet and returns it.
-	 * @return AlgebraOutputFilter instance
+	 * @return The current {@link AlgebraOutputFilter}.
+	 * @apiNote DO NOT CACHE THE RETURN VALUE, the filter may change at runtime (e.g., for certain
+	 * exams).
 	 */
-	public AlgebraOutputFilter getAlgebraOutputFilter() {
+	public @Nonnull AlgebraOutputFilter getAlgebraOutputFilter() {
 		if (algebraOutputFilter == null) {
 			if (getConfig().shouldHideEquations()) {
 				algebraOutputFilter = new ProtectiveAlgebraOutputFilter();
@@ -4942,11 +4944,16 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	@Override
 	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		resetCommandDict();
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+			AlgebraOutputFilter wrappedAlgebraOutputFilter = getAlgebraOutputFilter();
+			algebraOutputFilter = new CvteAlgebraOutputFilter(wrappedAlgebraOutputFilter);
+		}
 	}
 
 	@Override
 	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
-		// probably nothing to do here
+		// null out filters, to recreate on next use
+		algebraOutputFilter = null;
 	}
 
 	/**
