@@ -1232,4 +1232,5 @@ public class GeoSymbolic extends GeoElement
 	public ExpressionNode getExcludedEquation() {
 		return this.excludedEquation;
 	}
+
 }

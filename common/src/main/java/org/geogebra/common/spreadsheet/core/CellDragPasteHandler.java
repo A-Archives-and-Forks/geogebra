@@ -6,6 +6,7 @@ import org.geogebra.common.gui.view.spreadsheet.RelativeCopy;
 import org.geogebra.common.io.XMLParseException;
 import org.geogebra.common.kernel.CircularDefinitionException;
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.parser.ParseException;
 import org.geogebra.common.util.debug.Log;
 
@@ -133,6 +134,7 @@ public class CellDragPasteHandler<T> {
 		if (destinationRange == null) {
 			return;
 		}
+		unfixDestinationRange(destinationRange);
 		switch (pasteDirection) {
 		case UP:
 		case DOWN:
@@ -147,6 +149,15 @@ public class CellDragPasteHandler<T> {
 			break;
 		}
 		setDestinationRangeToNonEmptySpreadsheetCells(destinationRange);
+	}
+
+	private void unfixDestinationRange(TabularRange destinationRange) {
+		destinationRange.forEach((row, column) -> {
+			GeoElement geo = (GeoElement) tabularData.contentAt(row, column);
+			if (geo != null && geo.isLocked()) {
+				geo.setFixed(false);
+			}
+		});
 	}
 
 	private void pasteVertical(TabularRange destinationRange, int minOriginRow, int maxOriginRow,

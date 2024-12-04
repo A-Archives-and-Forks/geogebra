@@ -229,6 +229,48 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 		assertThat(lookup("C2"), hasValue("4"));
 	}
 
+	@Test
+	@Issue("APPS-5987")
+	public void testDragPasteShouldResultInNonEmptySpreadsheetCells1() {
+		DefaultSpreadsheetCellProcessor processor
+				= new DefaultSpreadsheetCellProcessor(getAlgebraProcessor());
+		getKernel().attach(tabularData);
+		processor.process("=3", 0, 0);
+		processor.process("=A2", 0, 1);
+
+		setRangeToCopy(0, 0, 1, 1);
+		pasteToDestination(1, 1);
+		assertTrue(lookup("A2").isEmptySpreadsheetCell());
+		assertTrue(lookup("A3").isEmptySpreadsheetCell());
+
+		setRangeToCopy(0, 0, 0, 0);
+		pasteToDestination(1, 0);
+		assertFalse(lookup("A2").isEmptySpreadsheetCell());
+		assertTrue(lookup("A3").isEmptySpreadsheetCell());
+	}
+
+	@Test
+	@Issue("APPS-5987")
+	public void testDragPasteSHouldResultInNonEmptySpreadsheetCells2() {
+		getApp().setCasConfig();
+		getKernel().setSymbolicMode(SymbolicMode.SYMBOLIC_AV);
+		DefaultSpreadsheetCellProcessor processor
+				= new DefaultSpreadsheetCellProcessor(getAlgebraProcessor());
+		getKernel().attach(tabularData);
+
+		processor.process("=3", 0, 0);
+		processor.process("=A2", 0, 1);
+		assertCellContentEquals("0", 1, 0);
+
+		setRangeToCopy(0, 0, 1, 1);
+		pasteToDestination(1, 1);
+		setRangeToCopy(0, 0, 0, 0);
+		pasteToDestination(1, 0);
+
+		assertCellContentEquals("0", 2, 0);
+		assertCellContentEquals("3", 1, 0);
+	}
+
 	private void setRangeToCopy(int fromRow, int toRow, int fromColumn, int toColumn) {
 		cellDragPasteHandler.setRangeToCopy(
 				TabularRange.range(fromRow, toRow, fromColumn, toColumn));
