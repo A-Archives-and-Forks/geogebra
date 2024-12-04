@@ -513,7 +513,7 @@ public class EuclidianViewInput3DCompanion extends EuclidianView3DCompanion {
 		getView().getApplication().getSelectionManager()
 				.clearSelectedGeos(true);
 		getView().getEuclidianController().endOfWrapMouseReleased(new Hits(),
-				false, false, PointerEventType.TOUCH);
+				false, false, false, PointerEventType.TOUCH);
 	}
 
 	@Override

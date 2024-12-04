@@ -61,7 +61,7 @@ public abstract class GlobalKeyDispatcher {
 	private TreeSet<AlgoElement> tempSet;
 	private Coords tempVec;
 	private boolean hasUnsavedGeoChanges;
-	public boolean spaceDown;
+	protected static boolean spaceDown;
 
 	/**
 	 * @param app2 app
@@ -422,13 +422,15 @@ public abstract class GlobalKeyDispatcher {
 		// toggle boolean or run script when Spacebar pressed
 		case SPACE:
 			// check not spreadsheet
-			updateSpaceDown(false, isShiftDown);
+			updateKeyDownFlags(false, isControlDown, isShiftDown);
 			if (!fromSpreadsheet) {
 				consumed = app.handleSpaceKey();
 			}
 
 			break;
-
+		case SHIFT:
+			updateKeyDownFlags(spaceDown, isControlDown, false);
+			break;
 		case TAB:
 			if (app.isDesktop()) {
 				consumed = handleTabDesktop(isControlDown, isShiftDown);
@@ -1778,14 +1780,21 @@ public abstract class GlobalKeyDispatcher {
 		}
 	}
 
-	protected void updateSpaceDown(boolean spaceDown, boolean shiftDown) {
-		if (spaceDown == this.spaceDown) {
-			return;
-		}
-		this.spaceDown = spaceDown;
-		EuclidianView ev = app.getActiveEuclidianView();
-		if (ev.isDefault2D()) {
-			ev.getEuclidianController().updateViewCursor(shiftDown);
-		}
+	public static boolean isSpaceDown() {
+		return spaceDown;
+	}
+
+	/**
+	 * @param isSpaceDown whether space is pressed
+	 * @param isCtrlDown whether ctrl is pressed (for overrides only)
+	 * @param isShiftDown whether shift is pressed (for overrides only)
+	 */
+	protected void updateKeyDownFlags(boolean isSpaceDown, boolean isCtrlDown,
+			boolean isShiftDown) {
+		setSpaceDown(isSpaceDown);
+	}
+
+	private static void setSpaceDown(boolean isSpaceDown) {
+		spaceDown = isSpaceDown;
 	}
 }

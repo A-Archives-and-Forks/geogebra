@@ -432,7 +432,7 @@ public class EuclidianControllerInput3DCompanion extends
 	public void releaseGrabbing() {
 		input3D.setHasCompletedGrabbingDelay(false);
 		ec.getApplication().getSelectionManager().clearSelectedGeos(true);
-		ec.endOfWrapMouseReleased(new Hits(), false, false,
+		ec.endOfWrapMouseReleased(new Hits(), false, false, false,
 				PointerEventType.TOUCH);
 	}
 

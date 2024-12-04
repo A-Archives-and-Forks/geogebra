@@ -2,6 +2,7 @@ package org.geogebra.web.html5.main;
 
 import java.util.List;
 
+import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.AccessibilityManagerInterface;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.App;
@@ -80,8 +81,8 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	 * @param ev
 	 *            key event
 	 */
-	public static void setDownKeys(KeyEvent<?> ev) {
-		setDownKeys(ev.isControlKeyDown(), ev.isShiftKeyDown());
+	public void setDownKeys(KeyEvent<?> ev) {
+		updateKeyDownFlags(spaceDown, ev.isControlKeyDown(), ev.isShiftKeyDown());
 	}
 
 	/**
@@ -99,19 +100,6 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 			}
 			leftAltDown = down;
 		}
-	}
-
-	/**
-	 * Update ctrl, shift flags
-	 *
-	 * @param control
-	 *            if control is down.
-	 * @param shift
-	 *            if shift is down.
-	 */
-	private static void setDownKeys(boolean control, boolean shift) {
-		controlDown = control;
-		shiftDown = shift;
 	}
 
 	/**
@@ -135,8 +123,12 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 		public void onBrowserEvent(Event event) {
 			boolean keyDown = DOM.eventGetType(event) == Event.ONKEYDOWN;
 			if ((keyDown || DOM.eventGetType(event) == Event.ONKEYUP)
-					&& event.getKeyCode() == GWTKeycodes.KEY_SPACE) {
-				updateSpaceDown(keyDown, event.getShiftKey());
+					&& (event.getKeyCode() == GWTKeycodes.KEY_SPACE)) {
+				updateKeyDownFlags(keyDown, event.getCtrlKey(), event.getShiftKey());
+			}
+			if ((keyDown || DOM.eventGetType(event) == Event.ONKEYUP)
+					&& (event.getKeyCode() == GWTKeycodes.KEY_SHIFT)) {
+				updateKeyDownFlags(spaceDown, event.getCtrlKey(), keyDown);
 			}
 			if (CopyPasteW.incorrectTarget(event.getEventTarget().cast())
 						&& !isGlobalEvent(event)) {
@@ -405,5 +397,28 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 		} else {
 			return code == JavaKeyCodes.VK_F4;
 		}
+	}
+
+	@Override
+	protected void updateKeyDownFlags(boolean isSpaceDown,
+			boolean isCtrlDown, boolean isShiftDown) {
+		if (updateGlobalKeyFlags(isSpaceDown, isCtrlDown, isShiftDown)) {
+			EuclidianView ev = app.getActiveEuclidianView();
+			if (ev.isDefault2D()) {
+				ev.getEuclidianController().updateViewCursor(shiftDown);
+			}
+		}
+	}
+
+	private static boolean updateGlobalKeyFlags(boolean isSpaceDown,
+			boolean isCtrlDown, boolean isShiftDown) {
+		if (spaceDown == isSpaceDown && shiftDown == isShiftDown
+				&& controlDown == isCtrlDown) {
+			return false;
+		}
+		spaceDown = isSpaceDown;
+		shiftDown = isShiftDown;
+		controlDown = isCtrlDown;
+		return true;
 	}
 }
