@@ -7,7 +7,7 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.App;
 import org.geogebra.common.util.ToStringConverter;
 
-/*
+/**
  * GeoElement "value converter" for APPS-5926 (don't try to adapt to other use cases!).
  *
  * @apiNote The class name is not ideal, but we're sticking with the naming of the existing
