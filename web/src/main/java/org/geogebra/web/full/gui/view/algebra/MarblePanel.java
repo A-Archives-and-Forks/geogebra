@@ -66,7 +66,7 @@ public class MarblePanel extends FlowPanel
 	}
 
 	private boolean shouldShowMarble() {
-		return item.geo != null && item.geo.isEuclidianShowable();
+		return item.geo != null && item.geo.isEuclidianToggleable();
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package org.geogebra.common.exam;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -7,10 +9,12 @@ import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.contextmenu.ContextMenuFactory;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.settings.Settings;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.impl.DefaultPropertiesRegistry;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +30,7 @@ public class RealSchuleExamRestrictionsTest extends BaseUnitTest {
 				new GeoElementPropertiesFactory(), new ContextMenuFactory());
 		examController.setActiveContext(this, getKernel().getAlgebraProcessor()
 						.getCommandDispatcher(), getKernel().getAlgebraProcessor(),
-				getLocalization(), getSettings(), null, null, null, null);
+				getLocalization(), getSettings(), null, null, getConstruction(), null);
 		settings = getSettings();
 		evSettings = settings.getEuclidian(1);
 	}
@@ -106,5 +110,38 @@ public class RealSchuleExamRestrictionsTest extends BaseUnitTest {
 		examController.reapplySettingsRestrictions();
 
 		realSchuleRestrictionsShouldBeApplied();
+	}
+
+	@Test
+	public void testUnrestrictedVisibility() {
+		startExam();
+		// line
+		assertThat(add("x=y"), isToggleable());
+		assertThat(add("Line((1,2),(3,4))"), isToggleable());
+		// Enabled conics
+		assertThat(add("x^2=y^2"), isToggleable());
+		// Implicit curves
+		assertThat(add("x^3 = y^2"), isToggleable());
+		assertThat(add("sin(x) = y^2"), isToggleable());
+		// unrelated types
+		assertThat(add("(1,2)"), isToggleable());
+	}
+
+	private Matcher<GeoElement> isToggleable() {
+		return hasProperty("toggleable", GeoElement::isEuclidianToggleable, true);
+	}
+
+	@Test
+	public void testRestrictedVisibility() {
+		startExam();
+		// line
+		assertThat(add("x = 0"), not(isToggleable()));
+		assertThat(add("y = 5"), not(isToggleable()));
+		// conic
+		assertThat(add("x^2 = 0"), not(isToggleable()));
+		assertThat(add("y^2 = 0"), not(isToggleable()));
+		// implicit curve
+		assertThat(add("x^3 = 0"), not(isToggleable()));
+		assertThat(add("sin(x) = 0"), not(isToggleable()));
 	}
 }

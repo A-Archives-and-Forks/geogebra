@@ -50,7 +50,7 @@ public class ShowObjectModel extends BooleanOptionModel {
 		// TODO Auto-generated method stub
 		boolean isValid = true;
 		GeoElement geo = getGeoAt(index);
-		if (!geo.isDrawable()
+		if (!geo.isEuclidianToggleable()
 				// can't allow a free fixed number to become visible (as a
 				// slider)
 				|| (geo.isGeoNumeric() && geo.isLocked())) {

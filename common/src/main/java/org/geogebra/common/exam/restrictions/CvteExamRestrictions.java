@@ -317,7 +317,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	 * @param geoElement the {@code GeoElement} to evaluate
 	 * @return {@code true} if the visibility is enabled, {@code false} if it is restricted.
 	 */
-	@SuppressWarnings({"PMD.SimplifyBooleanReturns", "checkstyle:RegexpSinglelineCheck"})
+	@SuppressWarnings({"PMD.SimplifyBooleanReturns"})
 	public static boolean isVisibilityEnabled(GeoElement geoElement) {
 		// Allow explicit equations
 		// E.g.: y = 2x
