@@ -19,8 +19,8 @@ import org.geogebra.common.util.ToStringConverter;
  *
  * @implNote The idea with this (decorator) was to not having to touch/change the existing
  * code around {@link App#getLabelDescriptionConverter()}. When the CvTE exam is active, new
- * behaviour is simply added on top of what was there before, using the same structure as before,
- * without having to touch the existing
+ * behaviour is added on top of what was there before (by wrapping it), using the same
+ * structure as before, without having to touch the existing
  * {@link org.geogebra.common.kernel.geos.description.DefaultLabelDescriptionConverter DefaultLabelDescriptionConverter} /
  * {@link org.geogebra.common.kernel.geos.description.ProtectiveLabelDescriptionConverter ProtectiveLabelDescriptionConverter}.
  */

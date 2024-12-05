@@ -16,7 +16,7 @@ import org.geogebra.common.util.ToStringConverter;
  *
  * @implNote The idea with this (decorator) was to not having to touch/change the existing
  * code around {@link App#getGeoElementValueConverter()}. When the CvTE exam is active, new behaviour
- * is simply added on top of what was there before, using the same structure as before,
+ * is added on top of what was there before (by wrapping it), using the same structure as before,
  * without having to touch the existing
  * {@link org.geogebra.common.gui.view.algebra.GeoElementValueConverter GeoElementValueConverter} /
  * {@link org.geogebra.common.gui.view.algebra.ProtectiveGeoElementValueConverter ProtectiveGeoElementValueConverter}.
