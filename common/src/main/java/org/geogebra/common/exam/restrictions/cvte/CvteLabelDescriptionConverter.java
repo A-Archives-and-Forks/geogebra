@@ -34,6 +34,9 @@ public final class CvteLabelDescriptionConverter implements ToStringConverter<Ge
 
     @Override
     public String convert(GeoElement element) {
+        if (element == null) {
+            return null;
+        }
         if (restrictionsApplyTo(element)) {
             return getRestrictedLabelDescription(element);
         }

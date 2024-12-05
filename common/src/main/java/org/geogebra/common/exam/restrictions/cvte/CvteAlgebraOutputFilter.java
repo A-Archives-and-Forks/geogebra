@@ -30,6 +30,9 @@ public final class CvteAlgebraOutputFilter implements AlgebraOutputFilter {
      */
     @Override
     public boolean isAllowed(GeoElementND element) {
+        if (element == null) {
+            return false;
+        }
         if (Cvte.isLineConicEquationOrFunction(element)
                 && Cvte.isCreatedByToolOrCmd(element)) {
             return false;
