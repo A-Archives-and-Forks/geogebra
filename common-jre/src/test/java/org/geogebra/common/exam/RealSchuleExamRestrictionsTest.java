@@ -7,12 +7,14 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import org.geogebra.common.BaseUnitTest;
+import org.geogebra.common.contextmenu.ContextMenuFactory;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.dialog.options.model.FixObjectModel;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.geos.GeoConic;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.settings.Settings;
+import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
 import org.geogebra.common.properties.impl.DefaultPropertiesRegistry;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,8 @@ public class RealSchuleExamRestrictionsTest extends BaseUnitTest {
 
 	@Before
 	public void setupExam() {
-		examController = new ExamController(new DefaultPropertiesRegistry(), null, null);
+		examController = new ExamController(new DefaultPropertiesRegistry(),
+				new GeoElementPropertiesFactory(), new ContextMenuFactory());
 		examController.setActiveContext(this, getKernel().getAlgebraProcessor()
 						.getCommandDispatcher(), getKernel().getAlgebraProcessor(),
 				getLocalization(), getSettings(), null, null, null, null);

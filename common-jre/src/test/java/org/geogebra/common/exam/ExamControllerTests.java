@@ -149,14 +149,14 @@ public final class ExamControllerTests extends BaseExamTests {
         // TODO commandArgumentFilters
         // expression restrictions
         assertNull(evaluate("true || false"));
+        // context menu restrictions
+        assertEquals(List.of(Text, Help), contextMenuFactory.makeInputContextMenu(true));
         // geo element property filters
         assertNull(geoElementPropertiesFactory.createShowObjectProperty(
                 app.getLocalization(),
                 List.of(new GeoPoint(app.getKernel().getConstruction()))));
         // construction element setup
         assertEquals(GColor.RED, evaluate("(1, 1)")[0].getFillColor());
-        // context menu restrictions
-        assertEquals(List.of(Text, Help), contextMenuFactory.makeInputContextMenu(true));
 
         examController.finishExam();
         assertFalse(commandDispatcher.isAllowedByCommandFilters(Commands.Derivative));

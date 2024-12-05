@@ -219,7 +219,6 @@ public final class ExamController {
 				construction,
 				scheduledPreviewFromInputBar);
 		activeDependencies = contextDependencies;
-		activeDependencies = contextDependencies;
 		// apply restrictions to new dependencies, if exam is active
 		if (examRestrictions != null) {
 			applyRestrictionsToDelegates();
