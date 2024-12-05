@@ -7784,7 +7784,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			updateBoundingBoxFromSelection(false);
 			showDynamicStylebar();
 			startBoundingBoxState = null;
-			storeUndoableStrokeSplit(oldSelection, splitStrokes);
+			if (removeOriginal) {
+				storeUndoableStrokeSplit(oldSelection, splitStrokes);
+			}
 		}
 		return changed;
 	}

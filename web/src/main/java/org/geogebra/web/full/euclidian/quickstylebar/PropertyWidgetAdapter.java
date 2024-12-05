@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
+import org.geogebra.common.properties.PropertySupplier;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.web.full.euclidian.quickstylebar.components.BorderThicknessPanel;
@@ -37,7 +38,7 @@ public class PropertyWidgetAdapter {
 	 * @return panel holding list of icon buttons based on property
 	 */
 	public FlowPanel getIconListPanel(IconsEnumeratedProperty<?> iconProperty,
-			Consumer<Integer> uiUpdater) {
+			PropertySupplier propertySupplier, Consumer<Integer> uiUpdater) {
 		enumeratedPropertyButtons = new ArrayList<>();
 		FlowPanel buttonListComponent = new FlowPanel();
 		buttonListComponent.addStyleName("buttonList");
@@ -48,7 +49,7 @@ public class PropertyWidgetAdapter {
 			IconButton enumeratedPropertyIconButton = new IconButton(appW, null,
 					PropertiesIconAdapter.getIcon(icons[i]), null);
 			enumeratedPropertyIconButton.addFastClickHandler(source -> {
-				iconProperty.setIndex(finalI);
+				((IconsEnumeratedProperty) propertySupplier.getCurrent()).setIndex(finalI);
 				setIconButtonActive(enumeratedPropertyIconButton);
 				if (uiUpdater != null) {
 					uiUpdater.accept(finalI);
@@ -85,8 +86,9 @@ public class PropertyWidgetAdapter {
 	 * @return slider based on range property
 	 */
 	public SliderWithProperty getSliderWidget(RangePropertyCollection<?> property,
+			PropertySupplier propertySupplier,
 			GeoElement geo) {
-		return new SliderWithProperty(appW, property, geo.getLineType(),
+		return new SliderWithProperty(appW, property, propertySupplier, geo.getLineType(),
 				geo.getObjectColor());
 	}
 
