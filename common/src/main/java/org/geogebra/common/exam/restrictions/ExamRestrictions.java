@@ -74,6 +74,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	private final Map<String, PropertyRestriction> propertyRestrictions;
 	private final Set<GeoElementPropertyFilter> geoElementPropertyFilters;
 	private final Set<ConstructionElementSetup> constructionElementSetups;
+	private RestorableSettings savedSettings;
+	private Settings restrictedSettings = null;
 
 	/**
 	 * Factory for ExamRestrictions.
@@ -125,6 +127,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	 * @param propertyRestrictions An optional map of properties and restrictions
 	 * to be applied to them during the exam.
 	 */
+	// TODO APPS-5867: add EquationBehaviour to exam
 	protected ExamRestrictions(
 			@Nonnull ExamType examType,
 			@Nullable Set<SuiteSubApp> disabledSubApps,
@@ -267,6 +270,59 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				contextMenuFactory.addFilter(contextMenuItemFilter);
 			}
 		}
+		if (settings != null) {
+			this.restrictedSettings = settings;
+			saveSettings(settings);
+			applySettingsRestrictions(settings);
+		}
+	}
+
+	/**
+	 * Creates an object that settings can be saved in exam start, and can be easily restored
+	 * at exam exit.
+	 * @return {@link RestorableSettings}
+	 */
+	protected RestorableSettings createSavedSettings() {
+		return null;
+	}
+
+	/**
+	 * Re-apply settings changes for this exam type (for ClearAll during exam).
+	 */
+	public void reapplySettingsRestrictions() {
+		if (restrictedSettings != null) {
+			applySettingsRestrictions(restrictedSettings);
+		}
+	}
+
+	/**
+	 * Apply settings changes for this exam type.
+	 * @apiNote Override this only if the given exam needs custom settings.
+	 * @param settings {@link Settings}
+	 */
+	public void applySettingsRestrictions(@Nonnull Settings settings) {
+		// empty by default
+	}
+
+	private void saveSettings(Settings settings) {
+		savedSettings = createSavedSettings();
+		if (savedSettings != null) {
+			savedSettings.save(settings);
+		}
+	}
+
+	/**
+	 * Revert changes applied in {@link #applySettingsRestrictions(Settings)}, restoring the
+	 * previously saved settings.
+	 * @apiNote An override is not needed by default.
+	 * @param settings {@link Settings}
+	 */
+	protected void removeSettingsRestrictions(@Nonnull Settings settings) {
+		if (savedSettings != null) {
+			savedSettings.restore(settings);
+			savedSettings = null;
+			restrictedSettings = null;
+		}
 	}
 
 	/**
@@ -342,6 +398,9 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			for (ContextMenuItemFilter contextMenuItemFilter : contextMenuItemFilters) {
 				contextMenuFactory.removeFilter(contextMenuItemFilter);
 			}
+		}
+		if (settings != null) {
+			removeSettingsRestrictions(settings);
 		}
 	}
 

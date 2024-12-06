@@ -1,5 +1,7 @@
 package org.geogebra.common.exam;
 
+import static org.geogebra.common.contextmenu.InputContextMenuItem.Help;
+import static org.geogebra.common.contextmenu.InputContextMenuItem.Text;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -135,7 +137,6 @@ public final class ExamControllerTests extends BaseExamTests {
     public void testRestrictions() {
         setInitialApp(SuiteSubApp.GRAPHING);
         examController.prepareExam();
-
         examController.setExamRestrictionsForTesting(new TestExamRestrictions(ExamType.VLAANDEREN));
         examController.startExam(ExamType.VLAANDEREN, null);
 
@@ -147,6 +148,8 @@ public final class ExamControllerTests extends BaseExamTests {
         // TODO commandArgumentFilters
         // expression restrictions
         assertNull(evaluate("true || false"));
+        // context menu restrictions
+        assertEquals(List.of(Text, Help), contextMenuFactory.makeInputContextMenu(true));
         // geo element property filters
         assertNull(geoElementPropertiesFactory.createShowObjectProperty(
                 app.getLocalization(),
