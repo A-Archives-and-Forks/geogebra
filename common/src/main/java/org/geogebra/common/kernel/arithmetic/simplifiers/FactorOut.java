@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
+import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.flip;
 import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isIntegerValue;
 
 import org.geogebra.common.kernel.Kernel;
@@ -27,11 +28,32 @@ public class FactorOut implements SimplifyNode {
 		if (node.isOperation(Operation.DIVIDE)) {
 			return utils.div(apply(node.getLeftTree()), apply(node.getRightTree()));
 		}
-		if (node.isOperation(Operation.PLUS) || node.isOperation(Operation.MINUS)) {
+		if (isPlusMinusNode(node)) {
 			ExpressionNode factored = factorOutIfPossible(node);
 			return factored != null ? factored : node;
 		}
+
+		if (isMultipliedNode(node)) {
+			if (isIntegerValue(node.getLeftTree())) {
+				ExpressionNode node1 = factorOutIfPossible(node.getRightTree());
+				return utils.multiplyR(node1.getRightTree(),
+						node.getLeft().evaluateDouble() * node1.getLeft().evaluateDouble());
+			}
+			return utils.multiplyR(apply(node.getLeftTree()), apply(node.getRightTree()));
+
+		}
 		return node;
+	}
+
+	private static boolean isPlusMinusNode(ExpressionNode node) {
+		return node.isOperation(Operation.PLUS) || node.isOperation(Operation.MINUS);
+	}
+
+	private boolean isMultipliedNode(ExpressionNode node) {
+		if (!node.isOperation(Operation.MULTIPLY) || node.getLeft() == null) {
+			return false;
+		}
+		return isPlusMinusNode(node.getRightTree());
 	}
 
 	private ExpressionNode factorOutIfPossible(ExpressionNode node) {
@@ -41,9 +63,11 @@ public class FactorOut implements SimplifyNode {
 		if (node.isOperation(Operation.PLUS)) {
 			return factorOutAddition(node);
 		}
+
 		if (node.isOperation(Operation.MINUS)) {
 			return factorOutSubtraction(node);
 		}
+
 
 		return null;
 	}
@@ -199,10 +223,23 @@ public class FactorOut implements SimplifyNode {
 				rightTree.getRightTree()
 		);
 
-		ExpressionNode addition = !numberFirst
-				? utils.newNode(factoredExpression, operation, factoredNumber)
-				: utils.newNode(factoredNumber, operation, factoredExpression);
+		ExpressionNode addition = numberFirst
+				? getAddition(factoredNumber, operation, factoredExpression)
+				: getAddition(factoredExpression, operation, factoredNumber);
 		return utils.multiplyR(addition, shouldInvert ? -gcd : gcd);
+	}
+
+
+	private ExpressionNode getAddition(MyDouble factoredNumber, Operation operation,
+			ExpressionNode factoredExpression) {
+			if (utils.getLeftMultiplier(factoredExpression) < 0) {
+				return utils.newNode(factoredNumber, flip(operation), factoredExpression);
+			}
+			return utils.newNode(factoredNumber, operation, factoredExpression);
+	}
+
+	private ExpressionNode getAddition(ExpressionNode factoredExpression, Operation operation, MyDouble factoredNumber) {
+		return null;
 	}
 
 	ExpressionNode factorOutGCDWithSub(ExpressionNode rightTree, int constNumber,

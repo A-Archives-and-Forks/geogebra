@@ -35,6 +35,12 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 		shouldSimplify("(-2 - 2sqrt(2))", "-2 (1 + sqrt(2))");
 		shouldSimplify("(-2sqrt(2) - 2)", "-2 (sqrt(2) + 1)");
+		shouldSimplify("-2 - 10sqrt(2)", "-2 (1 + 5sqrt(2))");
+		shouldSimplify("-10 - 2sqrt(2)", "-2 (5 + sqrt(2))");
+	}
+
+	@Test
+	public void name() {
 	}
 
 	@Ignore
@@ -51,5 +57,13 @@ public class FactorOutTest extends BaseSimplifyTest {
 	public void testFactorOutNominator() {
 		shouldSimplify("(-2 - 2sqrt(2)) / 4", "(-2 (1 + sqrt(2))) / 4");
 		shouldSimplify("(2 - 2sqrt(2)) / 4", "(2 (1 - sqrt(2))) / 4");
+	}
+
+	@Test
+	public void testFactorOutMultipliedExpressions() {
+		shouldSimplify("3 (2 + 2sqrt(2))", "6 (1 + sqrt(2))");
+		shouldSimplify("3 (2 - 10sqrt(2))", "6 (1 - 5sqrt(2))");
+		shouldSimplify("3 (-2 - 10sqrt(2))", "-6 (1 + 5sqrt(2))");
+
 	}
 }
