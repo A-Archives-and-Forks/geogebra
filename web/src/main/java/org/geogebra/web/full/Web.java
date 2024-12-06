@@ -2,6 +2,7 @@ package org.geogebra.web.full;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.kernel.parser.Parser;
+import org.geogebra.common.util.debug.Log;
 import org.geogebra.gwtutil.JsConsumer;
 import org.geogebra.web.full.gui.applet.AppletFactory;
 import org.geogebra.web.full.gui.applet.GeoGebraFrameFull;
@@ -19,6 +20,7 @@ import org.geogebra.web.html5.util.SuperDevUncaughtExceptionHandler;
 import org.gwtproject.user.client.ui.RootPanel;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.Scheduler;
 
 import elemental2.core.JsArray;
 import elemental2.dom.HTMLCollection;
@@ -46,6 +48,21 @@ public abstract class Web implements EntryPoint {
 		exportGGBElementRenderer();
 
 		loadAppletAsync();
+		Scheduler.get().scheduleDeferred(() ->{
+			throw new RuntimeException("proper exception");
+		});
+		Scheduler.get().scheduleDeferred(() ->{
+			String s = null;
+			Log.debug(s.substring(42));
+		});
+		org.gwtproject.core.client.Scheduler.get().scheduleDeferred(() ->{
+			throw new RuntimeException("proper exception ORG");
+		});
+		org.gwtproject.core.client.Scheduler.get().scheduleDeferred(() ->{
+			String s = null;
+			Log.debug(s.substring(42));
+		});
+		throw new RuntimeException("sync");
 	}
 
 	/**

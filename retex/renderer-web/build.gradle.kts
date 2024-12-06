@@ -22,7 +22,8 @@ dependencies {
     api(project(":gwtutil"))
     api(files(file("build/generated/sources/annotationProcessor/java/main/")))
 
-    api(libs.gwt.core)
+
+    api(files("C:\\Users\\zbyne\\git\\gwt-core\\gwt-core\\target\\gwt-core-1.0.2-GGB.jar"))
     api(libs.gwt.dev)
     api(libs.gwt.user)
     api(libs.gwt.widgets)

@@ -1,5 +1,7 @@
 package org.geogebra.web.html5.util;
 
+import java.util.List;
+
 import org.geogebra.gwtutil.ExceptionUnwrapper;
 
 import com.google.gwt.core.client.GWT;
@@ -14,20 +16,10 @@ public class SuperDevUncaughtExceptionHandler {
 	 * default
 	 */
 	public static void register() {
-		HTMLIFrameElement ifr = Js.uncheckedCast(
-				DomGlobal.document.querySelector("iframe#" + GWT.getModuleName()));
-		if (ifr != null) {
-			ifr.contentWindow.addEventListener("error", evt -> {
-				Object javaEx = Js.asPropertyMap(evt).nestedGet("error.__java$exception");
-				if (javaEx instanceof Exception) {
-					Throwable cause = (Exception) javaEx;
-					while (cause.getCause() != null) {
-						cause = cause.getCause();
-					}
-					ExceptionUnwrapper.printErrorMessage(cause);
-					evt.preventDefault();
-				}
+		org.gwtproject.core.client.GWT.setUncaughtExceptionHandler( evt -> {
+			DomGlobal.console.warn(evt.getClass()+"...");
+				//ExceptionUnwrapper.printErrorMessage(evt);
 			});
-		}
+
 	}
 }

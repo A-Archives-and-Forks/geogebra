@@ -10,7 +10,7 @@ dependencies {
     api(libs.gwt.widgets)
     api(libs.gwt.user)
     api(libs.gwt.dev)
-    api(libs.gwt.core)
+    api(files("C:\\Users\\zbyne\\git\\gwt-core\\gwt-core\\target\\gwt-core-1.0.2-GGB.jar"))
     api(libs.elemental2.core)
     api(libs.elemental2.dom)
     api(libs.elemental2.webstorage)
