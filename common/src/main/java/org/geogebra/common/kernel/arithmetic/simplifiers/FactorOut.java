@@ -239,8 +239,10 @@ public class FactorOut implements SimplifyNode {
 	}
 
 	private ExpressionNode getAddition(ExpressionNode factoredExpression, Operation operation, MyDouble factoredNumber) {
-		return null;
-	}
+		if (utils.getLeftMultiplier(factoredExpression) < 0) {
+			return utils.newNode(factoredExpression, flip(operation), factoredNumber);
+		}
+		return utils.newNode(factoredExpression, operation, factoredNumber);}
 
 	ExpressionNode factorOutGCDWithSub(ExpressionNode rightTree, int constNumber,
 			Operation operation,
