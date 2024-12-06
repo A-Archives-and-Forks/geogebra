@@ -99,15 +99,7 @@ public class FactorOut implements SimplifyNode {
 			}
 		}
 
-
 		return null;
-	}
-
-	private ExpressionNode factorOutSubOfTwoPositives(ExpressionNode num, ExpressionNode expr) {
-		if (expr.isOperation(Operation.MULTIPLY) && isIntegerValue(expr.getLeft())) {
-			return factorOutGCD((int) num.evaluateDouble(), expr, Operation.MINUS);
-		}
-		return utils.newNode(num, Operation.MINUS, expr);
 	}
 
 	private boolean hasGCD(ExpressionNode leftTree, ExpressionNode rightTree) {
