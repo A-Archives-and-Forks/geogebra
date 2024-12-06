@@ -6405,7 +6405,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 					view.setCursor(ZOOM_OUT);
 					break;
 				default:
-					view.setCursor(app.isWhiteboardActive() ? HIT : CROSSHAIR);
+					view.setCursor(view.getDefaultCursor());
 				}
 			}
 		} else {
@@ -10569,7 +10569,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	public void endOfWrapMouseReleased(Hits hits, boolean control, boolean shift, boolean alt,
 			PointerEventType type) {
 		if (!hits.isEmpty()) {
-			view.setCursor(CROSSHAIR);
+			view.setCursor(view.getDefaultCursor());
 		} else {
 			setHitCursor();
 		}

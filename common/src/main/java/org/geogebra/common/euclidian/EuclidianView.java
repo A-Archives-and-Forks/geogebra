@@ -6696,4 +6696,8 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		restrictGraphSelectionForFunctions = false;
 	}
+
+	public EuclidianCursor getDefaultCursor() {
+		return EuclidianCursor.HIT;
+	}
 }

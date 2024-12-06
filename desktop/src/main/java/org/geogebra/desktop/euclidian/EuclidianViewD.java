@@ -1002,6 +1002,13 @@ public class EuclidianViewD extends EuclidianView
 
 	}
 
+	/**
+	 * @return cursor used when no object hit or selected
+	 */
+	public EuclidianCursor getDefaultCursor() {
+		return EuclidianCursor.CROSSHAIR;
+	}
+
 	@Override
 	public ScreenReaderAdapter getScreenReader() {
 		return screenReader;

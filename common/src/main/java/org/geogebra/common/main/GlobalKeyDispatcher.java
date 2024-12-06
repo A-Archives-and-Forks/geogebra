@@ -61,7 +61,7 @@ public abstract class GlobalKeyDispatcher {
 	private TreeSet<AlgoElement> tempSet;
 	private Coords tempVec;
 	private boolean hasUnsavedGeoChanges;
-	protected static boolean spaceDown;
+	private static boolean spaceDown;
 
 	/**
 	 * @param app2 app
@@ -1794,7 +1794,7 @@ public abstract class GlobalKeyDispatcher {
 		setSpaceDown(isSpaceDown);
 	}
 
-	private static void setSpaceDown(boolean isSpaceDown) {
+	protected static void setSpaceDown(boolean isSpaceDown) {
 		spaceDown = isSpaceDown;
 	}
 }

@@ -82,7 +82,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 	 *            key event
 	 */
 	public void setDownKeys(KeyEvent<?> ev) {
-		updateKeyDownFlags(spaceDown, ev.isControlKeyDown(), ev.isShiftKeyDown());
+		updateKeyDownFlags(isSpaceDown(), ev.isControlKeyDown(), ev.isShiftKeyDown());
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 			}
 			if ((keyDown || DOM.eventGetType(event) == Event.ONKEYUP)
 					&& (event.getKeyCode() == GWTKeycodes.KEY_SHIFT)) {
-				updateKeyDownFlags(spaceDown, event.getCtrlKey(), keyDown);
+				updateKeyDownFlags(isSpaceDown(), event.getCtrlKey(), keyDown);
 			}
 			if (CopyPasteW.incorrectTarget(event.getEventTarget().cast())
 						&& !isGlobalEvent(event)) {
@@ -412,11 +412,11 @@ public class GlobalKeyDispatcherW extends GlobalKeyDispatcher
 
 	private static boolean updateGlobalKeyFlags(boolean isSpaceDown,
 			boolean isCtrlDown, boolean isShiftDown) {
-		if (spaceDown == isSpaceDown && shiftDown == isShiftDown
+		if (isSpaceDown() == isSpaceDown && shiftDown == isShiftDown
 				&& controlDown == isCtrlDown) {
 			return false;
 		}
-		spaceDown = isSpaceDown;
+		setSpaceDown(isSpaceDown);
 		shiftDown = isShiftDown;
 		controlDown = isCtrlDown;
 		return true;
