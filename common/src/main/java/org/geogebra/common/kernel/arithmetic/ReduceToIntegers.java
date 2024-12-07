@@ -4,10 +4,10 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
 import org.geogebra.common.plugin.Operation;
 
-public class TidyNumbers implements SimplifyNode {
+public class ReduceToIntegers implements SimplifyNode {
 	private final Kernel kernel;
 
-	public TidyNumbers(Kernel kernel) {
+	public ReduceToIntegers(Kernel kernel) {
 		this.kernel = kernel;
 	}
 
@@ -21,21 +21,6 @@ public class TidyNumbers implements SimplifyNode {
 		return node.traverse(new Traversing() {
 			@Override
 			public ExpressionValue process(ExpressionValue ev) {
-				ExpressionNode wrap = ev.wrap();
-				ExpressionValue left = wrap.getLeft();
-				ExpressionValue right = wrap.getRight();
-				if (ev.isOperation(Operation.MINUS)) {
-					if (left.evaluateDouble() < 0 && minusOneMultiply(right.wrap())) {
-						return new ExpressionNode(kernel, left, Operation.PLUS,
-								right.wrap().getRight());
-					}
-				}
-				if (ev.isOperation(Operation.PLUS)) {
-					if (left.evaluateDouble() < 0 && minusOneMultiply(right.wrap())) {
-						return new ExpressionNode(kernel, left, Operation.MINUS,
-								right.wrap().getRight());
-					}
-				}
 				double v = ev.evaluateDouble();
 				if (Math.round(v) == v && v != -1) {
 					return new MyDouble(kernel, v);

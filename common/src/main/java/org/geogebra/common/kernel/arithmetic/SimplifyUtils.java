@@ -34,7 +34,9 @@ public class SimplifyUtils {
 		double valDenominator = denominator.evaluateDouble();
 		if (isIntegerValue(denominator)) {
 			if (valDenominator > 0) {
-				return newNode(numerator, Operation.DIVIDE, newDouble(valDenominator));
+				return valDenominator == 1
+						? numerator.wrap()
+						: newNode(numerator, Operation.DIVIDE, newDouble(valDenominator));
 			}
 
 			return newNode(mulByMinusOneL(numerator), Operation.DIVIDE, newDouble(-valDenominator));

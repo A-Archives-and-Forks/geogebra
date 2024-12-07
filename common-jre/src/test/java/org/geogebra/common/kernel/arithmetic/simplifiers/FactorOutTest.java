@@ -1,6 +1,5 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class FactorOutTest extends BaseSimplifyTest {
@@ -25,7 +24,9 @@ public class FactorOutTest extends BaseSimplifyTest {
 		shouldSimplify("2sqrt(2) - 2", "2 (sqrt(2) - 1)");
 
 		shouldSimplify("12 - 4sqrt(2)", "4 (3 - sqrt(2))");
+		shouldSimplify("4 - 12sqrt(2)", "4 (1 - 3sqrt(2))");
 		shouldSimplify("4sqrt(2) - 12", "4 (sqrt(2) - 3)");
+		shouldSimplify("12sqrt(2) - 4", "4 (3sqrt(2) - 1)");
 	}
 
 	@Test
@@ -40,17 +41,32 @@ public class FactorOutTest extends BaseSimplifyTest {
 	}
 
 	@Test
-	public void name() {
+	public void testNotChanged() {
+		shouldNotAccept("sqrt(2) - 1");
+		shouldNotAccept("(sqrt(2) - 1)");
+		shouldNotAccept("-(sqrt(2) - 1)");
+		shouldNotAccept("(3 - sqrt(2))");
+		shouldNotAccept("(3 - 2sqrt(2))");
+		shouldNotAccept("(2 - 3sqrt(2))");
+		shouldNotAccept("(1 - 3sqrt(2))");
+		shouldNotAccept("(3 + sqrt(2))");
+		shouldNotAccept("(3 + 2sqrt(2))");
+		shouldNotAccept("(2 + 3sqrt(2))");
+		shouldNotAccept("(1 + 3sqrt(2))");
+		shouldNotAccept("-(3 - sqrt(2))");
+		shouldNotAccept("-(3 - 2sqrt(2))");
+		shouldNotAccept("-(2 - 3sqrt(2))");
+		shouldNotAccept("-(1 - 3sqrt(2))");
+		shouldNotAccept("-(3 + sqrt(2))");
+		shouldNotAccept("-(3 + 2sqrt(2))");
+		shouldNotAccept("-(2 + 3sqrt(2))");
+		shouldNotAccept("-(1 + 3sqrt(2))");
 	}
 
-	@Ignore
 	@Test
-	public void testNoChange() {
-		shouldNotChange("(3 - sqrt(2)) / 7");
-		shouldNotChange("(-sqrt(2) + 3) / 7");
-		shouldNotChange("3 + sqrt(2)");
-		shouldNotChange("sqrt(2) + 2");
-		shouldNotChange("2sqrt(2) + 2");
+	public void testAccepted() {
+		shouldAccept("3 (2 + 2sqrt(2))");
+		shouldAccept("(-3 - sqrt(2))");
 	}
 
 	@Test
@@ -65,5 +81,10 @@ public class FactorOutTest extends BaseSimplifyTest {
 		shouldSimplify("3 (2 - 10sqrt(2))", "6 (1 - 5sqrt(2))");
 		shouldSimplify("3 (-2 - 10sqrt(2))", "-6 (1 + 5sqrt(2))");
 
+	}
+
+	@Test
+	public void testMinusTimesMinusShouldFlipOperand() {
+		shouldSimplify("-6 (-2 - 2sqrt(2))", "12 (1 + sqrt(2))");
 	}
 }

@@ -8,10 +8,14 @@ import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
-import org.geogebra.common.util.debug.Log;
 
 public class FactorOut implements SimplifyNode {
-
+	private enum NodeType {
+		INVALID,
+		PLUS_OR_MINUS,
+		MULTIPLIED,
+		FRACTION
+	}
 	private final SimplifyUtils utils;
 
 	public FactorOut(SimplifyUtils utils) {
@@ -20,75 +24,100 @@ public class FactorOut implements SimplifyNode {
 
 	@Override
 	public boolean isAccepted(ExpressionNode node) {
+		if (node.isLeaf()) {
+			return true;
+		}
+
+		return getNodeType(node) != NodeType.INVALID;
+	}
+
+	private NodeType getNodeType(ExpressionNode node) {
+		if (node.isOperation(Operation.PLUS) || node.isOperation(Operation.MINUS)) {
+			return getPlusOrMinusType(node);
+		}
+
+		if (node.isOperation(Operation.MULTIPLY) && isAccepted(node.getRightTree())) {
+			return NodeType.MULTIPLIED;
+		}
+
+		if (node.isOperation(Operation.DIVIDE)
+				&& isAccepted(node.getLeftTree()) && isAccepted(node.getRightTree())) {
+			return NodeType.FRACTION;
+		}
+
+		return NodeType.INVALID;
+	}
+
+	private NodeType getPlusOrMinusType(ExpressionNode node) {
+		return (minusNodeAccepted(node.getLeftTree(), node.getRightTree())
+				|| minusNodeAccepted(node.getRightTree(), node.getLeftTree()))
+				? NodeType.PLUS_OR_MINUS
+				: NodeType.INVALID;
+	}
+
+	private boolean minusNodeAccepted(ExpressionNode leftTree, ExpressionNode rightTree) {
+		int treeMultiplier = utils.getLeftMultiplier(rightTree);
+		double leftValue = leftTree.evaluateDouble();
+		if (leftValue < 0) {
+			return true;
+		}
+		if (leftTree.isLeaf()
+			&& (leftValue > 0 && treeMultiplier == 1) || (
+				!hasRealGCD((int) leftValue, treeMultiplier))) {
+			return false;
+		}
 		return true;
+	}
+
+	private boolean hasRealGCD(int num1, int num2) {
+		long gcd = Kernel.gcd(num1, num2);
+		return gcd != 1 && (num1 == gcd && num1 < num2 || gcd == num2)  ;
 	}
 
 	@Override
 	public ExpressionNode apply(ExpressionNode node) {
-		if (node.isOperation(Operation.DIVIDE)) {
+		NodeType nodeType = getNodeType(node);
+		switch (nodeType) {
+		case FRACTION:
 			return utils.div(apply(node.getLeftTree()), apply(node.getRightTree()));
+		case PLUS_OR_MINUS:
+			return factorOutPlusOrMinusNode(node);
+		case MULTIPLIED:
+			return factorOutMultiplied(node);
+		default:
+			return node;
 		}
-		if (isPlusMinusNode(node)) {
-			ExpressionNode factored = factorOutIfPossible(node);
-			return factored != null ? factored : node;
-		}
-
-		if (isMultipliedNode(node)) {
-			if (isIntegerValue(node.getLeftTree())) {
-				ExpressionNode node1 = factorOutIfPossible(node.getRightTree());
-				return utils.multiplyR(node1.getRightTree(),
-						node.getLeft().evaluateDouble() * node1.getLeft().evaluateDouble());
-			}
-			return utils.multiplyR(apply(node.getLeftTree()), apply(node.getRightTree()));
-
-		}
-		return node;
 	}
 
-	private static boolean isPlusMinusNode(ExpressionNode node) {
-		return node.isOperation(Operation.PLUS) || node.isOperation(Operation.MINUS);
-	}
-
-	private boolean isMultipliedNode(ExpressionNode node) {
-		if (!node.isOperation(Operation.MULTIPLY) || node.getLeft() == null) {
-			return false;
+	private ExpressionNode factorOutMultiplied(ExpressionNode node) {
+		if (isIntegerValue(node.getLeftTree())) {
+			ExpressionNode node1 = factorOutPlusOrMinusNode(node.getRightTree());
+			return utils.multiplyR(node1.getRightTree(),
+					node.getLeft().evaluateDouble() * node1.getLeft().evaluateDouble());
 		}
-		return isPlusMinusNode(node.getRightTree());
+		return utils.multiplyR(apply(node.getLeftTree()), apply(node.getRightTree()));
 	}
 
-	private ExpressionNode factorOutIfPossible(ExpressionNode node) {
-		ExpressionNode leftTree = node.getLeftTree();
-		ExpressionNode rightTree = node.getRightTree();
-
+	private ExpressionNode factorOutPlusOrMinusNode(ExpressionNode node) {
 		if (node.isOperation(Operation.PLUS)) {
-			return factorOutAddition(node);
+			double v = node.getRightTree().evaluateDouble();
+			return v == -1
+			? utils.newNode(node.getLeftTree(), Operation.MINUS, utils.newDouble(1).wrap())
+			: factorOutAddition(node, node.getLeftTree(), Operation.PLUS, node.getRightTree());
+
 		}
-
-		if (node.isOperation(Operation.MINUS)) {
-			return factorOutSubtraction(node);
-		}
-
-
-		return null;
+		return factorOutSubtraction(node);
 	}
 
-	private ExpressionNode factorOutAddition(ExpressionNode node) {
-		Log.debug("FactorOutAddition");
-		ExpressionNode leftTree = node.getLeftTree();
-		ExpressionNode rightTree = node.getRightTree();
+	private ExpressionNode factorOutAddition(ExpressionNode node, ExpressionNode leftTree,
+			Operation operation, ExpressionNode rightTree) {
 		double leftValue = leftTree.evaluateDouble();
 		double rightValue = rightTree.evaluateDouble();
 
-		if (leftValue > 0 && isIntegerValue(leftTree) && rightValue > 0
-				&& !hasGCD(leftTree, rightTree)) {
-			Log.debug("NotChanging");
-			return node;
-		}
-
 		if (leftTree.isLeaf()) {
-			return factorOutGCD((int) leftValue, rightTree, Operation.PLUS);
+			return factorOutGCD((int) leftValue, rightTree, operation);
 		}
-		return factorOutGCD(leftTree, (int) rightValue, Operation.PLUS);
+		return factorOutGCD(leftTree, (int) rightValue, operation);
 	}
 
 	private ExpressionNode factorOutSubtraction(ExpressionNode node) {
@@ -96,12 +125,6 @@ public class FactorOut implements SimplifyNode {
 		ExpressionNode rightTree = node.getRightTree();
 		double leftValue = leftTree.evaluateDouble();
 		double rightValue = rightTree.evaluateDouble();
-
-		if (leftValue > 0 && isIntegerValue(leftTree) && rightValue > 0
-				&& !hasGCD(leftTree, rightTree)) {
-			Log.debug("NotChanging");
-			return node;
-		}
 
 		if (leftTree.isLeaf()) {
 			int number = (int) leftTree.evaluateDouble();
@@ -123,27 +146,7 @@ public class FactorOut implements SimplifyNode {
 			}
 		}
 
-		return null;
-	}
-
-	private boolean hasGCD(ExpressionNode leftTree, ExpressionNode rightTree) {
-		ExpressionNode treeMul = rightTree.getLeftTree();
-		if (leftTree.isLeaf() && isIntegerValue(leftTree) && treeMul != null && isIntegerValue(
-				treeMul)) {
-			int v = (int) leftTree.evaluateDouble();
-			int v1 = (int) treeMul.evaluateDouble();
-			long gcd = Kernel.gcd(v, v1);
-			return (v % v1 == 0) || gcd != v1;
-		}
-		ExpressionNode treeMul2 = leftTree.getLeftTree();
-		if (rightTree.isLeaf() && isIntegerValue(rightTree) && treeMul != null && isIntegerValue(
-				treeMul)) {
-			long gcd = Kernel.gcd((int) rightTree.evaluateDouble(), (int) treeMul.evaluateDouble());
-			int v = (int) rightTree.evaluateDouble();
-			int v1 = (int) treeMul.evaluateDouble();
-			return (v % v1 == 0) || gcd != v1;
-		}
-		return true;
+		return node;
 	}
 
 	ExpressionNode factorOutSubOfTwoNegatives(ExpressionNode leftTree, ExpressionNode rightTree) {
@@ -160,17 +163,14 @@ public class FactorOut implements SimplifyNode {
 					utils.newDouble(-constNumber), Operation.PLUS, rightTree);
 		}
 
-		if (isIntegerValue(rightTree)) {
-			int constNumber = (int) rightTree.evaluateDouble();
-			if (leftTree.isOperation(Operation.MULTIPLY) && isIntegerValue(leftTree.getLeft())) {
-				return factorOutGCDWithSub(leftTree, constNumber, Operation.PLUS);
+		int constNumber = (int) rightTree.evaluateDouble();
+		if (leftTree.isOperation(Operation.MULTIPLY) && isIntegerValue(leftTree.getLeft())) {
+			return factorOutGCDWithSub(leftTree, constNumber, Operation.PLUS);
 
-			}
-			double rightValue = rightTree.evaluateDouble();
-			return utils.newNode(
-					leftTree.getRightTree(), Operation.PLUS, rightTree);
 		}
-		return null;
+		double rightValue = rightTree.evaluateDouble();
+		return utils.newNode(
+				leftTree.getRightTree(), Operation.PLUS, rightTree);
 	}
 
 	private ExpressionNode factorOutSubtraction(int number, ExpressionNode expr) {

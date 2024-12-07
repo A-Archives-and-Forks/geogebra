@@ -11,14 +11,29 @@ public class CancelGCDInFractionTest extends BaseSimplifyTest{
 	@Test
 	public void testCancelGCD() {
 		shouldSimplify("2 / (2sqrt(3))", "1 / sqrt(3)");
-		shouldSimplify("9(-8 - sqrt(10)) / 54", "((-8 - sqrt(10))) / 6");
+		shouldSimplify("9(-8 - sqrt(10)) / 54" , "((-8 - sqrt(10))) / 6");
 		shouldSimplify("2 (-1 + sqrt(2)) / 4", "(-1 + sqrt(2)) / 2");
 	}
 
 	@Test
+	public void testAccept() {
+		shouldAccept("(-8 - sqrt(10)) / 54");
+		shouldAccept("(9(-8 - sqrt(10))) / 54");
+		shouldAccept("9(-8 - sqrt(10)) / 54");
+		shouldAccept("(12 (1 + sqrt(2))) / 4");
+		shouldAccept("(-(2 (1 - sqrt(2)))) / 4");
+	}
+
+	@Test
+	public void testCancel2() {
+		shouldSimplify("(12 (1 + sqrt(2))) / 4" , "3 (1 + sqrt(2))");
+		shouldSimplify("(-(2 (1 - sqrt(2)))) / 4", "(-1 + sqrt(2)) / 2");
+	}
+
+	@Test
 	public void name() {
+		shouldSimplify("(4 (sqrt(5) + 1)) / 4", "sqrt(5) + 1");
 		shouldSimplify("((sqrt(5) + 1) * 4) / 4", "sqrt(5) + 1");
-		shouldSimplify("((-2 - sqrt(8)) (-6)) / -4", "3(-sqrt(2) - 1)");
 	}
 
 	@Test

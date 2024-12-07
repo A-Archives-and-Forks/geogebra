@@ -3,6 +3,7 @@ package org.geogebra.common.kernel.arithmetic.simplifiers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.Kernel;
@@ -28,8 +29,12 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 	}
 
 	protected final void shouldSimplify(String actualDef, String expectedDef, SimplifyNode simplifier) {
-		GeoNumeric expected = newSymbolicNumeric(expectedDef);
 		GeoNumeric actual = newSymbolicNumeric(actualDef);
+		if (!getSimplifier().isAccepted(actual.getDefinition())) {
+			fail(actualDef + " is not accepted" );
+		}
+
+		GeoNumeric expected = newSymbolicNumeric(expectedDef);
 		assertTrue(actualDef + " is not accepted by " + simplifier.name(),
 				simplifier.isAccepted(actual.getDefinition()));
 		ExpressionNode applied = simplifier.apply(actual.getDefinition());
@@ -38,10 +43,6 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 				expected.getDefinition().evaluateDouble(), applied.evaluateDouble(),
 				Kernel.MAX_PRECISION);
 		shouldSerialize(expected.getDefinition(), applied);
-	}
-
-	protected void shouldNotChange(String def) {
-		shouldSimplify(def, def);
 	}
 
 	protected static void shouldSerialize(ExpressionNode expected, ExpressionNode actual) {

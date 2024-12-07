@@ -8,6 +8,7 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.simplifiers.CancelGCDInFraction;
 import org.geogebra.common.kernel.arithmetic.simplifiers.FactorOut;
+import org.geogebra.common.kernel.arithmetic.simplifiers.PositiveDenominator;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
@@ -31,10 +32,11 @@ public final class RationalizeFractionAlgo {
 		utils = new SimplifyUtils(kernel);
 		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
 				new ReduceRoot(kernel),
-				new TidyNumbers(kernel),
+				new ReduceToIntegers(kernel),
 				new SimplifyMultiplication(kernel),
 				new FactorOut(utils),
 	        	new CancelGCDInFraction(utils),
+				new PositiveDenominator(utils),
 				new OperandOrder(utils)
 		);
 	}
@@ -46,9 +48,15 @@ public final class RationalizeFractionAlgo {
 		}
 		Log.debug("rationalize: " + node.toValueString(StringTemplate.defaultTemplate));
 
+		node = runSimplifiers(node);
+
+		return checkDecimals(node) ? null : node;
+	}
+
+	private ExpressionNode runSimplifiers(ExpressionNode node) {
 		for (SimplifyNode simplifier : simplifiers) {
 			if (simplifier.isAccepted(node)) {
-				String before = node.toValueString(StringTemplate.defaultTemplate);
+ 				String before = node.toValueString(StringTemplate.defaultTemplate);
 				node = simplifier.apply(node);
 				String after = node.toValueString(StringTemplate.defaultTemplate);
 				if (!after.equals(before)) {
@@ -56,8 +64,7 @@ public final class RationalizeFractionAlgo {
 				}
 			}
 		}
-
-		return checkDecimals(node) ? null : node;
+		return node;
 	}
 
 	/**
@@ -126,6 +133,10 @@ public final class RationalizeFractionAlgo {
 		Operation rightOperandOperation = rightOperand.getOperation();
 		if (hasTwoTags(rightOperand)) {
  			return doFactorize(expanded);
+		} if (rightOperandOperation == Operation.SQRT) {
+			ExpressionNode sqrt = denominator.getRightTree();
+			return utils.newNode(this.numerator.multiplyR(sqrt), Operation.DIVIDE,
+					denominator.multiplyR(sqrt));
 		} else {
 			ExpressionNode numerator = new ExpressionNode(kernel, expanded.getLeftTree(),
 					rightOperandOperation, null);
@@ -179,23 +190,17 @@ public final class RationalizeFractionAlgo {
 		} else if (isMinusOne(newDenominatorValue)) {
 			ExpressionNode minusConjugate = getMinusConjugate(node, op);
 			result = utils.multiply(numerator, minusConjugate);
-//			result = new ExpressionNode(kernel, numerator.multiplyR(minusConjugate));
 		} else if (DoubleUtil.isInteger(newDenominatorValue)) {
 			// if new denominator is integer but not 1 or -1
-			result = utils.div(numerator.multiply(conjugate), newDenominatorValue);
+			result = utils.newNode(
+					numerator.multiplyR(conjugate),
+					Operation.DIVIDE, utils.newDouble(newDenominatorValue));
 
-//			result = new ExpressionNode(kernel, numerator.multiply(conjugate),
-//					Operation.DIVIDE, new MyDouble(kernel, newDenominatorValue));
 		}
 		Operation operation = result.getOperation();
 		if (operation == Operation.PLUS || operation == Operation.MINUS) {
 			return getOperandOrder(result);
 		}
-//		if (operation == Operation.DIVIDE) {
-//			return utils.newNode(getOperandOrder(result.getLeftTree()), Operation.DIVIDE,
-//					result.getRight());
-//
-//		}
 		return result;
 	}
 

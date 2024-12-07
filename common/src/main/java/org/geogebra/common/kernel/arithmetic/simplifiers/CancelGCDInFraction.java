@@ -5,15 +5,25 @@ import static org.geogebra.common.util.DoubleUtil.isInteger;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
-import org.geogebra.common.kernel.arithmetic.Inspecting;
 import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 
 public class CancelGCDInFraction implements SimplifyNode {
+
+	private int multiplier;
+
+	private enum NodeType {
+		INVALID,
+		SIMPLE_FRACTION,
+		MULTIPLIED_FRACTION,
+		MULTIPLIED_NUMERATOR, NEGATIVE_MULTIPLIED_NUMERATOR,
+	}
+
 	private final SimplifyUtils utils;
 	private final Kernel kernel;
+	private NodeType nodeType = NodeType.INVALID;
 	private ExpressionNode numerator;
 	private ExpressionNode denominator;
 
@@ -24,28 +34,95 @@ public class CancelGCDInFraction implements SimplifyNode {
 
 	@Override
 	public boolean isAccepted(ExpressionNode node) {
-		return node.inspect(new Inspecting() {
-			@Override
-			public boolean check(ExpressionValue v) {
-				return v.isOperation(Operation.DIVIDE);
+		if (node.isOperation(Operation.DIVIDE)) {
+			ExpressionNode leftTree = node.getLeftTree();
+			multiplier = utils.getLeftMultiplier(leftTree);
+			if (multiplier == -1 && leftTree.getRightTree().isOperation(Operation.MULTIPLY)) {
+				multiplier *= utils.getLeftMultiplier(leftTree.getRightTree());
+				nodeType = NodeType.NEGATIVE_MULTIPLIED_NUMERATOR;
+			} else {
+				nodeType = isTrivialMultiplier() ? NodeType.SIMPLE_FRACTION : NodeType.MULTIPLIED_NUMERATOR;
 			}
-		});
+		}
+
+		if (node.isOperation(Operation.MULTIPLY)
+				&& node.getRightTree().isOperation(Operation.DIVIDE)) {
+			multiplier = utils.getLeftMultiplier(node);
+			nodeType = isTrivialMultiplier() ? NodeType.SIMPLE_FRACTION
+					:NodeType.MULTIPLIED_FRACTION;
+		}
+		return nodeType != NodeType.INVALID;
+	}
+
+	private boolean isTrivialMultiplier() {
+		return Math.abs(multiplier) == 1;
 	}
 
 	@Override
 	public ExpressionNode apply(ExpressionNode node) {
+		switch (nodeType) {
+		case MULTIPLIED_FRACTION:
+			return applyForMultipliedFraction(node);
+		case MULTIPLIED_NUMERATOR:
+			return applyForMultipliedNumerator(node);
+		case NEGATIVE_MULTIPLIED_NUMERATOR:
+			return applyForNegativeMultipliedNumerator(node);
+		case SIMPLE_FRACTION:
+			return applyForSimpleFraction(node);
+		case INVALID:
+		default:
+			return node;
+		}
+	}
+
+	private ExpressionNode applyForNegativeMultipliedNumerator(ExpressionNode node) {
+		ExpressionNode numerator = node.getLeftTree();
+		ExpressionNode node1 = utils.newNode(
+				utils.newNode(
+						utils.newDouble(multiplier),
+						Operation.MULTIPLY,
+						numerator.getRightTree().getRightTree()
+				)
+				, Operation.DIVIDE, node.getRightTree());
+		return applyForMultipliedNumerator(node1);
+	}
+
+	private ExpressionNode applyForMultipliedNumerator(ExpressionNode node) {
+		int n = multiplier;
+		int m = (int) node.getRightTree().evaluateDouble();
+		long gcd = Kernel.gcd(n, m);
+		long newMul = n / gcd;
+		long newDenom = m / gcd;
+		return utils.div(utils.multiplyR(node.getLeftTree().getRightTree(), newMul),
+				utils.newDouble(newDenom).wrap());
+	}
+
+	private ExpressionNode applyForMultipliedFraction(ExpressionNode node) {
+		int n = utils.getLeftMultiplier(node);
+		int m = (int) node.getRightTree().getRightTree().evaluateDouble();
+		long gcd = Kernel.gcd(n, m);
+		long newMul = n / gcd;
+		long newDenom = m / gcd;
+		return utils.div(utils.multiplyR(node.getRightTree().getLeftTree(), newMul),
+				utils.newDouble(newDenom).wrap());
+	}
+
+	private ExpressionNode applyForSimpleFraction(ExpressionNode node) {
 		numerator = node.getLeftTree();
 		denominator = node.getRightTree();
 
-		if (isCancelable(numerator, denominator)) {
-			ExpressionNode canceled = doCancel(numerator, denominator);
-			return canceled != null ? canceled: node;
+		return getCanceledFraction(node, numerator, denominator);
+	}
+
+	private ExpressionNode getCanceledFraction(ExpressionNode node, ExpressionNode node1,
+			ExpressionNode node2) {
+		ExpressionNode canceledFraction = null;
+		if (isCancelable(node1, node2)) {
+			canceledFraction = doCancel(node1, node2);
+		} else if (isCancelable(node2, node1)) {
+			canceledFraction = doCancel(node2, node1);
 		}
-		if (isCancelable(denominator, numerator)) {
-			ExpressionNode canceled = doCancel(denominator, numerator);
-			return canceled != null ? canceled : node;
-		}
-		return node;
+		return canceledFraction != null ? canceledFraction : node;
 	}
 
 	private boolean isCancelable(ExpressionNode node1, ExpressionNode node2) {

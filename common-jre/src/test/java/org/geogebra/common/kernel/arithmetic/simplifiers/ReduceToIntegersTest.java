@@ -1,12 +1,12 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
-import org.geogebra.common.kernel.arithmetic.TidyNumbers;
+import org.geogebra.common.kernel.arithmetic.ReduceToIntegers;
 import org.junit.Test;
 
-public class TidyNumbersTest extends BaseSimplifyTest {
+public class ReduceToIntegersTest extends BaseSimplifyTest {
 	@Override
 	protected SimplifyNode getSimplifier() {
-		return new TidyNumbers(getKernel());
+		return new ReduceToIntegers(getKernel());
 	}
 
 	@Test
