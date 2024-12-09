@@ -545,9 +545,7 @@ public final class SpreadsheetController {
 	 * viewport if necessary.
 	 */
 	void onEnter() {
-		if (isEditorActive()) {
-			moveDown(false);
-		}
+		moveDown(false);
 		adjustViewportIfNeeded();
 		showCellEditorAtSelection();
 	}
