@@ -37,7 +37,7 @@ abstract class AbstractValuedPropertyCollection<T extends ValuedProperty<S>, S> 
 		return properties[0];
 	}
 
-	protected T[] getProperties() {
+	public T[] getProperties() {
 		return properties;
 	}
 

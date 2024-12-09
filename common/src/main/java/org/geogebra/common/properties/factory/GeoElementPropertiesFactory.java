@@ -40,6 +40,7 @@ import org.geogebra.common.properties.impl.objects.NameProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
 import org.geogebra.common.properties.impl.objects.PointSizeProperty;
 import org.geogebra.common.properties.impl.objects.PointStyleProperty;
+import org.geogebra.common.properties.impl.objects.QuadraticEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.ShowInAVProperty;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 import org.geogebra.common.properties.impl.objects.ShowTraceProperty;
@@ -148,6 +149,10 @@ public final class GeoElementPropertiesFactory {
 						element -> new LinearEquationFormProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(
 								properties.toArray(new LinearEquationFormProperty[0]))),
+				createPropertyCollection(elements,
+						element -> new QuadraticEquationFormProperty(localization, element),
+						properties -> new NamedEnumeratedPropertyCollection<>(
+								properties.toArray(new QuadraticEquationFormProperty[0]))),
 				createPropertyCollection(elements,
 						element -> new CaptionStyleProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(
