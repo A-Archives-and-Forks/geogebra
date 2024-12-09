@@ -23,7 +23,7 @@ public class LinearEquationFormProperty extends AbstractNamedEnumeratedProperty<
 	/***/
 	public LinearEquationFormProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "Equation");
+		super(localization, "LinearEquationForm");
 		delegate = new LinearEquationFormDelegate(element);
 		setNamedValues(
 				List.of(

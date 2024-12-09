@@ -22,7 +22,7 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 	/***/
 	public QuadraticEquationFormProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "Equation");
+		super(localization, "QuadraticEquationForm");
 		delegate = new QuadraticEquationFormDelegate(element);
 
 		QuadraticEquationRepresentable quadratic = (QuadraticEquationRepresentable) element;
