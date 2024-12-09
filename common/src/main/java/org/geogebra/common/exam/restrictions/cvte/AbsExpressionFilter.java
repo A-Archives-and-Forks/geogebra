@@ -13,6 +13,6 @@ public class AbsExpressionFilter implements ExpressionFilter {
 			ExpressionNode node = (ExpressionNode) expression;
 			return node.getLeft().evaluatesToNumber(false);
 		}
-		return false;
+		return true;
 	}
 }

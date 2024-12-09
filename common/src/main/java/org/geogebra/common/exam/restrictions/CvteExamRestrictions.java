@@ -204,7 +204,6 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				Operation.BETA_INCOMPLETE_REGULARIZED,
 				Operation.ERF,
 				Operation.PSI,
-				Operation.POLYGAMMA,
 				Operation.SI,
 				Operation.CI,
 				Operation.EI,
