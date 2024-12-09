@@ -58,7 +58,6 @@ public class LinearEquationFormProperty extends AbstractNamedEnumeratedProperty<
 			return ((LinearEquationRepresentable) element).getEquationForm().rawValue;
 		}
 		return -1;
-//		return delegate.getElement().getToStringMode();
 	}
 
 	@Override
