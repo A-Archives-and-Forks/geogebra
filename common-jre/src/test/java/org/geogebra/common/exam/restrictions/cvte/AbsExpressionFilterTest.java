@@ -32,6 +32,11 @@ public class AbsExpressionFilterTest extends BaseUnitTest {
 		assertTrue(isAllowed("abs(Length({{1},{2}}))"));
 	}
 
+	@Test
+	public void testComplexNumbersAreRestricted() {
+		assertFalse(isAllowed("abs(1 + i)"));
+	}
+
 	private boolean isAllowed(String input) {
 		ValidExpression expression = parse(input);
 		return filter.isAllowed(expression);
