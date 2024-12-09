@@ -72,11 +72,11 @@ public class ConicEqnModel extends MultipleOptionsModel {
 		GeoQuadricND temp, geo0 = getConicAt(0);
 		boolean equalType = true;
 		boolean equalMode = true;
-		boolean specificPossible = geo0.isSpecificPossible();
-		boolean explicitPossible = geo0.isExplicitPossible();
+		boolean specificPossible = geo0.isSpecificFormPossible();
+		boolean explicitPossible = geo0.isExplicitFormPossible();
 		boolean userPossible = geo0.getDefinition() != null;
-		boolean vertexformPossible = geo0.isVertexformPossible();
-		boolean conicformPossible = geo0.isConicformPossible();
+		boolean vertexformPossible = geo0.isVertexFormPossible();
+		boolean conicformPossible = geo0.isConicFormPossible();
 		for (int i = 1; i < getGeosLength(); i++) {
 			temp = getConicAt(i);
 			// same type?
@@ -88,20 +88,20 @@ public class ConicEqnModel extends MultipleOptionsModel {
 				equalMode = false;
 			}
 			// specific equation possible?
-			if (!temp.isSpecificPossible()) {
+			if (!temp.isSpecificFormPossible()) {
 				specificPossible = false;
 			}
 			// explicit equation possible?
-			if (!temp.isExplicitPossible()) {
+			if (!temp.isExplicitFormPossible()) {
 				explicitPossible = false;
 			}
 			if (temp.getDefinition() == null) {
 				userPossible = false;
 			}
-			if (!temp.isVertexformPossible()) {
+			if (!temp.isVertexFormPossible()) {
 				vertexformPossible = false;
 			}
-			if (!temp.isConicformPossible()) {
+			if (!temp.isConicFormPossible()) {
 				conicformPossible = false;
 			}
 		}

@@ -4,6 +4,7 @@ import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Re
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics1;
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics2;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -14,12 +15,14 @@ import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.cvte.CvteCommandArgumentFilter;
+import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
 import org.geogebra.common.exam.restrictions.cvte.CvteSyntaxFilter;
 import org.geogebra.common.exam.restrictions.cvte.MatrixExpressionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
 import org.geogebra.common.kernel.algos.ConstructionElement;
@@ -69,9 +72,10 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
-				null,
+				createPropertyRestrictions(),
 				createPropertyFilters(),
-				createConstructionElementSetups());
+				createConstructionElementSetups(),
+				createEquationBehaviour());
 	}
 
 	@Override
@@ -130,7 +134,9 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	}
 
 	private static Set<ExamFeatureRestriction> createFeatureRestrictions() {
-		return Set.of(ExamFeatureRestriction.AUTOMATIC_GRAPH_SELECTION_FOR_FUNCTIONS);
+		return Set.of(
+				ExamFeatureRestriction.AUTOMATIC_GRAPH_SELECTION_FOR_FUNCTIONS,
+				ExamFeatureRestriction.HIDE_CALCULATED_EQUATION);
 	}
 
 	private static Set<CommandFilter> createCommandFilters() {
@@ -272,12 +278,47 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new MatrixExpressionFilter());
 	}
 
+	// TODO these PropertyRestrictions also need to be applied to properties created (e.g. by
+	//  GeoElementProeprtiesFactory) while an exam is running (e.g., Android SettingsPanel)
+	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
+	        // TODO the "Equation" property only covers the linear case
+		return Map.of("Equation", new LinearEquationFormPropertyRestriction());
+	}
+
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
 		return Set.of(new ShowObjectPropertyFilter());
 	}
 
 	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
 		return Set.of(new EuclidianVisibilitySetup());
+	}
+
+	private static EquationBehaviour createEquationBehaviour() {
+		return new CvteEquationBehaviour();
+	}
+
+	/**
+	 * For any Conic, Line, Equation, Function or Implicit Equation manually entered
+	 * by the user, restrict the equation form to “Input Form”.
+	 */
+	private static final class LinearEquationFormPropertyRestriction extends PropertyRestriction {
+		public LinearEquationFormPropertyRestriction() {
+			super(false, value -> {
+				return true;
+			});
+		}
+	}
+
+	/**
+	 * For any Conic, Line, Equation, Function or Implicit Equation manually entered
+	 * by the user, restrict the equation form to “Input Form”.
+	 */
+	private static final class QuadraticEquationFormPropertyRestriction extends PropertyRestriction {
+		public QuadraticEquationFormPropertyRestriction() {
+			super(false, value -> {
+				return true;
+			});
+		}
 	}
 
 	private static final class ShowObjectPropertyFilter implements GeoElementPropertyFilter {

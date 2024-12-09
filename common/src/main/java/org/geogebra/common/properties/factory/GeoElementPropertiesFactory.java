@@ -1,13 +1,18 @@
 package org.geogebra.common.properties.factory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
+
+import org.geogebra.common.exam.restrictions.PropertyRestriction;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
@@ -26,7 +31,7 @@ import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
-import org.geogebra.common.properties.impl.objects.EquationFormProperty;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
@@ -46,7 +51,9 @@ import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropert
  * Creates the list of properties for a GeoElement or for a list of GeoElements.
  */
 public final class GeoElementPropertiesFactory {
+
 	private final Set<GeoElementPropertyFilter> propertyFilters = new HashSet<>();
+	private final Map<String, List<PropertyRestriction>> propertyRestrictions = new HashMap<>();
 
 	/**
 	 * Adds a {@link GeoElementPropertyFilter} which can modify the returned properties by
@@ -65,6 +72,39 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public void removeFilter(GeoElementPropertyFilter filter) {
 		propertyFilters.remove(filter);
+	}
+
+	/**
+	 * TODO
+	 * @param restrictions The keys are expected to be raw names (i.e., match property.getRawName())
+	 */
+	public void addRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
+		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
+			List<PropertyRestriction> registeredRestrictions;
+			if (propertyRestrictions.containsKey(entry.getKey())) {
+				registeredRestrictions = propertyRestrictions.get(entry.getKey());
+			} else {
+				registeredRestrictions = new ArrayList<>();
+				propertyRestrictions.put(entry.getKey(), registeredRestrictions);
+			}
+			if (!registeredRestrictions.contains(entry.getValue())) {
+				registeredRestrictions.add(entry.getValue());
+			}
+		}
+	}
+
+	/**
+	 * TODO
+	 * @param restrictions
+	 */
+	public void removeRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
+		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
+			List<PropertyRestriction> registeredRestrictions =
+					propertyRestrictions.get(entry.getKey());
+			if (registeredRestrictions != null && registeredRestrictions.contains(entry.getValue())) {
+				registeredRestrictions.remove(entry.getValue());
+			}
+		}
 	}
 
 	/**
@@ -105,9 +145,9 @@ public final class GeoElementPropertiesFactory {
 						properties -> new RangePropertyCollection<>(
 								properties.toArray(new SlopeSizeProperty[0]))),
 				createPropertyCollection(elements,
-						element -> new EquationFormProperty(localization, element),
+						element -> new LinearEquationFormProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(
-								properties.toArray(new EquationFormProperty[0]))),
+								properties.toArray(new LinearEquationFormProperty[0]))),
 				createPropertyCollection(elements,
 						element -> new CaptionStyleProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(
@@ -353,6 +393,14 @@ public final class GeoElementPropertiesFactory {
 				Prop property = propertyFactory.create(geoElement);
 				if (property != null && isAllowedByFilters(property, geoElement)) {
 					properties.add(property);
+					// apply restrictions
+					List<PropertyRestriction> restrictions = propertyRestrictions.get(
+							property.getRawName());
+					if (restrictions != null) {
+						for (PropertyRestriction restriction : restrictions) {
+							restriction.applyTo(property);
+						}
+					}
 				}
 			}
 			if (properties.isEmpty()) {
