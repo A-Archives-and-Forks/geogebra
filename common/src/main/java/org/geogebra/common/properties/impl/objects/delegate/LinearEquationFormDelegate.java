@@ -1,16 +1,11 @@
 package org.geogebra.common.properties.impl.objects.delegate;
 
-import org.geogebra.common.gui.dialog.options.model.ConicEqnModel;
-import org.geogebra.common.gui.dialog.options.model.LineEqnModel;
-import org.geogebra.common.gui.dialog.options.model.PlaneEqnModel;
 import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.algos.AlgoElement;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.geos.GeoList;
-import org.geogebra.common.kernel.geos.GeoSegment;
-import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.kernel.statistics.AlgoFitLineX;
 import org.geogebra.common.kernel.statistics.AlgoFitLineY;
 

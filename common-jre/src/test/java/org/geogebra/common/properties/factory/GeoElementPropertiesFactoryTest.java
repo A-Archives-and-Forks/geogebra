@@ -68,18 +68,18 @@ public class GeoElementPropertiesFactoryTest extends BaseUnitTest {
 	private boolean containsLinearEquationFormProperty(PropertiesArray array) {
 		return Arrays.stream(array.getProperties())
 				.filter(property ->
-						property instanceof NamedEnumeratedPropertyCollection<?,?>
-								&& ((NamedEnumeratedPropertyCollection<?,?>) property).getProperties()[0]
-								instanceof LinearEquationFormProperty)
+						property instanceof NamedEnumeratedPropertyCollection<?, ?>
+								&& ((NamedEnumeratedPropertyCollection<?, ?>) property)
+								.getProperties()[0] instanceof LinearEquationFormProperty)
 				.findAny().isPresent();
 	}
 
 	private boolean containsQuadraticEquationFormProperty(PropertiesArray array) {
 		return Arrays.stream(array.getProperties())
 				.filter(property ->
-						property instanceof NamedEnumeratedPropertyCollection<?,?>
-								&& ((NamedEnumeratedPropertyCollection<?,?>) property).getProperties()[0]
-								instanceof QuadraticEquationFormProperty)
+						property instanceof NamedEnumeratedPropertyCollection<?, ?>
+								&& ((NamedEnumeratedPropertyCollection<?, ?>) property)
+								.getProperties()[0] instanceof QuadraticEquationFormProperty)
 				.findAny().isPresent();
 	}
 }

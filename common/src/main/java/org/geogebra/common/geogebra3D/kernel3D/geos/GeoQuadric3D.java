@@ -14,7 +14,6 @@ import org.geogebra.common.kernel.EquationSolver;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.MatrixTransformable;
 import org.geogebra.common.kernel.PathNormalizer;
-import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.RegionParameters;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.Equation;
@@ -3477,7 +3476,9 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 		return type == QUADRIC_SPHERE;
 	}
 
-//	@Override
+	/**
+	 * @return the localized label for the specific equation form.
+	 */
 	public String getSpecificEquation() {
 		if (type == QUADRIC_SPHERE) {
 			return getLoc().getMenu("SphereEquation");

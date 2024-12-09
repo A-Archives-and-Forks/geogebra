@@ -655,13 +655,8 @@ public abstract class GeoQuadricND extends GeoElement
 	}
 
 	/**
-	 * Returns description of current specific equation
-	 *
-	 * @return description of current specific equation
+	 * @return the localized label for the specific equation form.
 	 */
-	// TODO replace with getSpecificEquationLabel -- this does not return the equation
-//	@Override
-	@Deprecated // replace with getSpecificEquationLabel
 	public String getSpecificEquation() {
 		return null;
 	}

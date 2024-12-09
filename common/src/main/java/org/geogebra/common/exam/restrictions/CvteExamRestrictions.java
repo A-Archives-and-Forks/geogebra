@@ -4,7 +4,6 @@ import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Re
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics1;
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics2;
 
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -72,7 +71,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
-				null,//createPropertyRestrictions(),
+				null,
 				createPropertyFilters(),
 				createConstructionElementSetups(),
 				createEquationBehaviour());
@@ -278,14 +277,6 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new MatrixExpressionFilter());
 	}
 
-	// TODO The PropertyRestrictions returned here are only applied to properties that
-	//  exist (are registered with the PropertiesRegistry) at exam start time.
-	//  However, we also need any restrictions to be applied to properties created while
-	//  an exam is running (e.g., by GeoElementPropertiesFactory)
-//	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
-//		return Map.of("LinearEquationForm", new LinearEquationFormPropertyRestriction());
-//	}
-
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
 		return Set.of(new ShowObjectPropertyFilter());
 	}
@@ -298,7 +289,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	 * The custom equation behaviour (APPS-6183) will be imposed onto the kernel.
 	 *
 	 * @See {@link ExamRestrictions#applyTo(CommandDispatcher, AlgebraProcessor, PropertiesRegistry, Object, Localization, Settings, AutocompleteProvider, ToolsProvider, GeoElementPropertiesFactory, Construction, ScheduledPreviewFromInputBar, ContextMenuFactory)}
-	 * @return
+	 * @return the custom equation behaviour for this exam type.
 	 */
 	private static EquationBehaviour createEquationBehaviour() {
 		return new CvteEquationBehaviour();
@@ -320,7 +311,8 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	 * For any Conic, Line, Equation, Function or Implicit Equation manually entered
 	 * by the user, restrict the equation form to “Input Form”.
 	 */
-	private static final class QuadraticEquationFormPropertyRestriction extends PropertyRestriction {
+	private static final class QuadraticEquationFormPropertyRestriction
+			extends PropertyRestriction {
 		public QuadraticEquationFormPropertyRestriction() {
 			super(false, value -> {
 				return true;

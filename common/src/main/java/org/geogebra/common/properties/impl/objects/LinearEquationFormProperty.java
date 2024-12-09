@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoVec3D;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;

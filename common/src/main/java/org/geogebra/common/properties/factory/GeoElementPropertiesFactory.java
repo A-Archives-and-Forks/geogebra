@@ -31,9 +31,9 @@ import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.CaptionStyleProperty;
 import org.geogebra.common.properties.impl.objects.ElementColorProperty;
-import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
 import org.geogebra.common.properties.impl.objects.MinProperty;
 import org.geogebra.common.properties.impl.objects.NameProperty;
@@ -76,8 +76,9 @@ public final class GeoElementPropertiesFactory {
 	}
 
 	/**
-	 * TODO
-	 * @param restrictions The keys are expected to be raw names (i.e., match property.getRawName())
+	 * Add property restrictions to be applied to properties created by this factory.
+	 * @param restrictions Property restrictions, keyed by raw name (i.e., the keys should
+	 * match property.getRawName()).
 	 */
 	public void addRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
 		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
@@ -95,14 +96,16 @@ public final class GeoElementPropertiesFactory {
 	}
 
 	/**
-	 * TODO
-	 * @param restrictions
+	 * Remove previously added property restrictions.
+	 * @param restrictions Property restrictions, keyed by raw name (i.e., the keys should
+	 * match property.getRawName()).
 	 */
 	public void removeRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
 		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
 			List<PropertyRestriction> registeredRestrictions =
 					propertyRestrictions.get(entry.getKey());
-			if (registeredRestrictions != null && registeredRestrictions.contains(entry.getValue())) {
+			if (registeredRestrictions != null
+					&& registeredRestrictions.contains(entry.getValue())) {
 				registeredRestrictions.remove(entry.getValue());
 			}
 		}

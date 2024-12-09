@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.kernelND.GeoQuadric3DInterface;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
@@ -40,10 +39,10 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 			values.add(entry(QuadraticEquationRepresentable.Form.USER.rawValue,
 					"InputForm"));
 		}
-//		if (quadratic.isImplicitFormPossible()) { // TODO always possible?
+		//if (quadratic.isImplicitFormPossible()) { // TODO always possible?
 			values.add(entry(QuadraticEquationRepresentable.Form.IMPLICIT.rawValue,
 					quadratic.getImplicitEquationLabel()));
-//		}
+		//}
 		if (quadratic.isVertexFormPossible()) {
 			values.add(entry(QuadraticEquationRepresentable.Form.VERTEX.rawValue,
 					"ParabolaVertexForm"));
