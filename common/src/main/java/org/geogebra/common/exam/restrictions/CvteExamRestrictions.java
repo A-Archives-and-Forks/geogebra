@@ -72,7 +72,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
-				createPropertyRestrictions(),
+				null,//createPropertyRestrictions(),
 				createPropertyFilters(),
 				createConstructionElementSetups(),
 				createEquationBehaviour());
@@ -278,12 +278,13 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new MatrixExpressionFilter());
 	}
 
-	// TODO these PropertyRestrictions also need to be applied to properties created (e.g. by
-	//  GeoElementProeprtiesFactory) while an exam is running (e.g., Android SettingsPanel)
-	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
-	        // TODO the "Equation" property only covers the linear case
-		return Map.of("Equation", new LinearEquationFormPropertyRestriction());
-	}
+	// TODO The PropertyRestrictions returned here are only applied to properties that
+	//  exist (are registered with the PropertiesRegistry) at exam start time.
+	//  However, we also need any restrictions to be applied to properties created while
+	//  an exam is running (e.g., by GeoElementPropertiesFactory)
+//	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
+//		return Map.of("LinearEquationForm", new LinearEquationFormPropertyRestriction());
+//	}
 
 	private static Set<GeoElementPropertyFilter> createPropertyFilters() {
 		return Set.of(new ShowObjectPropertyFilter());
