@@ -40,7 +40,7 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 			values.add(entry(QuadraticEquationRepresentable.Form.USER.rawValue,
 					"InputForm"));
 		}
-//		if (quadratic.isImplicitFormPossible()) { // TODO always?
+//		if (quadratic.isImplicitFormPossible()) { // TODO always possible?
 			values.add(entry(QuadraticEquationRepresentable.Form.IMPLICIT.rawValue,
 					quadratic.getImplicitEquationLabel()));
 //		}
@@ -56,7 +56,6 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 			values.add(entry(QuadraticEquationRepresentable.Form.PARAMETRIC.rawValue,
 					"ParametricForm"));
 		}
-
 		setNamedValues(values);
 	}
 
@@ -78,7 +77,6 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 			return ((QuadraticEquationRepresentable) element).getEquationForm().rawValue;
 		}
 		return -1;
-//		return delegate.getElement().getToStringMode();
 	}
 
 	@Override

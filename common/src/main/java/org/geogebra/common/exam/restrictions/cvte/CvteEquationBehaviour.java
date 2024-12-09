@@ -22,9 +22,4 @@ public class CvteEquationBehaviour extends DefaultEquationBehaviour {
 	public QuadraticEquationRepresentable.Form getConicAlgebraInputEquationForm() {
 		return QuadraticEquationRepresentable.Form.USER;
 	}
-
-	@Override
-	public boolean allowsChangingEquationFormsByUser() {
-		return false;
-	}
 }

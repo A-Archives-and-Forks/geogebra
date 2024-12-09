@@ -294,6 +294,12 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new EuclidianVisibilitySetup());
 	}
 
+	/**
+	 * The custom equation behaviour (APPS-6183) will be imposed onto the kernel.
+	 *
+	 * @See {@link ExamRestrictions#applyTo(CommandDispatcher, AlgebraProcessor, PropertiesRegistry, Object, Localization, Settings, AutocompleteProvider, ToolsProvider, GeoElementPropertiesFactory, Construction, ScheduledPreviewFromInputBar, ContextMenuFactory)}
+	 * @return
+	 */
 	private static EquationBehaviour createEquationBehaviour() {
 		return new CvteEquationBehaviour();
 	}

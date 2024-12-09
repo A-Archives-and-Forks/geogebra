@@ -31,8 +31,8 @@ public class QuadraticEquationFormDelegate extends AbstractGeoElementDelegate {
 
 	private boolean isEnforcedEquationForm(GeoElement element) {
 		EquationBehaviour equationBehaviour = element.getKernel().getEquationBehaviour();
-		boolean isUserInput = element.getParentAlgorithm() == null;
 		if (element instanceof QuadraticEquationRepresentable) {
+			boolean isUserInput = element.getParentAlgorithm() == null;
 			if (isUserInput) {
 				return equationBehaviour.getConicAlgebraInputEquationForm() != null
 						&& !equationBehaviour.allowsChangingEquationFormsByUser();
