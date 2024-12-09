@@ -212,6 +212,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 				"(-10 + sqrt(6)) / 6");
 		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))",
 				"-3 (1 + sqrt(2))");
+		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))", "-3 (1 + sqrt(2))");
 	}
 
 	@Ignore
@@ -233,8 +234,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void testBadExamples() {
-		rationalizationShouldBe(genericSqrtFraction(7, 4, -8, 10),
-				"6");
 		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
 				"-3 (1 + sqrt(2))");
 	}

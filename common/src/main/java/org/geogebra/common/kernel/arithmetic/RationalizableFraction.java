@@ -90,9 +90,10 @@ public final class RationalizableFraction {
 		}
 
 		Log.debug("start: " + node.toValueString(StringTemplate.defaultTemplate));
+		ExpressionNode copy = node.deepCopy(kernel);
 		RationalizeFractionAlgo algo =
-				new RationalizeFractionAlgo(kernel, node.getLeftTree(),
-						node.getRightTree());
+				new RationalizeFractionAlgo(kernel, copy.getLeftTree(),
+						copy.getRightTree());
 		return algo.compute();
 	}
 

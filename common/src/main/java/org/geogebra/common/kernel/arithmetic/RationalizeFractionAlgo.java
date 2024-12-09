@@ -27,8 +27,8 @@ public final class RationalizeFractionAlgo {
 	public RationalizeFractionAlgo(Kernel kernel, ExpressionNode numerator,
 			ExpressionNode denominator) {
 		this.kernel = kernel;
-		this.numerator = numerator;
-		this.denominator = denominator;
+		this.numerator = numerator.deepCopy(kernel);
+		this.denominator = denominator.deepCopy(kernel);
 		utils = new SimplifyUtils(kernel);
 		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
 				new ReduceRoot(kernel),
