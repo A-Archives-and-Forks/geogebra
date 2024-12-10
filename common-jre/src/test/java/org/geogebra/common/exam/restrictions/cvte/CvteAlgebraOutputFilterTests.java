@@ -25,7 +25,12 @@ public class CvteAlgebraOutputFilterTests extends BaseExamTests {
         assertFalse(outputFilter.isAllowed(evaluateGeoElement("Line((0, 0), (1, 2))")));
         assertFalse(outputFilter.isAllowed(evaluateGeoElement("Ray((0, 0), (1, 2))")));
         assertFalse(outputFilter.isAllowed(evaluateGeoElement("Circle((0, 0), 1)")));
-        // TODO are there any examples for implicit equation or function created with a command?
+        // implicit curv
+        assertFalse(outputFilter.isAllowed(evaluateGeoElement(
+                "FitImplicit((1...10,(1/(1...10))),3)")));
+        // functions: any of the FitPoly / FitLog / ... commands
+        assertFalse(outputFilter.isAllowed(evaluateGeoElement(
+                "f(x)=FitPoly({(-2,1),(-1,0),(0,1),(1,0)},3)")));
 
         //  Lines, Rays, Conics, Implicit Equations and Functions created from manual input
         // line

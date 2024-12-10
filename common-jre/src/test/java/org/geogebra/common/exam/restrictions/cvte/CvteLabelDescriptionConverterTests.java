@@ -78,6 +78,35 @@ public class CvteLabelDescriptionConverterTests extends BaseExamTests {
         assertEquals(circle.getCaption(StringTemplate.defaultTemplate),
                 converter.convert(circle));
 
-        // TODO are there any examples for implicit equation or function created with a command?
+        GeoElement implicitCurve = evaluateGeoElement("FitImplicit((1...10,(1/(1...10))),3)");
+        captionStyleProperty = new CaptionStyleProperty(localization, implicitCurve);
+        captionStyleProperty.setValue(GeoElementND.LABEL_VALUE);
+        assertEquals(implicitCurve.getDefinition(StringTemplate.defaultTemplate),
+                converter.convert(implicitCurve));
+        captionStyleProperty.setValue(GeoElementND.LABEL_NAME_VALUE);
+        assertEquals(implicitCurve.getDefinition(StringTemplate.defaultTemplate),
+                converter.convert(implicitCurve));
+        captionStyleProperty.setValue(GeoElementND.LABEL_NAME);
+        assertEquals(implicitCurve.getLabel(StringTemplate.defaultTemplate),
+                converter.convert(implicitCurve));
+        captionStyleProperty.setValue(GeoElementND.LABEL_CAPTION);
+        assertEquals(implicitCurve.getCaption(StringTemplate.defaultTemplate),
+                converter.convert(implicitCurve));
+
+        // functions: any of the FitPoly / FitLog / ... commands
+        GeoElement fitPoly = evaluateGeoElement("f(x)=FitPoly({(-2,1),(-1,0),(0,1),(1,0)},3)");
+        captionStyleProperty = new CaptionStyleProperty(localization, fitPoly);
+        captionStyleProperty.setValue(GeoElementND.LABEL_VALUE);
+        assertEquals(fitPoly.getDefinition(StringTemplate.defaultTemplate),
+                converter.convert(fitPoly));
+        captionStyleProperty.setValue(GeoElementND.LABEL_NAME_VALUE);
+        assertEquals(fitPoly.getDefinition(StringTemplate.defaultTemplate),
+                converter.convert(fitPoly));
+        captionStyleProperty.setValue(GeoElementND.LABEL_NAME);
+        assertEquals(fitPoly.getLabel(StringTemplate.defaultTemplate),
+                converter.convert(fitPoly));
+        captionStyleProperty.setValue(GeoElementND.LABEL_CAPTION);
+        assertEquals(fitPoly.getCaption(StringTemplate.defaultTemplate),
+                converter.convert(fitPoly));
     }
 }

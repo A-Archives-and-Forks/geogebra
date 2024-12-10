@@ -1,6 +1,7 @@
 package org.geogebra.common.exam.restrictions.cvte;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.exam.BaseExamTests;
@@ -30,7 +31,15 @@ public class CvteValueConverterTests extends BaseExamTests {
 
 		GeoElement circle = evaluateGeoElement("Circle((0, 0), 1)");
 		assertEquals("Circle((0, 0), 1)", converter.convert(circle));
-		
-		// TODO are there any examples for implicit equation or function created with a command?
+
+		GeoElement implicitCurve = evaluateGeoElement("FitImplicit((1…10, 1 / (1…10)), 3)");
+		assertEquals("FitImplicit((1…10, 1 / (1…10)), 3)", converter.convert(implicitCurve));
+
+		GeoElement function = evaluateGeoElement("FitPoly({(-2, 1), (-1, 0), (0, 1), (1, 0)}, 3)");
+		assertEquals("FitPoly({(-2, 1), (-1, 0), (0, 1), (1, 0)}, 3)", converter.convert(function));
+
+		// negative example
+		GeoElement implicitCircle = evaluateGeoElement("xx+yy=1");
+		assertNull(converter.convert(implicitCircle));
 	}
 }
