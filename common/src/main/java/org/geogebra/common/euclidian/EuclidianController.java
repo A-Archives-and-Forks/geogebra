@@ -7795,6 +7795,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geos, splitParts);
 		app.getUndoManager().buildAction(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
 				.withUndo(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
+				.withStitchToNext()
 				.storeAndNotifyUnsaved();
 	}
 
