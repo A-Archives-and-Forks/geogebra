@@ -13,6 +13,7 @@ import org.geogebra.common.contextmenu.ContextMenuFactory;
 import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.exam.ExamType;
+import org.geogebra.common.exam.restrictions.cvte.AbsExpressionFilter;
 import org.geogebra.common.exam.restrictions.cvte.CvteCommandArgumentFilter;
 import org.geogebra.common.exam.restrictions.cvte.CvteSyntaxFilter;
 import org.geogebra.common.exam.restrictions.cvte.MatrixExpressionFilter;
@@ -193,7 +194,21 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				Operation.GAMMA_INCOMPLETE,
 				Operation.GAMMA_INCOMPLETE_REGULARIZED,
 				Operation.POLYGAMMA,
-				Operation.RANDOM);
+				Operation.RANDOM,
+				Operation.PRODUCT,
+				Operation.VECTORPRODUCT,
+				Operation.ARG,
+				Operation.ALT,
+				Operation.BETA,
+				Operation.BETA_INCOMPLETE,
+				Operation.BETA_INCOMPLETE_REGULARIZED,
+				Operation.ERF,
+				Operation.PSI,
+				Operation.SI,
+				Operation.CI,
+				Operation.EI,
+				Operation.ZETA,
+				Operation.LAMBERTW);
 	}
 
 	private static Set<ContextMenuItemFilter> createContextMenuItemFilters() {
@@ -264,7 +279,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	}
 
 	private static Set<ExpressionFilter> createInputExpressionFilters() {
-		return Set.of(new MatrixExpressionFilter(),
+		return Set.of(new MatrixExpressionFilter(), new AbsExpressionFilter(),
 				new OperationExpressionFilter(getFilteredOperations()));
 	}
 

@@ -324,6 +324,10 @@ public enum ValueType {
 				|| left.getValueType() == ValueType.NONCOMPLEX2D) {
 			return ValueType.NONCOMPLEX2D;
 		}
+		if (right.getValueType() == ValueType.COMPLEX
+				|| left.getValueType() == ValueType.COMPLEX) {
+			return ValueType.COMPLEX;
+		}
 		return left.getValueType();
 	}
 
