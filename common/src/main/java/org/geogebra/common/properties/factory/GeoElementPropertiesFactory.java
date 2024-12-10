@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-
 import org.geogebra.common.exam.restrictions.PropertyRestriction;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -76,38 +74,33 @@ public final class GeoElementPropertiesFactory {
 	}
 
 	/**
-	 * Add property restrictions to be applied to properties created by this factory.
-	 * @param restrictions Property restrictions, keyed by raw name (i.e., the keys should
-	 * match property.getRawName()).
+	 * Add a property restriction to be applied to properties created by this factory.
+	 * @param propertyName A property (raw) name (i.e., this should match property.getRawName())
+	 * @param restriction A property restriction.
 	 */
-	public void addRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
-		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
-			List<PropertyRestriction> registeredRestrictions;
-			if (propertyRestrictions.containsKey(entry.getKey())) {
-				registeredRestrictions = propertyRestrictions.get(entry.getKey());
-			} else {
-				registeredRestrictions = new ArrayList<>();
-				propertyRestrictions.put(entry.getKey(), registeredRestrictions);
-			}
-			if (!registeredRestrictions.contains(entry.getValue())) {
-				registeredRestrictions.add(entry.getValue());
-			}
+	public void addRestriction(String propertyName, PropertyRestriction restriction) {
+		List<PropertyRestriction> registeredRestrictions;
+		if (propertyRestrictions.containsKey(propertyName)) {
+			registeredRestrictions = propertyRestrictions.get(propertyName);
+		} else {
+			registeredRestrictions = new ArrayList<>();
+			propertyRestrictions.put(propertyName, registeredRestrictions);
+		}
+		if (!registeredRestrictions.contains(restriction)) {
+			registeredRestrictions.add(restriction);
 		}
 	}
 
 	/**
-	 * Remove previously added property restrictions.
-	 * @param restrictions Property restrictions, keyed by raw name (i.e., the keys should
+	 * Remove a previously added property restriction.
+	 * @param propertyName A property (raw) name (i.e., this should match property.getRawName())
+	 * @param restriction Property restriction, identified by raw name (i.e., this should
 	 * match property.getRawName()).
 	 */
-	public void removeRestrictions(@Nonnull Map<String, PropertyRestriction> restrictions) {
-		for (Map.Entry<String, PropertyRestriction> entry : restrictions.entrySet()) {
-			List<PropertyRestriction> registeredRestrictions =
-					propertyRestrictions.get(entry.getKey());
-			if (registeredRestrictions != null
-					&& registeredRestrictions.contains(entry.getValue())) {
-				registeredRestrictions.remove(entry.getValue());
-			}
+	public void removeRestriction(String propertyName, PropertyRestriction restriction) {
+		List<PropertyRestriction> registeredRestrictions = propertyRestrictions.get(propertyName);
+		if (registeredRestrictions != null) {
+			registeredRestrictions.remove(restriction);
 		}
 	}
 
