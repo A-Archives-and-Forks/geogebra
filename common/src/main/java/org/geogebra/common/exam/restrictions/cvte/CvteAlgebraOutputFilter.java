@@ -33,8 +33,7 @@ public final class CvteAlgebraOutputFilter implements AlgebraOutputFilter {
         if (element == null) {
             return false;
         }
-        if (Cvte.isLineConicEquationOrFunction(element)
-                && Cvte.isCreatedByToolOrCmd(element)) {
+        if (!Cvte.isCalculatedEquationAllowed(element)) {
             return false;
         }
         if (wrappedFilter != null) {
