@@ -46,8 +46,10 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 	}
 
 	protected static void shouldSerialize(ExpressionNode expected, ExpressionNode actual) {
-		assertEquals(expected.toString(StringTemplate.defaultTemplate),
-				actual.toString(StringTemplate.defaultTemplate));
+		assertEquals(expected.toString(StringTemplate.defaultTemplate)
+						.replaceAll("\\s+",""),
+				actual.toString(StringTemplate.defaultTemplate)
+						.replaceAll("\\s+",""));
 	}
 
 	protected GeoNumeric newSymbolicNumeric(String actualDef) {

@@ -310,4 +310,23 @@ public class SimplifyUtils {
 				? (int) expr.getLeft().evaluateDouble()
 				: 1;
 	}
+
+	public ExpressionValue flipSign(ExpressionNode node) {
+		if (node == null) {
+			return null;
+		}
+
+		ExpressionNode leftTree = node.getLeftTree();
+		double leftNumber = leftTree.evaluateDouble();
+
+		if (node.isOperation(Operation.MULTIPLY) && isIntegerValue(leftNumber)
+				&& leftNumber != -1) {
+			node.setLeft(newDouble(-leftNumber));
+			return node;
+		}
+		if (leftNumber == - 1) {
+			return node.getRightTree();
+		}
+		return multiplyR(node, -1);
+	}
 }

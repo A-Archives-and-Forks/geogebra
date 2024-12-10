@@ -12,6 +12,7 @@ public class PositiveDenominatorTests extends BaseSimplifyTest{
 	public void testApply() {
 		shouldSimplify("(3+sqrt(2)) / -5", "-(3+sqrt(2)) / 5");
 		shouldSimplify("-(3+sqrt(2)) / -5", "(3+sqrt(2)) / 5");
+		shouldSimplify("-7 (3+sqrt(2)) / -5", "7 (3+sqrt(2)) / 5");
 		shouldSimplify("7 (3+sqrt(2)) / -5", "-7 (3+sqrt(2)) / 5");
 	}
 }
