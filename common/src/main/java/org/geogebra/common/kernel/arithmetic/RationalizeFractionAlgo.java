@@ -30,10 +30,11 @@ public final class RationalizeFractionAlgo {
 		this.numerator = numerator.deepCopy(kernel);
 		this.denominator = denominator.deepCopy(kernel);
 		utils = new SimplifyUtils(kernel);
-		simplifiers = Arrays.asList(new SimplifyToRadical(kernel),
-				new ReduceRoot(kernel),
-				new ReduceToIntegers(kernel),
-				new SimplifyMultiplication(kernel),
+		simplifiers = Arrays.asList(
+				new SimplifyToRadical(utils),
+				new ReduceRoot(utils),
+				new ReduceToIntegers(utils),
+				new SimplifyMultiplication(utils),
 				new FactorOut(utils),
 	        	new CancelGCDInFraction(utils),
 				new PositiveDenominator(utils),
@@ -166,7 +167,7 @@ public final class RationalizeFractionAlgo {
 	}
 
 	static ExpressionNode processUnderSqrts(final ExpressionNode node, Kernel kernel) {
-		ReduceRoot reduceRoot = new ReduceRoot(kernel);
+		ReduceRoot reduceRoot = new ReduceRoot(new SimplifyUtils(kernel));
 		return reduceRoot.apply(node);
 	}
 

@@ -1,5 +1,7 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import static org.geogebra.common.kernel.arithmetic.Surds.getResolution;
+
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
@@ -328,5 +330,22 @@ public class SimplifyUtils {
 			return node.getRightTree();
 		}
 		return multiplyR(node, -1);
+	}
+
+	public ExpressionValue getSurdsOrSame(ExpressionValue ev) {
+		ExpressionValue surds = getSurds(ev);
+		return surds != null ? surds : ev;
+	}
+
+	public ExpressionValue getSurds(ExpressionValue ev) {
+		return getResolution(ev.wrap(), kernel);
+	}
+
+	public ExpressionNode newSqrt(double v) {
+		return new ExpressionNode(kernel, newDouble(v),	Operation.SQRT, null);
+	}
+
+	public boolean isSqrt(ExpressionValue ev) {
+		return ev.isOperation(Operation.SQRT);
 	}
 }

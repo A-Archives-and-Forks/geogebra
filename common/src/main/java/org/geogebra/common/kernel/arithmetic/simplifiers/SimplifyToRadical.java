@@ -1,16 +1,16 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
-import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
-import org.geogebra.common.kernel.arithmetic.Surds;
+import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
 
 public class SimplifyToRadical implements SimplifyNode {
-	private final Kernel kernel;
 
-	public SimplifyToRadical(Kernel kernel) {
-		this.kernel = kernel;
+	private final SimplifyUtils utils;
+
+	public SimplifyToRadical(SimplifyUtils utils) {
+		this.utils = utils;
 	}
 
 	@Override
@@ -21,19 +21,18 @@ public class SimplifyToRadical implements SimplifyNode {
 	@Override
 	public ExpressionNode apply(ExpressionNode node) {
 		ExpressionNode numerator = node.getLeftTree();
-		if (numerator.isOperation(Operation.SQRT)) {
-			ExpressionValue reducedSqrt = Surds.getResolution(numerator, kernel);
+		if (utils.isSqrt(numerator)) {
+			ExpressionValue reducedSqrt = utils.getSurds(numerator);
 			if (reducedSqrt != null) {
-				return new ExpressionNode(kernel, reducedSqrt, Operation.DIVIDE,
-						node.getRightTree());
+				return utils.div(reducedSqrt, node.getRightTree());
 			}
 		} else if (numerator.isOperation(Operation.MULTIPLY)) {
 			ExpressionNode rightTree = numerator.getRightTree();
-			ExpressionValue reducedSqrt = Surds.getResolution(rightTree, kernel);
-			if (reducedSqrt != null) {
+			ExpressionValue reducedSqrt = utils.getSurdsOrSame(rightTree);
+			if (reducedSqrt != rightTree) {
 				ExpressionNode constantProduct =
 						numerator.getLeftTree().multiplyR(reducedSqrt.wrap().getLeftTree());
-				return new ExpressionNode(kernel,
+				return utils.newNode(
 						reducedSqrt.wrap().getRightTree().multiplyR(
 								constantProduct.unwrap().evaluateDouble()),
 						Operation.DIVIDE,

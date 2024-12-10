@@ -5,7 +5,7 @@ import org.junit.Test;
 public class ReduceRootTest extends BaseSimplifyTest {
 	@Override
 	protected SimplifyNode getSimplifier() {
-		return new ReduceRoot(getKernel());
+		return new ReduceRoot(utils);
 	}
 
 	@Test

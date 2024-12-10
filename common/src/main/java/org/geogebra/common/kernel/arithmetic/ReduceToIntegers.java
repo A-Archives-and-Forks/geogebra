@@ -1,14 +1,14 @@
 package org.geogebra.common.kernel.arithmetic;
 
-import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
 import org.geogebra.common.plugin.Operation;
 
 public class ReduceToIntegers implements SimplifyNode {
-	private final Kernel kernel;
 
-	public ReduceToIntegers(Kernel kernel) {
-		this.kernel = kernel;
+	private final SimplifyUtils utils;
+
+	public ReduceToIntegers(SimplifyUtils utils) {
+		this.utils = utils;
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class ReduceToIntegers implements SimplifyNode {
 			public ExpressionValue process(ExpressionValue ev) {
 				double v = ev.evaluateDouble();
 				if (Math.round(v) == v && v != -1) {
-					return new MyDouble(kernel, v);
+					return utils.newDouble(v);
 				}
 
 				return ev;

@@ -1,26 +1,25 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
-import static org.geogebra.common.kernel.arithmetic.Surds.getResolution;
+import static java.util.Comparator.comparing;
 import static org.geogebra.common.util.DoubleUtil.isInteger;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
-import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.NumberValue;
+import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
 
 public class SimplifyMultiplication implements SimplifyNode {
 
-	private final Kernel kernel;
 
-	public SimplifyMultiplication(Kernel kernel) {
-		this.kernel = kernel;
+	private final SimplifyUtils utils;
+
+	public SimplifyMultiplication(SimplifyUtils utils) {
+		this.utils = utils;
 	}
 
 	@Override
@@ -41,12 +40,9 @@ public class SimplifyMultiplication implements SimplifyNode {
 		ExpressionNode a2b1 = multiplyValues(a2, b1, signA2).wrap();
 		ExpressionNode a2b2 = multiplyValues(a2, b2, signA2 * signB2).wrap();
 		List<ExpressionNode> list = Arrays.asList(a1b1, a1b2, a2b1, a2b2);
-		Collections.sort(list, new Comparator<ExpressionNode>() {
-			@Override
-			public int compare(ExpressionNode o1, ExpressionNode o2) {
-				return isInteger(o1.evaluateDouble()) ? -1 : 1;
-			}
-		});
+		Collections.sort(list, comparing(SimplifyUtils::isIntegerValue)
+				.thenComparing(ExpressionValue::evaluateDouble)
+				.reversed());
 		double num = 0;
 		int i = 0;
 		double eval = list.get(0).evaluateDouble();
@@ -60,10 +56,10 @@ public class SimplifyMultiplication implements SimplifyNode {
 
 		while (i < list.size() - 1) {
 			i++;
-			rest = rest.plus(list.get(i));
+			rest = rest.plus(utils.getSurdsOrSame(list.get(i)));
 		}
-		return new ExpressionNode(kernel,
-				new MyDouble(kernel, num),
+
+		return utils.newNode(utils.newDouble(num),
 				Operation.PLUS,
 				rest);
 	}
@@ -86,7 +82,7 @@ public class SimplifyMultiplication implements SimplifyNode {
 		ExpressionValue product = null;
 		if (aIsNumber && bIsNumber) {
 			double v = a.evaluateDouble() * b.evaluateDouble() * sign;
-			product = new MyDouble(kernel, v);
+			product = utils.newDouble(v);
 		} else if (aIsNumber) {
 			product = b.wrap().multiplyR(a.evaluateDouble() * sign);
 		} else if (bIsNumber) {
@@ -94,19 +90,15 @@ public class SimplifyMultiplication implements SimplifyNode {
 		} else if (a.isOperation(Operation.SQRT) && b.isOperation(Operation.SQRT)) {
 			double v = a.wrap().getLeftTree().evaluateDouble()
 					* b.wrap().getLeftTree().evaluateDouble();
-			ExpressionNode sqrtNode = new ExpressionNode(kernel, new MyDouble(kernel, v),
-					Operation.SQRT, null);
-			ExpressionNode expr = sqrtNode;
-			ExpressionValue resolution = getResolution(sqrtNode, kernel);
-			product =
-					(resolution != null ? resolution : expr).wrap().multiplyR(sign);
+			ExpressionNode sqrtNode = utils.newSqrt(v);
+			product = utils.getSurdsOrSame(sqrtNode).wrap().multiplyR(sign);
 		} else {
 			product = a.wrap().multiply(b).multiplyR(sign);
 		}
 
 		double v1 = product.evaluateDouble();
 		if (isInteger(v1)) {
-			return new MyDouble(kernel, v1);
+			return utils.newDouble(v1);
 		}
 		return product;
 	}

@@ -225,7 +225,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	}
 
-
 	private String genericSqrtFraction(int a, int b, int c, int d) {
 		String s = "(" + a + " + sqrt(" + b + ")) / " + "(" + c + " + sqrt(" + d + "))";
 		Log.debug(s);

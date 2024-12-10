@@ -6,7 +6,7 @@ import org.junit.Test;
 public class ReduceToIntegersTest extends BaseSimplifyTest {
 	@Override
 	protected SimplifyNode getSimplifier() {
-		return new ReduceToIntegers(getKernel());
+		return new ReduceToIntegers(utils);
 	}
 
 	@Test
