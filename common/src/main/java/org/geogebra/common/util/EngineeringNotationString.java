@@ -1,5 +1,8 @@
 package org.geogebra.common.util;
 
+import org.geogebra.common.kernel.arithmetic.ExpressionNodeConstants.StringType;
+import org.geogebra.common.util.debug.Log;
+
 import com.himamis.retex.editor.share.util.Unicode;
 
 /**
@@ -11,30 +14,98 @@ public final class EngineeringNotationString {
 
 	/**
 	 * @param number Value
+	 * @param stringType StringType
 	 * @return The formatted engineering notation
 	 */
-	public static String format(double number) {
-		String valueString = Double.toString(number);
+	public static String format(double number, StringType stringType) {
+		if (number == 0) {
+			return formatEngineeringNotation("0", 0, stringType);
+		}
+
+		String valueString = Double.toString(number).replace('e', 'E');
+		Log.debug("ENG: " + valueString);
 		String sign = "";
 		if (valueString.charAt(0) == '-') {
 			valueString = valueString.substring(1);
 			sign = "-";
 		}
 
-		String predecimalsString = getPredecimalsStringForEngineeringNotation(valueString);
-		String decimalsString = getDecimalsStringForEngineeringNotation(valueString);
+		String significantDigits = getSignificantDigits(valueString);
+		int exponent = getExponent(valueString);
 
-		int exponent = getPositiveExponentForEngineeringNotation(predecimalsString.length());
-		if (exponent == 0 && number < 1 && number > -1) {
-			exponent = getNegativeExponentForEngineeringNotation(decimalsString);
-		}
+		Log.debug("SIG: " + significantDigits);
+		Log.debug("EXP: " + exponent);
 
-		if (exponent < 0) {
-			return sign + createEngineeringNotationWithNegativeExponent(
-					decimalsString, exponent);
+		return "12345";
+
+//		String predecimalsString = getPredecimalsStringForEngineeringNotation(valueString);
+//		String decimalsString = getDecimalsStringForEngineeringNotation(valueString);
+//
+//		int exponent = getPositiveExponentForEngineeringNotation(predecimalsString.length());
+//		if (exponent == 0 && number < 1 && number > -1) {
+//			exponent = getNegativeExponentForEngineeringNotation(decimalsString);
+//		}
+//
+//		if (exponent < 0) {
+//			return sign + createEngineeringNotationWithNegativeExponent(
+//					decimalsString, exponent);
+//		}
+//		return sign + createEngineeringNotationWithPositiveExponent(
+//				predecimalsString, decimalsString, exponent);
+	}
+
+	private static String getSignificantDigits(String valueString) {
+		String significantDigits = valueString;
+		if (valueString.contains("E")) {
+			significantDigits = extractSignificantDigitsFromScientificNotation(valueString);
 		}
-		return sign + createEngineeringNotationWithPositiveExponent(
-				predecimalsString, decimalsString, exponent);
+		return significantDigits;
+	}
+
+	private static String extractSignificantDigitsFromScientificNotation(String scientific) {
+		if (scientific.contains("E+")) {
+			return scientific.substring(0, scientific.indexOf("E+")).replace(".", "");
+		} else { // E-
+			StringBuilder significantDigits = new StringBuilder();
+			int zerosToFill = Integer.parseInt(scientific.substring(scientific.indexOf("E-") + 2));
+			return "0".repeat(zerosToFill) + scientific.substring(0, scientific.indexOf("E-"));
+		}
+	}
+
+	private static int getExponent(String valueString) {
+		int exponent = 0;
+		if (valueString.contains("E")) {
+			exponent = Integer.parseInt(valueString.substring(valueString.indexOf('E') + 1));
+		}
+		if (valueString.contains(".")) {
+			int endIndex = valueString.contains("E") ? valueString.indexOf('E')
+					: valueString.length();
+			exponent -= valueString.substring(valueString.indexOf('.'), endIndex).length();
+		}
+		return exponent / 3 * 3;
+	}
+
+	private static String formatEngineeringNotation(String valueString, int exponent,
+			StringType stringType) {
+		StringBuilder engineeringNotation = new StringBuilder();
+		engineeringNotation.append(valueString);
+		if (stringType == StringType.LATEX) {
+			engineeringNotation.append(" \\cdot 10^{").append(exponent).append("}");
+		} else {
+			engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
+			String exponentString = String.valueOf(exponent);
+			int i = 0;
+			if (exponentString.charAt(0) == '-') {
+				engineeringNotation.append(Unicode.SUPERSCRIPT_MINUS);
+				i = 1;
+			}
+			while (i < exponentString.length()) {
+				engineeringNotation.append(
+						Unicode.numberToSuperscript(exponentString.charAt(i) - '0'));
+				i++;
+			}
+		}
+		return engineeringNotation.toString();
 	}
 
 	private static String getPredecimalsStringForEngineeringNotation(String valueString) {
