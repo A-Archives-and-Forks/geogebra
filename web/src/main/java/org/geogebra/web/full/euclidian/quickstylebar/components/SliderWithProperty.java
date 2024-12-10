@@ -2,6 +2,7 @@ package org.geogebra.web.full.euclidian.quickstylebar.components;
 
 import org.geogebra.common.awt.GColor;
 import org.geogebra.common.properties.Property;
+import org.geogebra.common.properties.PropertySupplier;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.OpacityProperty;
@@ -15,7 +16,8 @@ import org.gwtproject.user.client.ui.Label;
 
 public class SliderWithProperty extends FlowPanel {
 	private final AppW appW;
-	private final RangePropertyCollection<?> property;
+	private RangePropertyCollection<?> property;
+	private final PropertySupplier propertySupplier;
 	private LineStylePreview preview;
 	private Label unitLabel;
 	private SliderPanelW sliderPanel;
@@ -32,12 +34,14 @@ public class SliderWithProperty extends FlowPanel {
 	 * @param color - line color
 	 */
 	public SliderWithProperty(AppW appW, RangePropertyCollection<?> property,
+			PropertySupplier propertySupplier,
 			int lineType, GColor color) {
 		this.appW = appW;
 		this.property = property;
 		this.rangeValue = property.getValue();
 		this.lineType = lineType;
 		this.color = color;
+		this.propertySupplier = propertySupplier;
 
 		styleComponent();
 		buildGui();
@@ -101,6 +105,7 @@ public class SliderWithProperty extends FlowPanel {
 
 	private void onInputChange(int val) {
 		if (!dragging) {
+			property = (RangePropertyCollection<?>) propertySupplier.getCurrent();
 			dragging = true;
 			property.beginSetValue();
 		}

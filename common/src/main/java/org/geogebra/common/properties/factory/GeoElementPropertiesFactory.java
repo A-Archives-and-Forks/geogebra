@@ -145,12 +145,12 @@ public class GeoElementPropertiesFactory {
 	 * @param elements input elements
 	 * @return the list of properties for the GeoElement(s)
 	 */
-	public static PropertiesArray createNotesLineStyleProperties(
+	public static List<Property> createNotesLineStyleProperties(
 			Localization localization, List<GeoElement> elements) {
 		List<Property> properties = new ArrayList<>();
 		addPropertyIfNotNull(properties, createLineStyleProperty(localization, elements));
 		addPropertyIfNotNull(properties, createNotesThicknessProperty(localization, elements));
-		return createPropertiesArray(localization, properties, elements);
+		return properties;
 	}
 
 	/**

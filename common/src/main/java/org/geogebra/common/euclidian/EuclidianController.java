@@ -7784,7 +7784,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			updateBoundingBoxFromSelection(false);
 			showDynamicStylebar();
 			startBoundingBoxState = null;
-			storeUndoableStrokeSplit(oldSelection, splitStrokes);
+			if (removeOriginal) {
+				storeUndoableStrokeSplit(oldSelection, splitStrokes);
+			}
 		}
 		return changed;
 	}
@@ -7793,6 +7795,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geos, splitParts);
 		app.getUndoManager().buildAction(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
 				.withUndo(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
+				.withStitchToNext()
 				.storeAndNotifyUnsaved();
 	}
 
