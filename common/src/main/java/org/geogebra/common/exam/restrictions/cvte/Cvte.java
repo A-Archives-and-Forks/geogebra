@@ -19,6 +19,7 @@ final class Cvte {
      * @param element a {@link GeoElementND}
      * @return true if element matches the condition above.
      */
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     static boolean isCalculatedEquationAllowed(@Nullable GeoElementND element) {
         if (element == null) {
             return false;
