@@ -603,8 +603,8 @@ public class GeoSymbolic extends GeoElement
 			if (newTwin.isGeoNumeric()) {
 				((GeoNumeric) newTwin).setDrawable(false);
 			}
+			computed.setFixed(newTwin.isLocked());
 		}
-		computed.setFixed(newTwin.isLocked());
 		return newTwin;
 	}
 
