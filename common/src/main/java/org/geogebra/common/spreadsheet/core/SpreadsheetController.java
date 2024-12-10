@@ -488,7 +488,6 @@ public final class SpreadsheetController {
 		if (!modifiers.ctrlOrCmd && !modifiers.alt && !StringUtil.empty(key)) {
 			showCellEditorAtSelection();
 			if (editor != null) {
-				editor.clearInput();
 				editor.type(key);
 			}
 		}
@@ -546,9 +545,9 @@ public final class SpreadsheetController {
 	 * viewport if necessary.
 	 */
 	void onEnter() {
-		hideCellEditor();
 		moveDown(false);
 		adjustViewportIfNeeded();
+		showCellEditorAtSelection();
 	}
 
 	/**
@@ -1004,9 +1003,13 @@ public final class SpreadsheetController {
 			MathFieldInternal mathField = cellEditor.getMathField();
 			mathField.parse(cellEditor.getCellDataSerializer().getStringForEditor(content));
 
+			// If the cell editor is reused without first hiding it,
+			// remove the old listener and add the new one after reinitializing.
+			mathField.removeMathFieldListener(mathFieldAdapter);
 			mathFieldAdapter = new SpreadsheetMathFieldAdapter(mathField, row, column,
 					cellEditor.getCellProcessor(), SpreadsheetController.this);
 			mathField.addMathFieldListener(mathFieldAdapter);
+
 			mathField.setUnhandledArrowListener(mathFieldAdapter);
 
 			bounds = layout.getBounds(new TabularRange(row, column), viewport);
