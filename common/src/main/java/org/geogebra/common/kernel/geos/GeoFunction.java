@@ -377,9 +377,7 @@ public class GeoFunction extends GeoElement implements VarString, Translateable,
 			if (geo instanceof GeoFunction) {
 				setForceInequality(((GeoFunction) geo).isForceInequality());
 			}
-			isInequality = geoFun.getIneqs() != null
-					? geoFun.getIneqs().isValid()
-					: geoFun.initIneqs(geoFun.getExpression());
+			isInequality = null;
 		} else {
 			setUndefined();
 		}
@@ -2570,7 +2568,15 @@ public class GeoFunction extends GeoElement implements VarString, Translateable,
 
 	@Override
 	public boolean isInequality() {
-		return isInequality != null && isInequality;
+		if (fun == null) {
+			return false;
+		}
+		if (fun.getIneqs() == null) {
+			isInequality = fun.initIneqs(fun.getExpression());
+		} else if (isInequality == null) {
+			isInequality = fun.getIneqs().isValid();
+		}
+		return isInequality;
 	}
 
 	/**
