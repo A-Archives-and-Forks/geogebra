@@ -57,7 +57,11 @@ public class LinearEquationFormProperty extends AbstractNamedEnumeratedProperty<
 	public Integer getValue() {
 		GeoElement element = delegate.getElement();
 		if (element instanceof LinearEquationRepresentable) {
-			return ((LinearEquationRepresentable) element).getEquationForm().rawValue;
+			LinearEquationRepresentable.Form equationForm =
+					((LinearEquationRepresentable) element).getEquationForm();
+			if (equationForm != null) {
+				return equationForm.rawValue;
+			}
 		}
 		return -1;
 	}

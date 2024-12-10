@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
@@ -73,7 +74,11 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 	public Integer getValue() {
 		GeoElement element = delegate.getElement();
 		if (element instanceof QuadraticEquationRepresentable) {
-			return ((QuadraticEquationRepresentable) element).getEquationForm().rawValue;
+			QuadraticEquationRepresentable.Form equationForm =
+					((QuadraticEquationRepresentable) element).getEquationForm();
+			if (equationForm != null) {
+				return equationForm.rawValue;
+			}
 		}
 		return -1;
 	}
