@@ -298,4 +298,8 @@ public class MouseTouchGestureControllerW extends MouseTouchGestureController
 		drawingRecorder.reset();
 		isRecording = false;
 	}
+
+	public boolean isDragging() {
+		return dragModeMustBeSelected;
+	}
 }

@@ -604,7 +604,7 @@ public abstract class ContextMenuGeoElement {
 		} else { // use geo clicked to process mode
 			Hits hits = new Hits();
 			hits.add(cmdGeo);
-			v.getEuclidianController().processMode(hits, false);
+			v.getEuclidianController().processMode(hits, false, false);
 		}
 	}
 

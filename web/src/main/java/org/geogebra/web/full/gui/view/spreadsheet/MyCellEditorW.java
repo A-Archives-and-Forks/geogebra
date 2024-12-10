@@ -432,7 +432,7 @@ public class MyCellEditorW implements BaseCellEditor {
 			// but the default action of the event should have already been
 			// expired
 			autoCompleteTextField.onKeyUp(e);
-			GlobalKeyDispatcherW.setDownKeys(e);
+			app.getGlobalKeyDispatcher().setDownKeys(e);
 			e.stopPropagation();
 		}
 

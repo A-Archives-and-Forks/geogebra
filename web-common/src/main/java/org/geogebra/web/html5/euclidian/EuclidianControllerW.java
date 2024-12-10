@@ -298,6 +298,11 @@ public class EuclidianControllerW extends EuclidianController implements
 	}
 
 	@Override
+	protected boolean isDragging() {
+		return mtg.isDragging();
+	}
+
+	@Override
 	protected GeoImage createMeasurementToolImage(int mode, String fileName) {
 		if (toolImageW == null) {
 			toolImageW = new CreateToolImageW((AppW) app);

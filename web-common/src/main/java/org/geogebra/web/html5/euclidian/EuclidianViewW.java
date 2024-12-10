@@ -1228,6 +1228,12 @@ public class EuclidianViewW extends EuclidianView implements
 		case DRAG:
 			setDragCursor();
 			return;
+		case GRAB:
+			setCursorClass("cursor_grab");
+			return;
+		case GRABBING:
+			setCursorClass("cursor_grabbing");
+			return;
 		case MOVE:
 			setMoveCursor();
 			return;

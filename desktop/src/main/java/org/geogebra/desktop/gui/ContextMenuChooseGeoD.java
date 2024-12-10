@@ -235,7 +235,7 @@ public class ContextMenuChooseGeoD extends ContextMenuGeoElementD {
 					} else { // use geo clicked to process mode
 						Hits hits = new Hits();
 						hits.add(getGeo());
-						view.getEuclidianController().processMode(hits, false);
+						view.getEuclidianController().processMode(hits, false, false);
 					}
 				}
 

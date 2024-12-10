@@ -13,10 +13,13 @@ the Free Software Foundation.
 package org.geogebra.common.euclidian;
 
 import static org.geogebra.common.euclidian.EuclidianCursor.CROSSHAIR;
-import static org.geogebra.common.euclidian.EuclidianCursor.DEFAULT;
+import static org.geogebra.common.euclidian.EuclidianCursor.HIT;
 import static org.geogebra.common.euclidian.EuclidianCursor.MINDMAP;
+import static org.geogebra.common.euclidian.EuclidianCursor.MOVE;
 import static org.geogebra.common.euclidian.EuclidianCursor.TABLE;
 import static org.geogebra.common.euclidian.EuclidianCursor.TEXT;
+import static org.geogebra.common.euclidian.EuclidianCursor.ZOOM_IN;
+import static org.geogebra.common.euclidian.EuclidianCursor.ZOOM_OUT;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,6 +166,7 @@ import org.geogebra.common.kernel.statistics.CmdFitLineY;
 import org.geogebra.common.kernel.statistics.GeoPieChart;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.DialogManager;
+import org.geogebra.common.main.GlobalKeyDispatcher;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.SelectionManager;
@@ -3492,7 +3496,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 *            whether controll is pressed
 	 * @return whether highlighting changed
 	 */
-	public boolean refreshHighlighting(Hits hits, boolean isControlDown) {
+	public boolean refreshHighlighting(Hits hits, boolean isControlDown, boolean isShiftDown) {
 		Hits oldHighlightedGeos = highlightedGeos.cloneHits();
 
 		// clear old highlighting
@@ -3502,7 +3506,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		// https://help.geogebra.org/topic/-trac-2518-bug-while-using-measuring-tool-
 		// removing breaks previews in trunk
 		boolean oldTranslateRectangle = this.allowSelectionRectangleForTranslateByVector;
-		processModeForHighlight(hits, isControlDown);
+		processModeForHighlight(hits, isControlDown, isShiftDown);
 		// build highlightedGeos List
 		this.allowSelectionRectangleForTranslateByVector = oldTranslateRectangle;
 		if (highlightJustCreatedGeos) {
@@ -3592,7 +3596,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		clearJustCreatedGeos();
 
 		// clear highlighting
-		refreshHighlighting(null, false); // this may call repaint
+		refreshHighlighting(null, false, false); // this may call repaint
 	}
 
 	/**
@@ -5010,7 +5014,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	protected boolean switchModeForProcessMode(Hits hits, boolean isControlDown,
-			final AsyncOperation<Boolean> callback, boolean selectionPreview) {
+			boolean shiftDown, final AsyncOperation<Boolean> callback, boolean selectionPreview) {
 		Boolean changedKernel = false;
 		GeoElementND[] ret = null;
 
@@ -5189,7 +5193,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		// delete selected object
 		case EuclidianConstants.MODE_ERASER:
 			changedKernel = getDeleteMode().process(hits.getTopHits(), selectionPreview);
-			view.setCursor(EuclidianCursor.ERASER);
+			setViewCursor(EuclidianCursor.ERASER, shiftDown);
 
 			break;
 
@@ -5224,19 +5228,19 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			break;
 
 		case EuclidianConstants.MODE_MEDIA_TEXT:
-			view.setCursor(TEXT);
+			setViewCursor(TEXT, shiftDown);
 			createInlineObject(selectionPreview, GeoInlineText::new);
 			changedKernel = false;
 			break;
 
 		case EuclidianConstants.MODE_TABLE:
-			view.setCursor(TABLE);
+			setViewCursor(TABLE, shiftDown);
 			// no undo: actual undo point created later (InlineTableControllerW::onEditorChanged)
 			createInlineObject(selectionPreview, GeoInlineTable::new);
 			break;
 
 		case EuclidianConstants.MODE_MIND_MAP:
-			view.setCursor(MINDMAP);
+			setViewCursor(MINDMAP, shiftDown);
 			changedKernel = createInlineObject(selectionPreview, new GeoInlineFactory() {
 				@Override
 				public GeoInline newInlineObject(Construction cons, GPoint2D location) {
@@ -5252,7 +5256,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 						mindMap.setBorderColor(GColor.MIND_MAP_PARENT_BORDER_COLOR);
 					}
 
-					view.setCursor(DEFAULT);
+					view.setCursor(HIT);
 					return mindMap;
 				}
 			});
@@ -5270,7 +5274,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		case EuclidianConstants.MODE_SHAPE_PENTAGON:
 		case EuclidianConstants.MODE_SHAPE_SQUARE:
 		case EuclidianConstants.MODE_SHAPE_TRIANGLE:
-			view.setCursor(CROSSHAIR);
+			setViewCursor(CROSSHAIR, shiftDown);
 			break;
 
 		// new image
@@ -5379,11 +5383,11 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		case EuclidianConstants.MODE_PEN:
 		case EuclidianConstants.MODE_FREEHAND_SHAPE:
 		case EuclidianConstants.MODE_FREEHAND_FUNCTION:
-			view.setCursor(EuclidianCursor.PEN);
+			setViewCursor(EuclidianCursor.PEN, shiftDown);
 			break;
 
 		case EuclidianConstants.MODE_HIGHLIGHTER:
-			view.setCursor(EuclidianCursor.HIGHLIGHTER);
+			setViewCursor(EuclidianCursor.HIGHLIGHTER, shiftDown);
 			break;
 
 		case EuclidianConstants.MODE_COMPASSES:
@@ -5401,13 +5405,24 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		case EuclidianConstants.MODE_ROOTS:
 			ret = roots(hits, selectionPreview);
 			break;
-
+		case EuclidianConstants.MODE_ZOOM_IN:
+			view.setCursor(ZOOM_IN);
+			break;
+		case EuclidianConstants.MODE_ZOOM_OUT:
+			view.setCursor(ZOOM_OUT);
+			break;
 		default:
 			// do nothing
 		}
 
 		return endOfSwitchModeForProcessMode(ret, changedKernel, callback,
 				selectionPreview);
+	}
+
+	private void setViewCursor(EuclidianCursor cursor, boolean shiftDown) {
+		if (!GlobalKeyDispatcher.isSpaceDown() && !shiftDown) {
+			view.setCursor(cursor);
+		}
 	}
 
 	public void showDynamicStylebar() {
@@ -5471,7 +5486,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 *            whether control is pressed
 	 * @return whether kernel changed
 	 */
-	public final boolean processMode(Hits processHits, boolean isControlDown) {
+	public final boolean processMode(Hits processHits, boolean isControlDown, boolean isShiftDown) {
 		final Hits hits2 = processHits;
 		AsyncOperation<Boolean> callback = new AsyncOperation<Boolean>() {
 
@@ -5480,11 +5495,11 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				if (changedKernel.equals(true)) {
 					storeUndoInfo();
 				}
-				endOfWrapMouseReleased(hits2, false, false, null);
+				endOfWrapMouseReleased(hits2, false, isShiftDown, false, null);
 				// type = null is not a problem since alt = false
 			}
 		};
-		return processMode(processHits, isControlDown, callback);
+		return processMode(processHits, isControlDown, isShiftDown, callback);
 	}
 
 	/**
@@ -5498,7 +5513,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 * @return whether kernel changed
 	 */
 	public final boolean processMode(Hits processHits, boolean isControlDown,
-			final AsyncOperation<Boolean> callback) {
+			boolean isShiftDown, final AsyncOperation<Boolean> callback) {
 		Hits hits = processHits;
 		boolean changedKernel;
 
@@ -5520,7 +5535,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			};
 		}
 
-		changedKernel = switchModeForProcessMode(hits, isControlDown, callback2,
+		changedKernel = switchModeForProcessMode(hits, isControlDown, isShiftDown, callback2,
 				false);
 
 		if (changedKernel) {
@@ -5535,13 +5550,13 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	private void processModeForHighlight(Hits processHits,
-			boolean isControlDown) {
+			boolean isControlDown, boolean isShiftDown) {
 		Hits hits = processHits;
 		if (hits == null) {
 			hits = new Hits();
 		}
 
-		switchModeForProcessMode(hits, isControlDown, null, true);
+		switchModeForProcessMode(hits, isControlDown, isShiftDown, null, true);
 		updatePreview();
 	}
 
@@ -6257,7 +6272,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		selectAndShowSelectionUI(inlineObject);
 		updateDrawableAndMoveToForeground(inlineObject);
 
-		view.setCursor(DEFAULT);
+		view.setCursor(HIT);
 		return true;
 	}
 
@@ -6299,7 +6314,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	protected void setHitCursor() {
-		view.setCursor(EuclidianCursor.HIT);
+		view.setCursor(HIT);
 	}
 
 	protected void processMouseMoved(AbstractEvent event) {
@@ -6375,18 +6390,27 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			hits = view.getHits();
 			switchModeForRemovePolygons(hits);
 		}
+		boolean shiftOrSpace = event.isShiftDown() || GlobalKeyDispatcher.isSpaceDown();
 
 		if (hits.isEmpty()) {
 			view.setToolTipText(null);
-			view.setCursor(DEFAULT);
-			if (event.isShiftDown()
+			if (shiftOrSpace
 					|| mode == EuclidianConstants.MODE_TRANSLATEVIEW) {
 				setCursorForTranslateViewNoHit();
 			} else {
-				view.setCursor(DEFAULT);
+				switch (mode) {
+				case EuclidianConstants.MODE_ZOOM_IN:
+					view.setCursor(ZOOM_IN);
+					break;
+				case EuclidianConstants.MODE_ZOOM_OUT:
+					view.setCursor(ZOOM_OUT);
+					break;
+				default:
+					view.setCursor(view.getDefaultCursor());
+				}
 			}
 		} else {
-			if ((event.isShiftDown()
+			if ((shiftOrSpace
 					|| mode == EuclidianConstants.MODE_TRANSLATEVIEW)
 					&& (hits.size() >= 1)) {
 				setCursorForTranslateView(hits);
@@ -6438,8 +6462,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 
 		boolean control = app.isControlDown(event);
-		if (noHighlighting ? refreshHighlighting(null, control)
-				: refreshHighlighting(tempFullHits, control)) {
+		if (noHighlighting ? refreshHighlighting(null, control, event.isShiftDown())
+				: refreshHighlighting(tempFullHits, control, event.isShiftDown())) {
 
 			kernel.notifyRepaint();
 		} else if (repaintNeeded) {
@@ -6452,7 +6476,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	protected void setCursorForTranslateViewNoHit() {
-		view.setCursor(DEFAULT);
+		view.setCursor(EuclidianCursor.GRAB);
 	}
 
 	/**
@@ -6465,7 +6489,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		} else if (hits.hasYAxis()) {
 			view.setCursor(EuclidianCursor.RESIZE_Y);
 		} else {
-			setHitCursor();
+			view.setCursor(EuclidianCursor.GRAB);
 		}
 	}
 
@@ -6495,6 +6519,87 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		processMouseMoved(event);
 	}
 
+	/**
+	 * Update cursor based on current mouse position and mode
+	 * @param shiftDown whether shift is pressed
+	 */
+	public void updateViewCursor(boolean shiftDown) {
+		if (mouseLoc == null || isDragging()) {
+			return;
+		}
+		GPoint lastLoc = mouseLoc;
+		this.wrapMouseMoved(new AbstractEvent() {
+			@Override
+			public GPoint getPoint() {
+				return lastLoc;
+			}
+
+			@Override
+			public boolean isAltDown() {
+				return false;
+			}
+
+			@Override
+			public boolean isShiftDown() {
+				return shiftDown;
+			}
+
+			@Override
+			public void release() {
+				// not needed
+			}
+
+			@Override
+			public int getX() {
+				return lastLoc.x;
+			}
+
+			@Override
+			public int getY() {
+				return lastLoc.y;
+			}
+
+			@Override
+			public boolean isRightClick() {
+				return false;
+			}
+
+			@Override
+			public boolean isControlDown() {
+				return false;
+			}
+
+			@Override
+			public int getClickCount() {
+				return 0;
+			}
+
+			@Override
+			public boolean isMetaDown() {
+				return false;
+			}
+
+			@Override
+			public boolean isMiddleClick() {
+				return false;
+			}
+
+			@Override
+			public boolean isPopupTrigger() {
+				return false;
+			}
+
+			@Override
+			public PointerEventType getType() {
+				return PointerEventType.MOUSE;
+			}
+		});
+	}
+
+	protected boolean isDragging() {
+		return false;
+	}
+
 	protected abstract void resetToolTipManager();
 
     /**
@@ -6509,7 +6614,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
         this.animationButtonPressed = false;
         app.storeUndoInfoIfSetCoordSystemOccured();
 
-        refreshHighlighting(null, app.isControlDown(event));
+        refreshHighlighting(null, app.isControlDown(event), event.isShiftDown());
         resetToolTipManager();
         view.setAnimationButtonsHighlighted(false);
         view.setShowMouseCoords(false);
@@ -7648,7 +7753,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			if (repaint) {
 				if (temporaryMode
 						&& mode != EuclidianConstants.MODE_TRANSLATEVIEW) {
-					view.setCursor(EuclidianCursor.MOVE);
+					view.setCursor(MOVE);
 				}
 				moveView();
 			}
@@ -8845,7 +8950,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	protected void setDragCursorIfMoveView() {
 		if (moveMode == MOVE_VIEW) {
-			setDragCursor();
+			view.setCursor(EuclidianCursor.GRABBING);
 		}
 	}
 
@@ -9114,10 +9219,12 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 		if (popupJustClosed) {
 			popupJustClosed = false;
-		} else if (penMode(mode)) {
-			// needs to happen after scripts have run
-			getPen().handleMousePressedForPenMode(event);
-			return;
+		} else {
+			if (penMode(mode) && !(GlobalKeyDispatcher.isSpaceDown() || event.isShiftDown())) {
+				// needs to happen after scripts have run
+				getPen().handleMousePressedForPenMode(event);
+				return;
+			}
 		}
 
 		// check if side of bounding box was hit
@@ -9336,7 +9443,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		(event.isShiftDown() && !app.isControlDown(event)) // All Platforms: Shift key
 				|| (event.isControlDown() && app.isWindows()
 				// old Windows key: Ctrl key
-				) || app.isMiddleClick(event));
+				) || app.isMiddleClick(event))
+				|| GlobalKeyDispatcher.isSpaceDown();
 	}
 
 	protected void runScriptsIfNeeded(GeoElement geo1) {
@@ -9459,7 +9567,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			removeParentPoints(hits);
 			getSelectedGeoList().addAll(hits);
 			setAppSelectedGeos(hits);
-			changedKernel = processMode(hits, isControlDown, null);
+			changedKernel = processMode(hits, isControlDown, shift, null);
 			view.setSelectionRectangle(null);
 			break;
 
@@ -9470,7 +9578,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				if (hits.get(0).isGeoList()) {
 					getSelectedGeoList().addAll(hits);
 					setAppSelectedGeos(hits);
-					changedKernel = processMode(hits, isControlDown, null);
+					changedKernel = processMode(hits, isControlDown, shift, null);
 					view.setSelectionRectangle(null);
 					break;
 				}
@@ -9491,7 +9599,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				removeParentPoints(hits);
 				getSelectedGeoList().addAll(hits);
 				setAppSelectedGeos(hits);
-				changedKernel = processMode(hits, isControlDown, null);
+				changedKernel = processMode(hits, isControlDown, shift, null);
 				view.setSelectionRectangle(null);
 			}
 			break;
@@ -9616,7 +9724,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				removeParentPoints(hits);
 				getSelectedGeoList().addAll(hits);
 				setAppSelectedGeos(hits);
-				processMode(hits, false, null);
+				processMode(hits, false, false, null);
 
 				view.setSelectionRectangle(null);
 			}
@@ -9636,7 +9744,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				removeParentPoints(hits);
 				getSelectedGeoList().addAll(hits);
 				setAppSelectedGeos(hits);
-				processMode(hits, false, null);
+				processMode(hits, false, false, null);
 
 				view.setSelectionRectangle(null);
 			}
@@ -9946,7 +10054,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				hits.clear();
 				hits.add(newPoint.toGeoElement());
 				boolean kernelChange = switchModeForProcessMode(hits,
-						event.isControlDown(), null, false);
+						event.isControlDown(), event.isShiftDown(), null, false);
 				if (kernelChange) {
 					storeUndoInfo();
 				}
@@ -10280,7 +10388,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				}
 			};
 
-			processMode(hits, control, callback);
+			processMode(hits, control, event.isShiftDown(), callback);
 
 		}
 
@@ -10446,7 +10554,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		boolean control = app.isControlDown(event);
 		boolean alt = event.isAltDown();
 		PointerEventType type = event.getType();
-		endOfWrapMouseReleased(hits, control, alt, type);
+		endOfWrapMouseReleased(hits, control, event.isShiftDown(), alt, type);
 	}
 
 	/**
@@ -10459,15 +10567,15 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 * @param type
 	 *            pointer device type
 	 */
-	public void endOfWrapMouseReleased(Hits hits, boolean control, boolean alt,
+	public void endOfWrapMouseReleased(Hits hits, boolean control, boolean shift, boolean alt,
 			PointerEventType type) {
 		if (!hits.isEmpty()) {
-			view.setCursor(DEFAULT);
+			view.setCursor(view.getDefaultCursor());
 		} else {
 			setHitCursor();
 		}
 
-		refreshHighlighting(null, control);
+		refreshHighlighting(null, control, shift);
 
 		moveMode = MOVE_NONE;
 		initShowMouseCoords();

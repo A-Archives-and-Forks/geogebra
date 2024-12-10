@@ -5274,7 +5274,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 			}
 		};
 		boolean changedKernel = euclidianController.processMode(tempArrayList,
-				isControlDown, callback);
+				isControlDown, false, callback);
 
 		if (changedKernel) {
 			getEuclidianController().storeUndoInfo();
@@ -5465,7 +5465,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 			geos = tempArrayList;
 		}
 		boolean repaintNeeded = getEuclidianController().refreshHighlighting(
-				geos, false);
+				geos, false, false);
 		if (repaintNeeded) {
 			kernel.notifyRepaint();
 		}
@@ -5493,7 +5493,7 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 		geos = tempArrayList;
 
 		boolean repaintNeeded = getEuclidianController().refreshHighlighting(
-				geos, false);
+				geos, false, false);
 		if (repaintNeeded) {
 			kernel.notifyRepaint();
 		}
@@ -6695,5 +6695,9 @@ public abstract class EuclidianView implements EuclidianViewInterfaceCommon,
 	@Override
 	public void removeRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
 		restrictGraphSelectionForFunctions = false;
+	}
+
+	public EuclidianCursor getDefaultCursor() {
+		return EuclidianCursor.HIT;
 	}
 }

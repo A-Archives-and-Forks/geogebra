@@ -1959,7 +1959,7 @@ public abstract class EuclidianController3D extends EuclidianController {
 		// remembers mouse location
 		startLoc = mouseLoc;
 		getView().rememberOrigins();
-		getView().setCursor(EuclidianCursor.DEFAULT);
+		((EuclidianView3D) getView()).setDefaultCursor();
 
 		rotationSpeedHandler.setStart(startLoc.x, pointerEventType);
 	}
@@ -2032,7 +2032,7 @@ public abstract class EuclidianController3D extends EuclidianController {
 
 	@Override
 	protected boolean switchModeForProcessMode(Hits hits, boolean isControlDown,
-			AsyncOperation<Boolean> callback, boolean selectionPreview) {
+			boolean isShiftDown, AsyncOperation<Boolean> callback, boolean selectionPreview) {
 		boolean changedKernel = false;
 
 		GeoElementND[] ret = null;
@@ -2126,7 +2126,7 @@ public abstract class EuclidianController3D extends EuclidianController {
 			break;
 
 		default:
-			return super.switchModeForProcessMode(hits, isControlDown, callback,
+			return super.switchModeForProcessMode(hits, isControlDown, isShiftDown, callback,
 					selectionPreview);
 		}
 

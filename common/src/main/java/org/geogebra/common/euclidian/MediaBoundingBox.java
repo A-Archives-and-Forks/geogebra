@@ -143,7 +143,7 @@ public class MediaBoundingBox extends BoundingBox<GShape> {
 		case 3:
 			return EuclidianCursor.RESIZE_NESW;
 		default:
-			return EuclidianCursor.DEFAULT;
+			return null; // never happens
 		}
 	}
 }

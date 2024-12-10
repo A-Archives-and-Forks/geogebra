@@ -61,7 +61,7 @@ public class SpreadsheetKeyListenerW
 			return; // quit before we stop propagation
 		}
 		e.stopPropagation();
-		GlobalKeyDispatcherW.setDownKeys(e);
+		app.getGlobalKeyDispatcher().setDownKeys(e);
 		GlobalKeyDispatcherW.setDownAltKeys(e, true);
 		// cancel as this may prevent the keyPress in some browsers
 		// hopefully it is enough to preventDefault in onKeyPress
@@ -626,7 +626,7 @@ public class SpreadsheetKeyListenerW
 
 	@Override
 	public void onKeyUp(KeyUpEvent event) {
-		GlobalKeyDispatcherW.setDownKeys(event);
+		app.getGlobalKeyDispatcher().setDownKeys(event);
 		GlobalKeyDispatcherW.setDownAltKeys(event, false);
 	}
 

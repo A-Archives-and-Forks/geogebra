@@ -2743,7 +2743,7 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 			for (int i = 0; i < guiManager.getEuclidianViewCount(); i++) {
 				if (guiManager.hasEuclidianView2EitherShowingOrNot(i)) {
 					guiManager.getEuclidianView2(i)
-									.setCursor(EuclidianCursor.DEFAULT);
+									.setCursor(EuclidianCursor.HIT);
 				}
 			}
 		} else if (euclidianView != null) {
