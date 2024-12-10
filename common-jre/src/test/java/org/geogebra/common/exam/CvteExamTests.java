@@ -140,5 +140,15 @@ public final class CvteExamTests extends BaseExamTests {
         assertNull(evaluate("Intersect(g, h"));
         assertNull(evaluate("Intersect(h, g)"));
         assertNull(evaluate("Intersect(h, c"));
+
+        // Intersect command with wrong number of arguments are not allowed
+        errorAccumulator.resetError();
+        assertNull(evaluate("Intersect(f)"));
+        assertTrue(errorAccumulator.getErrorsSinceReset()
+                .contains("Illegal number of arguments: 1"));
+        errorAccumulator.resetError();
+        assertNull(evaluate("Intersect(f, g, h, i, f)"));
+        assertTrue(errorAccumulator.getErrorsSinceReset()
+                .contains("Illegal number of arguments: 5"));
     }
 }

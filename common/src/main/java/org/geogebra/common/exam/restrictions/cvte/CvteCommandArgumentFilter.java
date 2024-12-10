@@ -89,6 +89,9 @@ public final class CvteCommandArgumentFilter implements CommandArgumentFilter {
 		// Intersect(<Object>, <Object>, <Unrelated parameter>)
 		// Intersect(<Object>, <Object>, <Unrelated parameter>, <Unrelated parameter>)
 		GeoElement[] arguments = commandProcessor.resArgs(command);
+		if (arguments.length < 2 || arguments.length > 4) {
+			throw commandProcessor.argNumErr(command, arguments.length);
+		}
 		GeoElement firstArgument = arguments[0];
 		if (!CvteExamRestrictions.isVisibilityEnabled(firstArgument)) {
 			throw commandProcessor.argErr(command, firstArgument);
