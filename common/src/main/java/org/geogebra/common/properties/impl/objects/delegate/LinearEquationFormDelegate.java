@@ -20,7 +20,30 @@ public class LinearEquationFormDelegate extends AbstractGeoElementDelegate {
 		if (element instanceof GeoList) {
 			return isApplicableToGeoList((GeoList) element);
 		}
-		return element instanceof LinearEquationRepresentable;
+		if (element instanceof LinearEquationRepresentable) {
+			// TOOO fix testEquationPropertyVisibilityGraphing
+			EquationBehaviour equationBehaviour = element.getKernel().getEquationBehaviour();
+			if (!equationBehaviour.allowsChangingEquationFormsByUser()) {
+				return false;
+			}
+			boolean isUserInput = element.getParentAlgorithm() == null;
+			if (isUserInput) {
+				return equationBehaviour.getLinearAlgebraInputEquationForm() == null;
+			}
+			if (element instanceof GeoLine) {
+				AlgoElement algo = element.getParentAlgorithm();
+				boolean isFitLineOuput = (algo instanceof AlgoFitLineX)
+						|| (algo instanceof AlgoFitLineY);
+				if (isFitLineOuput) {
+					return equationBehaviour.getFitLineCommandEquationForm() != null;
+				}
+				if (element.isGeoRay()) {
+					return equationBehaviour.getRayCommandEquationForm() != null;
+				}
+				return equationBehaviour.getLineCommandEquationForm() != null;
+			}
+		}
+		return false;
 	}
 
 	@Override
