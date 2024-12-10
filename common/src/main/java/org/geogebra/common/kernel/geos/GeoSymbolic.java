@@ -570,9 +570,9 @@ public class GeoSymbolic extends GeoElement
 		GeoElementND newTwin = createTwinGeo();
 
 		if (newTwin instanceof LinearEquationRepresentable) {
-			((LinearEquationRepresentable) newTwin).setToUser();
+			((LinearEquationRepresentable) newTwin).setToUserForm();
 		} else if (newTwin instanceof QuadraticEquationRepresentable) {
-			((QuadraticEquationRepresentable) newTwin).setToUser();
+			((QuadraticEquationRepresentable) newTwin).setToUserForm();
 		}
 
 		if (newTwin instanceof GeoList) {

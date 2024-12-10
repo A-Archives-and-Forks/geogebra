@@ -3460,11 +3460,11 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 	@Override
 	public boolean setEquationFormFromXML(String style, String parameter) {
 		if ("implicit".equals(style)) {
-			setToImplicit();
+			setToImplicitForm();
 		} else if ("specific".equals(style)) {
-			setToSpecific();
+			setToSpecificForm();
 		} else if ("user".equals(style)) {
-			setToUser();
+			setToUserForm();
 		} else {
 			return false;
 		}
@@ -3479,7 +3479,8 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 	/**
 	 * @return the localized label for the specific equation form.
 	 */
-	public String getSpecificEquation() {
+	@Override
+	public String getSpecificEquationLabel() {
 		if (type == QUADRIC_SPHERE) {
 			return getLoc().getMenu("SphereEquation");
 		}
@@ -3487,7 +3488,7 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 	}
 
 	@Override
-	public String getSpecificEquationLabel() {
+	public String getSpecificEquationLabelKey() {
 		if (type == QUADRIC_SPHERE) {
 			return "SphereEquation";
 		}
@@ -3495,7 +3496,7 @@ public class GeoQuadric3D extends GeoQuadricND implements Functional2Var,
 	}
 
 	@Override
-	public String getImplicitEquationLabel() {
+	public String getImplicitEquationLabelKey() {
 		return "ExpandedForm";
 	}
 

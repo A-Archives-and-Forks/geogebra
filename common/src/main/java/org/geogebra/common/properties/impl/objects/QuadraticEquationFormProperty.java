@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
@@ -30,7 +29,7 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 		List<Map.Entry<Integer, String>> values = new ArrayList<>();
 		if (quadratic.isSpecificFormPossible()) {
 			values.add(entry(QuadraticEquationRepresentable.Form.SPECIFIC.rawValue,
-					quadratic.getSpecificEquationLabel()));
+					quadratic.getSpecificEquationLabelKey()));
 		}
 		if (quadratic.isExplicitFormPossible()) {
 			values.add(entry(QuadraticEquationRepresentable.Form.EXPLICIT.rawValue,
@@ -42,7 +41,7 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 		}
 		//if (quadratic.isImplicitFormPossible()) { // TODO always possible?
 			values.add(entry(QuadraticEquationRepresentable.Form.IMPLICIT.rawValue,
-					quadratic.getImplicitEquationLabel()));
+					quadratic.getImplicitEquationLabelKey()));
 		//}
 		if (quadratic.isVertexFormPossible()) {
 			values.add(entry(QuadraticEquationRepresentable.Form.VERTEX.rawValue,

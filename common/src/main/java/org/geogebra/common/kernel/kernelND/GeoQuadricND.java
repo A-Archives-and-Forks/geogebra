@@ -657,22 +657,17 @@ public abstract class GeoQuadricND extends GeoElement
 	/**
 	 * @return the localized label for the specific equation form.
 	 */
-	public String getSpecificEquation() {
-		return null;
-	}
-
-	@Override
 	public String getSpecificEquationLabel() {
 		return null;
 	}
 
 	@Override
-	public boolean isImplicitFormPossibe() {
-		return true;
+	public String getSpecificEquationLabelKey() {
+		return null;
 	}
 
 	@Override
-	public String getImplicitEquationLabel() {
+	public String getImplicitEquationLabelKey() {
 		return "ImplicitConicEquation";
 	}
 
@@ -724,7 +719,7 @@ public abstract class GeoQuadricND extends GeoElement
 	}
 
 	@Override
-	public void setToParametric(String parameter) {
+	public void setToParametricForm(String parameter) {
 		setEquationForm(Form.PARAMETRIC);
 		if (parameter != null) {
 			this.parameter = parameter;

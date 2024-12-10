@@ -3393,7 +3393,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	@Override
-	public String getSpecificEquation() {
+	public String getSpecificEquationLabel() {
 		String ret = null;
 		switch (type) {
 		default:
@@ -3433,7 +3433,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	@Override
-	public String getSpecificEquationLabel() {
+	public String getSpecificEquationLabelKey() {
 		switch (type) {
 			case GeoConicNDConstants.CONIC_CIRCLE:
 				return "CircleEquation";

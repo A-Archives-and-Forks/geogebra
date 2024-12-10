@@ -121,7 +121,7 @@ public class ConicEqnModel extends MultipleOptionsModel {
 		int counter = -1;
 		getListener().clearItems();
 		if (specificPossible) {
-			getListener().addItem(geo0.getSpecificEquation());
+			getListener().addItem(geo0.getSpecificEquationLabel());
 			specificIndex = ++counter;
 		}
 		if (explicitPossible) {
@@ -219,19 +219,19 @@ public class ConicEqnModel extends MultipleOptionsModel {
 		GeoQuadricND quad = getConicAt(index);
 		Log.debug(value + ":" + parametricIndex);
 		if (value == specificIndex) {
-			quad.setToSpecific();
+			quad.setToSpecificForm();
 		} else if (value == explicitIndex) {
 			quad.setToExplicit();
 		} else if (value == implicitIndex) {
-			quad.setToImplicit();
+			quad.setToImplicitForm();
 		} else if (value == userIndex) {
-			quad.setToUser();
+			quad.setToUserForm();
 		} else if (value == parametricIndex) {
-			quad.setToParametric(null);
+			quad.setToParametricForm(null);
 		} else if (value == vertexformIndex) {
-			quad.setToVertex();
+			quad.setToVertexForm();
 		} else if (value == conicformIndex) {
-			quad.setToConic();
+			quad.setToConicForm();
 		}
 		quad.updateRepaint();
 	}

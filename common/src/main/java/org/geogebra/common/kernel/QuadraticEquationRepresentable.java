@@ -99,21 +99,23 @@ public interface QuadraticEquationRepresentable {
 	 */
 	void setEquationForm(int equationForm);
 
-	// TODO
-	boolean isImplicitFormPossibe();
-
 	/**
 	 * Set the equation form to {@code IMPLICIT}.
 	 */
-	// TODO rename to setToImplicitForm, also all others
-	default void setToImplicit() {
+	default void setToImplicitForm() {
 		setEquationForm(Form.IMPLICIT);
 	}
 
-	// TODO
-	String getImplicitEquationLabel();
+	/**
+	 * @return the localization key (e.g., "ImplicitConicEquation") for the implicit equation
+	 * label for this object (the labels may be different depending on the object type).
+	 */
+	String getImplicitEquationLabelKey();
 
-	// TODO
+	/**
+	 * @return {@code true} if this object has an explicit form (at this moment; may depend
+	 * on some properties at run-time).
+	 */
 	boolean isExplicitFormPossible();
 
 	/**
@@ -123,49 +125,67 @@ public interface QuadraticEquationRepresentable {
 		setEquationForm(Form.EXPLICIT);
 	}
 
-	// TODO
+	/**
+	 * @return {@code true} if this object has a specific form (at this moment; may depend
+	 * on some properties at run-time).
+	 */
 	boolean isSpecificFormPossible();
 
 	/**
 	 * Set the equation form to {@code SPECIFIC}.
 	 */
-	default void setToSpecific() {
+	default void setToSpecificForm() {
 		setEquationForm(Form.SPECIFIC);
 	}
 
-	// TODO
-	String getSpecificEquationLabel();
+	/**
+	 * @return the localization key (e.g., "SphereEquation") for the implicit equation
+	 * 	 * label for this object (the labels may be different depending on the object type).
+	 */
+	String getSpecificEquationLabelKey();
 
+	/**
+	 * @return {@code true} if this object has a parametric form (at this moment; may depend
+	 * on some properties at run-time).
+	 */
 	boolean isParametricFormPossible();
 
 	/**
 	 * Set the equation form to {@code PARAMETRIC}.
 	 * @param parameter The parameter name.
 	 */
-	void setToParametric(String parameter);
+	void setToParametricForm(String parameter);
 
 	/**
-	 * Set the equation form to {@code USER}.
+	 * Set the equation form to {@code USER} (user / input form).
 	 */
-	default void setToUser() {
+	default void setToUserForm() {
 		setEquationForm(Form.USER);
 	}
 
+	/**
+	 * @return {@code true} if this object has a vertex form (at this moment; may depend
+	 * on some properties at run-time).
+	 */
 	boolean isVertexFormPossible();
 
 	/**
 	 * Set the equation form to {@code VERTEX}.
 	 */
-	default void setToVertex() {
+	default void setToVertexForm() {
 		setEquationForm(Form.VERTEX);
 	}
 
+	/**
+	 * @return {@code true} if this object has a conic form (at this moment; may depend
+	 * on some properties at run-time).
+	 */
 	boolean isConicFormPossible();
 
 	/**
 	 * Set the equation form to {@code CONIC}.
 	 */
-	default void setToConic() {
+	default void setToConicForm() {
 		setEquationForm(Form.CONICFORM);
 	}
 
@@ -179,19 +199,19 @@ public interface QuadraticEquationRepresentable {
 	 */
 	default boolean setEquationFormFromXML(String equationForm, String parameter) {
 		if ("implicit".equals(equationForm)) {
-			setToImplicit();
+			setToImplicitForm();
 		} else if ("specific".equals(equationForm)) {
-			setToSpecific();
+			setToSpecificForm();
 		} else if ("explicit".equals(equationForm)) {
 			setToExplicit();
 		} else if ("parametric".equals(equationForm)) {
-			setToParametric(parameter);
+			setToParametricForm(parameter);
 		} else if ("user".equals(equationForm)) {
-			setToUser();
+			setToUserForm();
 		} else if ("vertex".equals(equationForm)) {
-			setToVertex();
+			setToVertexForm();
 		} else if ("conic".equals(equationForm)) {
-			setToConic();
+			setToConicForm();
 		} else {
 			return false;
 		}

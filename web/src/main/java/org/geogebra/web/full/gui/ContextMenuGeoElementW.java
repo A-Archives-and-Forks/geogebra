@@ -644,7 +644,7 @@ public class ContextMenuGeoElementW extends ContextMenuGeoElement
 
 		if (specificPossible && mode != QuadraticEquationRepresentable.Form.CONST_SPECIFIC) {
 			// specific conic string
-			String conicEqn = conic.getSpecificEquation();
+			String conicEqn = conic.getSpecificEquationLabel();
 			if (conicEqn != null) {
 				sb.setLength(0);
 				sb.append(loc.getMenu("Equation"));
