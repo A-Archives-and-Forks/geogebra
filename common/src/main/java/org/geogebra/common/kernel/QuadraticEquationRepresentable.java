@@ -140,7 +140,7 @@ public interface QuadraticEquationRepresentable {
 
 	/**
 	 * @return the localization key (e.g., "SphereEquation") for the implicit equation
-	 * 	 * label for this object (the labels may be different depending on the object type).
+	 * label for this object (the labels may be different depending on the object type).
 	 */
 	String getSpecificEquationLabelKey();
 
