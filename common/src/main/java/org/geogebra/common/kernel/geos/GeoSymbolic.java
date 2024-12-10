@@ -604,6 +604,7 @@ public class GeoSymbolic extends GeoElement
 				((GeoNumeric) newTwin).setDrawable(false);
 			}
 		}
+		computed.setFixed(newTwin.isLocked());
 		return newTwin;
 	}
 
