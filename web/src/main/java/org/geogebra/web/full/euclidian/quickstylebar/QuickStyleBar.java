@@ -14,6 +14,7 @@ import org.geogebra.common.gui.stylebar.StylebarPositioner;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
 import org.geogebra.common.kernel.geos.TextProperties;
+import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertySupplier;
 import org.geogebra.common.properties.ValuedProperty;
@@ -63,7 +64,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		if (activeGeoList.isEmpty()) {
 			return;
 		}
-
+		GeoElementPropertiesFactory geoElementPropertiesFactory = GlobalScope.geoElementPropertiesFactory;
 		Property imageOpacityProperty = GeoElementPropertiesFactory.createImageOpacityProperty(
 				getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, null, false, imageOpacityProperty);
@@ -85,7 +86,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		addColorPropertyButton(activeGeoList, UndoActionType.STYLE_OR_TABLE_CONTENT,
 				inlineBackgroundColorProperty);
 
-		PropertiesArray pointStyleProperty = GeoElementPropertiesFactory
+		PropertiesArray pointStyleProperty = geoElementPropertiesFactory
 				.createPointStyleExtendedProperties(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, "pointStyle", true,
 				pointStyleProperty.getProperties());
@@ -96,7 +97,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 
 		List<PropertySupplier> lineStylePropertyWithSplit = new ArrayList<>();
 		lineStylePropertyWithSplit.add(withStrokeSplitting(geos ->
-				GeoElementPropertiesFactory.createLineStyleProperty(
+				geoElementPropertiesFactory.createLineStyleProperty(
 						getApp().getLocalization(), geos), activeGeoList));
 		lineStylePropertyWithSplit.add(withStrokeSplitting(geos ->
 				GeoElementPropertiesFactory.createNotesThicknessProperty(
