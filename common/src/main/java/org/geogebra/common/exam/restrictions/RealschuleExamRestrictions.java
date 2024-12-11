@@ -48,6 +48,8 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
+				null,
+				null,
 				null);
 	}
 
@@ -149,6 +151,7 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 
 	@Override
 	public void applySettingsRestrictions(@Nonnull Settings settings) {
+		super.applySettingsRestrictions(settings);
 		EuclidianSettings euclidian = settings.getEuclidian(1);
 		settings.getGeneral().setCoordFormat(Kernel.COORD_STYLE_AUSTRIAN);
 		euclidian.beginBatch();
