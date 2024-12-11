@@ -64,24 +64,25 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		if (activeGeoList.isEmpty()) {
 			return;
 		}
-		GeoElementPropertiesFactory geoElementPropertiesFactory = GlobalScope.geoElementPropertiesFactory;
-		Property imageOpacityProperty = GeoElementPropertiesFactory.createImageOpacityProperty(
+		GeoElementPropertiesFactory geoElementPropertiesFactory =
+				GlobalScope.geoElementPropertiesFactory;
+		Property imageOpacityProperty = geoElementPropertiesFactory.createImageOpacityProperty(
 				getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, null, false, imageOpacityProperty);
 
 		addCropButton();
 
-		PropertiesArray colorWithOpacityProperty = GeoElementPropertiesFactory
+		PropertiesArray colorWithOpacityProperty = geoElementPropertiesFactory
 				.createNotesColorWithOpacityProperties(getApp().getLocalization(), activeGeoList);
 		addColorPropertyButton(activeGeoList, UndoActionType.STYLE,
 				colorWithOpacityProperty.getProperties());
 
 		PropertySupplier colorProperty = withStrokeSplitting(
-				(geos) -> GeoElementPropertiesFactory.createNotesColorProperty(
+				(geos) -> geoElementPropertiesFactory.createNotesColorProperty(
 				getApp().getLocalization(), geos), activeGeoList);
 		addColorPropertyButton(activeGeoList, UndoActionType.STYLE, colorProperty);
 
-		Property inlineBackgroundColorProperty = GeoElementPropertiesFactory
+		Property inlineBackgroundColorProperty = geoElementPropertiesFactory
 				.createInlineBackgroundColorProperty(getApp().getLocalization(), activeGeoList);
 		addColorPropertyButton(activeGeoList, UndoActionType.STYLE_OR_TABLE_CONTENT,
 				inlineBackgroundColorProperty);
@@ -91,7 +92,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		addPropertyPopupButton(activeGeoList, "pointStyle", true,
 				pointStyleProperty.getProperties());
 
-		Property fillingStyleProperty = GeoElementPropertiesFactory
+		Property fillingStyleProperty = geoElementPropertiesFactory
 				.createFillingStyleProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, null, false, fillingStyleProperty);
 
@@ -100,61 +101,61 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 				geoElementPropertiesFactory.createLineStyleProperty(
 						getApp().getLocalization(), geos), activeGeoList));
 		lineStylePropertyWithSplit.add(withStrokeSplitting(geos ->
-				GeoElementPropertiesFactory.createNotesThicknessProperty(
+				geoElementPropertiesFactory.createNotesThicknessProperty(
 						getApp().getLocalization(), geos), activeGeoList));
 
 		addPropertyPopupButton(activeGeoList, null, false,
 				lineStylePropertyWithSplit.stream()
 						.filter(Objects::nonNull).toArray(PropertySupplier[]::new));
 
-		Property segmentStartProperty = GeoElementPropertiesFactory
+		Property segmentStartProperty = geoElementPropertiesFactory
 				.createSegmentStartProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, "segmentStyle", true, segmentStartProperty);
 
-		Property segmentEndProperty = GeoElementPropertiesFactory
+		Property segmentEndProperty = geoElementPropertiesFactory
 				.createSegmentEndProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, "segmentStyle", true, segmentEndProperty);
 
-		PropertiesArray cellBorderProperty = GeoElementPropertiesFactory
+		PropertiesArray cellBorderProperty = geoElementPropertiesFactory
 				.createCellBorderStyleProperties(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, "cellBorderStyle", true,
 				UndoActionType.STYLE_OR_TABLE_CONTENT, cellBorderProperty.getProperties());
 
-		PropertiesArray objectBorderProperty = GeoElementPropertiesFactory
+		PropertiesArray objectBorderProperty = geoElementPropertiesFactory
 				.createObjectBorderProperties(getApp().getLocalization(), activeGeoList);
 		addColorPropertyButton(activeGeoList, UndoActionType.STYLE,
 				objectBorderProperty.getProperties());
 
 		addDivider();
 
-		Property fontColorProperty = GeoElementPropertiesFactory.createNotesFontColorProperty(
+		Property fontColorProperty = geoElementPropertiesFactory.createNotesFontColorProperty(
 				getApp().getLocalization(), activeGeoList);
 		addColorPropertyButton(activeGeoList, UndoActionType.STYLE_OR_CONTENT,
 				fontColorProperty);
 
-		Property fontSizeProperty = GeoElementPropertiesFactory.createTextFontSizeProperty(
+		Property fontSizeProperty = geoElementPropertiesFactory.createTextFontSizeProperty(
 				getApp().getLocalization(), activeGeoList, ev);
 		addPropertyPopupButton(activeGeoList, "gwt-PopupPanel contextSubMenu", true,
 				UndoActionType.STYLE_OR_CONTENT, fontSizeProperty);
 
-		BooleanProperty boldProperty = GeoElementPropertiesFactory
+		BooleanProperty boldProperty = geoElementPropertiesFactory
 				.createBoldProperty(getApp().getLocalization(), activeGeoList);
 		addTextFormatPropertyButton(activeGeoList, boldProperty);
 
-		BooleanProperty italicProperty = GeoElementPropertiesFactory
+		BooleanProperty italicProperty = geoElementPropertiesFactory
 				.createItalicProperty(getApp().getLocalization(), activeGeoList);
 		addTextFormatPropertyButton(activeGeoList, italicProperty);
 
-		BooleanProperty underlineProperty = GeoElementPropertiesFactory
+		BooleanProperty underlineProperty = geoElementPropertiesFactory
 				.createUnderlineProperty(getApp().getLocalization(), activeGeoList);
 		addTextFormatPropertyButton(activeGeoList, underlineProperty);
 
-		Property horizontalAlignmentProperty = GeoElementPropertiesFactory
+		Property horizontalAlignmentProperty = geoElementPropertiesFactory
 				.createHorizontalAlignmentProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, null, true,
 				UndoActionType.STYLE_OR_CONTENT, horizontalAlignmentProperty);
 
-		Property verticalAlignmentProperty = GeoElementPropertiesFactory
+		Property verticalAlignmentProperty = geoElementPropertiesFactory
 				.createVerticalAlignmentProperty(getApp().getLocalization(), activeGeoList);
 		addPropertyPopupButton(activeGeoList, null, true,
 				UndoActionType.STYLE_OR_TABLE_CONTENT, verticalAlignmentProperty);
