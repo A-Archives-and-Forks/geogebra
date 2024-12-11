@@ -12,6 +12,8 @@ the Free Software Foundation.
 
 package org.geogebra.common.euclidian.draw;
 
+import static org.geogebra.common.main.PreviewFeature.IMPLICIT_PLOTTER;
+
 import java.util.ArrayList;
 
 import org.geogebra.common.awt.GArea;
@@ -25,13 +27,13 @@ import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.arithmetic.bernstein.BernsteinPolynomialConverter;
 import org.geogebra.common.kernel.implicit.GeoImplicit;
+import org.geogebra.common.main.PreviewFeature;
 
 /**
  * Draw GeoImplicitCurve on euclidian view
  */
 public class DrawImplicitCurve extends DrawLocus {
 
-	public static final boolean BERNSTEIN_BASED_PLOTTER = true;
 	private CoordSystemAnimatedPlotter bernsteinPlotter;
 	private final GeoImplicit implicitCurve;
 	private final boolean bernsteinBasedPlotter;
@@ -46,7 +48,7 @@ public class DrawImplicitCurve extends DrawLocus {
 	 * @param implicitCurve implicit curve
 	 */
 	public DrawImplicitCurve(EuclidianView view, GeoImplicit implicitCurve) {
-		this(view, implicitCurve, BERNSTEIN_BASED_PLOTTER
+		this(view, implicitCurve, PreviewFeature.isAvailable(IMPLICIT_PLOTTER)
 				&& BernsteinPolynomialConverter.iSupported(implicitCurve.toGeoElement()));
 	}
 
