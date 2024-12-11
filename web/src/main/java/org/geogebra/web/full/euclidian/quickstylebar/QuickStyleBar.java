@@ -172,8 +172,10 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		return new PropertySupplier() {
 			@Override
 			public Property getCurrent() {
-				getApp().getActiveEuclidianView()
-						.getEuclidianController().splitSelectedStrokes(true);
+				if (!getApp().getActiveEuclidianView()
+						.getEuclidianController().splitSelectedStrokes(true)) {
+					return initial;
+				}
 				Property current = map.apply(getApp().getSelectionManager().getSelectedGeos());
 				addUndoActionObserver(new PropertySupplier[]{current},
 						getApp().getSelectionManager().getSelectedGeos(),
@@ -190,7 +192,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 
 	private void addColorPropertyButton(List<GeoElement> geos, UndoActionType undoFiler,
 			PropertySupplier... properties) {
-		if (properties.length == 0 || properties[0] == null) {
+		if (properties.length == 0 || properties[0] == null || properties[0].getInitial() == null) {
 			return;
 		}
 		Property firstProperty = properties[0].getInitial();
@@ -241,7 +243,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 
 	private void addPropertyPopupButton(List<GeoElement> geos, String className,
 			boolean closePopupOnAction, UndoActionType undoType, PropertySupplier... properties) {
-		if (properties.length == 0 || properties[0] == null) {
+		if (properties.length == 0 || properties[0] == null || properties[0].getInitial() == null) {
 			return;
 		}
 		Property firstProperty = properties[0].getInitial();
