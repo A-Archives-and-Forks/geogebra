@@ -134,6 +134,9 @@ public enum ValueType {
 			if (right.evaluatesToList()) {
 				return ValueType.LIST;
 			}
+			if (right.getValueType() == COMPLEX) {
+				return COMPLEX;
+			}
 			return left.getValueType();
 		case DOLLAR_VAR_COL:
 		case DOLLAR_VAR_ROW:
@@ -324,7 +327,7 @@ public enum ValueType {
 				|| left.getValueType() == ValueType.NONCOMPLEX2D) {
 			return ValueType.NONCOMPLEX2D;
 		}
-		return left.getValueType();
+		return COMPLEX.check(right, left.getValueType());
 	}
 
 	private ValueType check(ExpressionValue arg, ValueType fallback) {

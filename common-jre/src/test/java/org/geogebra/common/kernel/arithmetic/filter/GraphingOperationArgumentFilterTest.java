@@ -48,9 +48,11 @@ public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 		ExpressionValue function = new Function(getKernel(),
 				new ExpressionNode(getKernel(), 0));
 		assertAllowed(Operation.ABS, function, null, is(true));
-		assertAllowed(Operation.ABS, add("2+i"), null, is(true));
+		assertAllowed(Operation.ABS, add("2+i"), null, is(false));
 		ValidExpression complex = getKernel().getParser().parseGeoGebraExpression("1/i");
-		assertAllowed(Operation.ABS, complex, null, is(true));
+		assertAllowed(Operation.ABS, complex, null, is(false));
+		ValidExpression origin = getKernel().getParser().parseGeoGebraExpression("O");
+		assertAllowed(Operation.ABS, origin, null, is(false));
 	}
 
 	@Test

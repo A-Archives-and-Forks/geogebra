@@ -346,7 +346,7 @@ public class Variable extends ValidExpression {
 		if (reference != null) {
 			return reference.getValueType();
 		}
-		return ValueType.UNKNOWN;
+		return "O".equals(name) ? ValueType.NONCOMPLEX2D : ValueType.UNKNOWN;
 	}
 
 }

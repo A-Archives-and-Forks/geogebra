@@ -44,7 +44,6 @@ public enum GraphingOperationArgumentFilter implements ExpressionFilter, Inspect
 
 	private boolean allowAbs(ExpressionValue left) {
 		return left.evaluatesToNumber(true)
-				|| left instanceof FunctionNVar
-				|| left.getValueType() == ValueType.COMPLEX;
+				|| left instanceof FunctionNVar;
 	}
 }
