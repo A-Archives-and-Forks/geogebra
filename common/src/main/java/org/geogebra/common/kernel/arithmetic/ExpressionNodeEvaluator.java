@@ -1421,7 +1421,7 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 
 	/**
 	 * @param lt
-	 *            condition (unchecked cast ot BooleanValue)
+	 *            condition (unchecked cast to BooleanValue)
 	 * @param rt
 	 *            conditional expr
 	 * @return rt or ?

@@ -204,7 +204,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	protected Coords tmpCoords1 = new Coords(4);
 	protected Coords tmpCoords2 = new Coords(4);
 	protected GColor bgColor;
-	protected GColor bgApplyedColor;
+	protected GColor bgAppliedColor;
 
 	private Kernel3D kernel3D;
 	// list of 3D objects
@@ -3589,7 +3589,7 @@ public abstract class EuclidianView3D extends EuclidianView
 
 	private void updateDecorations(double[][] minMax) {
 		for (int i = 0; i < 3; i++) {
-			axisDrawable[i].setDrawMinMaxImmediatly(minMax);
+			axisDrawable[i].setDrawMinMaxImmediately(minMax);
 			axisDrawable[i].updateDecorations();
 			setAxesIntervals(getScale(i), i);
 
@@ -4194,7 +4194,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	}
 
 	public GColor getApplyedBackground() {
-		return bgApplyedColor;
+		return bgAppliedColor;
 	}
 
 	// ////////////////////////////////////////
@@ -4655,7 +4655,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	 */
 	public void setBackground(GColor updatedColor, GColor applyedColor) {
 		this.bgColor = updatedColor;
-		this.bgApplyedColor = applyedColor;
+		this.bgAppliedColor = applyedColor;
 		if (renderer != null) {
 			renderer.setWaitForUpdateClearColor();
 		}
@@ -5215,7 +5215,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	 * set on touch listener
 	 */
 	public void setEuclidianPanelOnTouchListener() {
-		// overriden in EuclidianView3DA
+		// overridden in EuclidianView3DA
 	}
 
 	/**
@@ -5223,7 +5223,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	 * @return mouse/touch gesture controller
 	 */
 	public MouseTouchGestureController getEuclidianPanelOnTouchListner() {
-		// overriden in EuclidianView3DA
+		// overridden in EuclidianView3DA
 		return null;
 	}
 
