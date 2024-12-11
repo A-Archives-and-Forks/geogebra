@@ -1,7 +1,6 @@
 package org.geogebra.common.util;
 
 import org.geogebra.common.kernel.arithmetic.ExpressionNodeConstants.StringType;
-import org.geogebra.common.util.debug.Log;
 
 import com.himamis.retex.editor.share.util.Unicode;
 
@@ -21,40 +20,35 @@ public final class EngineeringNotationString {
 		if (number == 0) {
 			return formatEngineeringNotation("0", 0, stringType);
 		}
-
-		String valueString = Double.toString(number).replace('e', 'E');
-		Log.debug("ENG: " + valueString);
+		String valueString = Double.toString(number)
+				.replace('e', 'E')
+				.replaceAll("E(\\d+)", "E+$1");
 		String sign = "";
+
 		if (valueString.charAt(0) == '-') {
 			valueString = valueString.substring(1);
 			sign = "-";
 		}
 
-		String significantDigits = getSignificantDigits(valueString);
-		int exponent = getExponent(valueString);
+		String significantDigitsWithComma = getSignificantDigitsWithComma(valueString);
+		String integerPartString = getIntegerPartString(significantDigitsWithComma);
+		String decimalPartString = getDecimalPartString(significantDigitsWithComma);
 
-		Log.debug("SIG: " + significantDigits);
-		Log.debug("EXP: " + exponent);
+		int exponent = 0;
+		if (valueString.contains("E")) {
+			exponent = extractExponentFromScientificNotation(valueString, significantDigitsWithComma);
+		} else if (shouldShiftCommaLeft(integerPartString)) {
+			exponent = getExponentByShiftingCommaLeft(integerPartString);
+		} else if (shouldShiftCommaRight(number)) {
+			exponent = getExponentByShiftingCommaRight(decimalPartString);
+		}
+		exponent = adjustExponent(exponent);
 
-		return "12345";
-
-//		String predecimalsString = getPredecimalsStringForEngineeringNotation(valueString);
-//		String decimalsString = getDecimalsStringForEngineeringNotation(valueString);
-//
-//		int exponent = getPositiveExponentForEngineeringNotation(predecimalsString.length());
-//		if (exponent == 0 && number < 1 && number > -1) {
-//			exponent = getNegativeExponentForEngineeringNotation(decimalsString);
-//		}
-//
-//		if (exponent < 0) {
-//			return sign + createEngineeringNotationWithNegativeExponent(
-//					decimalsString, exponent);
-//		}
-//		return sign + createEngineeringNotationWithPositiveExponent(
-//				predecimalsString, decimalsString, exponent);
+		String modifiedValueString = modifySignificantDigits(significantDigitsWithComma, exponent);
+		return sign + formatEngineeringNotation(modifiedValueString, exponent, stringType);
 	}
 
-	private static String getSignificantDigits(String valueString) {
+	private static String getSignificantDigitsWithComma(String valueString) {
 		String significantDigits = valueString;
 		if (valueString.contains("E")) {
 			significantDigits = extractSignificantDigitsFromScientificNotation(valueString);
@@ -63,32 +57,109 @@ public final class EngineeringNotationString {
 	}
 
 	private static String extractSignificantDigitsFromScientificNotation(String scientific) {
-		if (scientific.contains("E+")) {
-			return scientific.substring(0, scientific.indexOf("E+")).replace(".", "");
-		} else { // E-
-			StringBuilder significantDigits = new StringBuilder();
-			int zerosToFill = Integer.parseInt(scientific.substring(scientific.indexOf("E-") + 2));
-			return "0".repeat(zerosToFill) + scientific.substring(0, scientific.indexOf("E-"));
+		if (scientific.contains("E") && scientific.contains(".")) {
+			int indexOfComma = Integer.parseInt(scientific.substring(scientific.indexOf('E') + 2));
+			StringBuilder significantDigits = new StringBuilder(
+					scientific.substring(0, scientific.indexOf('E'))
+					.replace(".", ""));
+			if (significantDigits.length() > indexOfComma) {
+				significantDigits.insert(indexOfComma + 1, '.');
+			}
+			return significantDigits.toString();
 		}
+		return scientific.substring(0, scientific.indexOf('E'));
 	}
 
-	private static int getExponent(String valueString) {
-		int exponent = 0;
-		if (valueString.contains("E")) {
-			exponent = Integer.parseInt(valueString.substring(valueString.indexOf('E') + 1));
+	private static String getIntegerPartString(String significantDigitsWithComma) {
+		if (significantDigitsWithComma.contains(".")) {
+			return significantDigitsWithComma.substring(0, significantDigitsWithComma.indexOf('.'));
 		}
-		if (valueString.contains(".")) {
-			int endIndex = valueString.contains("E") ? valueString.indexOf('E')
-					: valueString.length();
-			exponent -= valueString.substring(valueString.indexOf('.'), endIndex).length();
+		return significantDigitsWithComma;
+	}
+
+	private static String getDecimalPartString(String significantDigitsWithComma) {
+		if (significantDigitsWithComma.contains(".")) {
+			return significantDigitsWithComma.substring(
+					significantDigitsWithComma.indexOf('.') + 1, significantDigitsWithComma.length());
 		}
-		return exponent / 3 * 3;
+		return "";
+	}
+
+	private static int extractExponentFromScientificNotation(String scientific,
+			String significantDigitsWithComma) {
+		int partAfterE = Integer.parseInt(scientific.substring(scientific.indexOf('E') + 1));
+		if (partAfterE % 3 == 0) {
+			return partAfterE;
+		}
+
+		StringBuilder significantDigits = new StringBuilder(significantDigitsWithComma);
+		removeTrailingZerosAndCommaIfNeeded(significantDigits);
+
+		int significantDigitsAfterComma = 0;
+		if (significantDigits.toString().contains(".")) {
+			significantDigitsAfterComma = significantDigits
+					.substring(significantDigits.indexOf(".") + 1).length();
+		}
+		return partAfterE - significantDigitsAfterComma;
+	}
+
+	private static boolean shouldShiftCommaLeft(String integerPartString) {
+		return integerPartString.length() > 3;
+	}
+
+	private static int getExponentByShiftingCommaLeft(String integerPartString) {
+		return (integerPartString.length() - 1) / 3 * 3;
+	}
+
+	private static boolean shouldShiftCommaRight(double number) {
+		return Math.abs(number) < 1;
+	}
+
+	private static int getExponentByShiftingCommaRight(String decimalPartString) {
+		return -(decimalPartString.length() + 2) / 3 * 3;
+	}
+
+	private static int adjustExponent(int exponent) {
+		if (exponent == 0) {
+			return 0;
+		} else if (exponent > 0) {
+			return exponent - exponent % 3;
+		}
+		return (exponent - 2) / 3 * 3;
+	}
+
+	private static String modifySignificantDigits(String significantDigitsWithComma, int shiftBy) {
+		StringBuilder modified = new StringBuilder(significantDigitsWithComma.length());
+		String significantDigits = significantDigitsWithComma.replace(".", "");
+		int indexOfComma = significantDigitsWithComma.indexOf('.');
+		if (indexOfComma == -1) {
+			indexOfComma = 0;
+		}
+		indexOfComma -= shiftBy;
+
+		int index = 0;
+		while (index < significantDigits.length()) {
+			if (index == indexOfComma) {
+				modified.append('.');
+			}
+			modified.append(significantDigits.charAt(index));
+			index++;
+		}
+
+		removeLeadingZeros(modified);
+		while (index < indexOfComma && modified.length() < 3) {
+			modified.append('0');
+			index++;
+		}
+		return modified.toString();
 	}
 
 	private static String formatEngineeringNotation(String valueString, int exponent,
 			StringType stringType) {
 		StringBuilder engineeringNotation = new StringBuilder();
 		engineeringNotation.append(valueString);
+		removeTrailingZerosAndCommaIfNeeded(engineeringNotation);
+
 		if (stringType == StringType.LATEX) {
 			engineeringNotation.append(" \\cdot 10^{").append(exponent).append("}");
 		} else {
@@ -108,137 +179,25 @@ public final class EngineeringNotationString {
 		return engineeringNotation.toString();
 	}
 
-	private static String getPredecimalsStringForEngineeringNotation(String valueString) {
-		String predecimalsString = valueString;
-		if (valueString.contains("e")) {
-			if (valueString.contains("e+")) {
-				predecimalsString = valueString.substring(0, valueString.indexOf("e"))
-						.replace(".", "");
-				int remainingPredecimals = Integer.parseInt(valueString.substring(
-						valueString.indexOf("+") + 1)) - predecimalsString.length() + 1;
-				for (int i = 0; i < remainingPredecimals; i++) {
-					predecimalsString += "0";
-				}
-			} else if (valueString.contains("e-")) {
-				predecimalsString = "0";
-			}
-		} else if (valueString.contains(".")) {
-			predecimalsString = valueString.substring(0, valueString.indexOf('.'));
-		}
-		return predecimalsString;
-	}
-
-	private static String getDecimalsStringForEngineeringNotation(String valueString) {
-		String decimalsString = "";
-		if (valueString.contains("e")) {
-			if (valueString.contains("e-")) {
-				int zeros = Integer.parseInt(valueString.substring(valueString.indexOf("-") + 1));
-				for (int i = 1; i < zeros; i++) {
-					decimalsString += "0";
-				}
-				decimalsString +=
-						valueString.substring(0, valueString.indexOf("e")).replace(".", "");
-			} else if (valueString.contains("e+")) {
-				decimalsString = "";
-			}
-		} else if (valueString.contains(".")) {
-			decimalsString = valueString.substring(valueString.indexOf(".") + 1,
-					valueString.length());
-		}
-		return decimalsString;
-	}
-
-	private static int getPositiveExponentForEngineeringNotation(int amountOfPredecimals) {
-		if (amountOfPredecimals % 3 == 0) {
-			return amountOfPredecimals - 3;
-		}
-		return amountOfPredecimals % 3 == 2 ? amountOfPredecimals - 2 : amountOfPredecimals - 1;
-	}
-
-	private static int getNegativeExponentForEngineeringNotation(String decimalsString) {
-		boolean nonZeroFound = false;
-		int exponent = 0;
-		for (int i = 0; i < decimalsString.length(); i++) {
-			if (!nonZeroFound && decimalsString.charAt(i) != '0') {
-				nonZeroFound = true;
-			}
-			if (nonZeroFound) {
-				return -(i + 3) / 3 * 3;
-			}
-		}
-		return exponent;
-	}
-
-	private static String createEngineeringNotationWithPositiveExponent(String predecimalsString,
-			String decimalsString, int exponent) {
-		StringBuilder engineeringNotation = new StringBuilder();
-		int shiftBy = predecimalsString.length() - exponent;
-		engineeringNotation.append(predecimalsString.substring(0, shiftBy));
-
-		String remainingPredecimals = predecimalsString.substring(shiftBy);
-		if (decimalsString.isEmpty()) {
-			remainingPredecimals = StringUtil.removeTrailingZeros(remainingPredecimals);
-		}
-
-		if (!remainingPredecimals.isEmpty() || !decimalsString.isEmpty()) {
-			engineeringNotation.append(".");
-		}
-
-		engineeringNotation.append(remainingPredecimals);
-		engineeringNotation.append(decimalsString);
-		removeTrailingZerosAndCommaIfNeeded(engineeringNotation);
-
-		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
-		String exponentString = String.valueOf(exponent);
-		for (int i = 0; i < exponentString.length(); i++) {
-			engineeringNotation.append(Unicode.numberToSuperscript(exponentString.charAt(i) - '0'));
-		}
-		return engineeringNotation.toString();
-	}
-
-	private static String createEngineeringNotationWithNegativeExponent(String decimalsString,
-			int exponent) {
-		StringBuilder engineeringNotation = new StringBuilder();
-		int shiftBy = Math.abs(exponent);
-		String modifiedDecimalsString = decimalsString;
-
-		for (int i = shiftBy; i >= modifiedDecimalsString.length(); i--) {
-			modifiedDecimalsString += "0";
-		}
-
-		engineeringNotation.append(StringUtil.removeLeadingZeros(
-				modifiedDecimalsString.substring(0, shiftBy)));
-		if (engineeringNotation.length() == 0) {
-			engineeringNotation.append("0");
-		}
-		if (!modifiedDecimalsString.substring(shiftBy).isEmpty()) {
-			engineeringNotation.append(".");
-		}
-
-		engineeringNotation.append(modifiedDecimalsString.substring(shiftBy));
-		if (decimalsString.length() % 3 == 0) {
-			removeTrailingZerosAndCommaIfNeeded(engineeringNotation);
-		}
-
-		engineeringNotation.append(" ").append(Unicode.CENTER_DOT).append(" 10");
-		engineeringNotation.append(Unicode.SUPERSCRIPT_MINUS);
-		String exponentString = String.valueOf(exponent);
-		for (int i = 1; i < exponentString.length(); i++) {
-			engineeringNotation.append(Unicode.numberToSuperscript(exponentString.charAt(i) - '0'));
-		}
-
-		return engineeringNotation.toString();
-	}
-
-	private static void removeTrailingZerosAndCommaIfNeeded(StringBuilder engineeringNotation) {
-		if (engineeringNotation.length() < 2) {
+	private static void removeLeadingZeros(StringBuilder stringBuilder) {
+		if (stringBuilder.length() < 2) {
 			return;
 		}
-		String modified = StringUtil.removeTrailingZeros(engineeringNotation.toString());
+		String modified = StringUtil.removeLeadingZeros(stringBuilder.toString());
+		if (modified.charAt(0) == '.') {
+			modified = "0" + modified;
+		}
+		stringBuilder.replace(0, stringBuilder.length(), modified);
+	}
+
+	private static void removeTrailingZerosAndCommaIfNeeded(StringBuilder stringBuilder) {
+		if (stringBuilder.length() < 2 || !stringBuilder.toString().contains(".")) {
+			return;
+		}
+		String modified = StringUtil.removeTrailingZeros(stringBuilder.toString());
 		if (modified.charAt(modified.length() - 1) == '.') {
 			modified = modified.substring(0, modified.length() - 1);
 		}
-		engineeringNotation.replace(0, engineeringNotation.length(), modified);
+		stringBuilder.replace(0, stringBuilder.length(), modified);
 	}
-
 }
