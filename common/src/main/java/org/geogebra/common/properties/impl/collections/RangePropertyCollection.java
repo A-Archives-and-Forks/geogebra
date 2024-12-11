@@ -1,5 +1,7 @@
 package org.geogebra.common.properties.impl.collections;
 
+import java.util.List;
+
 import org.geogebra.common.properties.RangeProperty;
 
 /**
@@ -11,7 +13,7 @@ public class RangePropertyCollection<T extends RangeProperty<Integer>>
 	/**
 	 * @param properties properties to handle
 	 */
-	public RangePropertyCollection(T[] properties) {
+	public RangePropertyCollection(List<T> properties) {
 		super(properties);
 	}
 
