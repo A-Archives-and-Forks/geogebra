@@ -780,7 +780,7 @@ public class Equation extends ValidExpression implements EquationValue {
 	}
 
 	/**
-	 * @return degree; overriden by forcedLine, forceConic, forceImplicitPoly
+	 * @return degree; overridden by forcedLine, forceConic, forceImplicitPoly
 	 */
 	public int preferredDegree() {
 		if (isForcedLine() || isForcedPlane()) {
@@ -841,21 +841,6 @@ public class Equation extends ValidExpression implements EquationValue {
 	public static boolean isAlgebraEquation(GeoElementND geo) {
 		return geo instanceof EquationValue && (geo.getParentAlgorithm() == null
 				|| geo.getParentAlgorithm().getClassName() == Algos.Expression);
-	}
-
-	@Override
-	public void setToUser() {
-		// only needed for geos
-	}
-
-	@Override
-	public boolean setTypeFromXML(String style, String parameter, boolean force) {
-		return false;
-	}
-
-	@Override
-	public void setToImplicit() {
-		// only for geos
 	}
 
 	/**

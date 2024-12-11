@@ -62,6 +62,7 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.ModeSetter;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.Path;
+import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.Region;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
@@ -6004,7 +6005,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		// stop all animation if slider dragged
 		if (movedGeoNumeric.isAnimating()) {
-			kernel.getAnimatonManager().stopAnimation();
+			kernel.getAnimationManager().stopAnimation();
 		}
 
 		movedGeoNumeric.setValue(newVal);
@@ -6998,9 +6999,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			// make sure when a circle is dragged it stays in
 			// (x+2)^2+(y-3)^2=25 form
 			if (movedGeoConic.getType() == GeoConicNDConstants.CONIC_CIRCLE
-					&& movedGeoConic
-							.getToStringMode() == GeoConicND.EQUATION_USER) {
-				movedGeoConic.setToStringMode(GeoConicND.EQUATION_SPECIFIC);
+					&& movedGeoConic.getEquationForm()
+					== QuadraticEquationRepresentable.Form.USER) {
+				movedGeoConic.setEquationForm(QuadraticEquationRepresentable.Form.SPECIFIC);
 			}
 
 			// make sure vertex snaps to grid for parabolas
@@ -8559,7 +8560,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		 * Conintuity handling
 		 *
 		 * If the mouse is moved wildly we take intermediate steps to get a more
-		 * continous behaviour
+		 * continuous behaviour
 		 */
 		if (kernel.isContinuous() && (lastMouseLoc != null)) {
 			double dx = mouseLoc.x - lastMouseLoc.x;
@@ -9512,7 +9513,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 					view.setSelectionRectangle(null);
 					// hit found
 					if (hits != null && hits.size() > 0) {
-						selection.addSelectedGeos(hits.getHitsGroupped(), true);
+						selection.addSelectedGeos(hits.getHitsGrouped(), true);
 						updateBoundingBoxFromSelection(false);
 					}
 				}
@@ -10367,7 +10368,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 
 		// allow drag with right mouse button or ctrl
-		// make sure Ctrl still works for selection (when no dragging occured)
+		// make sure Ctrl still works for selection (when no dragging occurred)
 		if (event.isRightClick() || (control && isDraggingOccuredBeyondThreshold())) {
 			if (!temporaryMode) {
 				processRightReleased(event, type);
@@ -10385,9 +10386,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				|| this.animationButtonPressed) {
 			this.animationButtonPressed = false;
 			if (kernel.isAnimationRunning()) {
-				kernel.getAnimatonManager().stopAnimation();
+				kernel.getAnimationManager().stopAnimation();
 			} else {
-				kernel.getAnimatonManager().startAnimation();
+				kernel.getAnimationManager().startAnimation();
 			}
 
 			// make sure geo.updateRepaint(); doesn't trigger update scripts

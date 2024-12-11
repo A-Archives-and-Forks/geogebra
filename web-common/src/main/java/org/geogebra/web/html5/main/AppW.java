@@ -235,7 +235,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	private boolean undoRedoPanelAllowed = true;
 	private TimerSystemW timers;
 	HashMap<String, String> revTranslateCommandTable = new HashMap<>();
-	private Runnable closeBroserCallback;
+	private Runnable closeBrowserCallback;
 	private Runnable insertImageCallback;
 	private final ArrayList<RequiresResize> euclidianHandlers = new ArrayList<>();
 	private ArchiveLoader archiveLoader;
@@ -1019,7 +1019,8 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		resetUI();
 		resetUrl();
 		if (examController.isExamActive()) {
-			examController.createNewTempMaterial();
+			setActiveMaterial(examController.getNewTempMaterial());
+			examController.reapplySettingsRestrictions();
 		}
 		setSaved();
 	}
@@ -1574,7 +1575,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 * Load Google Drive APIs
 	 */
 	protected void initGoogleDriveEventFlow() {
-		// overriden in AppWFull
+		// overridden in AppWFull
 	}
 
 	/**
@@ -1626,8 +1627,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *
 	 */
 	protected void initCoreObjects() {
-		kernel = newKernel(this);
-		kernel.setAngleUnit(kernel.getApplication().getConfig().getDefaultAngleUnit());
+		initKernel();
 
 		initSettings();
 
@@ -1855,7 +1855,6 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		euclidianView = newEuclidianView(euclidianViewPanel,
 				getEuclidianController(), showEvAxes, showEvGrid, 1,
 				getSettings().getEuclidian(1));
-		GlobalScope.examController.registerRestrictable(euclidianView);
 		return euclidianView;
 	}
 
@@ -2660,7 +2659,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *            keyboard listener
 	 * @param forceShow
 	 *            whether it must appear now
-	 * @return whether keybaord is shown
+	 * @return whether keyboard is shown
 	 */
 	public boolean showKeyboard(MathKeyboardListener textField,
 			boolean forceShow) {
@@ -2709,16 +2708,16 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	 *            callback for closing a header panel
 	 */
 	public void setCloseBrowserCallback(Runnable runnable) {
-		this.closeBroserCallback = runnable;
+		this.closeBrowserCallback = runnable;
 	}
 
 	/**
 	 * Run callback for closing a header panel
 	 */
 	public void onBrowserClose() {
-		if (this.closeBroserCallback != null) {
-			this.closeBroserCallback.run();
-			this.closeBroserCallback = null;
+		if (this.closeBrowserCallback != null) {
+			this.closeBrowserCallback.run();
+			this.closeBrowserCallback = null;
 		}
 	}
 
@@ -3533,8 +3532,16 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		return toolTipManager;
 	}
 
+	/**
+	 * @return whether the exam mode is set from the outside and we're in app mode
+	 */
 	public boolean isLockedExam() {
-		return !StringUtil.empty(getAppletParameters().getParamExamMode());
+		return !StringUtil.empty(getAppletParameters().getParamExamMode())
+				&& supportsExamUI();
+	}
+
+	protected boolean supportsExamUI() {
+		return appletParameters.getDataParamApp() && !isWhiteboardActive();
 	}
 
 	/**
@@ -3544,5 +3551,12 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 	public boolean isToolboxCategoryEnabled(String category) {
 		List<String> tools = getAppletParameters().getDataParamCustomToolbox();
 		return tools.contains(category) || tools.isEmpty();
+	}
+
+	/**
+	 * Remove all connections to the global exam controller
+	 */
+	public void detachFromExamController() {
+		// only with UI
 	}
 }

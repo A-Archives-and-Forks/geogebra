@@ -94,7 +94,7 @@ public class EuclidianStyleBarStatic {
 				if (!flag) {
 
 					GeoElement geo0 = redefineGeo(geo,
-							getDefinitonString(algo.getInput()[0]));
+							getDefinitionString(algo.getInput()[0]));
 
 					if (i == 0) {
 						ret = geo0;
@@ -134,7 +134,7 @@ public class EuclidianStyleBarStatic {
 
 				// "false" here so that pinning works for eg polygons
 				GeoElement geo0 = redefineGeo(geo, "AttachCopyToView["
-						+ getDefinitonString(geo) + "," + viewNo + "]");
+						+ getDefinitionString(geo) + "," + viewNo + "]");
 
 				if (i == 0) {
 					ret = geo0;
@@ -237,18 +237,18 @@ public class EuclidianStyleBarStatic {
 		return changed;
 	}
 
-	private static String getDefinitonString(GeoElement geo) {
+	private static String getDefinitionString(GeoElement geo) {
 		// needed for eg freehand functions
-		String definitonStr = geo.getDefinition(StringTemplate.maxPrecision);
+		String definitionStr = geo.getDefinition(StringTemplate.maxPrecision);
 
 		// everything else
-		if ("".equals(definitonStr)) {
+		if ("".equals(definitionStr)) {
 			// "false" here so that pinning works for eg polygons
-			definitonStr = geo.getFormulaString(StringTemplate.maxPrecision,
+			definitionStr = geo.getFormulaString(StringTemplate.maxPrecision,
 					false);
 		}
 
-		return definitonStr;
+		return definitionStr;
 
 	}
 

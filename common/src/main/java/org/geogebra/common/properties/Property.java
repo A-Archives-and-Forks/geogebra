@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
  * A settings property of the GeoGebra App.
  */
 public interface Property extends PropertySupplier {
-
     /**
      * Returns the localized name of the property.
      *
