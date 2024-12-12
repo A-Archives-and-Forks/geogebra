@@ -23,6 +23,10 @@ dependencies {
     testImplementation(libs.hamcrest)
     testImplementation(libs.mockito.core)
 
+    // Junit 5 support with backward compatibility
+    testImplementation(libs.junit5.jupiter)
+    testRuntimeOnly(libs.junit5.vintage)
+
     testFixturesImplementation(project(":ggbjdk"))
     testFixturesImplementation(libs.junit)
     testFixturesImplementation(libs.hamcrest)
@@ -31,6 +35,9 @@ dependencies {
 
 tasks.test {
     ignoreFailures = true
+    useJUnitPlatform {
+        includeEngines("junit-jupiter", "junit-vintage")
+    }
 }
 
 // http://stackoverflow.com/questions/20638039/gradle-and-jacoco-instrument-classes-from-a-separate-subproject

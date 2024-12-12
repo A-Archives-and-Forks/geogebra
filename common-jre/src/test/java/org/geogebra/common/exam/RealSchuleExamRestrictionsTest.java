@@ -1,33 +1,25 @@
 package org.geogebra.common.exam;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.geogebra.common.BaseUnitTest;
-import org.geogebra.common.contextmenu.ContextMenuFactory;
+import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.main.settings.EuclidianSettings;
 import org.geogebra.common.main.settings.Settings;
-import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
-import org.geogebra.common.properties.impl.DefaultPropertiesRegistry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class RealSchuleExamRestrictionsTest extends BaseUnitTest {
+public class RealSchuleExamRestrictionsTest extends BaseExamTests {
 
 	private Settings settings;
 	private EuclidianSettings evSettings;
-	private ExamController examController;
 
-	@Before
+	@BeforeEach
 	public void setupExam() {
-		examController = new ExamController(new DefaultPropertiesRegistry(),
-				new GeoElementPropertiesFactory(), new ContextMenuFactory());
-		examController.setActiveContext(this, getKernel().getAlgebraProcessor()
-						.getCommandDispatcher(), getKernel().getAlgebraProcessor(),
-				getLocalization(), getSettings(), null, null, null, null);
-		settings = getSettings();
+		setInitialApp(SuiteSubApp.GRAPHING);
+		settings = app.getSettings();
 		evSettings = settings.getEuclidian(1);
 	}
 
