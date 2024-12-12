@@ -109,7 +109,8 @@ public final class ExamControllerTests extends BaseExamTests {
         assertAll(
                 () -> assertNull(examController.getStartDate()),
                 () -> assertNull(examController.getFinishDate()),
-                () -> assertEquals(ExamState.IDLE, examController.getState()), // back to initial state
+                // back to initial state
+                () -> assertEquals(ExamState.IDLE, examController.getState()),
                 () -> assertEquals(List.of(
                         ExamState.PREPARING,
                         ExamState.ACTIVE,
@@ -199,7 +200,8 @@ public final class ExamControllerTests extends BaseExamTests {
 
         switchApp(SuiteSubApp.GEOMETRY);
         assertAll(
-                // restrictions should be reverted on the previous (Graphing app) command dispatcher...
+                // restrictions should be reverted
+                // on the previous (Graphing app) command dispatcher...
                 () -> assertTrue(previousCommandDispatcher
                         .isAllowedByCommandFilters(Commands.Derivative)),
                 // ...and applied to the new (Geometry app) command dispatcher
