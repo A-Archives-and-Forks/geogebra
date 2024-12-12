@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import org.geogebra.common.kernel.algos.AlgoElement;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
+import org.geogebra.common.kernel.statistics.AlgoFitImplicit;
 import org.geogebra.common.kernel.statistics.AlgoFitLineX;
 import org.geogebra.common.kernel.statistics.AlgoFitLineY;
 import org.geogebra.common.kernel.statistics.FitAlgo;
@@ -22,13 +23,11 @@ public class Realschule {
 		if (isAllowedFitCommand(element.getParentAlgorithm())) {
 			return true;
 		}
-		// is Line, Ray, Conic, Implicit Equation or Function, ...
 		if ((element.isGeoLine()
 				|| element.isGeoRay()
 				|| element.isGeoConic()
 				|| element.isGeoFunction()
 				|| element.isImplicitEquation())
-				// ...created with a command or tool;
 				&& (element.getParentAlgorithm() != null)) {
 			return false;
 		}
@@ -40,6 +39,6 @@ public class Realschule {
 			return false;
 		}
 		return algo instanceof FitAlgo || algo instanceof AlgoFitLineX
-				|| algo instanceof AlgoFitLineY;
+				|| algo instanceof AlgoFitLineY || algo instanceof AlgoFitImplicit;
 	}
 }
