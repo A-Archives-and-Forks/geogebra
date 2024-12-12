@@ -87,4 +87,9 @@ public class FactorOutTest extends BaseSimplifyTest {
 	public void testMinusTimesMinusShouldFlipOperand() {
 		shouldSimplify("-6 (-2 - 2sqrt(2))", "12 (1 + sqrt(2))");
 	}
+
+	@Test
+	public void test() {
+		shouldSimplify("(-8 + 2sqrt(2)) (-2 - sqrt(6))", "2 ((4 sqrt(6) + 8 + (-sqrt(6) - 2) sqrt(2)))");
+	}
 }

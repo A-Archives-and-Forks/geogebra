@@ -1,0 +1,55 @@
+package org.geogebra.common.kernel.arithmetic;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.geogebra.common.kernel.StringTemplate;
+import org.geogebra.common.kernel.arithmetic.simplifiers.CancelGCDInFraction;
+import org.geogebra.common.kernel.arithmetic.simplifiers.FactorOut;
+import org.geogebra.common.kernel.arithmetic.simplifiers.PositiveDenominator;
+import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
+import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyToRadical;
+import org.geogebra.common.util.debug.Log;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+
+public class ExpressionSimplfiers {
+
+	private final List<SimplifyNode> items;
+
+	public ExpressionSimplfiers(@NonNull SimplifyUtils utils) {
+		items = Arrays.asList(
+				new SimplifyToRadical(utils),
+				new ReduceRoot(utils),
+				new ReduceToIntegers(utils),
+				new SimplifyMultiplication(utils),
+				new FactorOut(utils),
+				new CancelGCDInFraction(utils),
+				new PositiveDenominator(utils),
+				new OperandOrder(utils)
+		);
+	}
+
+	public ExpressionNode run(@Nullable ExpressionValue resolution) {
+		if (resolution == null) {
+			return null;
+		}
+		ExpressionNode node = resolution.wrap();
+		for (SimplifyNode simplifier : items) {
+			if (simplifier.isAccepted(node)) {
+				String before = node.toValueString(StringTemplate.defaultTemplate);
+				node = simplifier.apply(node);
+				String after = node.toValueString(StringTemplate.defaultTemplate);
+				if (!after.equals(before)) {
+					Log.debug(simplifier.name() + ": " + after
+							+ "(=" + node.evaluateDouble() + ")");
+				}
+			}
+		}
+		return node;
+	}
+
+}

@@ -17,8 +17,8 @@ public class SimplifyUtils {
 		return newNode(node.getRightTree(), node.getOperation(), node.getLeftTree());
 	}
 
-	public MyDouble newDouble(double v) {
-		return new MyDouble(kernel, v);
+	public ExpressionValue newDouble(double v) {
+		return new ExpressionNode(kernel, v);
 	}
 
 	public ExpressionNode newNode(ExpressionValue left, Operation operation, ExpressionValue right) {
@@ -185,7 +185,7 @@ public class SimplifyUtils {
 		return ev != null && isIntegerValue(ev.evaluateDouble());
 	}
 
-	private static boolean isIntegerValue(double value) {
+	static boolean isIntegerValue(double value) {
 		return DoubleUtil.isEqual(Math.round(value), value, Kernel.STANDARD_PRECISION);
 
 	}
@@ -347,5 +347,13 @@ public class SimplifyUtils {
 
 	public boolean isSqrt(ExpressionValue ev) {
 		return ev.isOperation(Operation.SQRT);
+	}
+
+	public ExpressionNode deepCopy(ExpressionNode node) {
+		return node.deepCopy(kernel);
+	}
+
+	public boolean isDivNode(ExpressionNode node) {
+		return Operation.DIVIDE.equals(node.getOperation());
 	}
 }

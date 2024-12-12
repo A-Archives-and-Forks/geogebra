@@ -2,7 +2,6 @@ package org.geogebra.common.kernel.arithmetic.simplifiers;
 
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
-import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.kernel.arithmetic.Traversing;
 import org.geogebra.common.util.DoubleUtil;
@@ -33,7 +32,7 @@ public class ReduceRoot implements SimplifyNode {
 					if (DoubleUtil.isInteger(sqrt)) {
 						return utils.newDouble(sqrt);
 					}
-					MyDouble evalUnderSqrt = utils.newDouble(valUnderSqrt);
+					ExpressionValue evalUnderSqrt = utils.newDouble(valUnderSqrt);
 					ev.wrap().setLeft(evalUnderSqrt);
 				}
 				return ev;

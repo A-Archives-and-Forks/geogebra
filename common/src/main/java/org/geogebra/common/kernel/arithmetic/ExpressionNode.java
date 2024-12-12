@@ -3492,7 +3492,7 @@ public class ExpressionNode extends ValidExpression
 	 * @return whether if this one is a fraction that can be rationalized
 	 */
 	public boolean isRationalizableFraction() {
-		ExpressionNode resolvedFraction = RationalizableFraction.getResolution(this);
+		ExpressionValue resolvedFraction = RationalizableFraction.getResolution(this);
 		if (resolvedFraction != null) {
 			resolve = resolvedFraction;
 		}

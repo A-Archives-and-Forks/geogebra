@@ -1,0 +1,64 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x0000000101d1414c, pid=3603, tid=22787
+#
+# JRE version: OpenJDK Runtime Environment Temurin-11.0.24+8 (11.0.24+8) (build 11.0.24+8)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-11.0.24+8 (11.0.24+8, mixed mode, tiered, compressed oops, g1 gc, bsd-aarch64)
+# Problematic frame:
+# V  [libjvm.dylib+0x27414c]  G1CodeRootSet::add(nmethod*)+0x14
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -DapplicationName=desktop -DarchivesBaseName=desktop -DbuildTreePath=:desktop -Ddescription=Parts of GeoGebra related to desktop platforms -DdisplayName=project ':desktop' -DdistsDirName=distributions -DdocsDirName=docs -DexecutableDir=bin -Dgroup=geogebra -DlibsDirName=libs -Dname=desktop -Dorg.gradle.daemon=true -Dorg.gradle.internal.worker.tmpdir=/Users/laszlogal/IdeaProjects/geogebra/desktop/build/tmp/test/work -Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -Dorg.gradle.native=false -Dorg.gradle.parallel=true -Dpath=:desktop -Dstatus=integration -DtestReportDirName=tests -DtestResultsDirName=test-results -Dversion=unspecified -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=HU -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 31'
+
+Host: Mac14,3 arm64 1 MHz, 8 cores, 24G, Darwin 24.1.0
+Time: Fri Nov 22 10:40:13 2024 CET elapsed time: 13.412611 seconds (0d 0h 0m 13s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000000011f00c000):  JavaThread "C2 CompilerThread0" daemon [_thread_in_vm, id=22787, stack(0x0000000170834000,0x0000000170a37000)]
+
+
+Current CompileTask:
+C2:  13412 5409       4       org.geogebra.common.kernel.parser.Parser::jj_3R_ensqrt_1331_7_82 (28 bytes)
+
+Stack: [0x0000000170834000,0x0000000170a37000],  sp=0x0000000170a34ff0,  free space=2051k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.dylib+0x27414c]  G1CodeRootSet::add(nmethod*)+0x14
+V  [libjvm.dylib+0x54f5f4]  nmethod::oops_do(OopClosure*, bool)+0x50
+V  [libjvm.dylib+0x27b718]  G1CollectedHeap::register_nmethod(nmethod*)+0x60
+V  [libjvm.dylib+0x54dee8]  nmethod::nmethod(Method*, CompilerType, int, int, int, CodeOffsets*, int, DebugInformationRecorder*, Dependencies*, CodeBuffer*, int, OopMapSet*, ExceptionHandlerTable*, ImplicitExceptionTable*, AbstractCompiler*, int, _jobject*, _jobject*)+0x450
+V  [libjvm.dylib+0x54d628]  nmethod::new_nmethod(methodHandle const&, int, int, CodeOffsets*, int, DebugInformationRecorder*, Dependencies*, CodeBuffer*, int, OopMapSet*, ExceptionHandlerTable*, ImplicitExceptionTable*, AbstractCompiler*, int, _jobject*, _jobject*)+0x15c
+V  [libjvm.dylib+0x151ad4]  ciEnv::register_method(ciMethod*, int, CodeOffsets*, int, CodeBuffer*, int, OopMapSet*, ExceptionHandlerTable*, ImplicitExceptionTable*, AbstractCompiler*, bool, bool, RTMState)+0x2d8
+V  [libjvm.dylib+0x1b441c]  Compile::Compile(ciEnv*, C2Compiler*, ciMethod*, int, bool, bool, bool, bool, DirectiveSet*)+0x878
+V  [libjvm.dylib+0x134120]  C2Compiler::compile_method(ciEnv*, ciMethod*, int, DirectiveSet*)+0xc0
+V  [libjvm.dylib+0x1c0fc0]  CompileBroker::invoke_compiler_on_method(CompileTask*)+0x4b0
+V  [libjvm.dylib+0x1c09a4]  CompileBroker::compiler_thread_loop()+0x1bc
+V  [libjvm.dylib+0x6c77d0]  JavaThread::thread_main_inner()+0x80
+V  [libjvm.dylib+0x6c7614]  JavaThread::run()+0x128
+V  [libjvm.dylib+0x6c53c0]  Thread::call_run()+0x7c
+V  [libjvm.dylib+0x572d8c]  thread_native_entry(Thread*)+0x11c
+C  [libsystem_pthread.dylib+0x72e4]  _pthread_start+0x88
+
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 2 (SEGV_ACCERR), si_addr: 0xaab39279eb8c0a51
+
+Register to memory mapping:
+
+ x0=0xaab39279eb8c0a49 is an unknown value
+ x1=0x0000000112c0a790 is at entry_point+-560 in (nmethod*)0x0000000112c0a790
+ x2=0x0 is NULL
+ x3=0x0000000112c0b3e8 is at entry_point+2600 in (nmethod*)0x0000000112c0a790
+ x4=0x00000000199d3a98 is an unknown value
+ x5=0x0000000000000008 is an unknown value
+ x6=0x000000010ae64d00 is at code_begin+0 in 
+[CodeBlob (0x000000010ae64c90)]
+Framesize: 2
+UncommonTrapBlob

@@ -1,45 +1,30 @@
 
 package org.geogebra.common.kernel.arithmetic;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
-import org.geogebra.common.kernel.arithmetic.simplifiers.CancelGCDInFraction;
-import org.geogebra.common.kernel.arithmetic.simplifiers.FactorOut;
-import org.geogebra.common.kernel.arithmetic.simplifiers.PositiveDenominator;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
-import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
-import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
-import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyToRadical;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.debug.Log;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public final class RationalizeFractionAlgo {
 	private final Kernel kernel;
 	private final ExpressionNode numerator;
 	private final ExpressionNode denominator;
-	private final List<SimplifyNode> simplifiers;
 	private final SimplifyUtils utils;
 
-	public RationalizeFractionAlgo(Kernel kernel, ExpressionNode numerator,
-			ExpressionNode denominator) {
-		this.kernel = kernel;
+	public RationalizeFractionAlgo(@NonNull SimplifyUtils utils,
+			@NonNull ExpressionNode numerator,
+			@NonNull ExpressionNode denominator) {
+		this.utils = utils;
+		this.kernel = numerator.getKernel();
 		this.numerator = numerator.deepCopy(kernel);
 		this.denominator = denominator.deepCopy(kernel);
-		utils = new SimplifyUtils(kernel);
-		simplifiers = Arrays.asList(
-				new SimplifyToRadical(utils),
-				new ReduceRoot(utils),
-				new ReduceToIntegers(utils),
-				new SimplifyMultiplication(utils),
-				new FactorOut(utils),
-	        	new CancelGCDInFraction(utils),
-				new PositiveDenominator(utils),
-				new OperandOrder(utils)
-		);
+
+
 	}
 
 	public ExpressionNode compute() {
@@ -47,26 +32,12 @@ public final class RationalizeFractionAlgo {
 		if (node == null) {
 			return null;
 		}
-		Log.debug("rationalize: " + node.toValueString(StringTemplate.defaultTemplate));
-
-		node = runSimplifiers(node);
+		Log.debug("rationalize: " + node.toValueString(StringTemplate.defaultTemplate)
+			+ "(=" + node.evaluateDouble() + ")");
 
 		return checkDecimals(node) ? null : node;
 	}
 
-	private ExpressionNode runSimplifiers(ExpressionNode node) {
-		for (SimplifyNode simplifier : simplifiers) {
-			if (simplifier.isAccepted(node)) {
- 				String before = node.toValueString(StringTemplate.defaultTemplate);
-				node = simplifier.apply(node);
-				String after = node.toValueString(StringTemplate.defaultTemplate);
-				if (!after.equals(before)) {
-					Log.debug(simplifier.name() + ": " + after);
-				}
-			}
-		}
-		return node;
-	}
 
 	/**
 	 * Package private to be testable in isolation

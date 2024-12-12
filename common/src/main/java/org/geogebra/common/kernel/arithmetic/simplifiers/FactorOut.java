@@ -5,6 +5,7 @@ import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isIntegerValue
 
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionValue;
 import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
@@ -215,7 +216,7 @@ public class FactorOut implements SimplifyNode {
 		double treeFactor = treeMultiplier / gcd;
 		boolean shouldInvert = operation.equals(Operation.PLUS) && constFactor < 0;
 
-		MyDouble factoredNumber = utils.newDouble(shouldInvert ? -constFactor : constFactor);
+		ExpressionValue factoredNumber = utils.newDouble(shouldInvert ? -constFactor : constFactor);
 		ExpressionNode expFactor = utils.newDouble(treeFactor).wrap();
 
 		ExpressionNode factoredExpression = utils.multiplyR(
@@ -230,9 +231,9 @@ public class FactorOut implements SimplifyNode {
 	}
 
 
-	private ExpressionNode getAddition(MyDouble factoredNumber, Operation operation,
-			ExpressionNode factoredExpression) {
-			if (utils.getLeftMultiplier(factoredExpression) < 0) {
+	private ExpressionNode getAddition(ExpressionValue factoredNumber, Operation operation,
+			ExpressionValue factoredExpression) {
+			if (utils.getLeftMultiplier(factoredExpression.wrap()) < 0) {
 				return utils.newNode(factoredNumber, flip(operation), factoredExpression);
 			}
 			return utils.newNode(factoredNumber, operation, factoredExpression);
@@ -253,7 +254,7 @@ public class FactorOut implements SimplifyNode {
 		double constFactor = constNumber / gcd;
 		double treeFactor = treeMultiplier / gcd;
 
-		MyDouble factoredNumber = utils.newDouble(constFactor);
+		ExpressionValue factoredNumber = utils.newDouble(constFactor);
 		ExpressionNode expFactor = utils.newDouble(treeFactor).wrap();
 
 		ExpressionNode factoredExpression = utils.multiplyR(
