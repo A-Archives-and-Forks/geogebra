@@ -101,20 +101,16 @@ public final class GeoElementPropertiesFactory {
 		return createPropertiesArray(localization, elements, Stream.<Property>of(
 				createPropertyCollection(elements,
 						element -> new NameProperty(localization, element),
-						properties -> new StringPropertyCollection<>(
-								properties.toArray(new NameProperty[0]))),
+						StringPropertyCollection::new),
 				createPropertyCollection(elements,
 						element -> new MinProperty(processor, localization, element),
-						properties -> new StringPropertyCollection<>(
-								properties.toArray(new MinProperty[0]))),
+						StringPropertyCollection::new),
 				createPropertyCollection(elements,
 						element -> new MaxProperty(processor, localization, element),
-						properties -> new StringPropertyCollection<>(
-								properties.toArray(new MaxProperty[0]))),
+						StringPropertyCollection::new),
 				createPropertyCollection(elements,
 						element -> new AnimationStepProperty(processor, localization, element),
-						properties -> new StringPropertyCollection<>(
-								properties.toArray(new AnimationStepProperty[0]))),
+						StringPropertyCollection::new),
 				createShowObjectProperty(localization, elements),
 				createColorProperty(localization, elements),
 				createPointStyleProperty(localization, elements),
@@ -124,25 +120,20 @@ public final class GeoElementPropertiesFactory {
 				createThicknessProperty(localization, elements),
 				createPropertyCollection(elements,
 						element -> new SlopeSizeProperty(localization, element),
-						properties -> new RangePropertyCollection<>(
-								properties.toArray(new SlopeSizeProperty[0]))),
+						RangePropertyCollection::new),
 				createPropertyCollection(elements,
 						element -> new EquationFormProperty(localization, element),
-						properties -> new NamedEnumeratedPropertyCollection<>(
-								properties.toArray(new EquationFormProperty[0]))),
+						NamedEnumeratedPropertyCollection::new),
 				createPropertyCollection(elements,
 						element -> new CaptionStyleProperty(localization, element),
-						properties -> new NamedEnumeratedPropertyCollection<>(
-								properties.toArray(new CaptionStyleProperty[0]))),
+						NamedEnumeratedPropertyCollection::new),
 				createPropertyCollection(elements,
 						element -> new ShowTraceProperty(localization, element),
-						properties -> new BooleanPropertyCollection<>(
-								properties.toArray(new ShowTraceProperty[0]))),
+						BooleanPropertyCollection::new),
 				createFixObjectProperty(localization, elements),
 				createPropertyCollection(elements,
 						element -> new ShowInAVProperty(localization, element),
-						properties -> new BooleanPropertyCollection<>(
-								properties.toArray(new ShowInAVProperty[0])))
+						BooleanPropertyCollection::new)
 		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
@@ -168,10 +159,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createPointStyleExtendedProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createPointStyleExtendedProperty(localization, elements));
-		addPropertyIfNotNull(properties, createPointSizeProperty(localization, elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createPointStyleExtendedProperty(localization, elements),
+				createPointSizeProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -185,8 +176,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new PointStyleExtendedProperty(localization, element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-					properties.toArray(new PointStyleExtendedProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -211,10 +201,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public List<Property> createNotesLineStyleProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createLineStyleProperty(localization, elements));
-		addPropertyIfNotNull(properties, createNotesThicknessProperty(localization, elements));
-		return properties;
+		return Stream.of(
+				createLineStyleProperty(localization, elements),
+				createNotesThicknessProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	/**
@@ -225,10 +215,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createNotesColorWithOpacityProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createColorWithOpacityProperty(localization, elements));
-		addPropertyIfNotNull(properties, createOpacityColorProperty(localization, elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createColorWithOpacityProperty(localization, elements),
+				createOpacityColorProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -239,10 +229,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createObjectBorderProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createBorderColorProperty(localization, elements));
-		addPropertyIfNotNull(properties, createBorderThicknessProperty(localization, elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createBorderColorProperty(localization, elements),
+				createBorderThicknessProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -253,11 +243,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createCellBorderStyleProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createCellBorderStyleProperty(localization, elements));
-		addPropertyIfNotNull(properties, createCellBorderThicknessProperty(localization,
-				elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createCellBorderStyleProperty(localization, elements),
+				createCellBorderThicknessProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -271,8 +260,7 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new CellBorderThicknessProperty(localization,
 						element),
-				properties -> new RangePropertyCollection<>(
-					properties.toArray(new CellBorderThicknessProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	/**
@@ -285,8 +273,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new CellBorderProperty(localization, element),
-			properties -> new IconsEnumeratedPropertyCollection<>(
-					properties.toArray(new CellBorderProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -299,8 +286,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new ElementColorProperty(localization, element),
-				properties -> new ColorPropertyCollection<>(
-						properties.toArray(new ElementColorProperty[0])));
+				ColorPropertyCollection::new);
 	}
 
 	/**
@@ -313,8 +299,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new NotesColorProperty(localization, element),
-				properties -> new ColorPropertyCollection<>(
-					properties.toArray(new NotesColorProperty[0])));
+				ColorPropertyCollection::new);
 	}
 
 	/**
@@ -327,8 +312,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new NotesColorWithOpacityProperty(localization, element),
-				properties -> new ColorPropertyCollection<>(
-					properties.toArray(new NotesColorWithOpacityProperty[0])));
+				ColorPropertyCollection::new);
 	}
 
 	/**
@@ -341,8 +325,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new NotesFontColorProperty(localization, element),
-				properties -> new ColorPropertyCollection<>(
-					properties.toArray(new NotesFontColorProperty[0])));
+				ColorPropertyCollection::new);
 	}
 
 	/**
@@ -355,12 +338,11 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new NotesInlineBackgroundColorProperty(localization, element),
-				properties -> new ColorPropertyCollection<>(
-					properties.toArray(new NotesInlineBackgroundColorProperty[0])));
+				ColorPropertyCollection::new);
 	}
 
 	/**
-	 * Creates border color property for text and mindmap
+	 * Creates border color property for text and mind-map
 	 * @param localization localization
 	 * @param elements elements
 	 * @return color property
@@ -369,8 +351,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new BorderColorProperty(localization, element),
-				properties -> new ColorPropertyCollection<>(
-					properties.toArray(new BorderColorProperty[0])));
+				ColorPropertyCollection::new);
 	}
 
 	/**
@@ -383,8 +364,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
         return createPropertyCollection(elements,
 				element -> new IsFixedObjectProperty(localization, element),
-				properties -> new BooleanPropertyCollection<>(
-						properties.toArray(new IsFixedObjectProperty[0])));
+				BooleanPropertyCollection::new);
 	}
 
 	/**
@@ -397,8 +377,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new BoldProperty(localization, element),
-				properties -> new BooleanPropertyCollection<>(
-						properties.toArray(new BoldProperty[0])));
+				BooleanPropertyCollection::new);
 	}
 
 	/**
@@ -411,8 +390,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new ItalicProperty(localization, element),
-				properties -> new BooleanPropertyCollection<>(properties
-					.toArray(new ItalicProperty[0])));
+				BooleanPropertyCollection::new);
 	}
 
 	/**
@@ -425,8 +403,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new UnderlineProperty(localization, element),
-				properties -> new BooleanPropertyCollection<>(properties
-					.toArray(new UnderlineProperty[0])));
+				BooleanPropertyCollection::new);
 	}
 
 	/**
@@ -439,8 +416,7 @@ public final class GeoElementPropertiesFactory {
 			List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new PointStyleProperty(localization, element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-						properties.toArray(new PointStyleProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -454,8 +430,7 @@ public final class GeoElementPropertiesFactory {
 			localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new NotesThicknessProperty(localization, element),
-				properties -> new RangePropertyCollection<>(
-					properties.toArray(new NotesThicknessProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	/**
@@ -468,8 +443,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new LineStyleProperty(localization, element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-						properties.toArray(new LineStyleProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -482,8 +456,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new FillingStyleProperty(localization, element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-					properties.toArray(new FillingStyleProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -498,8 +471,7 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new HorizontalAlignmentProperty(localization,
 						element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-				properties.toArray(new HorizontalAlignmentProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -514,8 +486,7 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new VerticalAlignmentProperty(localization,
 						element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-					properties.toArray(new VerticalAlignmentProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -529,8 +500,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new SegmentStartProperty(localization, element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-					properties.toArray(new SegmentStartProperty[0])));
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -544,8 +514,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements, EuclidianView ev) {
 		return createPropertyCollection(elements,
 				element -> new TextFontSizeProperty(localization, element, ev),
-				properties -> new NamedEnumeratedPropertyCollection<>(
-						properties.toArray(new TextFontSizeProperty[0])));
+				NamedEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -559,15 +528,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new SegmentEndProperty(localization, element),
-				properties -> new IconsEnumeratedPropertyCollection<>(
-					properties.toArray(new SegmentEndProperty[0])));
-	}
-
-	private static void addPropertyIfNotNull(List<Property> properties,
-			Property property) {
-		if (property != null) {
-			properties.add(property);
-		}
+				IconsEnumeratedPropertyCollection::new);
 	}
 
 	/**
@@ -580,8 +541,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new OpacityProperty(localization, element),
-				properties -> new RangePropertyCollection<>(
-						properties.toArray(new OpacityProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	/**
@@ -594,8 +554,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new NotesOpacityColorProperty(localization, element),
-			properties -> new RangePropertyCollection<>(
-					properties.toArray(new NotesOpacityColorProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	/**
@@ -608,8 +567,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new BorderThicknessProperty(localization, element),
-				properties -> new RangePropertyCollection<>(
-					properties.toArray(new BorderThicknessProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	/**
@@ -622,8 +580,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new ImageOpacityProperty(localization, element),
-				properties -> new RangePropertyCollection<>(
-					properties.toArray(new ImageOpacityProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	/**
@@ -636,8 +593,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new ShowObjectProperty(localization, element),
-				properties -> new BooleanPropertyCollection<>(
-						properties.toArray(new ShowObjectProperty[0])));
+				BooleanPropertyCollection::new);
 	}
 
 	/**
@@ -650,8 +606,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new PointSizeProperty(localization, element),
-				properties -> new RangePropertyCollection<>(
-						properties.toArray(new PointSizeProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	/**
@@ -664,8 +619,7 @@ public final class GeoElementPropertiesFactory {
 			Localization localization, List<GeoElement> elements) {
 		return createPropertyCollection(elements,
 				element -> new ThicknessProperty(localization, element),
-				properties -> new RangePropertyCollection<>(
-						properties.toArray(new ThicknessProperty[0])));
+				RangePropertyCollection::new);
 	}
 
 	private PropertiesArray createPropertiesArray(Localization localization,
