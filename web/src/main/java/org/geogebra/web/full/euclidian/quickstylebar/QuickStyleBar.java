@@ -168,15 +168,18 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 
 	private PropertySupplier withStrokeSplitting(Function<List<GeoElement>, Property> map,
 			List<GeoElement> activeGeoList) {
-		Property initial = map.apply(activeGeoList);
+
 		return new PropertySupplier() {
+
+			Property current = map.apply(activeGeoList);
+
 			@Override
-			public Property getCurrent() {
+			public Property updateAndGet() {
 				if (!getApp().getActiveEuclidianView()
 						.getEuclidianController().splitSelectedStrokes(true)) {
-					return initial;
+					return current;
 				}
-				Property current = map.apply(getApp().getSelectionManager().getSelectedGeos());
+				current = map.apply(getApp().getSelectionManager().getSelectedGeos());
 				addUndoActionObserver(new PropertySupplier[]{current},
 						getApp().getSelectionManager().getSelectedGeos(),
 						UndoActionType.STYLE);
@@ -184,18 +187,18 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 			}
 
 			@Override
-			public Property getInitial() {
-				return initial;
+			public Property get() {
+				return current;
 			}
 		};
 	}
 
 	private void addColorPropertyButton(List<GeoElement> geos, UndoActionType undoFiler,
 			PropertySupplier... properties) {
-		if (properties.length == 0 || properties[0] == null || properties[0].getInitial() == null) {
+		if (properties.length == 0 || properties[0] == null || properties[0].get() == null) {
 			return;
 		}
-		Property firstProperty = properties[0].getInitial();
+		Property firstProperty = properties[0].get();
 		addUndoActionObserver(properties, geos, undoFiler);
 		IconButtonWithProperty colorButton = new IconButtonWithProperty(getApp(), "colorStyle",
 				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(),
@@ -243,10 +246,10 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 
 	private void addPropertyPopupButton(List<GeoElement> geos, String className,
 			boolean closePopupOnAction, UndoActionType undoType, PropertySupplier... properties) {
-		if (properties.length == 0 || properties[0] == null || properties[0].getInitial() == null) {
+		if (properties.length == 0 || properties[0] == null || properties[0].get() == null) {
 			return;
 		}
-		Property firstProperty = properties[0].getInitial();
+		Property firstProperty = properties[0].get();
 		addUndoActionObserver(properties, geos, undoType);
 		IconButton button = new IconButtonWithProperty(getApp(), className,
 				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(), geos.get(0),
@@ -257,7 +260,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 	private void addUndoActionObserver(PropertySupplier[] properties, List<GeoElement> geos,
 			UndoActionType undoActionType) {
 		for (PropertySupplier propertySupplier: properties) {
-			Property property = propertySupplier.getInitial();
+			Property property = propertySupplier.get();
 			if (property instanceof ValuedProperty) {
 				((ValuedProperty<?>) property).addValueObserver(
 						new UndoActionObserver(geos, undoActionType));

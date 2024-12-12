@@ -1,7 +1,7 @@
 package org.geogebra.common.properties;
 
 public interface PropertySupplier {
-	Property getCurrent();
+	Property updateAndGet();
 
-	Property getInitial();
+	Property get();
 }

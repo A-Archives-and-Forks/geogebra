@@ -34,12 +34,12 @@ public interface Property extends PropertySupplier {
     void setFrozen(boolean frozen);
 
     @Override
-    default Property getCurrent() {
+    default Property updateAndGet() {
         return this;
     }
 
     @Override
-    default Property getInitial() {
+    default Property get() {
         return this;
     }
 }

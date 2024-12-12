@@ -49,7 +49,7 @@ public class PropertyWidgetAdapter {
 			IconButton enumeratedPropertyIconButton = new IconButton(appW, null,
 					PropertiesIconAdapter.getIcon(icons[i]), null);
 			enumeratedPropertyIconButton.addFastClickHandler(source -> {
-				((IconsEnumeratedProperty) propertySupplier.getCurrent()).setIndex(finalI);
+				((IconsEnumeratedProperty) propertySupplier.updateAndGet()).setIndex(finalI);
 				setIconButtonActive(enumeratedPropertyIconButton);
 				if (uiUpdater != null) {
 					uiUpdater.accept(finalI);

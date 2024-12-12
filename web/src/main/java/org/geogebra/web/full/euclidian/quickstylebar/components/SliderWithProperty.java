@@ -105,7 +105,7 @@ public class SliderWithProperty extends FlowPanel {
 
 	private void onInputChange(int val) {
 		if (!dragging) {
-			property = (RangePropertyCollection<?>) propertySupplier.getCurrent();
+			property = (RangePropertyCollection<?>) propertySupplier.updateAndGet();
 			dragging = true;
 			property.beginSetValue();
 		}

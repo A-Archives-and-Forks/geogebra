@@ -91,7 +91,7 @@ public class IconButtonWithProperty extends IconButton {
 	}
 
 	private void processProperty(PropertySupplier propertySupplier, FlowPanel parent) {
-		Property property = propertySupplier.getInitial();
+		Property property = propertySupplier.get();
 		if (property instanceof IconsEnumeratedProperty) {
 			FlowPanel enumeratedPropertyButtonPanel = widgetAdapter.getIconListPanel(
 					(IconsEnumeratedProperty<?>) property, propertySupplier, (index) -> {
@@ -116,7 +116,7 @@ public class IconButtonWithProperty extends IconButton {
 					colorProperty.getValues(), color -> {
 				if (popupHandler != null) {
 					ColorPropertyCollection<?> updatedProperty =
-							(ColorPropertyCollection<?>) propertySupplier.getCurrent();
+							(ColorPropertyCollection<?>) propertySupplier.updateAndGet();
 					popupHandler.fireActionPerformed(updatedProperty, color);
 				}
 			});
