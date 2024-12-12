@@ -486,7 +486,9 @@ public final class SpreadsheetController {
 
 	private void startTyping(String key, Modifiers modifiers) {
 		if (!modifiers.ctrlOrCmd && !modifiers.alt && !StringUtil.empty(key)) {
-			showCellEditorAtSelection();
+			if (editor == null || !editor.isVisible()) {
+				showCellEditorAtSelection();
+			}
 			if (editor != null) {
 				editor.type(key);
 			}
