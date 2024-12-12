@@ -159,10 +159,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createPointStyleExtendedProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createPointStyleExtendedProperty(localization, elements));
-		addPropertyIfNotNull(properties, createPointSizeProperty(localization, elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createPointStyleExtendedProperty(localization, elements),
+				createPointSizeProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -201,10 +201,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public List<Property> createNotesLineStyleProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createLineStyleProperty(localization, elements));
-		addPropertyIfNotNull(properties, createNotesThicknessProperty(localization, elements));
-		return properties;
+		return Stream.of(
+				createLineStyleProperty(localization, elements),
+				createNotesThicknessProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	/**
@@ -215,10 +215,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createNotesColorWithOpacityProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createColorWithOpacityProperty(localization, elements));
-		addPropertyIfNotNull(properties, createOpacityColorProperty(localization, elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createColorWithOpacityProperty(localization, elements),
+				createOpacityColorProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -229,10 +229,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createObjectBorderProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createBorderColorProperty(localization, elements));
-		addPropertyIfNotNull(properties, createBorderThicknessProperty(localization, elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createBorderColorProperty(localization, elements),
+				createBorderThicknessProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -243,11 +243,10 @@ public final class GeoElementPropertiesFactory {
 	 */
 	public PropertiesArray createCellBorderStyleProperties(
 			Localization localization, List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createCellBorderStyleProperty(localization, elements));
-		addPropertyIfNotNull(properties, createCellBorderThicknessProperty(localization,
-				elements));
-		return createPropertiesArray(localization, elements, properties);
+		return createPropertiesArray(localization, elements, Stream.of(
+				createCellBorderStyleProperty(localization, elements),
+				createCellBorderThicknessProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -530,13 +529,6 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new SegmentEndProperty(localization, element),
 				IconsEnumeratedPropertyCollection::new);
-	}
-
-	private static void addPropertyIfNotNull(List<Property> properties,
-			Property property) {
-		if (property != null) {
-			properties.add(property);
-		}
 	}
 
 	/**
