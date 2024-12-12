@@ -31,9 +31,15 @@ public enum GraphingOperationArgumentFilter implements ExpressionFilter, Inspect
 			return isInnerProduct(node.getLeft(), node.getRight());
 		case VECTORPRODUCT:
 			return true;
+		case POWER:
+			return isPowerInnerProduct(node.getLeft(), node.getRight());
 		default:
 			return false;
 		}
+	}
+
+	private boolean isPowerInnerProduct(ExpressionValue left, ExpressionValue right) {
+		return left.evaluatesToNDVector() && right.evaluatesToNumber(true);
 	}
 
 	private boolean isInnerProduct(ExpressionValue left,

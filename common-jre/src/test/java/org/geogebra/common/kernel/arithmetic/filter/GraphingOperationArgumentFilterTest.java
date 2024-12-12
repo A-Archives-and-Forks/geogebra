@@ -56,6 +56,14 @@ public class GraphingOperationArgumentFilterTest extends BaseUnitTest {
 	}
 
 	@Test
+	public void testFilterPower() {
+		assertAllowed(Operation.POWER, add("2+i"), add("2"), is(true));
+		assertAllowed(Operation.POWER, add("2+i"), add("1+i"), is(true));
+		assertAllowed(Operation.POWER, add("7"), add("2"), is(true));
+		assertAllowed(Operation.POWER, add("(2,1)"), add("2"), is(false));
+	}
+
+	@Test
 	public void absFilterShouldWorkForExpressions() throws ParseException {
 		add("A=(1,1)");
 		add("B=(2,2)");
