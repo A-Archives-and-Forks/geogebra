@@ -20,7 +20,7 @@ abstract class AbstractAppConfig implements AppConfig {
     private String appCode;
     private String subAppCode;
     protected transient CommandFilter commandFilter;
-    protected EquationBehaviour equationBehaviour;
+    protected transient EquationBehaviour equationBehaviour;
 
     AbstractAppConfig(String appCode) {
         this(appCode, null);

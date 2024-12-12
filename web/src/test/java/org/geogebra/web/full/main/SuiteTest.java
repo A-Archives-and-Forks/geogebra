@@ -13,10 +13,14 @@ import org.geogebra.web.html5.util.AppletParameters;
 import org.geogebra.web.shared.GlobalHeader;
 import org.geogebra.web.test.AppMocker;
 import org.geogebra.web.test.GgbMockitoTestRunner;
+import org.gwtproject.user.client.ui.ListBox;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.google.gwtmockito.WithClassesToStub;
+
 @RunWith(GgbMockitoTestRunner.class)
+@WithClassesToStub(ListBox.class)
 public class SuiteTest {
 	private AppWFull app;
 
