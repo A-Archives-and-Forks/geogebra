@@ -35,7 +35,7 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 				Set.of(SuiteSubApp.CAS, SuiteSubApp.GEOMETRY, SuiteSubApp.G3D,
 						SuiteSubApp.PROBABILITY, SuiteSubApp.SCIENTIFIC),
 				SuiteSubApp.GRAPHING,
-				null,
+				createFeatureRestrictions(),
 				null,
 				null,
 				createCommandFilters(),
@@ -47,6 +47,11 @@ final class RealschuleExamRestrictions extends ExamRestrictions {
 				null,
 				null,
 				null);
+	}
+
+	private static Set<ExamFeatureRestriction> createFeatureRestrictions() {
+		return Set.of(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION,
+				ExamFeatureRestriction.RESTRICT_CHANGING_EQUATION_FORM);
 	}
 
 	private static Set<CommandFilter> createCommandFilters() {

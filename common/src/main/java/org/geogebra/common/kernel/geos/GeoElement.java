@@ -7206,4 +7206,18 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	public boolean isFreeInputPoint() {
 		return isGeoPoint() && (isIndependent() || isMoveable());
 	}
+
+	@Override
+	public boolean isImplicitEquation() {
+		if (this instanceof EquationValue) {
+			EquationValue equationValue = (EquationValue) this;
+			return equationValue.getEquation().isImplicit();
+		}
+		ExpressionNode definition = this.getDefinition();
+		if (definition != null && definition.unwrap() instanceof Equation) {
+			Equation equation = (Equation) definition.unwrap();
+			return equation.isImplicit();
+		}
+		return false;
+	}
 }

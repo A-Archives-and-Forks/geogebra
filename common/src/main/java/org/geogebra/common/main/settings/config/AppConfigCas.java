@@ -180,7 +180,7 @@ public class AppConfigCas extends AppConfigGraphing {
 	}
 
 	@Override
-	public EquationBehaviour getEquationBehaviour() {
-		return new DefaultEquationBehaviour();
+	public void setEquationBehaviour() {
+		equationBehaviour = new DefaultEquationBehaviour();
 	}
 }

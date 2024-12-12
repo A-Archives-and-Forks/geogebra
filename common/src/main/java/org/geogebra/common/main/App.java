@@ -38,11 +38,9 @@ import org.geogebra.common.euclidian.inline.InlineTableController;
 import org.geogebra.common.euclidian.inline.InlineTextController;
 import org.geogebra.common.euclidian.smallscreen.AdjustViews;
 import org.geogebra.common.euclidian3D.EuclidianView3DInterface;
+import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.exam.restrictions.ExamRestrictable;
-import org.geogebra.common.exam.restrictions.cvte.CvteAlgebraOutputFilter;
-import org.geogebra.common.exam.restrictions.cvte.CvteLabelDescriptionConverter;
-import org.geogebra.common.exam.restrictions.cvte.CvteValueConverter;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.geogebra3D.euclidian3D.printer3D.Format;
@@ -4946,20 +4944,22 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	// ExamRestrictable
 
 	@Override
-	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions) {
+	public void applyRestrictions(@Nonnull Set<ExamFeatureRestriction> featureRestrictions,
+			@CheckForNull ExamType examType) {
 		resetCommandDict();
-		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)) {
+		if (featureRestrictions.contains(ExamFeatureRestriction.HIDE_CALCULATED_EQUATION)
+				&& examType != null) {
 			AlgebraOutputFilter wrappedAlgebraOutputFilter = getAlgebraOutputFilter();
-			algebraOutputFilter = new CvteAlgebraOutputFilter(wrappedAlgebraOutputFilter);
+			algebraOutputFilter = examType.getAlgebraOutputFilter(wrappedAlgebraOutputFilter);
 
 			ToStringConverter<GeoElement> wrappedLabelDescriptionConverter
 					= getLabelDescriptionConverter();
-			labelDescriptionConverter = new CvteLabelDescriptionConverter(
+			labelDescriptionConverter = examType.getLabelDescriptionConverter(
 					wrappedLabelDescriptionConverter);
 
 			ToStringConverter<GeoElement> wrappedValueConverter
 					= getGeoElementValueConverter();
-			valueConverter = new CvteValueConverter(wrappedValueConverter);
+			valueConverter = examType.getValueConverter(wrappedValueConverter);
 		}
 	}
 
