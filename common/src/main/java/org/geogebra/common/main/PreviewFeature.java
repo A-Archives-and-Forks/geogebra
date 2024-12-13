@@ -32,7 +32,9 @@ public enum PreviewFeature {
 	/** APPS-5740 */
 	REALSCHULE_EXAM,
 	/** APPS-6134 */
-	REALSCHULE_TEMPLATES;
+	REALSCHULE_TEMPLATES,
+	/** APPS-5815 */
+	RATIONALIZE_FRACTIONS;
 
 	/**
 	 * Global flag to activate feature previews.

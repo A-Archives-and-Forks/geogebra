@@ -234,9 +234,29 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testWrongCasesInValue() {
+	public void testFactorOutBugs() {
 		rationalizationShouldBe(genericSqrtFraction(-8, 8, -2, 6),
 				"(-8 + sqrt(8)) / (-2 + sqrt(6))");
+	}
+
+	@Test
+	public void testWrongDenominator() {
+		rationalizationShouldBe(genericSqrtFraction(0, 9, 1, 6),
+				"3 (sqrt(6) - 1) / 5");
+	}
+
+	@Test
+	public void testWrongSign() {
+		rationalizationShouldBe(genericSqrtFraction(-10, 10, 5, 9),
+				"(sqrt(10) - 10) / 8");
+	}
+
+	@Test
+	public void testZeros() {
+		rationalizationShouldBe("(2 + sqrt(3)) / (4 + sqrt(5))",
+				"(2 + sqrt(3)) (4 - sqrt(5)) / 11");
+		rationalizationShouldBe("(0 + sqrt(3)) / (4 + sqrt(5))",
+				"(2 + sqrt(3)) (4 - sqrt(5)) / 11");
 	}
 
 	private String genericSqrtFraction(int a, int b, int c, int d) {

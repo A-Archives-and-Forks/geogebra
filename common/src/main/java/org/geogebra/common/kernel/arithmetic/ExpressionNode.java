@@ -48,6 +48,7 @@ import org.geogebra.common.kernel.kernelND.GeoSurfaceCartesianND;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.MyError;
 import org.geogebra.common.main.MyError.Errors;
+import org.geogebra.common.main.PreviewFeature;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.ExtendedBoolean;
@@ -3495,6 +3496,10 @@ public class ExpressionNode extends ValidExpression
 	 * @return whether if this one is a fraction that can be rationalized
 	 */
 	public boolean isRationalizableFraction() {
+		if (!PreviewFeature.isAvailable(PreviewFeature.RATIONALIZE_FRACTIONS)) {
+			return false;
+		}
+
 		ExpressionValue resolvedFraction = RationalizableFraction.getResolution(this);
 		if (resolvedFraction != null) {
 			resolve = resolvedFraction;
