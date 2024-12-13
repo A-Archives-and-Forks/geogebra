@@ -35,7 +35,6 @@ public class RealschuleAlgebraOutputFilterTests extends BaseExamTests {
 		assertTrue(outputFilter.isAllowed(evaluateGeoElement("FitPow((1,2),(3,4))")));
 		assertTrue(outputFilter.isAllowed(evaluateGeoElement("FitSin((3,3),(4,4))")));
 
-
 		assertTrue(outputFilter.isAllowed(evaluateGeoElement("x = y")));
 		assertTrue(outputFilter.isAllowed(evaluateGeoElement("x^2 + y^2 = 4")));
 		assertTrue(outputFilter.isAllowed(evaluateGeoElement("x^3 + y = 0")));

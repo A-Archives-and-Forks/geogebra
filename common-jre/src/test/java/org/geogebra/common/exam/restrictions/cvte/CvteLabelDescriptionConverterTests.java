@@ -68,9 +68,11 @@ public class CvteLabelDescriptionConverterTests extends BaseExamTests {
         GeoElement implicitCurve = evaluateGeoElement("FitImplicit((1...10,(1/(1...10))),3)");
         captionStyleProperty = new CaptionStyleProperty(localization, implicitCurve);
         captionStyleProperty.setValue(GeoElementND.LABEL_VALUE);
-        assertEquals(implicitCurve.getDefinition(defaultTemplate), converter.convert(implicitCurve));
+        assertEquals(implicitCurve.getDefinition(defaultTemplate),
+                converter.convert(implicitCurve));
         captionStyleProperty.setValue(GeoElementND.LABEL_NAME_VALUE);
-        assertEquals(implicitCurve.getDefinition(defaultTemplate), converter.convert(implicitCurve));
+        assertEquals(implicitCurve.getDefinition(defaultTemplate),
+                converter.convert(implicitCurve));
         captionStyleProperty.setValue(GeoElementND.LABEL_NAME);
         assertEquals(implicitCurve.getLabel(defaultTemplate), converter.convert(implicitCurve));
         captionStyleProperty.setValue(GeoElementND.LABEL_CAPTION);
