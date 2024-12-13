@@ -398,7 +398,7 @@ public class PropertiesViewW extends PropertiesView
 		clearView();
 		kernel.notifyAddAll(this);
 		kernel.attach(this);
-		app.getKernel().getAnimatonManager().stopAnimation();
+		app.getKernel().getAnimationManager().stopAnimation();
 		setAttached(true);
 	}
 
@@ -406,7 +406,7 @@ public class PropertiesViewW extends PropertiesView
 	public void detachView() {
 		kernel.detach(this);
 		clearView();
-		app.getKernel().getAnimatonManager().startAnimation();
+		app.getKernel().getAnimationManager().startAnimation();
 		setAttached(false);
 	}
 
@@ -480,12 +480,9 @@ public class PropertiesViewW extends PropertiesView
 	}
 
 	/**
-	 * Opens floating settings.
+	 * Opens floating settings, assumes it's available for current app.
 	 */
 	public void open() {
-		if (!app.isUnbundledOrWhiteboard()) {
-			return;
-		}
 		if (!isFloatingAttached()) {
 			wrappedPanel.setVisible(true);
 			wrappedPanel.addStyleName("floatingSettings");

@@ -13,6 +13,7 @@ import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.resources.client.ResourcePrototype;
 import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.InlineHTML;
 
 /**
  * Subclass of SpreadsheetContextMenu, implements the spreadsheet context menu
@@ -49,10 +50,7 @@ public class SpreadsheetContextMenuW extends SpreadsheetContextMenu<AriaMenuItem
 
 	@Override
 	public void setTitle(String str) {
-
-		AriaMenuItem title = new AriaMenuItem(MainMenu.getMenuBarHtmlClassic(
-		        AppResources.INSTANCE.empty().getSafeUri().asString(), str),
-		        true, this::hidePopup);
+		AriaMenuItem title = new AriaMenuItem(new InlineHTML(str), this::hidePopup);
 		title.addStyleName("menuTitle");
 		popup.addItem(title);
 	}
@@ -71,10 +69,8 @@ public class SpreadsheetContextMenuW extends SpreadsheetContextMenu<AriaMenuItem
 
 	@Override
 	public void addMenuItem(final String cmdString, String text, boolean enabled) {
-		String html = MainMenu.getMenuBarHtml(getIconUrl(cmdString), text);
-
-		AriaMenuItem mi;
-		mi = new AriaMenuItem(html, true, getCommand(cmdString));
+		AriaMenuItem mi = MainMenu.getMenuBarItem(getIconUrl(cmdString),
+				text, getCommand(cmdString));
 		mi.setEnabled(enabled);
 
 		popup.addItem(mi);
@@ -82,20 +78,15 @@ public class SpreadsheetContextMenuW extends SpreadsheetContextMenu<AriaMenuItem
 
 	@Override
 	public void addCheckBoxMenuItem(final String cmdString, String text, boolean isSelected) {
-		String html = MainMenu.getMenuBarHtml(getIconUrl(cmdString), text);
-
 		GCheckmarkMenuItem cbItem = new GCheckmarkMenuItem(
-				html, isSelected, getCommand(cmdString));
+				getIconUrl(cmdString), text, isSelected, getCommand(cmdString));
 		popup.addItem(cbItem);
 	}
 
 	@Override
 	public AriaMenuItem addSubMenu(String text, String cmdString) {
-
-		String html = MainMenu.getMenuBarHtml(getIconUrl(cmdString), text);
-
 		AriaMenuBar subMenu = new AriaMenuBar();
-		AriaMenuItem menuItem = new AriaMenuItem(html, true, subMenu);
+		AriaMenuItem menuItem = new AriaMenuItem(text, getIconUrl(cmdString), subMenu);
 
 		popup.addItem(menuItem);
 		return menuItem;
@@ -105,7 +96,7 @@ public class SpreadsheetContextMenuW extends SpreadsheetContextMenu<AriaMenuItem
 	public void addSubMenuItem(AriaMenuItem menu, final String cmdString,
 	        String text, boolean enabled) {
 
-		AriaMenuItem mi = new AriaMenuItem(text, true, getCommand(cmdString));
+		AriaMenuItem mi = new AriaMenuItem(text, null, getCommand(cmdString));
 		mi.setEnabled(enabled);
 
 		menu.getSubMenu().addItem(mi);

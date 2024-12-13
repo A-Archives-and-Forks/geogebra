@@ -3,10 +3,11 @@ package org.geogebra.web.full.gui.toolbar.mow.toolbox.components;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.geogebra.web.full.css.ToolbarSvgResources;
 import org.geogebra.web.full.gui.app.GGWToolBar;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.ToolboxPopupPositioner;
 import org.geogebra.web.html5.gui.util.AriaHelper;
+import org.geogebra.web.html5.gui.view.IconSpec;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
 
@@ -23,7 +24,7 @@ public class IconButtonWithPopup extends IconButton {
 	 * @param tools - list of tools
 	 * @param deselectButtons - deselect button callback
 	 */
-	public IconButtonWithPopup(AppW appW, SVGResource icon, String ariaLabel, List<Integer> tools,
+	public IconButtonWithPopup(AppW appW, IconSpec icon, String ariaLabel, List<Integer> tools,
 			Runnable deselectButtons) {
 		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
@@ -34,10 +35,6 @@ public class IconButtonWithPopup extends IconButton {
 			deselectButtons.run();
 			initAndShowPopup(tools);
 			setActive(true);
-
-			categoryPopup.addCloseHandler((event) -> {
-				AriaHelper.setAriaExpanded(this, false);
-			});
 		});
 	}
 
@@ -45,6 +42,8 @@ public class IconButtonWithPopup extends IconButton {
 		if (categoryPopup == null) {
 			categoryPopup = new CategoryPopup(appW, tools, getUpdateButtonCallback());
 			categoryPopup.setAutoHideEnabled(false);
+
+			categoryPopup.addCloseHandler((event) -> AriaHelper.setAriaExpanded(this, false));
 		}
 
 		showHidePopup();
@@ -65,18 +64,21 @@ public class IconButtonWithPopup extends IconButton {
 	}
 
 	private Consumer<Integer> getUpdateButtonCallback() {
-		return mode -> {
-			SVGResource image =  (SVGResource) GGWToolBar.getImageURLNotMacro(
-					ToolbarSvgResources.INSTANCE, mode, appW);
-			updateImgAndTxt(image, mode, appW);
+		return mode -> GGWToolBar.getImageResource(mode, appW, image -> {
+			updateImgAndTxt(new ImageIconSpec((SVGResource) image), mode, appW);
 			setActive(true);
-		};
+		});
 	}
 
 	@Override
 	public int getMode() {
 		return categoryPopup != null && categoryPopup.getLastSelectedMode() != -1
 				? categoryPopup.getLastSelectedMode() : tools.get(0);
+	}
+
+	@Override
+	public boolean containsMode(int mode) {
+		return tools.contains(mode);
 	}
 
 	@Override

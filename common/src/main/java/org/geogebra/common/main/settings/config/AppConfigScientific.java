@@ -8,6 +8,7 @@ import javax.annotation.CheckForNull;
 
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.io.layout.Perspective;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.arithmetic.filter.OperationArgumentFilter;
 import org.geogebra.common.kernel.arithmetic.filter.ScientificOperationArgumentFilter;
 import org.geogebra.common.kernel.commands.filter.CommandArgumentFilter;
@@ -17,6 +18,7 @@ import org.geogebra.common.kernel.commands.selector.CommandFilterFactory;
 import org.geogebra.common.kernel.geos.properties.FillType;
 import org.geogebra.common.kernel.parser.function.ParserFunctionsFactory;
 import org.geogebra.common.main.AppKeyboardType;
+import org.geogebra.common.main.settings.config.equationforms.DefaultEquationBehaviour;
 import org.geogebra.common.main.syntax.suggestionfilter.ScientificSyntaxFilter;
 import org.geogebra.common.main.syntax.suggestionfilter.SyntaxFilter;
 import org.geogebra.common.properties.factory.PropertiesFactory;
@@ -26,6 +28,10 @@ import org.geogebra.common.properties.factory.ScientificPropertiesFactory;
  * Config for Scientific Calculator app
  */
 public class AppConfigScientific extends AppConfigGraphing {
+
+	public AppConfigScientific(String appCode) {
+		super(appCode, GeoGebraConstants.SCIENTIFIC_APPCODE);
+	}
 
 	public AppConfigScientific() {
 		super(GeoGebraConstants.SCIENTIFIC_APPCODE, null);
@@ -44,6 +50,11 @@ public class AppConfigScientific extends AppConfigGraphing {
 	@Override
 	public String getAppNameShort() {
 		return "ScientificCalculator.short";
+	}
+
+	@Override
+	public String getAppNameWithoutCalc() {
+		return  "Scientific";
 	}
 
 	@Override
@@ -114,7 +125,7 @@ public class AppConfigScientific extends AppConfigGraphing {
 
 	@Override
 	public boolean hasExam() {
-		return false;
+		return getSubAppCode() != null; // only suite scicalc has exam
 	}
 
 	@Override
@@ -133,13 +144,8 @@ public class AppConfigScientific extends AppConfigGraphing {
 	}
 
 	@Override
-	public int getEnforcedLineEquationForm() {
-		return -1;
-	}
-
-	@Override
-	public int getEnforcedConicEquationForm() {
-		return -1;
+	public EquationBehaviour getEquationBehaviour() {
+		return new DefaultEquationBehaviour();
 	}
 
 	@Override
@@ -179,6 +185,11 @@ public class AppConfigScientific extends AppConfigGraphing {
 
 	@Override
 	public boolean hasOneVarStatistics() {
+		return false;
+	}
+
+	@Override
+	public boolean hasSpreadsheetView() {
 		return false;
 	}
 

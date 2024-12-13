@@ -27,6 +27,7 @@ import org.geogebra.web.full.gui.layout.DockManagerW;
 import org.geogebra.web.full.gui.layout.DockPanelW;
 import org.geogebra.web.full.gui.layout.panels.AlgebraPanelInterface;
 import org.geogebra.web.full.gui.layout.panels.EuclidianDockPanelW;
+import org.geogebra.web.full.gui.layout.scientific.ScientificSettingsView;
 import org.geogebra.web.full.gui.pagecontrolpanel.PageListPanel;
 import org.geogebra.web.full.gui.toolbar.mow.NotesLayout;
 import org.geogebra.web.full.gui.toolbarpanel.ToolbarPanel;
@@ -242,9 +243,8 @@ public class GeoGebraFrameFull
 		if (app == null) {
 			return NullHeaderResizer.get();
 		}
-		if (headerResizer == null) {
-			headerResizer = getApp().getActivity().getHeaderResizer(this);
-		}
+
+		headerResizer = getApp().getActivity().getHeaderResizer(this);
 		return headerResizer;
 	}
 
@@ -585,7 +585,6 @@ public class GeoGebraFrameFull
 				} else {
 					refreshKeyboardButton(null);
 					getOnScreenKeyboard(null).showOnFocus();
-					app.adjustScreen(true);
 				}
 			} else if (app != null && appNeedsKeyboard()) {
 				if (!isKeyboardWantedFromStorage()) {
@@ -750,13 +749,11 @@ public class GeoGebraFrameFull
 
 		NotesTopBar notesTopBar = notesLayout.getTopBar();
 		if (notesTopBar != null && notesTopBar.wasAttached()) {
-			add(notesTopBar);
+			insert(notesTopBar, 0);
 		}
 		if (notesLayout.getToolbar() != null) {
 			add(notesLayout.getToolbar());
 		}
-		setPageControlButtonVisible(app.isMultipleSlidesOpen()
-				|| app.getAppletParameters().getParamShowSlides(), notesLayout);
 
 		if (GlobalHeader.isInDOM() && !app.isApplet()) {
 			app.getGuiManager().menuToGlobalHeader();
@@ -772,20 +769,6 @@ public class GeoGebraFrameFull
 		NotesLayout notesLayout = getNotesLayoutSafe(app);
 		if (notesLayout.getToolbar() != null) {
 			remove(notesLayout.getToolbar());
-		}
-	}
-
-	/**
-	 * @param show whether to show the button
-	 */
-	public void setPageControlButtonVisible(boolean show, NotesLayout notesLayout) {
-		if (show) {
-			add(notesLayout.getPageControlButton());
-		} else if (notesLayout != null) {
-			notesLayout.getPageControlButton().removeFromParent();
-		}
-		if (app.getZoomPanel() != null) {
-			app.getZoomPanel().updatePosition(show);
 		}
 	}
 
@@ -995,5 +978,9 @@ public class GeoGebraFrameFull
 		ggwToolBar = null;
 		ggwMenuBar = null;
 		showKeyboardButton = null;
+	}
+
+	public boolean isSciSettingsOpen() {
+		return panelTransitioner.getCurrentPanel() instanceof ScientificSettingsView;
 	}
 }

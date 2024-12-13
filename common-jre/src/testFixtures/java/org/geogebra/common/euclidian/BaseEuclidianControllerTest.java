@@ -12,6 +12,7 @@ import org.geogebra.common.jre.headless.AppCommon;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoImage;
+import org.geogebra.common.main.settings.config.AppConfigDefault;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
 import org.geogebra.test.TestEvent;
 import org.junit.Before;
@@ -20,22 +21,16 @@ public class BaseEuclidianControllerTest extends BaseUnitTest {
 
 	private EuclidianController ec;
 
-	@Before
-	public void clear() {
-		ec = getApp().getActiveEuclidianView().getEuclidianController();
-		reset();
-	}
-
 	@Override
 	public AppCommon createAppCommon() {
-		return AppCommonFactory.create3D();
+		return AppCommonFactory.create3D(new AppConfigDefault());
 	}
 
 	/**
-	 * Setup the app
+	 * Set up the controller
 	 */
 	@Before
-	public void setupEV() {
+	public void setUpController() {
 		ec = getApp().getActiveEuclidianView().getEuclidianController();
 		reset();
 	}
@@ -94,6 +89,11 @@ public class BaseEuclidianControllerTest extends BaseUnitTest {
 		TestEvent evt = new TestEvent(x, y, null, right);
 		ec.wrapMouseDragged(evt, true);
 		ec.wrapMouseDragged(evt, true);
+		ec.wrapMouseReleased(evt);
+	}
+
+	protected void pointerRelease(int x, int y) {
+		TestEvent evt = new TestEvent(x, y, null, false);
 		ec.wrapMouseReleased(evt);
 	}
 
@@ -173,7 +173,7 @@ public class BaseEuclidianControllerTest extends BaseUnitTest {
 				i++;
 			}
 		}
-		assertEquals(desc.length, i);
+		assertEquals("length mismatch between object names and argument", desc.length, i);
 	}
 
 	protected void checkContentLabels(String... labels) {

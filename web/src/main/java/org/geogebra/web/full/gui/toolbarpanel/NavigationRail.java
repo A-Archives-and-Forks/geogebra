@@ -12,6 +12,7 @@ import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.exam.ExamLogAndExitDialog;
+import org.geogebra.web.full.gui.exam.ExamUtil;
 import org.geogebra.web.full.gui.menubar.FileMenuW;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.gui.util.Dom;
@@ -36,6 +37,7 @@ class NavigationRail extends FlowPanel {
 	private @CheckForNull StandardButton btnTools;
 	private @CheckForNull StandardButton btnDistribution;
 	private @CheckForNull StandardButton btnTableView;
+	private @CheckForNull StandardButton btnSpreadsheet;
 	private final FlowPanel contents;
 	private FlowPanel center;
 	private boolean animating = false;
@@ -101,6 +103,10 @@ class NavigationRail extends FlowPanel {
 			createTableViewButton();
 			center.add(btnTableView);
 		}
+		if (app.getConfig().hasSpreadsheetView()) {
+			createSpreadsheetButton();
+			center.add(btnSpreadsheet);
+		}
 		if (btnMenu != null && !isHeaderExternal()) {
 			center.addStyleName("withMenu");
 		}
@@ -129,6 +135,12 @@ class NavigationRail extends FlowPanel {
 		btnDistribution = createTabButton("Distribution",
 				MaterialDesignResources.INSTANCE.toolbar_distribution());
 		btnDistribution.addFastClickHandler(source -> onDistributionPressed());
+	}
+
+	private void createSpreadsheetButton() {
+		btnSpreadsheet = createTabButton("Perspective.Spreadsheet",
+				MaterialDesignResources.INSTANCE.toolbar_spreadsheet());
+		btnSpreadsheet.addFastClickHandler(source -> onSpreadsheetPressed());
 	}
 
 	private StandardButton createTabButton(String label, SVGResource icon) {
@@ -170,7 +182,7 @@ class NavigationRail extends FlowPanel {
 	/**
 	 * Handler for table view button.
 	 */
-	protected void onTableViewPressed() {
+	void onTableViewPressed() {
 		if (isOpen() && toolbarPanel.getSelectedTabId() == TabIds.TABLE) {
 			if (app.getConfig().getVersion() == GeoGebraConstants.Version.SCIENTIFIC) {
 				return;
@@ -198,6 +210,17 @@ class NavigationRail extends FlowPanel {
 	}
 
 	/**
+	 * Handler for spreadsheet view button.
+	 */
+	protected void onSpreadsheetPressed() {
+		if (isOpen() && toolbarPanel.getSelectedTabId() == TabIds.SPREADSHEET) {
+			onClosePressed(false);
+			return;
+		}
+		toolbarPanel.openSpreadsheetView(isOpen());
+	}
+
+	/**
 	 * Handler for Close button.
 	 */
 	protected void onClosePressed(boolean snap) {
@@ -207,11 +230,16 @@ class NavigationRail extends FlowPanel {
 	}
 
 	protected void onClose(boolean snap, int time) {
-		updateIcons(null, examController.isExamActive());
+		updateIcons(null, useExamStyle());
 		addCloseOrientationStyles();
 		toolbarPanel.setMoveMode();
 		toolbarPanel.close(snap, time);
 		app.getAccessibilityManager().focusAnchorOrMenu();
+	}
+
+	private boolean useExamStyle() {
+		return examController.isExamActive()
+				&& app.getAppletParameters().getDataParamApp();
 	}
 
 	private void addCloseOrientationStyles() {
@@ -239,11 +267,12 @@ class NavigationRail extends FlowPanel {
 		setButtonText(btnTools, "Tools");
 		setButtonText(btnTableView, "Table");
 		setButtonText(btnDistribution, "Distribution");
+		setButtonText(btnSpreadsheet, "Perspective.Spreadsheet");
 	}
 
-	private void setButtonText(StandardButton btnTools, String key) {
-		if (btnTools != null) {
-			btnTools.setText(app.getLocalization().getMenu(key));
+	private void setButtonText(StandardButton btn, String key) {
+		if (btn != null) {
+			btn.setText(app.getLocalization().getMenu(key));
 		}
 	}
 
@@ -254,7 +283,7 @@ class NavigationRail extends FlowPanel {
 		if (center == null) {
 			return;
 		}
-		updateIcons(tabId, examController.isExamActive());
+		updateIcons(tabId, useExamStyle());
 		toolbarPanel.setSelectedTabId(tabId);
 	}
 
@@ -516,6 +545,7 @@ class NavigationRail extends FlowPanel {
 		setSelected(btnTools, tabId == TabIds.TOOLS, exam);
 		setSelected(btnTableView, tabId == TabIds.TABLE, exam);
 		setSelected(btnDistribution, tabId == TabIds.DISTRIBUTION, exam);
+		setSelected(btnSpreadsheet, tabId == TabIds.SPREADSHEET, exam);
 	}
 
 	public void setAVIconNonSelect(boolean exam) {
@@ -531,7 +561,7 @@ class NavigationRail extends FlowPanel {
 		int btnTop = 40;
 		context2d.globalAlpha = 0.54;
 		for (StandardButton btn: new StandardButton[]{btnAlgebra, btnTools, btnTableView,
-				btnDistribution}) {
+				btnDistribution, btnSpreadsheet}) {
 			if (btn != null) {
 				HTMLImageElement el = Js.uncheckedCast(btn.getImage().getElement());
 				context2d.drawImage(el, left + 24, top + btnTop);
@@ -539,5 +569,28 @@ class NavigationRail extends FlowPanel {
 			}
 		}
 		context2d.globalAlpha = 1;
+	}
+
+	private void resetHeaderClasses() {
+		removeStyleName("examOk");
+		removeStyleName("examCheat");
+	}
+
+	public void resetExamStyle() {
+		resetHeaderClasses();
+		boolean examStyle = useExamStyle();
+		updateIcons(examStyle);
+		if (examStyle) {
+			ExamUtil.makeRed(getElement(), examController.isCheating());
+			if (examController.isCheating()) {
+				addStyleName("examCheat");
+			} else if (ExamUtil.hasExternalSecurityCheck(app)) {
+				addStyleName("examLock");
+			} else {
+				addStyleName("examOk");
+			}
+		} else {
+			ExamUtil.makeRed(getElement(), false);
+		}
 	}
 }

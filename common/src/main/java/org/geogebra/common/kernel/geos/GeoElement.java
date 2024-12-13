@@ -34,7 +34,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.geogebra.common.awt.GColor;
-import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.awt.MyImage;
 import org.geogebra.common.euclidian.Drawable;
 import org.geogebra.common.euclidian.EuclidianConstants;
@@ -104,6 +103,7 @@ import org.geogebra.common.plugin.JsReference;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.plugin.ScriptManager;
 import org.geogebra.common.plugin.script.Script;
+import org.geogebra.common.spreadsheet.core.SpreadsheetCoords;
 import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.ExtendedBoolean;
 import org.geogebra.common.util.IndexHTMLBuilder;
@@ -158,6 +158,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	private boolean localVarLabelSet = false;
 	private boolean euclidianVisible = true;
+	private boolean restrictedEuclidianVisibility = false;
 	private boolean forceEuclidianVisible = false;
 	private boolean algebraVisible = true;
 	private boolean labelVisible = true;
@@ -170,6 +171,8 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	/** label, value, caption, label+value */
 	public int labelMode = LABEL_DEFAULT;
 	/** cartesian, polar or complex */
+	// Note: This default value doesn't make sense for most elements (lines, circles, etc)
+	// but some code still relies on this initial value and would break if we'd change it.
 	protected int toStringMode = Kernel.COORD_CARTESIAN;
 	/** default (foreground) color */
 	protected GColor objColor = GColor.BLACK;
@@ -218,8 +221,8 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	// on change: see setVisualValues()
 
 	// spreadsheet specific properties
-	private GPoint spreadsheetCoords;
-	private GPoint oldSpreadsheetCoords;
+	private SpreadsheetCoords spreadsheetCoords;
+	private SpreadsheetCoords oldSpreadsheetCoords;
 
 	/** condition to show object */
 	protected GeoBoolean condShowObject;
@@ -342,6 +345,20 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 		if (app != null) {
 			initWith(app);
 		}
+	}
+
+	/**
+	 * Sets the visibility restriction for the element in the Euclidian view.
+	 * <p>
+	 * When {@code restrictedEuclidianVisibility} is set to {@code true}, the element is not visible
+	 * in any form in the Euclidian view. This means that neither the element nor the highlight of
+	 * the element for the "Show/Hide Object" tool should be visible.
+	 *
+	 * @param restrictedEuclidianVisibility {@code true} to restrict the element's visibility in the
+	 *  Euclidian view, {@code false} to allow it to be visible
+	 */
+	public final void setRestrictedEuclidianVisibility(boolean restrictedEuclidianVisibility) {
+		this.restrictedEuclidianVisibility = restrictedEuclidianVisibility;
 	}
 
 	/**
@@ -772,6 +789,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	/**
 	 * Set visual style from defaults
 	 */
+	// TODO rename to setVisualStyleFromConstructionDefaults?
 	final public void setConstructionDefaults() {
 		setConstructionDefaults(true, true);
 	}
@@ -971,7 +989,8 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	 *         because Show/Hide tool selected
 	 */
 	public boolean isHideShowGeo() {
-		return isSelected() && (app.getMode() == EuclidianConstants.MODE_SHOW_HIDE_OBJECT);
+		return isSelected() && (app.getMode() == EuclidianConstants.MODE_SHOW_HIDE_OBJECT)
+				&& !restrictedEuclidianVisibility;
 	}
 
 	/**
@@ -1122,7 +1141,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 			setAdvancedVisualStyleNoAuxiliary(geo);
 		}
 		if (setAuxiliaryProperty) {
-			// set whether it's an auxilliary object
+			// set whether it's an auxiliary object
 			setAuxiliaryObject(geo.isAuxiliaryObject());
 		}
 
@@ -1182,7 +1201,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	}
 
 	/**
-	 * set visual style to geo, except for
+	 * Set visual style from geo, except for
 	 *  * auxiliary flag
 	 *  * fixed flag
 	 *  * selection allowed flag
@@ -1316,7 +1335,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	@Override
 	public void setAdvancedVisualStyle(final GeoElement geo) {
 		setAdvancedVisualStyleNoAuxiliary(geo);
-		// set whether it's an auxilliary object
+		// set whether it's an auxiliary object
 		setAuxiliaryObject(geo.isAuxiliaryObject());
 	}
 
@@ -1408,6 +1427,10 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 		}
 
 		if (!showInEuclidianView()) {
+			return false;
+		}
+
+		if (restrictedEuclidianVisibility) {
 			return false;
 		}
 
@@ -1721,14 +1744,13 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 		case TOOLTIP_NEXTCELL: // tooltip is the next cell to the right
 								// (spreadsheet objects only)
 			String cellLabel = getLabel(tpl);
-			final GPoint coords = GeoElementSpreadsheet
+			final SpreadsheetCoords coords = GeoElementSpreadsheet
 					.getSpreadsheetCoordsForLabel(cellLabel);
 			if (coords == null) {
 				return "";
 			}
-			coords.x++;
-			cellLabel = GeoElementSpreadsheet.getSpreadsheetCellName(coords.x,
-					coords.y);
+			cellLabel = GeoElementSpreadsheet.getSpreadsheetCellName(coords.column + 1,
+					coords.row);
 			if (cellLabel == null) {
 				return "";
 			}
@@ -1804,7 +1826,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	 */
 	final public boolean isEuclidianToggleable() {
 		return isEuclidianShowable() && getShowObjectCondition() == null
-				&& (!isGeoBoolean() || isIndependent());
+				&& (!isGeoBoolean() || isIndependent()) && !restrictedEuclidianVisibility;
 	}
 
 	/**
@@ -2189,7 +2211,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 		// tell animation manager
 		if (oldValue != animating) {
-			final AnimationManager am = kernel.getAnimatonManager();
+			final AnimationManager am = kernel.getAnimationManager();
 			if (animating) {
 				am.addAnimatedGeo(this);
 			} else {
@@ -2539,21 +2561,21 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 			// init old and current spreadsheet coords
 			if (spreadsheetCoords == null) {
 				oldSpreadsheetCoords = null;
-				spreadsheetCoords = new GPoint();
+				spreadsheetCoords = new SpreadsheetCoords();
 			} else {
 				if (oldSpreadsheetCoords == null) {
-					oldSpreadsheetCoords = new GPoint();
+					oldSpreadsheetCoords = new SpreadsheetCoords();
 				}
 				oldSpreadsheetCoords.setLocation(spreadsheetCoords);
 			}
 
 			// we need to also support wrapped GeoElements like
 			// $A4 that are implemented as dependent geos (using ExpressionNode)
-			final GPoint p = GeoElementSpreadsheet.spreadsheetIndices(
+			final SpreadsheetCoords p = GeoElementSpreadsheet.spreadsheetIndices(
 					getLabel(StringTemplate.defaultTemplate));
 
-			if ((p.x >= 0) && (p.y >= 0)) {
-				spreadsheetCoords.setLocation(p.x, p.y);
+			if ((p.column >= 0) && (p.row >= 0)) {
+				spreadsheetCoords.setLocation(p);
 			} else {
 				spreadsheetCoords = null;
 			}
@@ -2576,8 +2598,8 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	public String getSpreadsheetLabelWithDollars(final boolean colDollar,
 			final boolean rowDollar) {
 		final String colName = GeoElementSpreadsheet
-				.getSpreadsheetColumnName(spreadsheetCoords.x);
-		final String rowName = Integer.toString(spreadsheetCoords.y + 1);
+				.getSpreadsheetColumnName(spreadsheetCoords.column);
+		final String rowName = Integer.toString(spreadsheetCoords.row + 1);
 
 		final StringBuilder sb = new StringBuilder(label.length() + 2);
 		if (colDollar) {
@@ -2712,7 +2734,8 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	 */
 	@Override
 	public String getDefaultLabel() {
-		char[] chars = null;
+		char[] chars;
+		String labelSuffix = cons.getLabelManager().getMultiuserSuffix();
 		EquationType equationType = getEquationTypeForLabeling();
 		if (isGeoPoint() && !(this instanceof GeoTurtle)) {
 			// Michael Borcherds 2008-02-23
@@ -2738,7 +2761,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 				// check through z_1, z_2, etc and return first one free
 				// (also checks z_{1} to avoid clash)
-				return cons.getIndexLabel("z");
+				return cons.getIndexLabel("z" + labelSuffix);
 			}
 
 		} else if (equationType == EquationType.IMPLICIT) {
@@ -2751,7 +2774,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 					&& !((FromMeta) this).getMetas()[0].isGeoPolygon()) {
 				int counter = 0;
 				String str;
-				final String name = getLoc().getPlainLabel("edge", "edge"); // Name.edge
+				final String name = getLoc().getPlainLabel("edge", "edge") + labelSuffix;
 				do {
 					counter++;
 					str = name + kernel.internationalizeDigits(counter + "",
@@ -2805,7 +2828,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 			String prefix = list.isMatrix() ? "m" : "l";
 			return list.getTableColumn() == -1 ? defaultNumberedLabel(prefix)
-					: cons.buildIndexedLabel("y", false);
+					: cons.buildIndexedLabel("y" + labelSuffix, false);
 		} else {
 			chars = LabelType.lowerCaseLabels;
 		}
@@ -2815,7 +2838,8 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 
 	private String defaultNumberedLabel(final String plainKey) {
 		String trans = getLoc().getPlainLabel(plainKey, plainKey);
-		return cons.getLabelManager().getNextNumberedLabel(trans);
+		return cons.getLabelManager().getNextNumberedLabel(
+				trans + cons.getLabelManager().getMultiuserSuffix());
 	}
 
 	@Override
@@ -3740,7 +3764,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 		}
 		final StringBuilder sbLongDescHTML = new StringBuilder();
 
-		final String formatedLabel = getLabel(StringTemplate.defaultTemplate);
+		final String formattedLabel = getLabel(StringTemplate.defaultTemplate);
 		final String typeString = translatedTypeString();
 
 		// html string
@@ -3764,7 +3788,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 			sbLongDescHTML.append(StringUtil.toHexString(colorAdapter));
 			sbLongDescHTML.append("\">");
 		}
-		sbLongDescHTML.append(indicesToHTML(formatedLabel, false));
+		sbLongDescHTML.append(indicesToHTML(formattedLabel, false));
 		if (colored) {
 			sbLongDescHTML.append("</font></b>");
 		}
@@ -3811,11 +3835,11 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	 * @return the colored label
 	 */
 	final public String getColoredLabel() {
-		String formatedLabel = getLabel(StringTemplate.defaultTemplate);
+		String formattedLabel = getLabel(StringTemplate.defaultTemplate);
 		return "<b><font color=\"#"
 				+ StringUtil.toHexString(getAlgebraColor())
 				+ "\">"
-				+ indicesToHTML(formatedLabel, false)
+				+ indicesToHTML(formattedLabel, false)
 				+ "</font></b>";
 	}
 
@@ -4542,7 +4566,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 				sb.append("\t<auxiliary val=\"false\"/>\n");
 			}
 		} else if (!auxiliaryObject.isOn()) {
-				// needed for eg GeoTexts (in Algebra View but Auxilliary by
+				// needed for eg GeoTexts (in Algebra View but Auxiliary by
 				// default from ggb 4.0)
 			sb.append("\t<auxiliary val=\"false\"/>\n");
 		}
@@ -5086,7 +5110,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	public boolean setSelected(final boolean flag) {
 		if (flag != selected) {
 			selected = flag;
-			kernel.notifyUpdateHightlight(this);
+			kernel.notifyUpdateHighlight(this);
 			return true;
 		}
 		return false;
@@ -5096,7 +5120,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	public boolean setHighlighted(final boolean flag) {
 		if (flag != highlighted) {
 			highlighted = flag;
-			kernel.notifyUpdateHightlight(this);
+			kernel.notifyUpdateHighlight(this);
 			return true;
 		}
 		return false;
@@ -5263,7 +5287,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	}
 
 	/**
-	 * @return temporary set of algoritms
+	 * @return temporary set of algorithms
 	 */
 	protected static TreeSet<AlgoElement> getTempSet() {
 		if (tempSet == null) {
@@ -5351,7 +5375,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	 * 
 	 * @return position of this GeoElement in GeoGebra's spreadsheet view.
 	 */
-	public GPoint getSpreadsheetCoords() {
+	public SpreadsheetCoords getSpreadsheetCoords() {
 		if (spreadsheetCoords == null) {
 			updateSpreadsheetCoordinates();
 		}
@@ -5361,7 +5385,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	/**
 	 * @return old spreadsheet coords
 	 */
-	public GPoint getOldSpreadsheetCoords() {
+	public SpreadsheetCoords getOldSpreadsheetCoords() {
 		return oldSpreadsheetCoords;
 	}
 
@@ -6047,12 +6071,12 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	 *            geo whose dependencies should be moved
 	 */
 	public void moveDependencies(final GeoElement oldGeo) {
-		// in general case do nothing; overriden in GeoPoint, GeoNumeric and
+		// in general case do nothing; overridden in GeoPoint, GeoNumeric and
 		// GeoBoolean
 	}
 
 	/**
-	 * Randomize for probability chacking overriden in subclasses that allow
+	 * Randomize for probability chacking overridden in subclasses that allow
 	 * randomization
 	 */
 	public void randomizeForProbabilisticChecking() {
@@ -6398,7 +6422,7 @@ public abstract class GeoElement extends ConstructionElement implements GeoEleme
 	}
 
 	/**
-	 * @return flag wheter this objects value or label should be sent to CAS
+	 * @return flag whether this objects value or label should be sent to CAS
 	 */
 	public boolean getSendValueToCas() {
 		return sendValueToCas;

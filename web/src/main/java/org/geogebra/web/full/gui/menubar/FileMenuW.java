@@ -1,22 +1,17 @@
 package org.geogebra.web.full.gui.menubar;
 
 import org.geogebra.common.main.Localization;
-import org.geogebra.common.move.events.BaseEvent;
-import org.geogebra.common.move.ggtapi.events.LogOutEvent;
-import org.geogebra.common.move.ggtapi.events.LoginEvent;
 import org.geogebra.common.move.views.BooleanRenderable;
-import org.geogebra.common.move.views.EventRenderable;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.gui.ShareControllerW;
 import org.geogebra.web.full.gui.menu.icons.DefaultMenuIconProvider;
 import org.geogebra.web.full.gui.menubar.action.ClearAllAction;
+import org.geogebra.web.full.gui.menubar.action.ExitExamAction;
 import org.geogebra.web.full.gui.menubar.action.ExportImage;
 import org.geogebra.web.full.gui.menubar.action.SaveAction;
 import org.geogebra.web.full.gui.menubar.action.SaveLocalAction;
 import org.geogebra.web.full.gui.menubar.action.ShareAction;
-import org.geogebra.web.full.gui.menubar.item.ExitExamItem;
-import org.geogebra.web.full.gui.view.algebra.MenuItem;
 import org.geogebra.web.html5.bridge.GeoGebraJSNativeBridge;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
@@ -28,10 +23,9 @@ import com.himamis.retex.editor.share.util.Unicode;
 /**
  * Web implementation of FileMenu
  */
-public class FileMenuW extends Submenu implements BooleanRenderable, EventRenderable {
+public class FileMenuW extends Submenu implements BooleanRenderable {
 
 	private AriaMenuItem shareItem;
-	private AriaMenuItem openFileItem;
 
 	private final Localization loc;
 
@@ -48,7 +42,8 @@ public class FileMenuW extends Submenu implements BooleanRenderable, EventRender
 
 	private void initActions() {
 		if (!GlobalScope.examController.isIdle()) {
-			addItem(new ExitExamItem());
+			addItem("exam_menu_exit",
+					new ExitExamAction(), MaterialDesignResources.INSTANCE.signout_black());
 			return;
 		}
 
@@ -57,9 +52,6 @@ public class FileMenuW extends Submenu implements BooleanRenderable, EventRender
 		getApp().getNetworkOperation().getView().add(this);
 		if (!getApp().getNetworkOperation().isOnline()) {
 			render(false);
-		}
-		if (getApp().getLoginOperation() != null) {
-			getApp().getLoginOperation().getView().add(this);
 		}
 	}
 
@@ -76,12 +68,6 @@ public class FileMenuW extends Submenu implements BooleanRenderable, EventRender
 		}
 		addDownloadAsItem();
 		addPrintItem();
-	}
-
-	private void updateOpenFileButton() {
-		openFileItem.setHTML(MainMenu.getMenuBarHtml(
-				MaterialDesignResources.INSTANCE.openFileMenu(),
-				loc.getMenu("Open")));
 	}
 
 	/**
@@ -118,13 +104,6 @@ public class FileMenuW extends Submenu implements BooleanRenderable, EventRender
 	}
 
 	@Override
-	public void renderEvent(BaseEvent event) {
-		if (event instanceof LoginEvent || event instanceof LogOutEvent) {
-			updateOpenFileButton();
-		}
-	}
-
-	@Override
 	public SVGResource getImage() {
 		return MaterialDesignResources.INSTANCE.fileMenu();
 	}
@@ -135,71 +114,69 @@ public class FileMenuW extends Submenu implements BooleanRenderable, EventRender
 	}
 
 	private void addFileNewItem() {
-		addItem(new MenuItem<>("New",
-				MaterialDesignResources.INSTANCE.newFileMenu(),
-				new ClearAllAction(true)));
+		addItem("New",
+				new ClearAllAction(true),
+				MaterialDesignResources.INSTANCE.newFileMenu());
 	}
 
 	private void addShareItem() {
-		shareItem = addItem(new MenuItem<>("Share",
-				DefaultMenuIconProvider.INSTANCE.exportFile(),
-				new ShareAction()));
+		shareItem = addItem("Share",
+				new ShareAction(),
+				DefaultMenuIconProvider.INSTANCE.exportFile());
 	}
 
 	private void addExportImageItem() {
-		addItem(new MenuItem<>("exportImage",
-				MaterialDesignResources.INSTANCE.export_image_black(),
-				new ExportImage()));
+		addItem("exportImage",
+				new ExportImage(),
+				MaterialDesignResources.INSTANCE.export_image_black());
 	}
 
 	private void addSaveItems() {
 		if (getApp().getLAF().undoRedoSupported()) {
-			addItem(new MenuItem<>("SaveOnline",
-					DefaultMenuIconProvider.INSTANCE.saveOnline(),
-					new SaveAction()));
+			addItem("SaveOnline",
+					new SaveAction(),
+					DefaultMenuIconProvider.INSTANCE.saveOnline());
 
-			addItem(new MenuItem<>("SaveToYourPC",
-					DefaultMenuIconProvider.INSTANCE.save(),
-					new SaveLocalAction()));
+			addItem("SaveToYourPC",
+					new SaveLocalAction(),
+					DefaultMenuIconProvider.INSTANCE.save());
 		}
 	}
 
 	private void addOpenFileItem() {
-		openFileItem =
-				addItem(MainMenu.getMenuBarHtml(
-						MaterialDesignResources.INSTANCE.openFileMenu(),
-						loc.getMenu("Open")),
-						true, new MenuCommand(getApp()) {
+		addItem(MainMenu.getMenuBarItem(
+				MaterialDesignResources.INSTANCE.openFileMenu(),
+				loc.getMenu("Open"),
+				new MenuCommand(getApp()) {
 
-					@Override
-					public void doExecute() {
-						app.openSearch(null);
-					}
-				});
+			@Override
+			public void doExecute() {
+				app.openSearch(null);
+			}
+		}));
 	}
 
 	private void addDownloadAsItem() {
 		if (getApp().getLAF().exportSupported()) {
-			addItem(MainMenu.getMenuBarHtml(
+			AriaMenuItem export = addItem(new AriaMenuItem(
+					loc.getMenu("DownloadAs") + Unicode.ELLIPSIS,
 					MaterialDesignResources.INSTANCE.file_download_black(),
-					loc.getMenu("DownloadAs") + Unicode.ELLIPSIS), true,
-					new ExportMenuW(getApp()), true);
+								new ExportMenuW(getApp())));
+			export.setScheduledCommand(getSubmenuCommand(export, true));
 		}
 	}
 
 	private void addPrintItem() {
 		if (getApp().getLAF().printSupported()) {
-			AriaMenuItem printItem = new AriaMenuItem(
-					MainMenu.getMenuBarHtml(
+			AriaMenuItem printItem = MainMenu.getMenuBarItem(
 							MaterialDesignResources.INSTANCE.print_black(),
-							loc.getMenu("PrintPreview")),
-					true, new MenuCommand(getApp()) {
-
-				@Override
-				public void doExecute() {
-					getApp().getDialogManager()
-							.showPrintPreview();
-				}
+							loc.getMenu("PrintPreview"),
+					new MenuCommand(getApp()) {
+						@Override
+						public void doExecute() {
+							getApp().getDialogManager()
+									.showPrintPreview();
+						}
 			});
 			// updatePrintMenu();
 			addItem(printItem);

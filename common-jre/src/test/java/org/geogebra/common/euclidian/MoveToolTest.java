@@ -1,5 +1,6 @@
 package org.geogebra.common.euclidian;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -12,10 +13,12 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.geogebra.common.cas.MockCASGiac;
 import org.geogebra.common.gui.dialog.options.model.AbsoluteScreenPositionModel;
 import org.geogebra.common.jre.headless.EuclidianViewNoGui;
 import org.geogebra.common.kernel.geos.AbsoluteScreenLocateable;
 import org.geogebra.common.kernel.geos.GeoBoolean;
+import org.geogebra.common.kernel.geos.GeoCasCell;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoImage;
 import org.geogebra.common.kernel.geos.GeoList;
@@ -25,7 +28,7 @@ import org.geogebra.common.kernel.geos.MoveGeos;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.kernel.matrix.Coords;
 import org.geogebra.common.plugin.EuclidianStyleConstants;
-import org.geogebra.test.EventAcumulator;
+import org.geogebra.test.EventAccumulator;
 import org.geogebra.test.annotation.Issue;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -80,9 +83,61 @@ public class MoveToolTest extends BaseEuclidianControllerTest {
 	}
 
 	@Test
+	public void casListShouldNotBeMoveable() {
+		MockCASGiac mockGiac = setupGiac();
+		mockGiac.memorize("{(1, -1), (1, 1)}");
+		GeoCasCell f = new GeoCasCell(getConstruction());
+		getConstruction().addToConstructionList(f, false);
+		f.setInput("l5:=Intersect(x^2+y^2=2,(x-2)^2+y^2=2)");
+		f.computeOutput();
+		GeoList list = (GeoList) f.getTwinGeo();
+		list.setLabel("l5");
+		assertThat(list, hasValue("{(1, -1), (1, 1)}"));
+		moveObjectWithArrowKey(list, 1, -2);
+		assertThat(list, hasValue("{(1, -1), (1, 1)}"));
+	}
+
+	@Test
+	public void casFreeListShouldNotBeMoveable() {
+		MockCASGiac mockGiac = setupGiac();
+		mockGiac.memorize("{(1, -1), (1, 1)}");
+		GeoCasCell f = new GeoCasCell(getConstruction());
+		getConstruction().addToConstructionList(f, false);
+		f.setInput("l5:={(1, -1), (1, 1)}");
+		f.computeOutput();
+		GeoList list = (GeoList) f.getTwinGeo();
+		list.setLabel("l5");
+		assertThat(list, hasValue("{(1, -1), (1, 1)}"));
+		moveObjectWithArrowKey(list, 1, -2);
+		assertThat(list, hasValue("{(1, -1), (1, 1)}"));
+		dragStart(50, 50);
+		assertThat(list.isSelected(), equalTo(true));
+		dragEnd(100, 50);
+		assertThat(list, hasValue("{(1, -1), (1, 1)}"));
+	}
+
+	@Test
+	public void freeListShouldBeDraggable() {
+		GeoList list  = add("{(1, -1), (1, 1)}");
+		list.setEuclidianVisible(true);
+		list.updateRepaint();
+		EventAccumulator acumulator = new EventAccumulator();
+		getApp().getEventDispatcher().addEventListener(acumulator);
+		dragStart(50, 50);
+		dragEnd(100, 50);
+		assertThat(list, hasValue("{(2, -1), (2, 1)}"));
+		assertTrue("List should have been updated", acumulator.getEvents().contains("UPDATE l1"));
+	}
+
+	private MockCASGiac setupGiac() {
+		return new MockCASGiac(getApp());
+	}
+
+	@Test
 	public void moveWithMouseShouldChangePolygon1() {
 		add("A = (0,0)");
 		add("q = Polygon(A, (0,-1), 4)");
+		add("SetVisibleInView(B,1,false)");
 		dragStart(50, 50);
 		dragEnd(100, 150);
 		checkContent("A = (1, -2)", "q = 1", "f = 1", "g = 1", "B = (2, -3)",
@@ -568,7 +623,7 @@ public class MoveToolTest extends BaseEuclidianControllerTest {
 		int offY = geo.isGeoImage() ? -10 : 10;
 		add("SetCoords(" + geo.getLabelSimple() + ", 100, 100)");
 		dragStart(100 + offX, 100 + offY, rightClick);
-		EventAcumulator listener = new EventAcumulator();
+		EventAccumulator listener = new EventAccumulator();
 		getApp().getEventDispatcher().addEventListener(listener);
 		dragEnd(200 + offX, 150 + offY, rightClick);
 		return new DragResult(((AbsoluteScreenLocateable) geo).getAbsoluteScreenLocX() - 100,

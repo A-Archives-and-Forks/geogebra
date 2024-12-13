@@ -9,8 +9,6 @@ import org.geogebra.keyboard.web.factory.model.solver.SolverSpecialSymbolsKeyboa
 
 public final class SolverKeyboardFactory extends DefaultKeyboardFactory {
 
-	public static final SolverKeyboardFactory INSTANCE = new SolverKeyboardFactory();
-
 	/**
 	 * Keyboard layout for solver
 	 */
@@ -23,7 +21,7 @@ public final class SolverKeyboardFactory extends DefaultKeyboardFactory {
 	 * @param charProvider - character provider
 	 */
 	public SolverKeyboardFactory(CharacterProvider charProvider) {
-		super();
+		super(false);
 		defaultKeyboardModelFactory = new SolverDefaultKeyboardFactory(charProvider);
 		mathKeyboardFactory = new SolverDefaultKeyboardFactory(charProvider);
 		functionKeyboardFactory = new SolverFunctionKeyboardFactory();

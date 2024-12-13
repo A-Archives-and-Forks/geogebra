@@ -6,6 +6,8 @@ import org.geogebra.web.html5.gui.util.FastClickHandler;
 import org.geogebra.web.html5.gui.util.HasResource;
 import org.geogebra.web.html5.gui.util.ImageOrText;
 import org.geogebra.web.html5.gui.util.NoDragImage;
+import org.geogebra.web.html5.gui.view.IconSpec;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.util.GlobalHandlerRegistry;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.resources.client.ResourcePrototype;
@@ -52,11 +54,28 @@ public class StandardButton extends Widget implements HasResource {
 	}
 
 	/**
+	 * @param icon icon definition
+	 * @param label string label
+	 * @param width icon width
+	 * @param height icon height
+	 */
+	public StandardButton(final IconSpec icon, final String label,
+			int width, int height) {
+		this();
+		if (icon instanceof ImageIconSpec) {
+			setIconAndLabel(((ImageIconSpec) icon).getImage(), label, width, height);
+		} else {
+			setIconAndLabel(null, label, width, height);
+			getElement().insertFirst(icon.toElement());
+		}
+	}
+
+	/**
 	 * @param label
 	 *            - text of button
 	 */
 	public StandardButton(final String label) {
-		this(null, label, -1, -1);
+		this((ResourcePrototype) null, label, -1, -1);
 	}
 
 	/**
@@ -77,6 +96,14 @@ public class StandardButton extends Widget implements HasResource {
 	 * @param width - width
 	 */
 	public StandardButton(final ResourcePrototype icon, int width) {
+		this(icon, null, width, -1);
+	}
+
+	/**
+	 * @param icon - img of button
+	 * @param width - width
+	 */
+	public StandardButton(final IconSpec icon, int width) {
 		this(icon, null, width, -1);
 	}
 
@@ -210,6 +237,19 @@ public class StandardButton extends Widget implements HasResource {
 	}
 
 	/**
+	 * set icon
+	 * @param icon - icon
+	 */
+	public void setIcon(final IconSpec icon) {
+		if (icon instanceof ImageIconSpec) {
+			setIconAndLabel(((ImageIconSpec) icon).getImage(), label, width, height);
+		} else {
+			setIconAndLabel(null, label, width, height);
+			getElement().insertFirst(icon.toElement());
+		}
+	}
+
+	/**
 	 * @param icon - image or text icon (e.g. colored buttons)
 	 */
 	public void setIcon(ImageOrText icon) {
@@ -220,6 +260,13 @@ public class StandardButton extends Widget implements HasResource {
 	@Override
 	public void setTitle(String title) {
 		AriaHelper.setTitle(this, title);
+	}
+
+	/**
+	 * Sets the tooltip-position attribute to 'right' (used for showing tooltips on hover)
+	 */
+	public void setTooltipPositionRight() {
+		this.getElement().setAttribute("tooltip-position", "right");
 	}
 
 	/**

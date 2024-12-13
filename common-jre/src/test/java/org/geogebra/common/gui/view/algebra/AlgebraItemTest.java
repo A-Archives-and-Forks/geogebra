@@ -18,49 +18,39 @@ import org.geogebra.common.kernel.geos.GeoVector;
 import org.geogebra.common.main.settings.AlgebraStyle;
 import org.geogebra.common.main.settings.CoordinatesFormat;
 import org.geogebra.common.scientific.LabelController;
-import org.geogebra.test.EventAcumulator;
+import org.geogebra.test.EventAccumulator;
 import org.junit.Test;
 
 public class AlgebraItemTest extends BaseUnitTest {
 
-    private static final int LATEX_MAX_EDIT_LENGHT = 1500;
+    private static final int LATEX_MAX_EDIT_LENGTH = 1500;
+    private static final String line = "Line((0,0), (1,1))";
+    private static final String fitLine = "FitLine((0,0), (1,1))";
+    private static final String circle = "Circle((0,0), (1,1))";
 
     @Test
-    public void shouldShowBothRows() {
-        getApp().getSettings().getAlgebra().setStyle(AlgebraStyle.DEFINITION_AND_VALUE);
-
-        testShouldShowBothRowsInGraphing();
-        testShouldShowBothRowsInGeometry();
-    }
-
-    private void testShouldShowBothRowsInGraphing() {
+    public void testShouldShowBothRowsInGraphing() {
         getApp().setGraphingConfig();
 
-        checkShouldShowBothRowsForLine(true);
-        checkShouldShowBothRowsForFitLine(true);
+        checkShouldShowBothRowsFor(line);
+        checkShouldShowBothRowsFor(fitLine);
+        checkShouldShowBothRowsFor("0.6");
+        checkShouldShowBothRowsFor("0.6+2");
     }
 
-    private void checkShouldShowBothRowsForLine(boolean shouldShowBothRows) {
-        GeoElement line = addAvInput("Line((0,0), (1,1))");
-        assertThat(AlgebraItem.shouldShowBothRows(line), is(shouldShowBothRows));
+    private void checkShouldShowBothRowsFor(String definition) {
+        GeoElement line = addAvInput(definition);
+        assertThat(AlgebraItem.shouldShowBothRows(line), is(true));
     }
 
-    private void checkShouldShowBothRowsForFitLine(boolean shouldShowBothRows) {
-        GeoElement fitLine = addAvInput("FitLine((0,0), (1,1))");
-        assertThat(AlgebraItem.shouldShowBothRows(fitLine), is(shouldShowBothRows));
-    }
-
-    private void testShouldShowBothRowsInGeometry() {
+    @Test
+    public void testShouldShowBothRowsInGeometry() {
         getApp().setGeometryConfig();
+        getApp().getSettings().getAlgebra().setStyle(AlgebraStyle.DEFINITION_AND_VALUE);
 
-        checkShouldShowBothRowsForLine(true);
-        checkShouldShowBothRowsForFitLine(true);
-        checkShouldShowBothRowsForCircle(true);
-    }
-
-    private void checkShouldShowBothRowsForCircle(boolean shouldShowBothRows) {
-        GeoElement circle = addAvInput("Circle((0,0), (1,1))");
-        assertThat(AlgebraItem.shouldShowBothRows(circle), is(shouldShowBothRows));
+        checkShouldShowBothRowsFor(line);
+        checkShouldShowBothRowsFor(fitLine);
+        checkShouldShowBothRowsFor(circle);
     }
 
     @Test
@@ -81,7 +71,7 @@ public class AlgebraItemTest extends BaseUnitTest {
         addAvInput("a = ?");
         GeoVector vector = addAvInput("v = (a, 1)");
         String latexString =
-                AlgebraItem.getLatexString(vector, LATEX_MAX_EDIT_LENGHT, false);
+                AlgebraItem.getLatexString(vector, LATEX_MAX_EDIT_LENGTH, false);
         assertThat(latexString, equalTo("v\\, = \\,?"));
     }
 
@@ -122,12 +112,12 @@ public class AlgebraItemTest extends BaseUnitTest {
 
     @Test
     public void addingToAVShouldNotCallUpdate() {
-        EventAcumulator eventAcumulator = new EventAcumulator();
-        getApp().getEventDispatcher().addEventListener(eventAcumulator);
+        EventAccumulator eventAccumulator = new EventAccumulator();
+        getApp().getEventDispatcher().addEventListener(eventAccumulator);
         GeoElement geo = addAvInput("a=1+3");
         InputHelper.updateProperties(new GeoElement[]{geo}, getApp().getActiveEuclidianView(),
                 getKernel().getConstructionStep());
-        assertThat(Collections.singletonList("ADD a"), is(eventAcumulator.getEvents()));
+        assertThat(Collections.singletonList("ADD a"), is(eventAccumulator.getEvents()));
     }
 
     @Test
@@ -169,5 +159,12 @@ public class AlgebraItemTest extends BaseUnitTest {
         GeoElement element = add("17!");
         String definition = element.getAlgebraDescriptionForPreviewOutput();
         assertThat(definition, is("355687428096000"));
+    }
+
+    @Test
+    public void shouldShowEqualSignPrefixTest() {
+        assertThat(AlgebraItem.shouldShowEqualSignPrefix(add("1/2")), equalTo(true));
+        assertThat(AlgebraItem.shouldShowEqualSignPrefix(add("1/3")), equalTo(false));
+        assertThat(AlgebraItem.shouldShowEqualSignPrefix(add("sqrt(3)+1")), equalTo(true));
     }
 }

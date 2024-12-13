@@ -2,11 +2,12 @@ package org.geogebra.web.full.gui.toolbarpanel;
 
 import java.util.Collection;
 
+import org.geogebra.common.exam.ExamListener;
+import org.geogebra.common.exam.ExamState;
 import org.geogebra.common.gui.toolcategorization.ToolCollection;
-import org.geogebra.common.gui.toolcategorization.ToolCollectionFactory;
 import org.geogebra.common.gui.toolcategorization.ToolsetLevel;
-import org.geogebra.common.gui.util.InvalidToolFilter;
-import org.geogebra.common.main.App;
+import org.geogebra.common.io.layout.DockPanelData;
+import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.full.util.CustomScrollbar;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
@@ -16,7 +17,7 @@ import org.gwtproject.user.client.ui.ScrollPanel;
 /**
  * tab of tools
  */
-public class ToolsTab extends ToolbarTab {
+public class ToolsTab extends ToolbarTab implements ExamListener {
 
 	/**
 	 *
@@ -43,7 +44,7 @@ public class ToolsTab extends ToolbarTab {
 	 */
 	private ScrollPanel sp;
 
-	private final App app;
+	private final AppWFull app;
 
 	public boolean isCustomToolbar = false;
 
@@ -61,14 +62,13 @@ public class ToolsTab extends ToolbarTab {
 		this.toolbarPanel = toolbarPanel;
 		this.app = toolbarPanel.getApp();
 
-		ToolCollectionFactory toolCollectionFactory = app.createToolCollectionFactory();
-		toolCollection = toolCollectionFactory.createToolCollection();
-		toolCollection.filter(new InvalidToolFilter(app));
+		toolCollection = app.getAvailableTools();
 
 		createContents();
 		if (!isCustomToolbar) {
 			handleMoreLessButtons();
 		}
+		app.getExamEventBus().add(this);
 	}
 
 	private void handleMoreLessButtons() {
@@ -133,7 +133,7 @@ public class ToolsTab extends ToolbarTab {
 	public void updateContent() {
 		toolsPanel.removeFromParent();
 		toolsPanel = new Tools((AppW) app, this);
-		setMoveMode();
+		app.setMoveMode();
 		sp.clear();
 		sp.add(toolsPanel);
 		if (!isCustomToolbar) {
@@ -143,14 +143,6 @@ public class ToolsTab extends ToolbarTab {
 			this.toolbarPanel.setLabels();
 			handleMoreLessButtons();
 		}
-	}
-
-	/**
-	 * Selects MODE_MOVE as mode and changes visual settings accordingly of
-	 * this.
-	 */
-	void setMoveMode() {
-		toolsPanel.setMoveMode();
 	}
 
 	/**
@@ -202,11 +194,22 @@ public class ToolsTab extends ToolbarTab {
 	}
 
 	@Override
+	public DockPanelData.TabIds getID() {
+		return DockPanelData.TabIds.TOOLS;
+	}
+
+	@Override
 	public void setLabels() {
 		toolsPanel.setLabels();
 		if (moreBtn != null && lessBtn != null) {
 			moreBtn.setText(app.getLocalization().getMenu("Tools.More"));
 			lessBtn.setText(app.getLocalization().getMenu("Tools.Less"));
 		}
+	}
+
+	@Override
+	public void examStateChanged(ExamState newState) {
+		toolCollection = app.getAvailableTools();
+		updateContent();
 	}
 }

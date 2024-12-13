@@ -25,7 +25,6 @@ import org.geogebra.common.euclidian.EuclidianViewInterfaceCommon;
 import org.geogebra.common.factories.AwtFactory;
 import org.geogebra.common.kernel.CircularDefinitionException;
 import org.geogebra.common.kernel.Construction;
-import org.geogebra.common.kernel.Locateable;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.algos.AlgoDependentText;
 import org.geogebra.common.kernel.algos.AlgoElement;
@@ -62,7 +61,7 @@ import com.himamis.retex.renderer.share.serialize.TeXAtomSerializer;
  *
  */
 public class GeoText extends GeoElement
-		implements Locateable, AbsoluteScreenLocateable, TextValue,
+		implements AbsoluteScreenLocateable, TextValue,
 		TextProperties, SpreadsheetTraceable, HasSymbolicMode, HasAuralText {
 	public static final String NEW_LINE = "\\\\n";
 	private static Comparator<GeoText> comparator;
@@ -98,7 +97,7 @@ public class GeoText extends GeoElement
 	private ExpressionValue spreadsheetTraceableValue;
 	private ExpressionNode spreadsheetTraceableLeftTree;
 
-	/** index of exra small modifier */
+	/** index of extra small modifier */
 	final public static int FONTSIZE_EXTRA_SMALL = 0;
 	/** index of very small modifier */
 	final public static int FONTSIZE_VERY_SMALL = 1;
@@ -110,7 +109,7 @@ public class GeoText extends GeoElement
 	final public static int FONTSIZE_LARGE = 4;
 	/** index of very large modifier */
 	final public static int FONTSIZE_VERY_LARGE = 5;
-	/** index of exra large modifier */
+	/** index of extra large modifier */
 	final public static int FONTSIZE_EXTRA_LARGE = 6;
 
 	// for absolute screen location
@@ -162,7 +161,6 @@ public class GeoText extends GeoElement
 
 	/**
 	 * Creates a new GeoText.
-	 *
 	 * Note: This will set construction defaults.
 	 *
 	 * @param construction
@@ -1632,4 +1630,5 @@ public class GeoText extends GeoElement
 		}
 		return b.toString();
 	}
+
 }

@@ -21,7 +21,6 @@ public class EvalInfo {
 	private boolean autocreateSliders = true;
 	private boolean autoAddDegree = false;
 	private boolean symbolic = false;
-	private boolean forceUserEquation;
 	private boolean updateRandom = true;
 	private boolean copyingPlainVariables = false;
 	private boolean allowTypeChange = true;
@@ -36,6 +35,7 @@ public class EvalInfo {
 	private boolean isRedefinition = false;
 	private boolean useAnalytics;
 	private boolean forceFunctionsEnabled = false;
+	private boolean autoCreateObjects = true;
 
 	/**
 	 * Creates a default evaluation info
@@ -154,7 +154,6 @@ public class EvalInfo {
 		ret.autocreateSliders = this.autocreateSliders;
 		ret.autoAddDegree = this.autoAddDegree;
 		ret.symbolic = this.symbolic;
-		ret.forceUserEquation = this.forceUserEquation;
 		ret.updateRandom = this.updateRandom;
 		ret.symbolicMode = this.symbolicMode;
 		ret.copyingPlainVariables = this.copyingPlainVariables;
@@ -169,6 +168,7 @@ public class EvalInfo {
 		ret.useAnalytics = this.useAnalytics;
 		ret.forceFunctionsEnabled = this.forceFunctionsEnabled;
 		ret.allowAssignment = this.allowAssignment;
+		ret.autoCreateObjects = this.autoCreateObjects;
 		return ret;
 	}
 
@@ -262,20 +262,6 @@ public class EvalInfo {
 	}
 
 	/**
-	 * @param userEquation
-	 *            whether to show symbolic fractionss
-	 * @return derived eval info
-	 */
-	public EvalInfo withUserEquation(boolean userEquation) {
-		if (userEquation == this.forceUserEquation) {
-			return this;
-		}
-		EvalInfo ret = copy();
-		ret.forceUserEquation = userEquation;
-		return ret;
-	}
-
-	/**
 	 * @return whether to show symbolic fractions
 	 */
 	public boolean isSymbolic() {
@@ -287,13 +273,6 @@ public class EvalInfo {
 	 */
 	public boolean autoAddDegree() {
 		return autoAddDegree;
-	}
-
-	/**
-	 * @return whether to force output = input
-	 */
-	public boolean isForceUserEquation() {
-		return forceUserEquation;
 	}
 
 	/**
@@ -545,5 +524,19 @@ public class EvalInfo {
 
 	public boolean isAssignmentAllowed() {
 		return allowAssignment;
+	}
+
+	/**
+	 * @param autoCreate false to disable autocreation of elements (lengths, spreadsheet cells)
+	 * @return modified copy
+	 */
+	public EvalInfo withAutocreate(boolean autoCreate) {
+		EvalInfo info = copy();
+		info.autoCreateObjects = autoCreate;
+		return info;
+	}
+
+	public boolean isAutoCreateObjects() {
+		return autoCreateObjects;
 	}
 }

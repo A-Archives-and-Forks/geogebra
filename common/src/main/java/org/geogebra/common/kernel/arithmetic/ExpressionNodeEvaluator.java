@@ -68,6 +68,13 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 	}
 
 	/**
+	 * @param operationArgumentFilter filter for unacceptable operations
+	 */
+	public void setOperationArgumentFilter(OperationArgumentFilter operationArgumentFilter) {
+		this.filter = operationArgumentFilter;
+	}
+
+	/**
 	 * Evaluates the ExpressionNode described by the parameters
 	 *
 	 * @param expressionNode
@@ -1440,7 +1447,7 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 
 	/**
 	 * @param lt
-	 *            condition (unchecked cast ot BooleanValue)
+	 *            condition (unchecked cast to BooleanValue)
 	 * @param rt
 	 *            conditional expr
 	 * @return rt or ?
@@ -1461,5 +1468,4 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 	public MyError illegalCondition() {
 		return new MyError(getKernel().getLocalization(), Errors.InvalidInput);
 	}
-
 }

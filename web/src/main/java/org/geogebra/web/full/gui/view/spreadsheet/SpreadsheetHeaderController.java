@@ -1,6 +1,6 @@
 package org.geogebra.web.full.gui.view.spreadsheet;
 
-import org.geogebra.common.awt.GPoint;
+import org.geogebra.common.spreadsheet.core.SpreadsheetCoords;
 import org.geogebra.web.html5.event.PointerEvent;
 import org.geogebra.web.html5.event.ZeroOffset;
 import org.geogebra.web.html5.gui.util.CancelEventTimer;
@@ -77,7 +77,7 @@ public class SpreadsheetHeaderController
 				return;
 			}
 
-			GPoint p = table.getIndexFromPixel(
+			SpreadsheetCoords p = table.getIndexFromPixel(
 					SpreadsheetMouseListenerW.getAbsoluteX(event.getWrappedEvent(), app),
 					SpreadsheetMouseListenerW.getAbsoluteY(event.getWrappedEvent(), app));
 
@@ -86,10 +86,10 @@ public class SpreadsheetHeaderController
 			}
 
 			// if click is outside current selection then change selection
-			if (p.getY() < table.minSelectionRow
-					|| p.getY() > table.maxSelectionRow
-					|| p.getX() < table.minSelectionColumn
-					|| p.getX() > table.maxSelectionColumn) {
+			if (p.row < table.minSelectionRow
+					|| p.row > table.maxSelectionRow
+					|| p.column < table.minSelectionColumn
+					|| p.column > table.maxSelectionColumn) {
 				header.updateSelection(p);
 			}
 
@@ -124,7 +124,7 @@ public class SpreadsheetHeaderController
 		PointerEvent e = PointerEvent.wrapEvent(event, ZeroOffset.INSTANCE);
 		longTouchManager.scheduleTimer(this, e.getX(), e.getY());
 		onPointerDown(e);
-		CancelEventTimer.touchEventOccured();
+		CancelEventTimer.touchEventOccurred();
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class SpreadsheetHeaderController
 		event.preventDefault();
 		PointerEvent e = PointerEvent.wrapEvent(event, ZeroOffset.INSTANCE);
 		onPointerUp(e);
-		CancelEventTimer.touchEventOccured();
+		CancelEventTimer.touchEventOccurred();
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public class SpreadsheetHeaderController
 					false);
 		}
 		header.onPointerMove(e);
-		CancelEventTimer.touchEventOccured();
+		CancelEventTimer.touchEventOccurred();
 	}
 
 	@Override

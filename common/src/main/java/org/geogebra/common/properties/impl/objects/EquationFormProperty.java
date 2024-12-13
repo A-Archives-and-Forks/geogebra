@@ -1,7 +1,11 @@
 package org.geogebra.common.properties.impl.objects;
 
+import static java.util.Map.entry;
+
+import java.util.List;
+
+import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
-import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.geos.GeoVec3D;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
@@ -21,11 +25,18 @@ public class EquationFormProperty extends AbstractNamedEnumeratedProperty<Intege
 			throws NotApplicablePropertyException {
 		super(localization, "Equation");
 		delegate = new EquationFormDelegate(element);
-		setValues(GeoLine.EQUATION_IMPLICIT, GeoLine.EQUATION_EXPLICIT, GeoLine.PARAMETRIC,
-				GeoLine.EQUATION_IMPLICIT_NON_CANONICAL, GeoLine.EQUATION_GENERAL,
-				GeoLine.EQUATION_USER);
-		setValueNames("ImplicitLineEquation", "ExplicitLineEquation", "ParametricForm",
-				"GeneralLineEquation", "InputForm");
+		setNamedValues(
+				List.of(
+						entry(LinearEquationRepresentable.Form.IMPLICIT.rawValue,
+								"ImplicitLineEquation"),
+						entry(LinearEquationRepresentable.Form.EXPLICIT.rawValue,
+								"ExplicitLineEquation"),
+						entry(LinearEquationRepresentable.Form.PARAMETRIC.rawValue,
+								"ParametricForm"),
+						entry(LinearEquationRepresentable.Form.GENERAL.rawValue,
+								"GeneralLineEquation"),
+                               entry(LinearEquationRepresentable.Form.USER.rawValue, "InputForm")
+		));
 	}
 
 	@Override

@@ -145,7 +145,6 @@ public class AlgebraInputW extends FlowPanel
 			app.getGuiManager().getInputHelpPanel().setLabels();
 		}
 
-		inputField.setDictionary(false);
 		inputField.getTextField().getElement().setAttribute("placeholder",
 				loc.getMenu("InputLabel") + Unicode.ELLIPSIS);
 	}
@@ -261,9 +260,9 @@ public class AlgebraInputW extends FlowPanel
 
 				inputField.setIsSuggestionJustHappened(false);
 			};
-			EvalInfo info = new EvalInfo(true, true).withSliders(true)
-					.addDegree(app.getKernel().getAngleUnitUsesDegrees())
-					.withUserEquation(true);
+			EvalInfo info = new EvalInfo(true, true)
+					.withSliders(true)
+					.addDegree(app.getKernel().getAngleUnitUsesDegrees());
 			app.getKernel().getAlgebraProcessor()
 					.processAlgebraCommandNoExceptionHandling(input, true,
 							getErrorHandler(valid, explicit), info, callback);

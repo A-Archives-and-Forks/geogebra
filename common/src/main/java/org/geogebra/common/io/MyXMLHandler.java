@@ -106,6 +106,7 @@ public class MyXMLHandler implements DocHandler {
 	private static final int MODE_EUCLIDIAN_VIEW = 100;
 	/** currently parsing tags for Euclidian3D view */
 	protected static final int MODE_EUCLIDIAN_VIEW3D = 101; // only for 3D
+	private static final int MODE_SPREADSHEET_LAYOUT_SUITE = 149;
 	private static final int MODE_SPREADSHEET_VIEW = 150;
 	private static final int MODE_ALGEBRA_VIEW = 151;
 	private static final int MODE_CONST_CAS_CELL = 161;
@@ -506,6 +507,12 @@ public class MyXMLHandler implements DocHandler {
 			}
 			break;
 
+		case MODE_SPREADSHEET_LAYOUT_SUITE:
+			if ("spreadsheetLayoutSuite".equals(eName)) {
+				mode = MODE_GEOGEBRA;
+			}
+			break;
+
 		case MODE_SPREADSHEET_VIEW:
 			if ("spreadsheetView".equals(eName)) {
 				mode = MODE_GEOGEBRA;
@@ -589,18 +596,18 @@ public class MyXMLHandler implements DocHandler {
 						// start later, in initInBackground()
 						kernel.setWantAnimationStarted(true);
 					} else {
-						kernel.getAnimatonManager().startAnimation();
+						kernel.getAnimationManager().startAnimation();
 					}
 				}
 
-				// perform tasks to maintain backward compability
+				// perform tasks to maintain backward compatibility
 				if (hasGuiElement) {
 					if (ggbFileFormat < 3.3) {
-						createCompabilityLayout();
+						createCompatibilityLayout();
 					} else if (!isPreferencesXML
 							&& !perspectiveElementFound) {
 						// a specific 4.2 ggb file needed this
-						createCompabilityLayout();
+						createCompatibilityLayout();
 					}
 				}
 			}
@@ -634,7 +641,12 @@ public class MyXMLHandler implements DocHandler {
 		case "tableview":
 			setTableParameters(attrs);
 			break;
+		case "spreadsheetLayoutSuite":
+			mode = MODE_SPREADSHEET_LAYOUT_SUITE;
+			break;
 		case "spreadsheetView":
+			app.getSettings().getSpreadsheet().getHeightMap().clear();
+			app.getSettings().getSpreadsheet().getWidthMap().clear();
 			mode = MODE_SPREADSHEET_VIEW;
 			break;
 		case "scripting":
@@ -901,6 +913,9 @@ public class MyXMLHandler implements DocHandler {
 		case "spreadsheetCellFormat":
 			ok = handleSpreadsheetFormat(attrs);
 			break;
+		case "dimensions":
+			ok = handleSpreadsheetDimensions(attrs);
+			break;
 		default:
 			Log.error("unknown tag in <spreadsheetView>: " + eName);
 		}
@@ -956,11 +971,11 @@ public class MyXMLHandler implements DocHandler {
 			app.getSettings().getProbCalcSettings().setOverlayActive(isOverlayActive);
 
 			// get parameters from comma delimited string
-			String parmString = attrs.get("parameters");
-			String[] parmStringArray = parmString.split(",");
-			GeoNumeric[] parameters = new GeoNumeric[parmStringArray.length];
-			for (int i = 0; i < parmStringArray.length; i++) {
-				GeoNumberValue val = getNumber(parmStringArray[i]);
+			String paramString = attrs.get("parameters");
+			String[] paramStringArray = paramString.split(",");
+			GeoNumeric[] parameters = new GeoNumeric[paramStringArray.length];
+			for (int i = 0; i < paramStringArray.length; i++) {
+				GeoNumberValue val = getNumber(paramStringArray[i]);
 				parameters[i] = val instanceof GeoNumeric ? (GeoNumeric) val
 								: new GeoNumeric(cons, Double.NaN);
 			}
@@ -1325,6 +1340,16 @@ public class MyXMLHandler implements DocHandler {
 			int row = Integer.parseInt(attrs.get("id"));
 			int height = Integer.parseInt(attrs.get("height"));
 			app.getSettings().getSpreadsheet().addHeight(row, height);
+			return true;
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
+	private boolean handleSpreadsheetDimensions(LinkedHashMap<String, String> attrs) {
+		try {
+			app.getSettings().getSpreadsheet().setDimensions(Integer.parseInt(attrs.get("rows")),
+					Integer.parseInt(attrs.get("columns")));
 			return true;
 		} catch (RuntimeException e) {
 			return false;
@@ -1945,7 +1970,7 @@ public class MyXMLHandler implements DocHandler {
 	/**
 	 * Take care of backward compatibility for the dynamic layout component
 	 */
-	private void createCompabilityLayout() {
+	private void createCompatibilityLayout() {
 		this.compLayout.update(tmp_perspective, app);
 		app.setPreferredSize(compLayout.getDimension());
 		app.setTmpPerspective(tmp_perspective);
@@ -3242,7 +3267,7 @@ public class MyXMLHandler implements DocHandler {
 		if (varStr != null) {
 			String[] vars = varStr.split(",");
 			for (String var : vars) {
-				cons.registerFunctionVariable(var);
+				cons.registerFunctionVariable(var.trim());
 			}
 		}
 		if (name != null) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.annotation.CheckForNull;
 
 import org.geogebra.common.euclidian.SymbolicEditor;
+import org.geogebra.common.main.PreviewFeature;
 import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.gwtutil.JsConsumer;
@@ -103,6 +104,13 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 		this(laf, appletParameters.getDataParamFitToScreen());
 		this.geoGebraElement = geoGebraElement;
 		this.appletParameters = appletParameters;
+		boolean prereleaseParameter = appletParameters.getDataParamPrerelease();
+		// flag should only be considered for the first instance
+		if (instances.size() == 1) {
+			PreviewFeature.setPreviewFeaturesEnabled(prereleaseParameter);
+		} else if (PreviewFeature.enableFeaturePreviews != prereleaseParameter) {
+			Log.warn("Availability of preview features can only be set once.");
+		}
 	}
 
 	/**
@@ -212,9 +220,6 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 			setHeightWithCompactHeader();
 		} else {
 			setHeightWithTallHeader();
-		}
-		if (app != null) {
-			app.adjustScreen(false);
 		}
 	}
 
@@ -328,7 +333,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 	 * Update size of external header if applicable.
 	 */
 	public void updateHeaderSize() {
-		// overriden later
+		// overridden later
 	}
 
 	private void updateHeaderVisible() {
@@ -614,7 +619,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 
 	/**
 	 * @param width
-	 *            sets the geogebra-web applet widht
+	 *            sets the geogebra-web applet width
 	 */
 	@Override
 	public void setWidth(int width) {
@@ -692,7 +697,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 	/**
 	 * @param show
 	 *
-	 *            wheter show the reseticon in geogebra-web applets or not
+	 *            whether to show the reseticon in geogebra-web applets or not
 	 */
 	@Override
 	public void showResetIcon(boolean show) {
@@ -751,6 +756,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 		splash = null;
 		// this one should be scheduled, so that all scheduled things depending on app execute OK
 		Scheduler.get().scheduleDeferred(() -> app = null);
+		getApp().detachFromExamController();
 	}
 
 	/**

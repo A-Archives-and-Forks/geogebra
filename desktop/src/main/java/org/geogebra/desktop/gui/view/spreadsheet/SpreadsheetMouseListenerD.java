@@ -12,15 +12,16 @@ import javax.swing.text.JTextComponent;
 import org.geogebra.common.awt.GPoint;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.euclidian.event.AbstractEvent;
-import org.geogebra.common.gui.view.spreadsheet.CellRange;
 import org.geogebra.common.gui.view.spreadsheet.MyTable;
-import org.geogebra.common.gui.view.spreadsheet.MyTableInterface;
 import org.geogebra.common.gui.view.spreadsheet.RelativeCopy;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoElementSpreadsheet;
 import org.geogebra.common.main.App;
 import org.geogebra.common.plugin.GeoClass;
+import org.geogebra.common.spreadsheet.core.SelectionType;
+import org.geogebra.common.spreadsheet.core.SpreadsheetCoords;
+import org.geogebra.common.spreadsheet.core.TabularRange;
 import org.geogebra.desktop.euclidian.event.MouseEventD;
 import org.geogebra.desktop.euclidian.event.MouseEventUtil;
 import org.geogebra.desktop.gui.layout.LayoutD;
@@ -63,7 +64,7 @@ public class SpreadsheetMouseListenerD
 
 		boolean doubleClick = e.getClickCount() != 1;
 
-		GPoint point = table.getIndexFromPixel(e.getX(), e.getY());
+		SpreadsheetCoords point = table.getIndexFromPixel(e.getX(), e.getY());
 		if (point != null) {
 
 			if (doubleClick) {
@@ -102,8 +103,8 @@ public class SpreadsheetMouseListenerD
 			if (text.startsWith("=")) {
 				point = table.getIndexFromPixel(e.getX(), e.getY());
 				if (point != null) {
-					int column = point.getX();
-					int row = point.getY();
+					int column = point.column;
+					int row = point.row;
 					GeoElement geo = RelativeCopy.getValue(app, column, row);
 					if (geo != null) {
 						e.consume();
@@ -177,7 +178,7 @@ public class SpreadsheetMouseListenerD
 					app.storeUndoInfo();
 				}
 			}
-			table.isDragingDot = false;
+			table.isDraggingDot = false;
 		}
 	}
 
@@ -222,15 +223,15 @@ public class SpreadsheetMouseListenerD
 		if (!rightClick) {
 
 			// memory testing
-			if (table.getSelectionType() != MyTableInterface.CELL_SELECT) {
-				table.setSelectionType(MyTableInterface.CELL_SELECT);
+			if (table.getSelectionType() != SelectionType.CELLS) {
+				table.setSelectionType(SelectionType.CELLS);
 			}
 
 			// force column selection
 			if (view.isColumnSelect()) {
-				GPoint point = table.getIndexFromPixel(e.getX(), e.getY());
+				SpreadsheetCoords point = table.getIndexFromPixel(e.getX(), e.getY());
 				if (point != null) {
-					int column = point.getX();
+					int column = point.column;
 					table.setColumnSelectionInterval(column, column);
 				}
 			}
@@ -255,10 +256,10 @@ public class SpreadsheetMouseListenerD
 				String text = editor.getEditingValue();
 				if (text.startsWith("=")) {
 
-					GPoint point = table.getIndexFromPixel(e.getX(), e.getY());
+					SpreadsheetCoords point = table.getIndexFromPixel(e.getX(), e.getY());
 					if (point != null) {
-						int column = point.getX();
-						int row = point.getY();
+						int column = point.column;
+						int row = point.row;
 
 						GeoElement geo = RelativeCopy.getValue(app, column,
 								row);
@@ -306,7 +307,7 @@ public class SpreadsheetMouseListenerD
 				}
 			} else if (table.isOverDot && table.showCanDragBlueDot()) {
 				// double-check
-				table.isDragingDot = true;
+				table.isDraggingDot = true;
 				e.consume();
 			}
 		}
@@ -325,10 +326,10 @@ public class SpreadsheetMouseListenerD
 			if (editor.isEditing()) {
 				String text = editor.getEditingValue();
 				if (text.startsWith("=")) {
-					GPoint point = table.getIndexFromPixel(e.getX(), e.getY());
+					SpreadsheetCoords point = table.getIndexFromPixel(e.getX(), e.getY());
 					if (point != null) {
-						int column = point.getX();
-						int row = point.getY();
+						int column = point.column;
+						int row = point.row;
 						if (column != editor.column || row != editor.row) {
 							e.consume();
 						}
@@ -347,8 +348,8 @@ public class SpreadsheetMouseListenerD
 				e.consume();
 			}
 
-			if (table.isDragingDot) {
-				if (table.dragingToColumn == -1 || table.dragingToRow == -1) {
+			if (table.isDraggingDot) {
+				if (table.draggingToColumn == -1 || table.draggingToRow == -1) {
 					return;
 				}
 				int x1 = -1;
@@ -358,25 +359,25 @@ public class SpreadsheetMouseListenerD
 				// -|1|-
 				// 2|-|3
 				// -|4|-
-				if (table.dragingToColumn < table.minSelectionColumn) { // 2
-					x1 = table.dragingToColumn;
+				if (table.draggingToColumn < table.minSelectionColumn) { // 2
+					x1 = table.draggingToColumn;
 					y1 = table.minSelectionRow;
 					x2 = table.minSelectionColumn - 1;
 					y2 = table.maxSelectionRow;
-				} else if (table.dragingToRow > table.maxSelectionRow) { // 4
+				} else if (table.draggingToRow > table.maxSelectionRow) { // 4
 					x1 = table.minSelectionColumn;
 					y1 = table.maxSelectionRow + 1;
 					x2 = table.maxSelectionColumn;
-					y2 = table.dragingToRow;
-				} else if (table.dragingToRow < table.minSelectionRow) { // 1
+					y2 = table.draggingToRow;
+				} else if (table.draggingToRow < table.minSelectionRow) { // 1
 					x1 = table.minSelectionColumn;
-					y1 = table.dragingToRow;
+					y1 = table.draggingToRow;
 					x2 = table.maxSelectionColumn;
 					y2 = table.minSelectionRow - 1;
-				} else if (table.dragingToColumn > table.maxSelectionColumn) { // 3
+				} else if (table.draggingToColumn > table.maxSelectionColumn) { // 3
 					x1 = table.maxSelectionColumn + 1;
 					y1 = table.minSelectionRow;
-					x2 = table.dragingToColumn;
+					x2 = table.draggingToColumn;
 					y2 = table.maxSelectionRow;
 				}
 
@@ -396,9 +397,9 @@ public class SpreadsheetMouseListenerD
 
 				// reset flags and cursor
 				table.isOverDot = false;
-				table.isDragingDot = false;
-				table.dragingToRow = -1;
-				table.dragingToColumn = -1;
+				table.isDraggingDot = false;
+				table.draggingToRow = -1;
+				table.draggingToColumn = -1;
 				setTableCursor();
 
 				// prevent UI manager from changing selection
@@ -429,21 +430,21 @@ public class SpreadsheetMouseListenerD
 				return;
 			}
 
-			GPoint p = table.getIndexFromPixel(e.getX(), e.getY());
+			SpreadsheetCoords p = table.getIndexFromPixel(e.getX(), e.getY());
 
 			// change selection if right click is outside current selection
-			if (p.getY() < table.minSelectionRow
-					|| p.getY() > table.maxSelectionRow
-					|| p.getX() < table.minSelectionColumn
-					|| p.getX() > table.maxSelectionColumn) {
+			if (p.row < table.minSelectionRow
+					|| p.row > table.maxSelectionRow
+					|| p.column < table.minSelectionColumn
+					|| p.column > table.maxSelectionColumn) {
 				// switch to cell selection mode
 
-				if (table.getSelectionType() != MyTableInterface.CELL_SELECT) {
-					table.setSelectionType(MyTableInterface.CELL_SELECT);
+				if (table.getSelectionType() != SelectionType.CELLS) {
+					table.setSelectionType(SelectionType.CELLS);
 				}
 
 				// now change the selection
-				table.changeSelection(p.getY(), p.getX(), false, false);
+				table.changeSelection(p.row, p.column, false, false);
 			}
 
 			// create and show context menu
@@ -465,10 +466,10 @@ public class SpreadsheetMouseListenerD
 
 		// handle editing mode drag
 		if (editor.isEditing()) {
-			GPoint point = table.getIndexFromPixel(e.getX(), e.getY());
+			SpreadsheetCoords point = table.getIndexFromPixel(e.getX(), e.getY());
 			if (point != null && selectedCellName != null) {
-				int column2 = point.getX();
-				int row2 = point.getY();
+				int column2 = point.column;
+				int row2 = point.row;
 
 				MatchResult matcher = GeoElementSpreadsheet.spreadsheetPattern
 						.exec(selectedCellName);
@@ -507,36 +508,36 @@ public class SpreadsheetMouseListenerD
 		}
 
 		// handle dot drag
-		if (table.isDragingDot) {
+		if (table.isDraggingDot) {
 
 			e.consume();
 			int mouseX = e.getX();
 			int mouseY = e.getY();
-			GPoint mouseCell = table.getIndexFromPixel(mouseX, mouseY);
+			SpreadsheetCoords mouseCell = table.getIndexFromPixel(mouseX, mouseY);
 
 			// save the selected cell position so it can be re-selected if
 			// needed
-			CellRange oldSelection = table.getSelectedCellRanges().get(0);
+			TabularRange oldSelection = table.getFirstSelection();
 
 			if (mouseCell == null) { // user has dragged outside the table, to
 										// left or above
-				table.dragingToRow = -1;
-				table.dragingToColumn = -1;
+				table.draggingToRow = -1;
+				table.draggingToColumn = -1;
 			} else {
-				table.dragingToRow = mouseCell.getY();
-				table.dragingToColumn = mouseCell.getX();
+				table.draggingToRow = mouseCell.row;
+				table.draggingToColumn = mouseCell.column;
 				Rectangle selRect = table.getSelectionRect();
 
 				// increase size if we're at the bottom of the spreadsheet
-				if (table.dragingToRow + 1 == table.getRowCount()
-						&& table.dragingToRow < app
+				if (table.draggingToRow + 1 == table.getRowCount()
+						&& table.draggingToRow < app
 								.getMaxSpreadsheetRowsVisible()) {
 					model.setRowCount(table.getRowCount() + 1);
 				}
 
 				// increase size if we go beyond the right edge
-				if (table.dragingToColumn + 1 == table.getColumnCount()
-						&& table.dragingToColumn < app
+				if (table.draggingToColumn + 1 == table.getColumnCount()
+						&& table.draggingToColumn < app
 								.getMaxSpreadsheetColumnsVisible()) {
 					model.setColumnCount(table.getColumnCount() + 1);
 					view.getColumnHeader().revalidate();
@@ -547,7 +548,7 @@ public class SpreadsheetMouseListenerD
 
 				// scroll to show "highest" selected cell
 				table.scrollRectToVisible(
-						table.getCellRect(mouseCell.y, mouseCell.x, true));
+						table.getCellRect(mouseCell.row, mouseCell.column, true));
 
 				if (!selRect.contains(e.getPoint())) {
 
@@ -555,7 +556,7 @@ public class SpreadsheetMouseListenerD
 
 					// get row distance
 					if (table.minSelectionRow > 0
-							&& table.dragingToRow < table.minSelectionRow) {
+							&& table.draggingToRow < table.minSelectionRow) {
 						rowOffset = mouseY - selRect.y;
 						if (-rowOffset < 0.5
 								* table.getCellRect(table.minSelectionRow - 1,
@@ -564,7 +565,7 @@ public class SpreadsheetMouseListenerD
 						}
 					} else if (table.maxSelectionRow < app
 							.getMaxSpreadsheetRowsVisible()
-							&& table.dragingToRow > table.maxSelectionRow) {
+							&& table.draggingToRow > table.maxSelectionRow) {
 						rowOffset = mouseY - (selRect.y + selRect.height);
 						if (rowOffset < 0.5
 								* table.getCellRect(table.maxSelectionRow + 1,
@@ -575,7 +576,7 @@ public class SpreadsheetMouseListenerD
 
 					// get column distance
 					if (table.minSelectionColumn > 0
-							&& table.dragingToColumn < table.minSelectionColumn) {
+							&& table.draggingToColumn < table.minSelectionColumn) {
 						colOffset = mouseX - selRect.x;
 						if (-colOffset < 0.5
 								* table.getCellRect(table.minSelectionRow,
@@ -585,7 +586,7 @@ public class SpreadsheetMouseListenerD
 						}
 					} else if (table.maxSelectionColumn < app
 							.getMaxSpreadsheetColumnsVisible()
-							&& table.dragingToColumn > table.maxSelectionColumn) {
+							&& table.draggingToColumn > table.maxSelectionColumn) {
 						colOffset = mouseX - (selRect.x + selRect.width);
 						if (colOffset < 0.5
 								* table.getCellRect(table.maxSelectionRow,
@@ -596,16 +597,16 @@ public class SpreadsheetMouseListenerD
 					}
 
 					if (rowOffset == 0 && colOffset == 0) {
-						table.dragingToColumn = -1;
-						table.dragingToRow = -1;
+						table.draggingToColumn = -1;
+						table.draggingToRow = -1;
 					} else if (Math.abs(rowOffset) > Math.abs(colOffset)) {
-						table.dragingToRow = mouseCell.y;
-						table.dragingToColumn = (colOffset > 0)
+						table.draggingToRow = mouseCell.row;
+						table.draggingToColumn = (colOffset > 0)
 								? table.maxSelectionColumn
 								: table.minSelectionColumn;
 					} else {
-						table.dragingToColumn = mouseCell.x;
-						table.dragingToRow = (rowOffset > 0)
+						table.draggingToColumn = mouseCell.column;
+						table.draggingToRow = (rowOffset > 0)
 								? table.maxSelectionRow : table.minSelectionRow;
 					}
 					table.repaint();

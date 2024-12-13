@@ -1,13 +1,11 @@
 package org.geogebra.web.full.main.activity;
 
-import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.gui.view.table.ScientificDataTableController;
 import org.geogebra.common.main.AppConfig;
 import org.geogebra.common.main.MaterialVisibility;
 import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.web.full.gui.layout.DockPanelW;
 import org.geogebra.web.full.gui.view.algebra.AlgebraItemHeader;
-import org.geogebra.web.full.gui.view.algebra.AlgebraViewW;
-import org.geogebra.web.full.gui.view.algebra.MenuItemCollection;
 import org.geogebra.web.full.gui.view.algebra.RadioTreeItem;
 import org.geogebra.web.full.main.HeaderResizer;
 import org.geogebra.web.html5.gui.GeoGebraFrameW;
@@ -51,14 +49,7 @@ public interface GeoGebraActivity {
 	 *            AV item
 	 * @return header for AV item
 	 */
-	AlgebraItemHeader createAVItemHeader(RadioTreeItem radioTreeItem);
-
-	/**
-	 * @param algebraView
-	 *            algebra view
-	 * @return actions for the row
-	 */
-	MenuItemCollection<GeoElement> getAVMenuItems(AlgebraViewW algebraView);
+	AlgebraItemHeader createAVItemHeader(RadioTreeItem radioTreeItem, boolean forInput);
 
 	/**
 	 * @param radioTreeItem parent item
@@ -105,11 +96,6 @@ public interface GeoGebraActivity {
 	ExportedApi getExportedApi();
 
 	/**
-	 * @return icon for menu
-	 */
-	SVGResource getExamIcon();
-
-	/**
 	 * mark search view was open before login
 	 */
 	void markSearchOpen();
@@ -125,4 +111,18 @@ public interface GeoGebraActivity {
 	 * @param visibility material visibility
 	 */
 	void markSaveProcess(String title, MaterialVisibility visibility);
+
+	ScientificDataTableController getTableController();
+
+	/**
+	 * Create default functions for table of values
+	 * @param app application
+	 */
+	default void initTableOfValues(AppW app) {
+		// nothing by default
+	}
+
+	default GeoGebraActivity getSubapp() {
+		return this;
+	}
 }

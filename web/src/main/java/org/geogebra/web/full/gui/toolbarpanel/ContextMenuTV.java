@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.geogebra.common.GeoGebraConstants;
+import org.geogebra.common.contextmenu.TableValuesContextMenuItem;
 import org.geogebra.common.gui.view.table.RegressionSpecification;
 import org.geogebra.common.gui.view.table.TableUtil;
 import org.geogebra.common.gui.view.table.TableValuesPoints;
@@ -18,15 +20,14 @@ import org.geogebra.common.main.DialogManager;
 import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.plugin.Event;
 import org.geogebra.common.plugin.EventType;
+import org.geogebra.common.util.AttributedString;
 import org.geogebra.web.full.css.MaterialDesignResources;
-import org.geogebra.web.full.gui.menubar.MainMenu;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.gui.GuiManagerInterfaceW;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.TestHarness;
-import org.geogebra.web.resources.SVGResource;
 import org.geogebra.web.shared.components.dialog.ComponentDialog;
 import org.geogebra.web.shared.components.dialog.DialogData;
 import org.geogebra.web.shared.components.infoError.ComponentInfoErrorPanel;
@@ -36,9 +37,6 @@ import org.gwtproject.user.client.Command;
 
 /**
  * Context menu which is opened with the table of values header 3dot button
- * 
- * @author csilla
- *
  */
 public class ContextMenuTV {
 	private final TableValuesView view;
@@ -87,63 +85,88 @@ public class ContextMenuTV {
 	private void buildGui() {
 		wrappedPopup = new GPopupMenuW(app);
 		wrappedPopup.getPopupPanel().addStyleName("tvContextMenu");
-		if (getColumnIdx() > 0) {
-			GeoEvaluatable column = view.getEvaluatable(getColumnIdx());
-			addShowHidePoints();
-			if (column instanceof GeoList) {
-				buildYColumnMenu();
+		GeoEvaluatable column = view.getEvaluatable(getColumnIdx());
+		List<TableValuesContextMenuItem> items = GlobalScope.contextMenuFactory
+				.makeTableValuesContextMenu(column, columnIdx, view.getTableValuesModel(),
+				app.getConfig().getVersion() == GeoGebraConstants.Version.SCIENTIFIC,
+				GlobalScope.examController.isExamActive());
+		for (TableValuesContextMenuItem item: items) {
+			if (item.getItem() == TableValuesContextMenuItem.Item.Separator) {
+				wrappedPopup.addVerticalSeparator();
 			} else {
-				buildFunctionColumnMenu();
+				addCommand(() -> executeItem(item),
+						item.getLocalizedTitle(app.getLocalization()),
+						getTestTitle(item.getItem()));
 			}
-		} else {
-			buildXColumnMenu();
 		}
 	}
 
-	private void buildXColumnMenu() {
-		addEdit(() -> {
-			DialogManager dialogManager = getApp().getDialogManager();
-			if (dialogManager != null) {
-				dialogManager.openTableViewDialog(null);
-			}
-		});
-		addCommand(view::clearValues, "ClearColumn", "clear");
-		addImportData();
-		if (app.getConfig().hasOneVarStatistics()) {
-			wrappedPopup.addVerticalSeparator();
-			addOneVarStats("x");
+	private String getTestTitle(TableValuesContextMenuItem.Item item) {
+		switch (item) {
+		case Edit:
+			return "edit";
+		case ClearColumn:
+			return "clear";
+		case RemoveColumn:
+			return "delete";
+		case ShowPoints:
+		case HidePoints:
+			return "showhide";
+		case ImportData:
+			return "importData";
+		case Regression:
+			return "regresssion";
+		case Statistics1:
+		case Statistics2:
+			return "stats";
+		case Separator:
+			break;
+		}
+		return "";
+	}
+
+	private void executeItem(TableValuesContextMenuItem item) {
+		switch (item.getItem()) {
+		case Edit:
+			edit();
+			break;
+		case ClearColumn:
+			view.clearValues();
+			break;
+		case RemoveColumn:
+			removeColumn();
+			break;
+		case HidePoints:
+		case ShowPoints:
+			showPoints();
+			break;
+		case ImportData:
+			importData();
+			break;
+		case Regression:
+			showRegression();
+			break;
+		case Statistics1:
+			showStats1Var();
+			break;
+		case Statistics2:
+			showStats2Var();
+			break;
+		case Separator:
+			break;
 		}
 	}
 
-	private void buildYColumnMenu() {
-		addDelete();
-		wrappedPopup.addVerticalSeparator();
-
-		String headerHTMLName = TableUtil.getHeaderHtml(view.getTableValuesModel(),
-				getColumnIdx());
-		addOneVarStats(headerHTMLName);
-
+	private void showStats2Var() {
 		DialogData twoVarStat = new DialogData("2VariableStatistics",
-				getColumnTitleHTML("x " + headerHTMLName), "Close", null);
-		addStats(getStatisticsTitleHTML("x " + headerHTMLName),
-				view::getStatistics2Var, twoVarStat, "StatsDialog.NoDataMsg2VarStats");
-
-		DialogData regressionData = new DialogData("Regression",
-				getColumnTitleHTML(headerHTMLName), "Close", "Plot");
-		addCommand(() -> showRegression(regressionData), "Regression",
-				"regression");
+				getColumnTitleHTML("x " + getHeaderHTMLName()), "Close", null);
+		showStats(view::getStatistics2Var, twoVarStat, "StatsDialog.NoDataMsg2VarStats");
 	}
 
-	private void addOneVarStats(String headerHTMLName) {
+	private void showStats1Var() {
 		DialogData oneVarStat = new DialogData("1VariableStatistics",
-				getColumnTitleHTML(headerHTMLName), "Close", null);
-		addStats(getStatisticsTitleHTML(headerHTMLName), view::getStatistics1Var, oneVarStat,
-				"StatsDialog.NoDataMsg1VarStats");
-	}
-
-	private String getStatisticsTitleHTML(String argument) {
-		return app.getLocalization().getPlainDefault("AStatistics",
-				"%0 Statistics", argument);
+				getColumnTitleHTML(getHeaderHTMLName()), "Close", null);
+		showStats(view::getStatistics1Var, oneVarStat, "StatsDialog.NoDataMsg1VarStats");
 	}
 
 	private String getColumnTitleHTML(String argument) {
@@ -151,22 +174,27 @@ public class ContextMenuTV {
 				"Column %0", argument);
 	}
 
-	private void buildFunctionColumnMenu() {
-		addEdit(() -> {
-			GuiManagerInterfaceW guiManager = getApp().getGuiManager();
-			if (guiManager != null) {
-				guiManager.startEditing(geo);
+	private void edit() {
+		if (getColumnIdx() == 0) {
+			DialogManager dialogManager = getApp().getDialogManager();
+			if (dialogManager != null) {
+				dialogManager.openTableViewDialog(null);
 			}
-		});
-		addDelete();
+			return;
+		}
+		GuiManagerInterfaceW guiManager = getApp().getGuiManager();
+		if (guiManager != null) {
+			guiManager.startEditing(geo);
+		}
 	}
 
-	private void addStats(String title, Function<Integer, List<StatisticGroup>> statFunction,
-			DialogData data, String noDataMsg) {
-		addCommandLocalized(() -> showStats(statFunction, data, noDataMsg), title, "stats");
+	private String getHeaderHTMLName() {
+		return TableUtil.getHeaderHtml(view.getTableValuesModel(), getColumnIdx());
 	}
 
-	private void showRegression(DialogData data) {
+	private void showRegression() {
+		DialogData data = new DialogData("Regression",
+				getColumnTitleHTML(getHeaderHTMLName()), "Close", "Plot");
 		GeoList[] cleanLists = new StatsBuilder(view.getEvaluatable(0),
 				view.getEvaluatable(columnIdx)).getCleanLists2Var();
 		final List<RegressionSpecification> availableRegressions =
@@ -210,18 +238,13 @@ public class ContextMenuTV {
 		});
 	}
 
-	private void addShowHidePoints() {
+	private void showPoints() {
 		final TableValuesPoints tvPoints = getApp().getGuiManager()
 				.getTableValuesPoints();
 		final int column = getColumnIdx();
-		String transKey = tvPoints.arePointsVisible(column) ? "HidePoints"
-				: "ShowPoints";
-		Command pointCommand = () -> {
-			dispatchShowPointsTV(column, !tvPoints.arePointsVisible(column));
-			tvPoints.setPointsVisible(column,
+		dispatchShowPointsTV(column, !tvPoints.arePointsVisible(column));
+		tvPoints.setPointsVisible(column,
 				!tvPoints.arePointsVisible(column));
-		};
-		addCommand(pointCommand, transKey, "showhide");
 	}
 
 	private void dispatchShowPointsTV(int column, boolean show) {
@@ -231,38 +254,28 @@ public class ContextMenuTV {
 		app.dispatchEvent(new Event(EventType.SHOW_POINTS_TV).setJsonArgument(showPointsJson));
 	}
 
-	private void addCommand(Command command, String transKey, String testTitle) {
-		addCommandLocalized(command, app.getLocalization().getMenu(transKey), testTitle);
+	private void addCommand(Command command, AttributedString localizedName, String testTitle) {
+		AriaMenuItem item = new AriaMenuItem(localizedName,
+				null, command);
+		addItem(item, testTitle);
 	}
 
-	private void addCommandLocalized(Command command, String title, String testTitle) {
-		AriaMenuItem mi = new AriaMenuItem(
-				MainMenu.getMenuBarHtml((SVGResource) null, title),
-				true, command);
+	private void addItem(AriaMenuItem mi, String testTitle) {
 		mi.addStyleName("no-image");
 		TestHarness.setAttr(mi, "menu_" + testTitle);
 		wrappedPopup.addItem(mi);
 	}
 
-	private void addDelete() {
-		Command deleteCommand = () -> {
-			GeoEvaluatable column = view.getEvaluatable(getColumnIdx());
-			view.hideColumn(column);
-			if (!column.isGeoList()) {
-				app.dispatchEvent(new Event(EventType.REMOVE_TV, (GeoElement) column));
-			}
-		};
-		addCommand(deleteCommand, "RemoveColumn", "delete");
-	}
-
-	private void addEdit(Command cmd) {
-		addCommand(cmd, "Edit", "edit");
-	}
-
-	private void addImportData() {
-		if (!GlobalScope.examController.isExamActive() && app.getConfig().hasDataImport()) {
-			addCommand(((AppWFull) app).getCsvHandler(), "ContextMenu.ImportData", "importData");
+	private void removeColumn() {
+		GeoEvaluatable column = view.getEvaluatable(getColumnIdx());
+		view.hideColumn(column);
+		if (!column.isGeoList()) {
+			app.dispatchEvent(new Event(EventType.REMOVE_TV, (GeoElement) column));
 		}
+	}
+
+	private void importData() {
+		((AppWFull) app).getCsvHandler().execute();
 	}
 
 	/**

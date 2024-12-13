@@ -5,17 +5,20 @@ import static org.geogebra.common.euclidian.EuclidianConstants.MODE_RULER;
 import static org.geogebra.common.euclidian.EuclidianConstants.MODE_TRIANGLE_PROTRACTOR;
 
 import org.geogebra.common.awt.GColor;
+import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.gui.SetLabels;
-import org.geogebra.web.full.css.ToolbarSvgResources;
+import org.geogebra.web.full.gui.app.GGWToolBar;
 import org.geogebra.web.full.gui.menubar.MainMenu;
+import org.geogebra.web.full.gui.toolbar.mow.toolbox.ToolModeIconSpecAdapter;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
 import org.geogebra.web.html5.gui.util.Dom;
+import org.geogebra.web.html5.gui.view.IconSpec;
 import org.geogebra.web.html5.main.AppW;
-import org.geogebra.web.resources.SVGResource;
+import org.geogebra.web.html5.main.toolbox.ToolboxIcon;
 
 public class RulerPopup extends GPopupMenuW implements SetLabels {
-	private RulerIconButton rulerButton;
+	private final RulerIconButton rulerButton;
 	private int activeRulerMode = MODE_RULER;
 
 	/**
@@ -29,35 +32,40 @@ public class RulerPopup extends GPopupMenuW implements SetLabels {
 	}
 
 	private void buildGui() {
-		addItem(ToolbarSvgResources.INSTANCE.mode_ruler(),
-				getApp().getLocalization().getMenu("Ruler"), MODE_RULER);
-
-		if (getApp().getVendorSettings().hasBothProtractor()) {
-			addItem(ToolbarSvgResources.INSTANCE.mode_protractor(),
-					getApp().getLocalization().getMenu("Protractor"), MODE_PROTRACTOR);
+		addItem(getApp().getLocalization().getMenu("Ruler"), MODE_RULER);
+		for (int mode: getApp().getVendorSettings().getProtractorTools(
+				getApp().getLocalization().getLanguage())) {
+			addItem(getApp().getLocalization().getMenu(EuclidianConstants.getModeText(mode)),
+					mode);
 		}
-
-		addItem(ToolbarSvgResources.INSTANCE.mode_triangle_protractor(),
-				getApp().getLocalization().getMenu("TriangleProtractor"),
-				MODE_TRIANGLE_PROTRACTOR);
-
-		popupMenu.selectItem(0);
+		popupMenu.selectItem(activeRulerMode == MODE_RULER ? 0 : 1);
 	}
 
-	private void addItem(SVGResource image, String text, int mode) {
-		AriaMenuItem item = new AriaMenuItem(MainMenu.getMenuBarHtmlClassic(
-				image.getSafeUri().asString(), text), true, () -> {});
+	private void addItem(String text, int mode) {
+		ToolboxIcon toolboxIcon = ToolModeIconSpecAdapter.getToolboxIcon(mode);
+		IconSpec iconSpec = getApp().getToolboxIconResource().getImageResource(toolboxIcon);
+
+		AriaMenuItem item = MainMenu.getMenuBarItem(iconSpec, text, () -> {});
+		GGWToolBar.getImageResource(mode, getApp(), item);
 		item.setScheduledCommand(() -> {
-			rulerButton.removeTool();
 			activeRulerMode = mode;
-			String fillColor = rulerButton.isActive()
-					? getApp().getGeoGebraElement().getDarkColor(getApp().getFrameElement())
-					: GColor.BLACK.toString();
-			rulerButton.updateImgAndTxt(image.withFill(fillColor), mode, getApp());
-			rulerButton.handleRuler();
+			updateRulerButton(mode);
 			setHighlight(item);
 		});
+
 		addItem(item);
+	}
+
+	private void updateRulerButton(int mode) {
+		ToolboxIcon toolboxIcon = ToolModeIconSpecAdapter.getToolboxIcon(mode);
+		IconSpec iconSpec = getApp().getToolboxIconResource().getImageResource(toolboxIcon);
+
+		String fillColor = rulerButton.isActive()
+				? getApp().getGeoGebraElement().getDarkColor(getApp().getFrameElement())
+				: GColor.BLACK.toString();
+		rulerButton.removeTool();
+		rulerButton.updateImgAndTxt(iconSpec.withFill(fillColor), mode, getApp());
+		rulerButton.handleRuler();
 	}
 
 	private void setHighlight(AriaMenuItem highlighted) {
@@ -82,6 +90,12 @@ public class RulerPopup extends GPopupMenuW implements SetLabels {
 	@Override
 	public void setLabels() {
 		clearItems();
+		boolean triangleSupported = getApp().getVendorSettings().getProtractorTools(
+				getApp().getLocalization().getLanguage()).contains(MODE_TRIANGLE_PROTRACTOR);
+		if (activeRulerMode == MODE_TRIANGLE_PROTRACTOR && !triangleSupported) {
+			activeRulerMode = MODE_PROTRACTOR;
+			updateRulerButton(activeRulerMode);
+		}
 		buildGui();
 	}
 }

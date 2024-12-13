@@ -129,10 +129,9 @@ public interface GuiManagerInterfaceW extends GuiManagerInterface {
 	boolean isVerticalSplit(boolean fallback);
 
 	/**
-	 * @param style
-	 *            exam ok (teal), or exam cheat (red)
+	 * Update header to match current exam state
 	 */
-	void setUnbundledHeaderStyle(String style);
+	void updateUnbundledToolbarStyle();
 
 	/**
 	 * init on click for exam info button
@@ -196,6 +195,11 @@ public interface GuiManagerInterfaceW extends GuiManagerInterface {
 	 * @param label - of geo to be removed from the table of values
 	 */
 	void removeGeoFromTV(String label);
+
+	/**
+	 * Shows/hides table of values view
+	 */
+	void toggleTableValuesView();
 
 	/**
 	 * @param min - starting value of table

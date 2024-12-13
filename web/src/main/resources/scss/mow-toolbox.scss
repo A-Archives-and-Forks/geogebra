@@ -97,6 +97,13 @@
 				opacity: 0.54;
 			}
 
+			.fa-light {
+				font-size: 17px;
+				display: flex;
+				width: 18px;
+				justify-content: center;
+			}
+
 			&:hover {
 				background: white;
 
@@ -112,6 +119,7 @@
 		height: 144px;
 		display:inline-flex;
 		padding: 8px;
+		z-index: z-index.$z-dialog-under-keyboard;
 	}
 
 	.gwt-PopupPanel.categoryPopup.penCategory {

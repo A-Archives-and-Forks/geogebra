@@ -1,5 +1,7 @@
 package org.geogebra.web.full.gui.view.probcalculator;
 
+import org.geogebra.common.exam.ExamListener;
+import org.geogebra.common.exam.ExamState;
 import org.geogebra.common.gui.view.probcalculator.ProbabilityCalculatorView;
 import org.geogebra.common.gui.view.probcalculator.ProbabilityManager;
 import org.geogebra.common.kernel.Kernel;
@@ -7,10 +9,12 @@ import org.geogebra.common.kernel.geos.GeoNumberValue;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.error.ErrorHelper;
+import org.geogebra.common.ownership.GlobalScope;
 import org.geogebra.common.properties.impl.distribution.DistributionTypeProperty;
 import org.geogebra.web.full.css.GuiResources;
 import org.geogebra.web.full.gui.components.CompDropDown;
 import org.geogebra.web.full.gui.util.ProbabilityModeGroup;
+import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.gui.util.ToggleButton;
@@ -19,7 +23,7 @@ import org.gwtproject.user.client.ui.FlowPanel;
 import org.gwtproject.user.client.ui.Label;
 import org.gwtproject.user.client.ui.Widget;
 
-public class DistributionPanel extends FlowPanel implements InsertHandler {
+public class DistributionPanel extends FlowPanel implements InsertHandler, ExamListener {
 	private ProbabilityCalculatorViewW view;
 	private Localization loc;
 	private CompDropDown distributionDropDown;
@@ -28,6 +32,7 @@ public class DistributionPanel extends FlowPanel implements InsertHandler {
 	private MathTextFieldW[] fldParameterArray;
 	protected ProbabilityModeGroup modeGroup;
 	protected ResultPanelW resultPanel;
+	private DistributionTypeProperty distTypeProperty;
 
 	/**
 	 * costructor
@@ -38,6 +43,7 @@ public class DistributionPanel extends FlowPanel implements InsertHandler {
 		this.view = view;
 		this.loc = loc;
 		addStyleName("distrPanel");
+		((AppWFull) view.getApp()).getExamEventBus().add(this);
 		buildGUI();
 	}
 
@@ -131,12 +137,12 @@ public class DistributionPanel extends FlowPanel implements InsertHandler {
 	public void updateParameters() {
 		for (int i = 0; i < view.maxParameterCount; ++i) {
 
-			boolean hasParm = i < ProbabilityManager.getParmCount(view.getSelectedDist());
+			boolean hasParam = i < ProbabilityManager.getParamCount(view.getSelectedDist());
 
-			lblParameterArray[i].setVisible(hasParm);
-			fldParameterArray[i].setVisible(hasParm);
+			lblParameterArray[i].setVisible(hasParam);
+			fldParameterArray[i].setVisible(hasParam);
 
-			if (hasParm) {
+			if (hasParam) {
 				// set label
 				lblParameterArray[i].setVisible(true);
 				lblParameterArray[i].setText(getParamLabel(i));
@@ -175,7 +181,8 @@ public class DistributionPanel extends FlowPanel implements InsertHandler {
 	 * @param parent - parent panel
 	 */
 	public void buildDistrComboBox(FlowPanel parent) {
-		DistributionTypeProperty distTypeProperty = new DistributionTypeProperty(loc, view);
+		distTypeProperty = new DistributionTypeProperty(loc, view);
+		GlobalScope.propertiesRegistry.register(distTypeProperty, getApp());
 		String comboLbl = getApp().getConfig().hasDistributionView() ? "Distribution" : null;
 		distributionDropDown = new CompDropDown(getApp(), comboLbl, distTypeProperty);
 		if (getApp().getConfig().hasDistributionView()) {
@@ -211,7 +218,7 @@ public class DistributionPanel extends FlowPanel implements InsertHandler {
 		if (cumulativeWidget != null) {
 			cumulativeWidget.setTitle(loc.getMenu("Cumulative"));
 		}
-		for (int i = 0; i < ProbabilityManager.getParmCount(view.getSelectedDist()); i++) {
+		for (int i = 0; i < ProbabilityManager.getParamCount(view.getSelectedDist()); i++) {
 			lblParameterArray[i]
 					.setText(getParamLabel(i));
 		}
@@ -329,5 +336,13 @@ public class DistributionPanel extends FlowPanel implements InsertHandler {
 
 	public ResultPanelW getResultPanel() {
 		return resultPanel;
+	}
+
+	@Override
+	public void examStateChanged(ExamState newState) {
+		if (newState == ExamState.ACTIVE || newState == ExamState.IDLE) {
+			distributionDropDown.setProperty(distTypeProperty);
+			distributionDropDown.resetFromModel();
+		}
 	}
 }

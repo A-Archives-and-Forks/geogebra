@@ -1441,7 +1441,7 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 	}
 
 	.dialogComponent.templateChooser {
-		max-width: 680px;
+		max-width: 656px;
 
 		.dialogTitle {
 			margin-bottom: 0px;
@@ -1456,67 +1456,25 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 				border-bottom: 1px solid colors.$black-12;
 
 				.templatesPanel {
-					max-width: 665px;
-					padding-right: 0px;
-					padding-left: 15px;
-					padding-bottom: 0px;
+					padding-right: 4px;
 				}
 			}
 		}
 
 		.templatesPanel {
-			max-width: 649px;
-			display: inline-block;
-			padding-left: 16px;
-			margin-top: 12px;
-			padding-bottom: 12px;
+			display: flex;
+			gap: 16px;
+			padding: 12px 24px;
+			flex-wrap: wrap;
 
-			.templateCard {
-				width: 200px;
-				border-radius: 2px;
-				background-color: #fff;
-				box-shadow: $shadow-card-default;
-				transition: box-shadow .25s;
+			.mowPreviewCard {
 				position: relative;
 				display: inline-block;
-				margin: 8px 8px 8px 8px;
-				cursor: pointer;
-
-				&:hover {
-					box-shadow: $shadow-card-hover;
-				}
+				margin: 0;
 
 				&.selected {
-					outline: 2px solid colors.$mow_primary;
-					box-shadow: $shadow-card-default;
-					transition: box-shadow .25s;
-				}
-
-				&.selected:hover {
-					box-shadow: $shadow-card-hover;
-				}
-
-				.cardImgPanel {
-					width: 100%;
-					height: 120px;
-					background-position: center;
-				}
-
-				.cardInfoPanel {
-					@extend .cardInfo;
-
-					.mowMoreButton {
-						width: 24px;
-						height: 24px;
-						padding: 10px 6px 10px 10px;
-						position: relative;
-						opacity: 0.54;
-						cursor: pointer;
-
-						&.gwt-ToggleButton-up-hovering {
-							opacity: 1;
-						}
-					}
+					border-color: var(--ggb-primary-color);
+					box-sizing: border-box;
 				}
 			 }
 		}
@@ -1598,7 +1556,7 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 	}
 
 	.calcChooser {
-			 max-width: 832px;
+			 max-width: 984px;
 			 min-height: 232px;
 			 left: 0px;
 			 padding: 48px 36px;
@@ -1610,7 +1568,7 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 				height: 48px;
 				font-size: 175%;
 				line-height: 48px;
-				max-width: 760px;
+				max-width: 912px;
 				margin-bottom: 32px;
 				text-align: center;
 			}
@@ -1656,46 +1614,21 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 			}
 		}
 
-	.calcChooser.smallScreen {
-		max-width: 480px;
+	.calcChooser.twoRows {
+		width: 480px;
 		padding: 24px 12px;
+	}
 
+	.calcChooser.threeRows {
+		width: 376px;
+	}
+
+	.calcChooser.twoRows, .calcChooser.threeRows {
 		.title {
 			height: 36px;
 			font-size: 140%;
 			line-height: 36px;
 			margin-bottom: 24px;
-		}
-	}
-
-	.dialogComponent.mediaDialog.H5P {
-
-		.dialogMainPanel .dialogTitle {
-			margin-bottom: 8px;
-		}
-
-		.helpTxt {
-			margin-bottom: 24px;
-			font-size: 75%;
-		}
-
-		.AutoCompleteTextFieldW {
-			margin-right: 0px;
-		}
-
-		.orDividerComponent {
-			margin-top: 24px;
-		}
-
-		.btnContainer {
-			display: flex;
-			justify-content: center;
-			margin: 24px 0px;
-
-			.uploadFileBtn {
-				color: colors.$mebis-text-btn-col;
-				padding: 0px 16px;
-			}
 		}
 	}
 
@@ -2077,5 +2010,9 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
 			background-size: 24px;
 			background-repeat: no-repeat;
 		}
+	}
+
+	.rulingDialog {
+		max-width: 536px;
 	}
 }

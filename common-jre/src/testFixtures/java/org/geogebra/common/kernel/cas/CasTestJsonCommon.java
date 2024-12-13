@@ -315,7 +315,7 @@ public abstract class CasTestJsonCommon {
 
 	@Test
 	public void testComplexRootSquareRoots() {
-		testCatNoWindows("ComplexRootSquareRoots");
+		testCat("ComplexRootSquareRoots");
 	}
 
 	@Test
@@ -1028,8 +1028,18 @@ public abstract class CasTestJsonCommon {
 	}
 
 	@Test
-	public void testSubstitute() {
-		testCat("Substitute");
+	public void testSubstitute2() {
+		testCat("Substitute.2");
+	}
+
+	@Test
+	public void testSubstitute3() {
+		testCat("Substitute.3");
+	}
+
+	@Test
+	public void testSubstituteN() {
+		testCat("Substitute.N");
 	}
 
 	@Test
@@ -1379,7 +1389,7 @@ public abstract class CasTestJsonCommon {
 
 	@Test
 	public void testSolveLambertIneq() {
-		testCatNoClang("SolveLambertIneq");
+		testCat("SolveLambertIneq");
 	}
 
 	@Test

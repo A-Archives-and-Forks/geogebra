@@ -109,7 +109,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	private static final int DEFINITION_ROW_EDIT_MARGIN = 5;
 	private static final int MARGIN_RESIZE = 50;
 
-	protected static final int LATEX_MAX_EDIT_LENGHT = 1500;
+	protected static final int LATEX_MAX_EDIT_LENGTH = 1500;
 
 	Boolean stylebarShown;
 	/** Help popup */
@@ -262,10 +262,19 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	protected void addMarble() {
 		main.addStyleName("elem");
 
-		marblePanel = app.getActivity().createAVItemHeader(this);
+		marblePanel = app.getCurrentActivity().createAVItemHeader(this,
+				getAV().isInputActive() && getGeo() == null);
 		setIndexLast();
 		updateDataTest();
 		main.add(marblePanel);
+	}
+
+	protected void resetItemHeader() {
+		if (marblePanel != null) {
+			marblePanel.asWidget().removeFromParent();
+		}
+		marblePanel = app.getCurrentActivity().createAVItemHeader(this, true);
+		main.insert(marblePanel, 0);
 	}
 
 	/**
@@ -273,6 +282,9 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	 */
 	protected void setIndexLast() {
 		index = getAV().getItemCount();
+		if (marblePanel != null) {
+			marblePanel.setIndex(index);
+		}
 	}
 
 	public int getIndex() {
@@ -488,7 +500,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 			String text = previewGeo
 					.getAlgebraDescriptionForPreviewOutput();
 			outputPanel.showLaTeXPreview(text, previewGeo, getFontSize());
-			outputPanel.addArrowPrefix();
+			outputPanel.addEqualSignPrefix();
 			outputPanel.addValuePanel();
 
 			if (content.getWidgetIndex(definitionValuePanel) == -1) {
@@ -526,7 +538,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 			outputPanel.reset();
 		}
 		// LaTeX
-		String text = getLatexString(LATEX_MAX_EDIT_LENGHT,
+		String text = getLatexString(LATEX_MAX_EDIT_LENGTH,
 				geo.getDescriptionMode() != DescriptionMode.DEFINITION);
 		latex = text != null;
 
@@ -626,7 +638,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 				|| (geo != null && geo.getParentAlgorithm() instanceof AlgoFractionText)) {
 			String text = "";
 			if (geo != null) {
-				text = getLatexString(LATEX_MAX_EDIT_LENGHT, true);
+				text = getLatexString(LATEX_MAX_EDIT_LENGTH, true);
 				latexAfterEdit = (text != null);
 			} else {
 				latexAfterEdit = true;
@@ -754,7 +766,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	}
 
 	private boolean useValidInput() {
-		return app.getActivity().useValidInput();
+		return app.getCurrentActivity().useValidInput();
 	}
 
 	protected String getTextForEditing(boolean substituteNumbers,
@@ -766,9 +778,14 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		}
 		return geo.getLaTeXAlgebraDescriptionWithFallback(
 				substituteNumbers
-						|| (geo instanceof GeoNumeric && geo.isSimple()),
+						|| isSimpleNumber(),
 				tpl, true);
 
+	}
+
+	private boolean isSimpleNumber() {
+		return geo instanceof GeoNumeric && geo.isSimple()
+				&& !((GeoNumeric) geo).isDecimalFraction();
 	}
 
 	private boolean isAlgebraStyleDefAndValue() {
@@ -952,7 +969,8 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	protected final ErrorHandler getErrorHandler(final boolean valid,
 			final boolean allowSliders, final boolean withSliders) {
 		clearErrorLabel();
-		return app.getActivity().createAVErrorHandler(this, valid, allowSliders, withSliders);
+		return app.getCurrentActivity()
+						.createAVErrorHandler(this, valid, allowSliders, withSliders);
 	}
 
 	/**
@@ -990,7 +1008,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		}
 
 		if (errorMessage != null) {
-			if (app.isUnbundled() && app.getActivity().useValidInput()) {
+			if (app.isUnbundled() && app.getCurrentActivity().useValidInput()) {
 				return false;
 			}
 			app.getToolTipManager().showBottomMessage(errorMessage, app, ToolTip.Role.ALERT);
@@ -1188,8 +1206,8 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	 * cast method with no 'instanceof' check.
 	 *
 	 * @param item
-	 *            TreeItem to be casted
-	 * @return Casted item to RadioTreeItem
+	 *            TreeItem to be cast
+	 * @return Cast item to RadioTreeItem
 	 */
 	public static RadioTreeItem as(TreeItem item) {
 		return (RadioTreeItem) item;
@@ -1584,7 +1602,6 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 		mf.setFontSize(getFontSize());
 		mf.getInternal().registerMathFieldInternalListener(syntaxController);
 		mf.setPixelRatio(app.getPixelRatio());
-		mf.setScale(app.getGeoGebraElement().getScaleX());
 		mf.setOnBlur((blurEvent) -> {
 			if (toast != null) {
 				toast.hide();
@@ -1850,7 +1867,6 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	public void setPixelRatio(double pixelRatio) {
 		if (mf != null) {
 			mf.setPixelRatio(pixelRatio);
-			mf.setScale(app.getGeoGebraElement().getScaleX());
 			mf.repaint();
 		}
 	}
@@ -1941,7 +1957,7 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	 */
 	public void adjustCaret(int x, int y) {
 		if (mf != null) {
-			mf.adjustCaret(x, y);
+			mf.adjustCaret(x, y, app.getGeoGebraElement().getScaleX());
 		}
 	}
 
@@ -2058,6 +2074,16 @@ public class RadioTreeItem extends AVTreeItem implements MathKeyboardListener,
 	 */
 	public void openMoreMenu() {
 		controls.openMoreMenu();
+	}
+
+	/**
+	 * Focuses the first element of the settings context menu
+	 */
+	public void focusFirstMoreMenuElement() {
+		if (!hasMoreMenu()) {
+			return;
+		}
+		controls.focusFirstMoreMenuElement();
 	}
 
 	public boolean hasMoreMenu() {
