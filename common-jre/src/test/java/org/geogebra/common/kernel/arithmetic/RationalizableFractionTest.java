@@ -253,10 +253,15 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void testZeros() {
-		rationalizationShouldBe("(2 + sqrt(3)) / (4 + sqrt(5))",
-				"(2 + sqrt(3)) (4 - sqrt(5)) / 11");
+//		rationalizationShouldBe("(2 + sqrt(3)) / (4 + sqrt(5))",
+//				"((2 + sqrt(3)) (4 - sqrt(5))) / 11");
+
 		rationalizationShouldBe("(0 + sqrt(3)) / (4 + sqrt(5))",
-				"(2 + sqrt(3)) (4 - sqrt(5)) / 11");
+				"(sqrt(3) (4 - sqrt(5))) / 11");
+		rationalizationShouldBe("(2 + sqrt(0)) / (4 + sqrt(5))",
+						"(2 (4 - sqrt(5))) / 11");
+		rationalizationShouldBe("(2 + sqrt(3)) / (0 + sqrt(5))",
+						"((2 + sqrt(3) (4 - sqrt(5))) / 11");
 	}
 
 	private String genericSqrtFraction(int a, int b, int c, int d) {

@@ -356,4 +356,12 @@ public class SimplifyUtils {
 	public boolean isDivNode(ExpressionNode node) {
 		return Operation.DIVIDE.equals(node.getOperation());
 	}
+
+	public ExpressionValue infinity() {
+		return newDouble(Double.POSITIVE_INFINITY);
+	}
+
+	public ExpressionValue negativeInfinity() {
+		return newDouble(Double.NEGATIVE_INFINITY);
+	}
 }
