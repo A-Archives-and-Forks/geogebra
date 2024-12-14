@@ -70,4 +70,8 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 	private boolean isAccepted(String def) {
 		return getSimplifier().isAccepted(add(def).getDefinition());
 	}
+
+	protected void shouldNotChange(String def) {
+		shouldSimplify(def, def);
+	}
 }

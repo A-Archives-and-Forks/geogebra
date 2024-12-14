@@ -8,6 +8,7 @@ import org.geogebra.common.kernel.arithmetic.simplifiers.CancelGCDInFraction;
 import org.geogebra.common.kernel.arithmetic.simplifiers.FactorOut;
 import org.geogebra.common.kernel.arithmetic.simplifiers.PositiveDenominator;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
+import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceToIntegers;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyToRadical;
@@ -16,29 +17,37 @@ import org.geogebra.common.util.debug.Log;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 
-public class ExpressionSimplfiers {
+public class ExpressionSimplifiers {
 
-	private final List<SimplifyNode> items;
+	private final List<SimplifyNode> preItems;
+	private final List<SimplifyNode> postItems;
 
-	public ExpressionSimplfiers(@NonNull SimplifyUtils utils) {
-		items = Arrays.asList(
-				new SimplifyToRadical(utils),
-				new ReduceRoot(utils),
-				new ReduceToIntegers(utils),
-				new SimplifyMultiplication(utils),
-				new FactorOut(utils),
-				new CancelGCDInFraction(utils),
-				new PositiveDenominator(utils),
-				new OperandOrder(utils)
-		);
+	public ExpressionSimplifiers(@NonNull SimplifyUtils utils) {
+		preItems = Arrays.asList(
+				new ReduceToIntegers(utils)
+			);
+		postItems = Arrays.asList(
+						new SimplifyToRadical(utils),
+						new ReduceRoot(utils),
+						new SimplifyMultiplication(utils),
+						new PlusTagOrder(utils),
+						new FactorOut(utils),
+						new CancelGCDInFraction(utils),
+						new PositiveDenominator(utils),
+						new OperandOrder(utils)
+				);
 	}
 
 	public ExpressionNode run(@Nullable ExpressionValue resolution) {
 		if (resolution == null) {
 			return null;
 		}
-		ExpressionNode node = resolution.wrap();
-		for (SimplifyNode simplifier : items) {
+
+		return simplifyWith(postItems, resolution.wrap());
+	}
+
+	private ExpressionNode simplifyWith(List<SimplifyNode> simplifiers, ExpressionNode node) {
+		for (SimplifyNode simplifier : simplifiers) {
 			if (simplifier.isAccepted(node)) {
 				String before = node.toValueString(StringTemplate.defaultTemplate);
 				node = simplifier.apply(node);
@@ -52,4 +61,7 @@ public class ExpressionSimplfiers {
 		return node;
 	}
 
+	public ExpressionNode runFirst(ExpressionNode root) {
+		return simplifyWith(preItems, root);
+	}
 }

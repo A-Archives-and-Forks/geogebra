@@ -41,6 +41,15 @@ public class FactorOutTest extends BaseSimplifyTest {
 	}
 
 	@Test
+	public void testAccept() {
+		shouldAccept("2 + 6sqrt(2)");
+		shouldNotAccept("2 + sqrt(2)");
+		shouldAccept("-2 + 6sqrt(2)");
+		shouldNotAccept("sqrt(2) - 2");
+		shouldNotAccept("-2 + sqrt(2)");
+	}
+
+	@Test
 	public void testNotChanged() {
 		shouldNotAccept("sqrt(2) - 1");
 		shouldNotAccept("(sqrt(2) - 1)");
@@ -63,6 +72,10 @@ public class FactorOutTest extends BaseSimplifyTest {
 		shouldNotAccept("-(1 + 3sqrt(2))");
 	}
 
+	public void name() {
+		shouldNotAccept("-10 + sqrt(10)");
+	}
+
 	@Test
 	public void testAccepted() {
 		shouldAccept("3 (2 + 2sqrt(2))");
@@ -71,6 +84,7 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 	@Test
 	public void testFactorOutNominator() {
+		shouldSimplify("(2 + 2sqrt(2)) / -4", "(-(2(1 + sqrt(2))))/4");
 		shouldSimplify("(-2 - 2sqrt(2)) / 4", "(-2 (1 + sqrt(2))) / 4");
 		shouldSimplify("(2 - 2sqrt(2)) / 4", "(2 (1 - sqrt(2))) / 4");
 	}

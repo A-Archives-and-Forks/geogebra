@@ -11,16 +11,16 @@ import org.geogebra.common.util.debug.Log;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 public final class RationalizableFraction {
-	private final ExpressionSimplfiers simplifiers;
+	private final ExpressionSimplifiers simplifiers;
 	private final SimplifyUtils utils;
-	private final ExpressionNode root;
+	private ExpressionNode root;
 	private ExpressionValue resolution = null;
 
 	private RationalizableFraction(ExpressionNode root) {
-		this.root = root;
 		Kernel kernel = root.getKernel();
+		this.root = root.deepCopy(kernel);
 		utils = new SimplifyUtils(kernel);
-		simplifiers = new ExpressionSimplfiers(utils);
+		simplifiers = new ExpressionSimplifiers(utils);
 	}
 
 	/**
@@ -34,15 +34,27 @@ public final class RationalizableFraction {
 	}
 
 	private ExpressionNode simplify() {
-		if (!isSupported()) {
+		ExpressionNode first = simplifiers.runFirst(root);
+		if (!isSupported(root)) {
 			return null;
 		}
 
-		double evalRoot = root.evaluateDouble();
+		root = first;
+
+		double rootValue = root.evaluateDouble();
+
+		if (!Double.isFinite(rootValue)) {
+			return root;
+		}
+
+		if (isIntegerValue(root)) {
+			return utils.newDouble(root.evaluateDouble()).wrap();
+		}
+
 		double denominatorValue = root.getRightTree().evaluateDouble();
 
-		if (isIntegerValue(evalRoot)) {
-			resolution = utils.newDouble(evalRoot);
+		if (isIntegerValue(rootValue)) {
+			resolution = utils.newDouble(rootValue);
 		} else if (isIntegerValue(denominatorValue)) {
 			resolution = fractionWithIntDenominator(denominatorValue);
 		} else {
@@ -60,9 +72,13 @@ public final class RationalizableFraction {
 	 *
 	 * @return if geo is supported.
 	 */
-	public boolean isSupported() {
+	public boolean isSupported(ExpressionNode root) {
 		if (root == null) {
 			return false;
+		}
+
+		if (SimplifyUtils.isIntegerValue(root)) {
+			return true;
 		}
 
 		if (!utils.isDivNode(root)) {
@@ -71,7 +87,9 @@ public final class RationalizableFraction {
 
 		int sqrtsInNumerator = getSquareRootCount(root.getLeft());
 		int sqrtsInDenominator = getSquareRootCount(root.getRight());
-
+		if (sqrtsInDenominator == 0) {
+			return true;
+		}
 		if ((sqrtsInNumerator > 1 || sqrtsInDenominator > 1)
 				|| (sqrtsInNumerator + sqrtsInDenominator == 0)) {
 			return false;

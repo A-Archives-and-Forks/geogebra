@@ -1,6 +1,9 @@
-package org.geogebra.common.kernel.arithmetic;
+package org.geogebra.common.kernel.arithmetic.simplifiers;
 
-import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionValue;
+import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
+import org.geogebra.common.kernel.arithmetic.Traversing;
 import org.geogebra.common.plugin.Operation;
 
 public class ReduceToIntegers implements SimplifyNode {
@@ -45,7 +48,9 @@ public class ReduceToIntegers implements SimplifyNode {
 					}
 					if (numeratorVal != 0 && denominatorVal == 0)  {
 						return utils.infinity();
-					}if (numeratorVal == 0 && denominatorVal == 0)  {
+					}
+
+					if (numeratorVal == 0)  {
 						return utils.negativeInfinity();
 					}
 				}

@@ -59,9 +59,10 @@ public class FactorOut implements SimplifyNode {
 	private boolean minusNodeAccepted(ExpressionNode leftTree, ExpressionNode rightTree) {
 		int treeMultiplier = utils.getLeftMultiplier(rightTree);
 		double leftValue = leftTree.evaluateDouble();
-		if (leftValue < 0) {
+		if (leftValue < 0 && isIntegerValue(leftTree)) {
 			return true;
 		}
+
 		if (leftTree.isLeaf()
 			&& (leftValue > 0 && treeMultiplier == 1) || (
 				!hasRealGCD((int) leftValue, treeMultiplier))) {
@@ -114,7 +115,9 @@ public class FactorOut implements SimplifyNode {
 			Operation operation, ExpressionNode rightTree) {
 		double leftValue = leftTree.evaluateDouble();
 		double rightValue = rightTree.evaluateDouble();
-
+//		if (!(isIntegerValue(leftTree) && isIntegerValue(rightTree))) {
+//			return node;
+//		}
 		if (leftTree.isLeaf()) {
 			return factorOutGCD((int) leftValue, rightTree, operation);
 		}

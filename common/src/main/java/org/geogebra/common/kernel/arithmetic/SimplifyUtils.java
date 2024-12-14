@@ -357,6 +357,12 @@ public class SimplifyUtils {
 		return Operation.DIVIDE.equals(node.getOperation());
 	}
 
+	public static boolean isPlusMinusNode(ExpressionNode node) {
+		Operation operation = node.getOperation();
+		return Operation.PLUS.equals(operation)
+				|| Operation.MINUS.equals(operation);
+	}
+
 	public ExpressionValue infinity() {
 		return newDouble(Double.POSITIVE_INFINITY);
 	}

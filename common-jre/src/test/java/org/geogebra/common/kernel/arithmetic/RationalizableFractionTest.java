@@ -36,17 +36,14 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void testUnsupported() {
-		shouldBeUnsupported("1 / 2");
 		shouldBeUnsupported("1 / (sqrt(2) + sqrt(3))");
 		shouldBeUnsupported("(sqrt(3) + sqrt(2) + 1) / sqrt(2)");
 		shouldBeUnsupported("(sqrt(3) + sqrt(2)) / sqrt(2)");
 		shouldBeUnsupported("1 / sqrt(2.5)");
-		shouldBeUnsupported("sqrt(2.5) / sqrt(2.5)");
+//		shouldBeUnsupported("sqrt(2.5) / sqrt(2.5)");
 		shouldBeUnsupported("sqrt(1 / 4)");
 		shouldBeUnsupported("(sqrt(2.5) + 1) / sqrt(2.5)");
 		shouldBeUnsupported("sqrt(2.5) / (sqrt(2.5) + 1)");
-		shouldBeUnsupported("1 / (sqrt(4) + 1.5)");
-		shouldBeUnsupported("1 / (1.5 + sqrt(4))");
 		shouldBeUnsupported("1 / sqrt(-2)");
 		shouldBeUnsupported("2.3 / sqrt(2)");
 		shouldBeUnsupported("((1 / 2) (sqrt(3) + 1)) / sqrt(2)");
@@ -246,7 +243,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	}
 
 	@Test
-	public void testWrongSign() {
+	public void testWrongParameter() {
 		rationalizationShouldBe(genericSqrtFraction(-10, 10, 5, 9),
 				"(sqrt(10) - 10) / 8");
 	}
@@ -261,7 +258,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("(2 + sqrt(0)) / (4 + sqrt(5))",
 						"(2 (4 - sqrt(5))) / 11");
 		rationalizationShouldBe("(2 + sqrt(3)) / (0 + sqrt(5))",
-						"((2 + sqrt(3) (4 - sqrt(5))) / 11");
+						"(2sqrt(5) + sqrt(15)) / 5");
 	}
 
 	private String genericSqrtFraction(int a, int b, int c, int d) {
@@ -276,4 +273,9 @@ public class RationalizableFractionTest extends BaseUnitTest {
 				"-3 (1 + sqrt(2))");
 	}
 
+	@Test
+	public void supportedBugs() {
+		shouldBeSupported("(-5 + sqrt(5)) / (-3 + sqrt(9))");
+		shouldBeSupported("(6 + sqrt(10)) / (-4 + sqrt(9))");
+	}
 }
