@@ -25,6 +25,11 @@ public class ReduceToIntegers implements SimplifyNode {
 			ExpressionNode parent = null;
 			@Override
 			public ExpressionValue process(ExpressionValue ev) {
+				double v = ev.evaluateDouble();
+				if (Math.round(v) == v && v != -1) {
+					return utils.newDouble(v);
+				}
+
 				ExpressionNode node = ev.wrap();
 				if (ev.isOperation(Operation.PLUS)) {
 					if (node.getLeft().evaluateDouble() == 0) {
@@ -43,31 +48,18 @@ public class ReduceToIntegers implements SimplifyNode {
 				} else if (utils.isDivNode(node)) {
 					double numeratorVal = node.getLeft().evaluateDouble();
 					double denominatorVal = node.getRight().evaluateDouble();
-					if (numeratorVal == 0 && denominatorVal != 0)  {
-						return utils.newDouble(0);
+					if (denominatorVal == 0)  {
+						return numeratorVal > 0
+								? utils.infinity()
+								: utils.negativeInfinity();
 					}
-					if (numeratorVal != 0 && denominatorVal == 0)  {
-						return utils.infinity();
-					}
+				}
 
-					if (numeratorVal == 0)  {
-						return utils.negativeInfinity();
-					}
-				}
-				double v = ev.evaluateDouble();
-				if (Math.round(v) == v && v != -1) {
-					return utils.newDouble(v);
-				}
 
 				return ev;
 			}
 
-			private boolean minusOneMultiply(ExpressionNode node) {
-				if (node == null) {
-					return false;
-				}
-				return node.isOperation(Operation.MULTIPLY) && node.getLeft().evaluateDouble() == -1;
-			}
+
 		}).wrap();
 	}
 }

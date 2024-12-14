@@ -1,11 +1,13 @@
 package org.geogebra.common.kernel.arithmetic;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.geogebra.common.kernel.arithmetic.simplifiers.BaseSimplifyTest;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
 import org.geogebra.common.kernel.geos.GeoNumeric;
+import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -120,5 +122,19 @@ public class SimplifyUtilsTest extends BaseSimplifyTest {
 		GeoNumeric expected = newSymbolicNumeric(to);
 		ExpressionValue actual = utils.negative(original.getDefinition());
 		shouldSerialize(expected.getDefinition(), actual.wrap());
+	}
+
+	@Test
+	public void testNumberForGCD() {
+		numberForGCDShouldBe("2", 2);
+		numberForGCDShouldBe("2sqrt(2)", 2);
+		numberForGCDShouldBe("-2sqrt(2)", -2);
+		numberForGCDShouldBe("-2(sqrt(2))", -2);
+		numberForGCDShouldBe("(-2(sqrt(2)))", -2);
+	}
+
+	private void numberForGCDShouldBe(String def, int number) {
+		GeoElementND geo = add(def);
+		assertEquals(number, utils.getNumberForGCD(geo.getDefinition()));
 	}
 }

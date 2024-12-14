@@ -370,4 +370,12 @@ public class SimplifyUtils {
 	public ExpressionValue negativeInfinity() {
 		return newDouble(Double.NEGATIVE_INFINITY);
 	}
+
+	public int getNumberForGCD(ExpressionNode node) {
+		if (node.isLeaf() && isIntegerValue(node)) {
+			return (int) node.evaluateDouble();
+		}
+
+		return getLeftMultiplier(node);
+	}
 }

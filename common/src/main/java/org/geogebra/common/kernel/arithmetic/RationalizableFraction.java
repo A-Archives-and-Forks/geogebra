@@ -14,7 +14,6 @@ public final class RationalizableFraction {
 	private final ExpressionSimplifiers simplifiers;
 	private final SimplifyUtils utils;
 	private ExpressionNode root;
-	private ExpressionValue resolution = null;
 
 	private RationalizableFraction(ExpressionNode root) {
 		Kernel kernel = root.getKernel();
@@ -53,6 +52,7 @@ public final class RationalizableFraction {
 
 		double denominatorValue = root.getRightTree().evaluateDouble();
 
+		ExpressionValue resolution = null;
 		if (isIntegerValue(rootValue)) {
 			resolution = utils.newDouble(rootValue);
 		} else if (isIntegerValue(denominatorValue)) {
@@ -138,7 +138,7 @@ public final class RationalizableFraction {
 		if (denominatorValue == -1) {
 			return (new ExpressionNode(root.getLeftTree())).multiplyR(-1);
 		}
-		return createFractionWithIntegerDenominator(denominatorValue);
+		return root;//createFractionWithIntegerDenominator(denominatorValue);
 	}
 
 	private ExpressionNode createFractionWithIntegerDenominator(double denominatorValue) {

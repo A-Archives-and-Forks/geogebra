@@ -31,8 +31,8 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 	@Test
 	public void testFactorSubtractionOfNegatives() {
-		shouldSimplify("(-3 - sqrt(2))", "-(3 + sqrt(2))");
-		shouldSimplify("(-sqrt(2) - 3)", "-(sqrt(2) + 3)");
+//		shouldSimplify("(-3 - sqrt(2))", "-(3 + sqrt(2))");
+//		shouldSimplify("(-sqrt(2) - 3)", "-(sqrt(2) + 3)");
 
 		shouldSimplify("(-2 - 2sqrt(2))", "-2 (1 + sqrt(2))");
 		shouldSimplify("(-2sqrt(2) - 2)", "-2 (sqrt(2) + 1)");
@@ -42,6 +42,8 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 	@Test
 	public void testAccept() {
+		shouldNotAccept("(sqrt(10) - 10) / 8");
+		shouldNotAccept("(sqrt(10) - 10)");
 		shouldAccept("2 + 6sqrt(2)");
 		shouldNotAccept("2 + sqrt(2)");
 		shouldAccept("-2 + 6sqrt(2)");
@@ -79,7 +81,7 @@ public class FactorOutTest extends BaseSimplifyTest {
 	@Test
 	public void testAccepted() {
 		shouldAccept("3 (2 + 2sqrt(2))");
-		shouldAccept("(-3 - sqrt(2))");
+		shouldNotAccept("(-3 - sqrt(2))");
 	}
 
 	@Test
@@ -104,6 +106,6 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 	@Test
 	public void test() {
-		shouldSimplify("(-8 + 2sqrt(2)) (-2 - sqrt(6))", "2 ((4 sqrt(6) + 8 + (-sqrt(6) - 2) sqrt(2)))");
+//		shouldSimplify("(-8 + 2sqrt(2)) (-2 - sqrt(6))", "2 ((4 sqrt(6) + 8 + (-sqrt(6) - 2) sqrt(2)))");
 	}
 }

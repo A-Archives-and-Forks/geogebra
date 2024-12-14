@@ -91,9 +91,13 @@ public class CancelGCDInFraction implements SimplifyNode {
 		int n = multiplier;
 		int m = (int) node.getRightTree().evaluateDouble();
 		long gcd = Kernel.gcd(n, m);
+		if (Math.abs(gcd) == 1) {
+			return node;
+		}
+
 		long newMul = n / gcd;
 		long newDenom = m / gcd;
-		return utils.div(utils.multiplyR(node.getLeftTree().getRightTree(), newMul),
+				return utils.div(utils.multiplyR(node.getLeftTree().getRightTree(), newMul),
 				utils.newDouble(newDenom).wrap());
 	}
 

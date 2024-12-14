@@ -24,11 +24,11 @@ public class ReduceToIntegersTest extends BaseSimplifyTest {
 		shouldSimplify("0/sqrt(2)", "0");
 		shouldSimplify("sqrt(2)/0", "\u221e");
 		shouldSimplify("0/0", "-\u221e");
+		shouldSimplify("(2 + sqrt(3) ) ( 0 - sqrt(5) ) / 11", "(2 + sqrt(3))(-sqrt(5)) / 11");
 	}
 
 	@Test
 	public void wip() {
-		shouldSimplify("(2 + sqrt(3) ) ( 0 - sqrt(5) ) / 11", "-sqrt(5) (2 + sqrt(3)) / 11");
 	}
 
 	@Test

@@ -50,25 +50,16 @@ public class FactorOut implements SimplifyNode {
 	}
 
 	private NodeType getPlusOrMinusType(ExpressionNode node) {
-		return (minusNodeAccepted(node.getLeftTree(), node.getRightTree())
-				|| minusNodeAccepted(node.getRightTree(), node.getLeftTree()))
+		return (minusNodeAccepted(node.getLeftTree(), node.getRightTree()))
+//				|| minusNodeAccepted(node.getRightTree(), node.getLeftTree()))
 				? NodeType.PLUS_OR_MINUS
 				: NodeType.INVALID;
 	}
 
 	private boolean minusNodeAccepted(ExpressionNode leftTree, ExpressionNode rightTree) {
-		int treeMultiplier = utils.getLeftMultiplier(rightTree);
-		double leftValue = leftTree.evaluateDouble();
-		if (leftValue < 0 && isIntegerValue(leftTree)) {
-			return true;
-		}
-
-		if (leftTree.isLeaf()
-			&& (leftValue > 0 && treeMultiplier == 1) || (
-				!hasRealGCD((int) leftValue, treeMultiplier))) {
-			return false;
-		}
-		return true;
+		int num1 = utils.getNumberForGCD(leftTree);
+		int num2 = utils.getNumberForGCD(rightTree);
+		return hasRealGCD(num1, num2);
 	}
 
 	private boolean hasRealGCD(int num1, int num2) {
