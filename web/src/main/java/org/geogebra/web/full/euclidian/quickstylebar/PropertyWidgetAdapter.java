@@ -8,9 +8,9 @@ import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.PropertyResource;
 import org.geogebra.common.properties.PropertySupplier;
+import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
-import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.web.full.euclidian.LabelSettingsPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.components.BorderThicknessPanel;
 import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProperty;
@@ -119,8 +119,7 @@ public class PropertyWidgetAdapter {
 		return fontSizeMenu;
 	}
 
-	public LabelSettingsPanel getLabelPanel(StringPropertyCollection<?> property,
-			List<GeoElement> geos) {
-		return new LabelSettingsPanel(appW, property, geos);
+	public LabelSettingsPanel getLabelPanel(FlagListPropertyCollection<?> property) {
+		return new LabelSettingsPanel(property);
 	}
 }

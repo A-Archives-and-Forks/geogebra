@@ -20,11 +20,12 @@ import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.aliases.ColorProperty;
 import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
+import org.geogebra.common.properties.impl.collections.EnumeratedPropertyCollection;
+import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.collections.IconsEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
-import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
 import org.geogebra.common.properties.impl.objects.AnimationStepProperty;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
@@ -545,6 +546,57 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new SegmentEndProperty(localization, element),
 				IconsEnumeratedPropertyCollection::new);
+		try {
+			List<NameProperty> nameProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				nameProperties.add(new NameProperty(localization, element));
+			}
+			return new StringPropertyCollection<>(nameProperties.toArray(new NameProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns an ValuedPropertyCollection controlling the label style or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static FlagListPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
+			Localization localization, List<GeoElement> elements) {
+		List<LabelStyleProperty> labelStyleProperties = new ArrayList<>();
+		for (GeoElement element : elements) {
+			labelStyleProperties.add(new LabelStyleProperty(localization, element.getKernel(),
+					element));
+		}
+		return new FlagListPropertyCollection<>(labelStyleProperties.toArray(
+				new LabelStyleProperty[0]));
+	}
+
+	private static BooleanPropertyCollection<ShowObjectProperty> createShowObjectProperty(
+			Localization localization, List<GeoElement> elements) {
+		List<ShowObjectProperty> showObjectProperties = new ArrayList<>();
+		for (GeoElement element : elements) {
+			showObjectProperties.add(new ShowObjectProperty(localization, element));
+		}
+		return new BooleanPropertyCollection<>(
+				showObjectProperties.toArray(new ShowObjectProperty[0]));
+	}
+
+	private static EnumeratedPropertyCollection<CaptionStyleProperty, Integer>
+	createCaptionStyleProperty(Localization localization, List<GeoElement> elements) {
+		try {
+			List<CaptionStyleProperty> captionStyleProperties = new ArrayList<>();
+			for (GeoElement element : elements) {
+				captionStyleProperties.add(new CaptionStyleProperty(localization, element));
+			}
+			return new NamedEnumeratedPropertyCollection<>(
+					captionStyleProperties.toArray(new CaptionStyleProperty[0]));
+		} catch (NotApplicablePropertyException ignored) {
+			return null;
+		}
 	}
 
 	/**

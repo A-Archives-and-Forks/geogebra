@@ -11,10 +11,10 @@ import org.geogebra.common.properties.PropertySupplier;
 import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
+import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
 import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
-import org.geogebra.common.properties.impl.collections.ValuedPropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
@@ -23,6 +23,7 @@ import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorPro
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
 import org.geogebra.web.full.euclidian.LabelSettingsPanel;
+import org.geogebra.web.full.euclidian.LabelValuePanel;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertiesIconAdapter;
 import org.geogebra.web.full.euclidian.quickstylebar.PropertyWidgetAdapter;
 import org.geogebra.web.full.gui.toolbar.mow.popupcomponents.ColorChooserPanel;
@@ -42,7 +43,7 @@ public class IconButtonWithProperty extends IconButton {
 	private final List<GeoElement> geos;
 	private GPopupPanel propertyPopup;
 	private SliderWithProperty lineThicknessSlider;
-	private LabelSettingsPanel labelPanel;
+	private LabelValuePanel labelPanel;
 	private final PropertyWidgetAdapter widgetAdapter;
 	private PopupColorHandler popupHandler;
 
@@ -167,16 +168,19 @@ public class IconButtonWithProperty extends IconButton {
 		}
 
 		if (property instanceof StringPropertyCollection<?>) {
-			labelPanel = widgetAdapter.getLabelPanel((StringPropertyCollection<?>) property, geos);
+			labelPanel = new LabelValuePanel(appW, (StringPropertyCollection<?>) property, geos);
+			propertyPopup.addCloseHandler(labelPanel);
 			parent.add(labelPanel);
 		}
 
-		if (property instanceof ValuedPropertyCollection<?>) {
-			ValuedPropertyCollection<?> valuedProperty = (ValuedPropertyCollection<?>) property;
+		if (property instanceof FlagListPropertyCollection<?>) {
+			FlagListPropertyCollection<?> valuedProperty = (FlagListPropertyCollection<?>) property;
 			ValuedProperty<?> firstProperty = valuedProperty.getFirstProperty();
+			LabelSettingsPanel labelStylePanel = widgetAdapter.getLabelPanel(valuedProperty);
 			if (firstProperty instanceof LabelStyleProperty && labelPanel != null) {
-				labelPanel.setLabelStyleProperty(valuedProperty);
+				//TODO labelPanel.setLabelStyleProperty(valuedProperty);
 			}
+			parent.add(labelStylePanel);
 		}
 	}
 
