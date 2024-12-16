@@ -17,7 +17,6 @@ import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.BorderThicknessProperty;
 import org.geogebra.common.properties.impl.objects.CellBorderThicknessProperty;
-import org.geogebra.common.properties.impl.objects.LabelStyleProperty;
 import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorProperty;
 import org.geogebra.common.properties.impl.objects.NotesThicknessProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
