@@ -25,7 +25,7 @@ public class CvteAlgebraOutputFilterTests extends BaseExamTests {
         assertFalse(outputFilter.isAllowed(evaluateGeoElement("Line((0, 0), (1, 2))")));
         assertFalse(outputFilter.isAllowed(evaluateGeoElement("Ray((0, 0), (1, 2))")));
         assertFalse(outputFilter.isAllowed(evaluateGeoElement("Circle((0, 0), 1)")));
-        // implicit curv
+        // implicit curve
         assertFalse(outputFilter.isAllowed(evaluateGeoElement(
                 "FitImplicit((1...10,(1/(1...10))),3)")));
         // functions: any of the FitPoly / FitLog / ... commands

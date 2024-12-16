@@ -16,6 +16,9 @@ final class Cvte {
     /**
      * APPS-5926: "For Lines, Rays, Conics, Implicit Equations and Functions created with a
      * command or tool, we do not show the calculated equation."
+     * <p/>
+     * <b>Note:</b> The calculated equation will also be suppressed for all <i>dependent</i>
+     * lines/conics/functions/curves.
      * @param element a {@link GeoElementND}
      * @return true if element matches the condition above.
      */
