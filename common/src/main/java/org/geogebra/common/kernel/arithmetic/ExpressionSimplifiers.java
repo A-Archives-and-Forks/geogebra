@@ -1,6 +1,5 @@
 package org.geogebra.common.kernel.arithmetic;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.geogebra.common.kernel.StringTemplate;
@@ -23,10 +22,12 @@ public class ExpressionSimplifiers {
 	private final List<SimplifyNode> postItems;
 
 	public ExpressionSimplifiers(@NonNull SimplifyUtils utils) {
-		preItems = Arrays.asList(
-				new ReduceToIntegers(utils)
-			);
-		postItems = Arrays.asList(
+		ReduceToIntegers reduceToIntegers = new ReduceToIntegers(utils);
+		preItems = List.of(
+				reduceToIntegers
+		);
+
+		postItems = List.of(
 						new SimplifyToRadical(utils),
 						new ReduceRoot(utils),
 						new SimplifyMultiplication(utils),
@@ -34,7 +35,7 @@ public class ExpressionSimplifiers {
 						new FactorOut(utils),
 						new CancelGCDInFraction(utils),
 						new PositiveDenominator(utils),
-						new OperandOrder(utils)
+						new OperandOrder(utils), reduceToIntegers
 				);
 	}
 

@@ -265,7 +265,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	private String genericSqrtFraction(int a, int b, int c, int d) {
 		String s = "(" + a + " + sqrt(" + b + ")) / " + "(" + c + " + sqrt(" + d + "))";
-		Log.debug(s);
+		Log.debug("Generic: " + s);
 		return s;
 	}
 
@@ -273,6 +273,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void testBadExamples() {
 		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
 				"-3 (1 + sqrt(2))");
+		rationalizationShouldBe(genericSqrtFraction(-6, 9, -8, 9), "3 / 5");
 	}
 
 	@Test
