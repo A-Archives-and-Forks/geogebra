@@ -7,6 +7,7 @@ import org.geogebra.common.io.MyXMLio;
 import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.full.gui.CardInfoPanel;
 import org.geogebra.web.html5.euclidian.EuclidianViewWInterface;
+import org.geogebra.web.html5.gui.util.Dom;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.main.GgbFile;
 import org.geogebra.web.html5.util.ArchiveEntry;
@@ -262,6 +263,7 @@ public class PagePreviewCard extends FlowPanel
 	}
 
 	public void setCardTitle(String title) {
+		Dom.toggleClass(this, "noTitle", title.isEmpty());
 		infoPanel.setCardTitle(title);
 	}
 
