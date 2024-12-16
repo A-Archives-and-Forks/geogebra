@@ -1009,10 +1009,10 @@ public class ProverBotanasMethod {
 									outputSubst, kernel, null);
 					PolynomialNode polyNode = new PolynomialNode();
 					ExpressionNode en = new ExpressionNode(kernel, resultVE);
-					AlgoDependentNumber adn = new AlgoDependentNumber(
+					AlgoDependentNumber algoDepNumber = new AlgoDependentNumber(
 							geoStatement.getConstruction(), en, false, null,
 							false);
-					DependentNumberAdapter proverAdapter = adn.getProverAdapter();
+					DependentNumberAdapter proverAdapter = algoDepNumber.getProverAdapter();
 					proverAdapter.setBotanaVars(vars);
 					proverAdapter.buildPolynomialTree(en, polyNode);
 					proverAdapter.expressionNodeToPolynomial(en, polyNode);
@@ -1022,9 +1022,9 @@ public class ProverBotanasMethod {
 					/* Finally we obtain the Botana polynomial. */
 					PPolynomial botanaPolynomial = polyNode.getPoly();
 					/* Don't use this algo any longer. */
-					movingPoint.getConstruction().removeFromAlgorithmList(adn);
+					movingPoint.getConstruction().removeFromAlgorithmList(algoDepNumber);
 					movingPoint.getConstruction()
-							.removeFromConstructionList(adn);
+							.removeFromConstructionList(algoDepNumber);
 					Log.debug("Hypothesis:");
 					PPolynomial[] botanaPolynomials = new PPolynomial[1];
 					botanaPolynomials[0] = botanaPolynomial;
@@ -1976,7 +1976,7 @@ public class ProverBotanasMethod {
 									.getBotanaPolynomials(freePoint);
 						} catch (NoSymbolicParametersException e) {
 							Log.debug(
-									"An error occured during obtaining symbolic parameters");
+									"An error occurred during obtaining symbolic parameters");
 							return null;
 						}
 						int i = 1;

@@ -152,7 +152,7 @@ public interface JavaScriptAPI {
 	void reset();
 
 	/**
-	 * Refreshs all views. Note: clears traces in geometry window.
+	 * Refreshes all views. Note: clears traces in geometry window.
 	 */
 	void refreshViews();
 
@@ -513,7 +513,7 @@ public interface JavaScriptAPI {
 	double getFrameRate();
 
 	/**
-	 * Returns true if the object with the given name has a vaild value at the
+	 * Returns true if the object with the given name has a valid value at the
 	 * moment.
 	 * 
 	 * @param objName
@@ -1014,14 +1014,14 @@ public interface JavaScriptAPI {
 	/**
 	 * @param enable
 	 * 
-	 *            wheter labels draggable in geogebra-web applets or not
+	 *            whether labels draggable in geogebra-web applets or not
 	 */
 	void enableLabelDrags(boolean enable);
 
 	/**
 	 * @param enable
 	 * 
-	 *            wheter shift - drag - zoom enabled in geogebra-web applets or
+	 *            whether shift - drag - zoom enabled in geogebra-web applets or
 	 *            not
 	 */
 	void enableShiftDragZoom(boolean enable);

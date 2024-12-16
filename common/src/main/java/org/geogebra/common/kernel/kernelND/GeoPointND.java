@@ -40,7 +40,7 @@ public interface GeoPointND extends PointProperties, Translateable,
 	/** cannot move */
 	public static int MOVE_MODE_NONE = 0; // for intersection points and fixed
 											// points
-	/** cna move in xy directions */
+	/** can move in x,y directions */
 	public static int MOVE_MODE_XY = 1;
 	/** can move in z direction */
 	public static int MOVE_MODE_Z = 2;
@@ -176,7 +176,7 @@ public interface GeoPointND extends PointProperties, Translateable,
 	public void setCoords(double x, double y, double z, double w);
 
 	/**
-	 * Sets homogenous coordinates and updates inhomogenous coordinates
+	 * Sets homogeneous coordinates and updates inhomogeneous coordinates
 	 * 
 	 * @param v
 	 *            coords
@@ -286,7 +286,7 @@ public interface GeoPointND extends PointProperties, Translateable,
 	public int getMoveMode();
 
 	/**
-	 * Update inhomogenous coords based on homegenous
+	 * Update inhomogeneous coords based on homegenous
 	 */
 	public void updateCoords();
 
@@ -382,7 +382,7 @@ public interface GeoPointND extends PointProperties, Translateable,
 	 * Change coordinates of this point to linear combination of two MyPoints.
 	 * 
 	 * @param param1
-	 *            weight of frst point
+	 *            weight of first point
 	 * @param param2
 	 *            weight of second point
 	 * @param leftPoint

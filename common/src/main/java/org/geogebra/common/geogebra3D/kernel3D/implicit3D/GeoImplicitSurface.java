@@ -18,7 +18,6 @@ import org.geogebra.common.kernel.arithmetic.Traversing.VariableReplacer;
 import org.geogebra.common.kernel.arithmetic.ValueType;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunctionNVar;
-import org.geogebra.common.kernel.geos.GeoLine;
 import org.geogebra.common.kernel.kernelND.GeoCoordSys2D;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.kernel.kernelND.GeoImplicitSurfaceND;
@@ -77,11 +76,11 @@ public class GeoImplicitSurface extends GeoElement3D
 								// be created
 		this.surface3D = new GeoTriangulatedSurface3D();
 		fromEquation(eqn);
-		updateParametic(eqn);
+		updateParametric(eqn);
 
 	}
 
-	private void updateParametic(Equation eqn) {
+	private void updateParametric(Equation eqn) {
 		ExpressionNode normal = eqn.getLHS().apply(Operation.MINUS,
 				eqn.getRHS());
 		normal = normal.deepCopy(cons.getKernel());
@@ -102,7 +101,7 @@ public class GeoImplicitSurface extends GeoElement3D
 						new ExpressionNode(kernel, normal, Operation.DIVIDE,
 								coef),
 						Operation.PLUS, fVars[i]);
-				m.simplifyLeafs();
+				m.simplifyLeaves();
 				FunctionNVar fun = new FunctionNVar(m,
 						new FunctionVariable[] { fVars[complement[i][0]],
 								fVars[complement[i][1]] });
@@ -958,21 +957,6 @@ public class GeoImplicitSurface extends GeoElement3D
 			}
 		}
 		return vars.toArray(new String[0]);
-	}
-
-	@Override
-	final public void setToUser() {
-		toStringMode = GeoLine.EQUATION_USER;
-	}
-
-	@Override
-	public boolean setTypeFromXML(String style, String parameter, boolean force) {
-		return false;
-	}
-
-	@Override
-	public void setToImplicit() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

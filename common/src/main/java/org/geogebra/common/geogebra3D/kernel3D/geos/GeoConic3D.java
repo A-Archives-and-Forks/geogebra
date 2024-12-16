@@ -80,7 +80,7 @@ public class GeoConic3D extends GeoConicND
 	 *            if this is an intersection curve
 	 */
 	public GeoConic3D(Construction c, boolean isIntersection) {
-		super(c, 2, isIntersection, GeoConicND.EQUATION_PARAMETRIC);
+		super(c, 2, isIntersection, Form.CONST_PARAMETRIC);
 	}
 
 	@Override
@@ -276,7 +276,7 @@ public class GeoConic3D extends GeoConicND
 	}
 
 	/**
-	 * set this to sigle point at m location
+	 * set this to single point at location m
 	 * 
 	 * @param conic
 	 *            conic which will be single point

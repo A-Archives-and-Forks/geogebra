@@ -157,7 +157,7 @@ public class PropertiesIconAdapter {
 				return MaterialDesignResources.INSTANCE.text_underline_black();
 			}
 		} else if (property instanceof NamedEnumeratedPropertyCollection
-			&& ((NamedEnumeratedPropertyCollection<?, ?>) property).getProperties()[0]
+			&& ((NamedEnumeratedPropertyCollection<?, ?>) property).getFirstProperty()
 			instanceof TextFontSizeProperty) {
 			return MaterialDesignResources.INSTANCE.text_size_black();
 		} else if (property instanceof ColorPropertyCollection) {

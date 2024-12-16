@@ -62,6 +62,7 @@ import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.ModeSetter;
 import org.geogebra.common.kernel.MyPoint;
 import org.geogebra.common.kernel.Path;
+import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.Region;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
@@ -2029,7 +2030,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		// points needed
 		if (((polygonMode == POLYGON_RIGID) || (polygonMode == POLYGON_VECTOR))
-				&& (selPoints() > 0)) { // only want free points withput
+				&& (selPoints() > 0)) { // only want free points without
 			// children for rigid polys (apart from
 			// first)
 			// testing needed - see GGB-1982
@@ -3081,7 +3082,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	}
 
 	protected final boolean moveRotate(Hits hits, boolean selPreview) {
-		addSelectedGeo(hits.getPointRotateableHits(view, rotationCenter), 1,
+		addSelectedGeo(hits.getPointRotatableHits(view, rotationCenter), 1,
 				false, selPreview);
 		return false;
 	}
@@ -3488,7 +3489,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 * @param hits
 	 *            hits
 	 * @param isControlDown
-	 *            whether controll is pressed
+	 *            whether control is pressed
 	 * @return whether highlighting changed
 	 */
 	public boolean refreshHighlighting(Hits hits, boolean isControlDown) {
@@ -3530,7 +3531,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 * Highlight single geo, blur all others.
 	 * 
 	 * @param geo
-	 *            geo to higlight
+	 *            geo to highlight
 	 * @return whether highlighting changed
 	 */
 	public boolean highlight(GeoElement geo) {
@@ -3546,8 +3547,8 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	/**
 	 * @param geos
-	 *            geos to gighlight
-	 * @return whether higlighting changed
+	 *            geos to highlight
+	 * @return whether highlighting changed
 	 */
 	public boolean highlight(ArrayList<GeoElement> geos) {
 		boolean repaintNeeded = clearHighlightedGeos();
@@ -3878,7 +3879,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			// selectedPoints, because the last point that is selected is used
 			// as rotation center.
 			// Therefore a point that was selected first has to be added to
-			// selecetedPoints, if another geo is selected in the second step
+			// selectedPoints, if another geo is selected in the second step
 			getSelectedPointList()
 					.add((GeoPointND) getSelectedGeoList().get(0));
 		}
@@ -4128,7 +4129,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			case EuclidianView.GRID_ISOMETRIC:
 
 				// isometric Michael Borcherds 2008-04-28
-				// iso grid is effectively two rectangular grids overlayed
+				// iso grid is effectively two rectangular grids overlaid
 				// (offset)
 				// so first we decide which one we're on (oddOrEvenRow)
 				// then compress the grid by a scale factor of root3
@@ -6004,7 +6005,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		// stop all animation if slider dragged
 		if (movedGeoNumeric.isAnimating()) {
-			kernel.getAnimatonManager().stopAnimation();
+			kernel.getAnimationManager().stopAnimation();
 		}
 
 		movedGeoNumeric.setValue(newVal);
@@ -6390,7 +6391,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 					&& (hits.size() >= 1)) {
 				setCursorForTranslateView(hits);
 			} else {
-				setCursorForProccessMouseMoveHit();
+				setCursorForProcessMouseMoveHit();
 			}
 		}
 
@@ -6446,7 +6447,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 	}
 
-	protected void setCursorForProccessMouseMoveHit() {
+	protected void setCursorForProcessMouseMoveHit() {
 		setDragCursor();
 	}
 
@@ -6506,7 +6507,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
             return;
         }
         this.animationButtonPressed = false;
-        app.storeUndoInfoIfSetCoordSystemOccured();
+        app.storeUndoInfoIfSetCoordSystemOccurred();
 
         refreshHighlighting(null, app.isControlDown(event));
         resetToolTipManager();
@@ -6998,9 +6999,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			// make sure when a circle is dragged it stays in
 			// (x+2)^2+(y-3)^2=25 form
 			if (movedGeoConic.getType() == GeoConicNDConstants.CONIC_CIRCLE
-					&& movedGeoConic
-							.getToStringMode() == GeoConicND.EQUATION_USER) {
-				movedGeoConic.setToStringMode(GeoConicND.EQUATION_SPECIFIC);
+					&& movedGeoConic.getEquationForm()
+					== QuadraticEquationRepresentable.Form.USER) {
+				movedGeoConic.setEquationForm(QuadraticEquationRepresentable.Form.SPECIFIC);
 			}
 
 			// make sure vertex snaps to grid for parabolas
@@ -7095,7 +7096,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 								- c;
 						double b = s - a - c;
 
-						// cordinates of vertex (just calculated once)
+						// coordinates of the vertex (just calculated once)
 						// used for alt-drag as well
 						vertexX = -b / a / 2.0;
 						vertexY = -(b * b - 4.0 * a * c) / (4.0 * a);
@@ -7784,7 +7785,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			updateBoundingBoxFromSelection(false);
 			showDynamicStylebar();
 			startBoundingBoxState = null;
-			storeUndoableStrokeSplit(oldSelection, splitStrokes);
+			if (removeOriginal) {
+				storeUndoableStrokeSplit(oldSelection, splitStrokes);
+			}
 		}
 		return changed;
 	}
@@ -7793,6 +7796,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		StrokeSplitHelper splitHelper = new StrokeSplitHelper(geos, splitParts);
 		app.getUndoManager().buildAction(ActionType.SPLIT_STROKE, splitHelper.toSplitActionArray())
 				.withUndo(ActionType.MERGE_STROKE, splitHelper.toMergeActionArray())
+				.withStitchToNext()
 				.storeAndNotifyUnsaved();
 	}
 
@@ -8556,7 +8560,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		 * Conintuity handling
 		 *
 		 * If the mouse is moved wildly we take intermediate steps to get a more
-		 * continous behaviour
+		 * continuous behaviour
 		 */
 		if (kernel.isContinuous() && (lastMouseLoc != null)) {
 			double dx = mouseLoc.x - lastMouseLoc.x;
@@ -8778,7 +8782,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 			moveModeSelectionHandled = true;
 
 			// find and set rotGeoElement
-			hits = hits.getPointRotateableHits(view, rotationCenter);
+			hits = hits.getPointRotatableHits(view, rotationCenter);
 			if (!hits.isEmpty() && hits.contains(rotGeoElement)) {
 				geo = rotGeoElement;
 			} else {
@@ -9099,7 +9103,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 		lastMousePressedTime = System.currentTimeMillis();
 
-		app.storeUndoInfoIfSetCoordSystemOccured();
+		app.storeUndoInfoIfSetCoordSystemOccurred();
 		app.maySetCoordSystem();
 
 		scriptsHaveRun = false;
@@ -9340,7 +9344,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 
 	protected void runScriptsIfNeeded(GeoElement geo1) {
 		// GGB-1196
-		// no script run if Properies View is open.
+		// no script run if Properties View is open.
 
 		if (app.showView(App.VIEW_PROPERTIES)) {
 			return;
@@ -9509,7 +9513,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 					view.setSelectionRectangle(null);
 					// hit found
 					if (hits != null && hits.size() > 0) {
-						selection.addSelectedGeos(hits.getHitsGroupped(), true);
+						selection.addSelectedGeos(hits.getHitsGrouped(), true);
 						updateBoundingBoxFromSelection(false);
 					}
 				}
@@ -10101,7 +10105,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		int y = event.getY();
 		this.setLastMouseUpLoc(new GPoint(x, y));
 
-		app.storeUndoInfoIfSetCoordSystemOccured();
+		app.storeUndoInfoIfSetCoordSystemOccurred();
 
 		if (pressedButton != null && !(app.showView(App.VIEW_PROPERTIES))) {
 			pressedButton.setDraggedOrContext(
@@ -10364,7 +10368,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 		}
 
 		// allow drag with right mouse button or ctrl
-		// make sure Ctrl still works for selection (when no dragging occured)
+		// make sure Ctrl still works for selection (when no dragging occurred)
 		if (event.isRightClick() || (control && isDraggingOccuredBeyondThreshold())) {
 			if (!temporaryMode) {
 				processRightReleased(event, type);
@@ -10382,9 +10386,9 @@ public abstract class EuclidianController implements SpecialPointsListener {
 				|| this.animationButtonPressed) {
 			this.animationButtonPressed = false;
 			if (kernel.isAnimationRunning()) {
-				kernel.getAnimatonManager().stopAnimation();
+				kernel.getAnimationManager().stopAnimation();
 			} else {
-				kernel.getAnimatonManager().startAnimation();
+				kernel.getAnimationManager().startAnimation();
 			}
 
 			// make sure geo.updateRepaint(); doesn't trigger update scripts
@@ -10452,7 +10456,7 @@ public abstract class EuclidianController implements SpecialPointsListener {
 	 * @param hits
 	 *            hits
 	 * @param control
-	 *            whethe ctrl is pressed
+	 *            whether ctrl is pressed
 	 * @param alt
 	 *            whether alt is pessed
 	 * @param type

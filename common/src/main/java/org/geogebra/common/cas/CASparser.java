@@ -118,8 +118,6 @@ public class CASparser implements CASParserInterface {
 			}
 
 			return ve;
-			// }catch (MaximaVersionUnsupportedExecption e) {
-			// throw e; // propagate exception
 		} catch (CASException ce) {
 			throw ce;
 		} catch (Throwable e) {
@@ -444,7 +442,7 @@ public class CASparser implements CASParserInterface {
 	 */
 	@Override
 	public String getTranslatedCASCommand(final String command) {
-		return getTranslationRessourceBundle().get(command);
+		return getTranslationResourceBundle().get(command);
 	}
 
 	/**
@@ -460,14 +458,14 @@ public class CASparser implements CASParserInterface {
 	}
 
 	/**
-	 * Returns the RessourceBundle that translates from GeogebraCAS commands to
+	 * Returns the map that translates from GeoGebraCAS commands to
 	 * their definition in the syntax of the current CAS. Loads this bundle if
 	 * it wasn't loaded yet.
 	 * 
 	 * @return The current ResourceBundle used for translations.
 	 * 
 	 */
-	synchronized Map<String, String> getTranslationRessourceBundle() {
+	synchronized Map<String, String> getTranslationResourceBundle() {
 		if (rbCasTranslations == null) {
 
 			rbCasTranslations = Ggb2giac

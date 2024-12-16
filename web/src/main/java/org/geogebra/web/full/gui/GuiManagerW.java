@@ -59,7 +59,7 @@ import org.geogebra.web.full.cas.view.CASViewW;
 import org.geogebra.web.full.cas.view.RowHeaderPopupMenuW;
 import org.geogebra.web.full.euclidian.EuclidianStyleBarW;
 import org.geogebra.web.full.euclidian.SymbolicEditorW;
-import org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar;
+import org.geogebra.web.full.euclidian.quickstylebar.QuickStyleBar;
 import org.geogebra.web.full.gui.app.GGWMenuBar;
 import org.geogebra.web.full.gui.app.GGWToolBar;
 import org.geogebra.web.full.gui.applet.GeoGebraFrameFull;
@@ -937,16 +937,16 @@ public class GuiManagerW extends GuiManager
 	}
 
 	/**
-	 * Get the properties view and initilize the right tab.
+	 * Get the properties view and initialize the right tab.
 	 *
-	 * @param ot
+	 * @param optionType
 	 *            initial tab
 	 * @return properties view
 	 */
-	public PropertiesView getPropertiesView(OptionType ot) {
+	public PropertiesView getPropertiesView(OptionType optionType) {
 		if (propertiesView == null) {
 			// initPropertiesDialog();
-			propertiesView = newPropertiesViewW(getApp(), ot);
+			propertiesView = newPropertiesViewW(getApp(), optionType);
 		}
 		return propertiesView;
 	}
@@ -955,13 +955,13 @@ public class GuiManagerW extends GuiManager
 	 *
 	 * @param app1
 	 *            application
-	 * @param ot
+	 * @param optionType
 	 *            option type
 	 * @return new properties view
 	 */
 	protected PropertiesViewW newPropertiesViewW(final AppW app1,
-			OptionType ot) {
-		return new PropertiesViewW(app1, ot);
+			OptionType optionType) {
+		return new PropertiesViewW(app1, optionType);
 	}
 
 	@Override
@@ -1806,7 +1806,7 @@ public class GuiManagerW extends GuiManager
 
 	@Override
 	public EuclidianStyleBar newDynamicStylebar(final EuclidianView ev) {
-		return new QuickStylebar(ev);
+		return new QuickStyleBar(ev);
 	}
 
 	@Override
@@ -1815,7 +1815,7 @@ public class GuiManagerW extends GuiManager
 		DockPanelW dp = getLayout().getDockManager().getPanel(ev.getViewID());
 		AbsolutePanel absolutePanel = ((EuclidianDockPanelWAbstract) dp).getAbsolutePanel();
 		if (absolutePanel != null) {
-			absolutePanel.add((QuickStylebar) dynamicStylebar);
+			absolutePanel.add((QuickStyleBar) dynamicStylebar);
 		}
 	}
 
@@ -2105,9 +2105,9 @@ public class GuiManagerW extends GuiManager
 	}
 
 	@Override
-	public void setUnbundledHeaderStyle(String style) {
+	public void updateUnbundledToolbarStyle() {
 		if (getUnbundledToolbar() != null) {
-			getUnbundledToolbar().setHeaderStyle(style);
+			getUnbundledToolbar().resetHeaderStyle();
 		}
 	}
 

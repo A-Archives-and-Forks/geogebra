@@ -27,8 +27,11 @@ import javax.annotation.Nullable;
 import org.geogebra.common.io.MathMLParser;
 import org.geogebra.common.kernel.CircularDefinitionException;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.KernelCAS;
+import org.geogebra.common.kernel.LinearEquationRepresentable;
+import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.algos.AlgoDependentBoolean;
 import org.geogebra.common.kernel.algos.AlgoDependentConic;
@@ -670,7 +673,7 @@ public class AlgebraProcessor {
 
 			processAlgebraCommandNoExceptionHandling(newValue, false, handler,
 					changeCallback, info);
-			// make sure listeneres are enabled if redefinition failed
+			// make sure listeners are enabled if redefinition failed
 			app.getEventDispatcher().enableListeners();
 			cons.registerFunctionVariable(null);
 			return;
@@ -988,7 +991,7 @@ public class AlgebraProcessor {
 			if (storeUndo) {
 				app.storeUndoInfo();
 			}
-			return postProcessCreatedElements(callback0, ret, handler, null);
+			return postProcessCreatedElements(ve, callback0, ret, handler, null);
 		}
 		EvalInfo newInfo = info;
 		Set<GeoNumeric> sliders = null;
@@ -1013,7 +1016,7 @@ public class AlgebraProcessor {
 			}
 			if (geoElements != null) {
 				kernel.getConstruction().registerFunctionVariable(null);
-				return postProcessCreatedElements(callback0, geoElements, handler, null);
+				return postProcessCreatedElements(ve, callback0, geoElements, handler, null);
 			}
 
 			StringBuilder sb = new StringBuilder();
@@ -1041,7 +1044,7 @@ public class AlgebraProcessor {
 				if (!info.isAutocreateSliders()) {
 					GeoElementND[] rett = tryReplacingProducts(ve, handler,
 							info);
-					return postProcessCreatedElements(callback0, rett, handler, null);
+					return postProcessCreatedElements(ve, callback0, rett, handler, null);
 				}
 
 				// "Create sliders for a, b?" Create Sliders / Cancel
@@ -1061,7 +1064,7 @@ public class AlgebraProcessor {
 					GeoElement[] geos = processValidExpression(storeUndo, handler,
 								ve2, info, asyncSliders);
 
-					postProcessCreatedElements(callback0, geos, handler, asyncSliders);
+					postProcessCreatedElements(ve, callback0, geos, handler, asyncSliders);
 				};
 				boolean autoCreateSlidersAnswer = handler
 						.onUndefinedVariables(sb.toString(), callback);
@@ -1088,9 +1091,7 @@ public class AlgebraProcessor {
 		GeoElement[] geos = processValidExpression(storeUndo, handler, ve,
 				newInfo, sliders);
 
-		// Test output for filtered expression
-
-		return postProcessCreatedElements(callback0, geos, handler, sliders);
+		return postProcessCreatedElements(ve, callback0, geos, handler, sliders);
 	}
 
 	private GeoElement evalSymbolic(final ValidExpression ve, EvalInfo info) {
@@ -1153,6 +1154,8 @@ public class AlgebraProcessor {
 	/**
 	 * Run callback on new geos if there are any or empty array otherwise
 	 *
+	 * @param input
+	 *            input expression
 	 * @param callback0
 	 *            callback
 	 * @param geos
@@ -1160,14 +1163,17 @@ public class AlgebraProcessor {
 	 * @param sliders
 	 *            auto-created sliders
 	 */
-	GeoElementND[] postProcessCreatedElements(AsyncOperation<GeoElementND[]> callback0,
-			GeoElementND[] geos, ErrorHandler handler, @Nullable Set<GeoNumeric> sliders) {
+	GeoElementND[] postProcessCreatedElements(ValidExpression input,
+			AsyncOperation<GeoElementND[]> callback0, GeoElementND[] geos,
+			ErrorHandler handler, @Nullable Set<GeoNumeric> sliders) {
 		GeoElementND[] filteredGeos = geos;
 		if (geos != null) {
-			boolean containsRestrictedExpressions = Arrays.stream(geos)
+			boolean containsRestrictedInputExpression =
+					!isExpressionAllowed(input, inputExpressionFilters);
+			boolean containsRestrictedOutputExpressions = Arrays.stream(geos)
 					.map(ExpressionValue::wrap)
 					.anyMatch(geo -> !isExpressionAllowed(geo, outputExpressionFilters));
-			if (containsRestrictedExpressions) {
+			if (containsRestrictedInputExpression || containsRestrictedOutputExpressions) {
 				// Remove filtered geos
 				Arrays.stream(geos).forEach(GeoElementND::remove);
 				filteredGeos = null;
@@ -2997,45 +3003,64 @@ public class AlgebraProcessor {
 		} else {
 			line = dependentLine(equ);
 		}
-		line.setDefinition(def);
+
 		if (isExplicit) {
 			line.setToExplicit();
 		}
+
 		line.showUndefinedInAlgebraView(true);
+		line.setDefinition(def);
 		setEquationLabelAndVisualStyle(line, label, info);
 
 		return array(line);
 	}
 
 	/**
-	 * @param line
+	 * @param geo
 	 *            line or conic
 	 * @param label
 	 *            new label
 	 * @param info
 	 *            evaluation flags
 	 */
-	protected void setEquationLabelAndVisualStyle(GeoElementND line,
+	protected void setEquationLabelAndVisualStyle(GeoElementND geo,
 			String label, EvalInfo info) {
 		if (kernel.getApplication().isUnbundledGraphing()) {
-			line.setObjColor(line.getAutoColorScheme()
+			geo.setObjColor(geo.getAutoColorScheme()
 					.getNext(!cons.getKernel().isSilentMode()));
-			line.setLineOpacity(
+			geo.setLineOpacity(
 					EuclidianStyleConstants.OBJSTYLE_DEFAULT_LINE_OPACITY_EQUATION_GEOMETRY);
 		}
-		if ((info.isForceUserEquation()
-				|| !app.getSettings().getCasSettings().isEnabled())
-				&& line instanceof EquationValue) {
-			((EquationValue) line).setToUser();
+		if (geo.isFunctionOrEquationFromUser()) {
+			geo.setFixed(true);
 		}
 
-		if (line.isFunctionOrEquationFromUser()) {
-			line.setFixed(true);
-		}
+		customizeEquationForm(geo);
 
 		if (info.isLabelOutput()) {
-			line.setLabel(label);
+			geo.setLabel(label);
 		}
+	}
+
+	private void customizeEquationForm(GeoElementND geo) {
+		EquationBehaviour equationBehaviour = kernel.getEquationBehaviour();
+		if (equationBehaviour == null) {
+			return;
+		}
+		if (geo instanceof LinearEquationRepresentable) {
+			LinearEquationRepresentable.Form equationForm =
+					equationBehaviour.getLinearAlgebraInputEquationForm();
+			if (equationForm != null) {
+				((LinearEquationRepresentable) geo).setEquationForm(equationForm);
+			}
+		} else if (geo instanceof QuadraticEquationRepresentable) {
+			QuadraticEquationRepresentable.Form equationForm =
+					equationBehaviour.getConicAlgebraInputEquationForm();
+			if (equationForm != null) {
+				((QuadraticEquationRepresentable) geo).setEquationForm(equationForm);
+			}
+		}
+		// TODO APPS-5867 do we need to handle implicit functions/surfaces here?
 	}
 
 	/**
@@ -3078,15 +3103,13 @@ public class AlgebraProcessor {
 
 			double[] coeffs = { a, b, c, d, e, f };
 			conic = new GeoConic(cons, coeffs);
-
 		} else {
 			conic = dependentConic(equ);
 		}
 
 		if (isExplicit) {
 			conic.setToExplicit();
-		} else if (isSpecific
-				|| conic.getType() == GeoConicNDConstants.CONIC_CIRCLE) {
+		} else if (isSpecific || conic.getType() == GeoConicNDConstants.CONIC_CIRCLE) {
 			conic.setToSpecific();
 		}
 		conic.setDefinition(def);
@@ -3195,11 +3218,6 @@ public class AlgebraProcessor {
 		// ELSE: resolve variables and evaluate expressionnode
 		n.resolveVariables(info);
 
-		// Check for allowed expressions again, as resolving variables might end up creating
-		// expressions that otherwise are not allowed. See APPS-5138
-		if (!isExpressionAllowed(n, inputExpressionFilters)) {
-			return null;
-		}
 		if (n.isLeaf() && n.getLeft().isExpressionNode()) {
 			// we changed f' to f'(x) -> clean double wrap
 			ExpressionNode unwrapped = n.getLeft().wrap();
@@ -3405,10 +3423,9 @@ public class AlgebraProcessor {
 				GeoElement[] results = processExpressionNode(en,
 						new EvalInfo(false));
 				GeoElement geo = results[0];
-				if ((info.isForceUserEquation()
-						|| !app.getSettings().getCasSettings().isEnabled())
-						&& Equation.isAlgebraEquation(geo)) {
-					((EquationValue) geo).setToUser();
+				// TODO APPS-5867 do we need more conditions here?
+				if (Equation.isAlgebraEquation(geo)) {
+					customizeEquationForm(geo);
 				}
 				// add to list
 				geoElements.add(geo);

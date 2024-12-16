@@ -1,12 +1,13 @@
 package org.geogebra.web.full.euclidian.quickstylebar.components;
 
-import static org.geogebra.web.full.euclidian.quickstylebar.QuickStylebar.POPUP_MENU_DISTANCE;
+import static org.geogebra.web.full.euclidian.quickstylebar.QuickStyleBar.POPUP_MENU_DISTANCE;
 
 import java.util.List;
 
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
+import org.geogebra.common.properties.PropertySupplier;
 import org.geogebra.common.properties.RangeProperty;
 import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
@@ -30,6 +31,7 @@ import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.gui.util.Dom;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
@@ -55,8 +57,8 @@ public class IconButtonWithProperty extends IconButton {
 	 * @param properties - array of applicable properties
 	 */
 	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel,
-			List<GeoElement> geos, boolean closePopupOnAction, Property... properties) {
-		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
+			GeoElement geo, boolean closePopupOnAction, PropertySupplier... properties) {
+		super(appW, new ImageIconSpec(icon), ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		this.geos = geos;
 		widgetAdapter = new PropertyWidgetAdapter(appW, closePopupOnAction);
@@ -86,21 +88,22 @@ public class IconButtonWithProperty extends IconButton {
 		});
 	}
 
-	private void buildGUI(Property... properties) {
+	private void buildGUI(PropertySupplier... properties) {
 		initPropertyPopup();
 		FlowPanel propertyPanel = new FlowPanel();
 
-		for (Property property : properties) {
+		for (PropertySupplier property : properties) {
 			processProperty(property, propertyPanel);
 		}
 
 		propertyPopup.add(propertyPanel);
 	}
 
-	private void processProperty(Property property, FlowPanel parent) {
+	private void processProperty(PropertySupplier propertySupplier, FlowPanel parent) {
+		Property property = propertySupplier.get();
 		if (property instanceof IconsEnumeratedProperty) {
 			FlowPanel enumeratedPropertyButtonPanel = widgetAdapter.getIconListPanel(
-					(IconsEnumeratedProperty<?>) property, (index) -> {
+					(IconsEnumeratedProperty<?>) property, propertySupplier, (index) -> {
 						if (lineThicknessSlider != null) {
 							lineThicknessSlider.setLineType(index);
 						}
@@ -121,7 +124,9 @@ public class IconButtonWithProperty extends IconButton {
 			ColorChooserPanel colorPanel = new ColorChooserPanel(appW,
 					colorProperty.getValues(), color -> {
 				if (popupHandler != null) {
-					popupHandler.fireActionPerformed(colorProperty, color);
+					ColorPropertyCollection<?> updatedProperty =
+							(ColorPropertyCollection<?>) propertySupplier.updateAndGet();
+					popupHandler.fireActionPerformed(updatedProperty, color);
 				}
 			});
 			if (colorProperty.getFirstProperty() instanceof BorderColorProperty) {
@@ -146,7 +151,8 @@ public class IconButtonWithProperty extends IconButton {
 			RangePropertyCollection<?> rangeProperty = (RangePropertyCollection<?>) property;
 			RangeProperty<?> firstProperty = rangeProperty.getFirstProperty();
 			if (firstProperty instanceof NotesThicknessProperty) {
-				lineThicknessSlider = widgetAdapter.getSliderWidget(rangeProperty, geos.get(0));
+				lineThicknessSlider = widgetAdapter.getSliderWidget(rangeProperty,
+						propertySupplier, geo);
 				parent.add(lineThicknessSlider);
 			} else if (firstProperty instanceof CellBorderThicknessProperty
 					|| firstProperty instanceof BorderThicknessProperty) {
@@ -155,7 +161,7 @@ public class IconButtonWithProperty extends IconButton {
 				parent.add(borderThickness);
 			} else {
 				SliderWithProperty sliderWithProperty = widgetAdapter.getSliderWidget(
-						rangeProperty, geos.get(0));
+						rangeProperty, propertySupplier, geo);
 				parent.add(sliderWithProperty);
 			}
 		}

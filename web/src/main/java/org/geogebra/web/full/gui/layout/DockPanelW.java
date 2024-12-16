@@ -137,15 +137,13 @@ public abstract class DockPanelW extends ResizeComposite
 	private boolean hidden;
 
 	/**
-	 * Flag to determine if the frame field will be created as a JDialog (true)
-	 * or as a JFram (false). Default is false.
+	 * Copied from Desktop, not supported.
 	 */
 	private boolean dialog = false;
 
 	/** dock panel */
 	InnerDockLayoutPanel dockPanel;
 	/** the main panel of this stylebar */
-	//protected TitleBarPanel titleBarPanel;
 	protected DockControlPanel dockControlPanel;
 	private boolean initializedGui;
 
@@ -863,7 +861,7 @@ public abstract class DockPanelW extends ResizeComposite
 	/**
 	 * Set the toolbar string of this view. If the toolbar string is null but
 	 * this panel has a panel normally the default toolbar string is used. This
-	 * is used for backward compability. Has no visible effect.
+	 * is used for backward compatibility. Has no visible effect.
 	 * 
 	 * @param toolbarString
 	 *            toolbar definition
@@ -929,7 +927,7 @@ public abstract class DockPanelW extends ResizeComposite
 	}
 
 	/**
-	 * @return estimated size based on prefered width of views
+	 * @return estimated size based on preferred width of views
 	 */
 	public GDimension getEstimatedSize() {
 		switch (getViewId()) {

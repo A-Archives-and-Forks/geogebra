@@ -434,9 +434,9 @@ public final class EuclidianConstants {
 	public static final int MACRO_MODE_ID_OFFSET = 100001;
 	/** max delay between taps of a doublecklick */
 	public static final long DOUBLE_CLICK_DELAY = 300;
-	/** ignore drag until this many miliseconds after drag start */
+	/** ignore drag until this many milliseconds after drag start */
 	public static final long DRAGGING_DELAY = 100;
-    /** ignore drag until this many miliseconds after drag start, for moving created point along
+    /** ignore drag until this many milliseconds after drag start, for moving created point along
      * z axis */
     public static final long DRAGGING_DELAY_FOR_MOVING_POINT_ALONG_Z = 200;
 	/** default size of delete tool rectangle in pixels */
@@ -951,17 +951,17 @@ public final class EuclidianConstants {
 	/**
 	 * @param mode
 	 *            mode number
-	 * @param draggingOccured
-	 *            tells if dragging occured
+	 * @param draggingOccurred
+	 *            tells if dragging occurred
 	 *
 	 * @return whether mode is MOVE or SELECT, and return false if the mode is
-	 *         not compatible with dragging occured
+	 *         not compatible with dragging occurred
 	 */
 	static public boolean isMoveOrSelectionModeCompatibleWithDragging(int mode,
-			boolean draggingOccured) {
+			boolean draggingOccurred) {
 		switch (mode) {
 		case MODE_MOVE:
-			return !draggingOccured;
+			return !draggingOccurred;
 		case MODE_SELECT:
 		case MODE_SELECT_MOW:
 			return true;

@@ -32,7 +32,7 @@ import org.geogebra.common.util.IndexLaTeXBuilder;
 import org.geogebra.common.util.SymbolicUtil;
 
 /**
- * Utitlity class for AV items
+ * Utility class for AV items
  */
 public class AlgebraItem {
 
@@ -101,19 +101,26 @@ public class AlgebraItem {
 				&& !GeoFunction.isUndefined(text1) && !GeoFunction.isUndefined(text2);
 	}
 
+	public static boolean checkAllRHSareIntegers(GeoElementND geo) {
+		return geo instanceof GeoList && allRHSareIntegers((GeoList) geo);
+	}
+
 	private static boolean allRHSareIntegers(GeoList geo) {
 		for (int i = 0; i < geo.size(); i++) {
-			if (geo.get(i) instanceof GeoLine
-					&& !DoubleUtil.isInteger(((GeoLine) geo.get(i)).getZ())) {
-				return false;
-			}
-			if (geo.get(i) instanceof GeoPlaneND
-					&& !DoubleUtil.isInteger(((GeoPlaneND) geo.get(i))
-							.getCoordSys().getEquationVector().getW())) {
-				return false;
-			}
-			if (geo.get(i) instanceof GeoList
-					&& !allRHSareIntegers((GeoList) geo.get(i))) {
+			if (geo.get(i) instanceof GeoLine) {
+				if (!DoubleUtil.isInteger(((GeoLine) geo.get(i)).getZ())) {
+					return false;
+				}
+			} else  if (geo.get(i) instanceof GeoPlaneND) {
+				if (!DoubleUtil.isInteger(((GeoPlaneND) geo.get(i))
+						.getCoordSys().getEquationVector().getW())) {
+					return false;
+				}
+			} else if (geo.get(i) instanceof GeoList) {
+				if (!allRHSareIntegers((GeoList) geo.get(i))) {
+					return false;
+				}
+			} else {
 				return false;
 			}
 		}
@@ -369,7 +376,7 @@ public class AlgebraItem {
 	 * @param geoElement
 	 *            element
 	 * @param style
-	 *            Kenel.ALGEBRA_STYLE_*
+	 *            Kernel.ALGEBRA_STYLE_*
 	 * @param sb
 	 *            builder
 	 * @param stringTemplateForPlainText
@@ -645,7 +652,7 @@ public class AlgebraItem {
 
 	/**
 	 * Initializes the element for the Algebra View.
-	 * @param geo element to initialzie
+	 * @param geo element to initialize
 	 */
 	public static void initForAlgebraView(GeoElement geo) {
 		if (shouldShowSlider(geo) && !geo.isEuclidianVisible()) {

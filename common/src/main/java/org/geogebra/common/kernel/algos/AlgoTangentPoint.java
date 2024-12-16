@@ -90,7 +90,7 @@ public class AlgoTangentPoint extends AlgoTangentPointND
 	}
 
 	/**
-	 * Inits the helping interesection algorithm to take the current position of
+	 * Inits the helping intersection algorithm to take the current position of
 	 * the lines into account. This is important so the the tangent lines are
 	 * not switched after loading a file
 	 */
@@ -103,7 +103,7 @@ public class AlgoTangentPoint extends AlgoTangentPointND
 	}
 
 	/**
-	 * Inits the helping interesection algorithm to take the current position of
+	 * Inits the helping intersection algorithm to take the current position of
 	 * the lines into account. This is important so the the tangent lines are
 	 * not switched after loading a file
 	 *
@@ -286,7 +286,7 @@ public class AlgoTangentPoint extends AlgoTangentPointND
 					botanaVarsThis[0], botanaVarsThis[1], botanaVarsThis[4],
 					botanaVarsThis[5], vPoint[0], vPoint[1]);
 
-			// OT = OB
+			// OT = OB                     # NO-TYPO
 			botanaPolynomialsThis[3] = PPolynomial.equidistant(
 					botanaVarsThis[0], botanaVarsThis[1], vcircle[0],
 					vcircle[1], vcircle[2], vcircle[3]);

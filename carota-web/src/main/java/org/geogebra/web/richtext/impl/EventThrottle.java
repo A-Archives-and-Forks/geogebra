@@ -29,7 +29,7 @@ public class EventThrottle {
 		editor.contentChanged(() -> {
 			listener.onInput();
 			updateTimer.cancel();
-			updateTimer.schedule(5000);
+			updateTimer.schedule(500);
 		});
 
 		editor.selectionChanged(listener::onSelectionChanged);

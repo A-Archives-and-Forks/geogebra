@@ -13,7 +13,7 @@ the Free Software Foundation.
 /*
  * DrawLine.java
  *
- * Created on 11. Oktober 2001, 23:59
+ * Created on 11. October 2001, 23:59
  */
 
 package org.geogebra.common.euclidian.draw;
@@ -159,7 +159,7 @@ public class DrawLine extends SetDrawable implements Previewable {
 	 * @param functions
 	 *            preview functions
 	 * @param parallel
-	 *            true for paralel, false for perpendicular
+	 *            true for parallel, false for perpendicular
 	 */
 	public DrawLine(EuclidianView view, ArrayList<GeoPointND> points,
 					ArrayList<GeoLineND> lines, ArrayList<GeoFunction> functions,
@@ -628,7 +628,7 @@ public class DrawLine extends SetDrawable implements Previewable {
 					wx = g2x + hx;
 					wy = g2y + hy;
 				} else { // ip <= 0.0, angle > 90 degrees
-							// BC - BA is a normalvector of the bisector
+							// BC - BA is a normal vector of the bisector
 					wx = hy - g2y;
 					wy = g2x - hx;
 
@@ -757,7 +757,7 @@ public class DrawLine extends SetDrawable implements Previewable {
 			gpc.lineTo(view.getWidth(), y1);
 			invert ^= forConic || (y1 > 0);
 		}
-		// cros left and bottom/top
+		// cross left and bottom/top
 		else if (x1 <= 0 && x2 <= view.getWidth()) {
 			gpc.lineTo(0, y2);
 			invert ^= y2 > 0;

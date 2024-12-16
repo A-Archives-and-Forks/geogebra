@@ -215,7 +215,7 @@ public class AlgoIntersectPlaneQuadricLimited
 							// set "midpoint"
 							topParameters[0] = midParameter;
 						} else {
-							// set symetric "midpoint"
+							// set symmetric "midpoint"
 							topParameters[0] = midParameter + Math.PI;
 							if (midParameter < 0) {
 								topParameters[0] = midParameter + Math.PI;
@@ -371,7 +371,7 @@ public class AlgoIntersectPlaneQuadricLimited
 
 		if (c0.equalsForKernel(c1) && conic
 				.getType() == GeoConicNDConstants.CONIC_INTERSECTING_LINES) {
-			// force compute parameter for the two liness
+			// force compute parameter for the two lines
 			PathParameter pp = new PathParameter();
 			conic.lines[0].doPointChanged(c0, pp);
 			ret[0] = PathNormalizer.inverseInfFunction(pp.getT());

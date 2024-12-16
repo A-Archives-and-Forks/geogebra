@@ -133,9 +133,9 @@ public class EuclidianView3DD extends EuclidianView3D
 	}
 
 	@Override
-	public void setBackground(GColor updatedColor, GColor applyedColor) {
-		super.setBackground(updatedColor, applyedColor);
-		evjpanel.setBackground(GColorD.getAwtColor(bgApplyedColor));
+	public void setBackground(GColor updatedColor, GColor appliedColor) {
+		super.setBackground(updatedColor, appliedColor);
+		evjpanel.setBackground(GColorD.getAwtColor(bgAppliedColor));
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class EuclidianView3DD extends EuclidianView3D
 	}
 
 	/**
-	 * @return whethe this view is visible
+	 * @return whether this view is visible
 	 */
 	@Override
 	public boolean isShowing() {
@@ -229,7 +229,7 @@ public class EuclidianView3DD extends EuclidianView3D
 	/**
 	 * @see JPanel#setPreferredSize(Dimension)
 	 * @param preferredSize
-	 *            prefered size
+	 *            preferred size
 	 */
 	public void setPreferredSize(Dimension preferredSize) {
 		evjpanel.setPreferredSize(preferredSize);
@@ -340,7 +340,7 @@ public class EuclidianView3DD extends EuclidianView3D
 	}
 
 	/**
-	 * @return prefered size
+	 * @return preferred size
 	 */
 	public Dimension getPreferredSize() {
 		return evjpanel.getPreferredSize();

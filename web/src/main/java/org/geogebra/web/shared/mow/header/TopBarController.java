@@ -4,30 +4,40 @@ import static org.geogebra.common.euclidian.EuclidianConstants.MODE_SELECT_MOW;
 
 import java.util.function.Consumer;
 
+import javax.annotation.CheckForNull;
+
 import org.geogebra.common.euclidian.EuclidianConstants;
+import org.geogebra.common.euclidian.EuclidianController;
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.AccessibilityGroup;
 import org.geogebra.web.full.gui.ContextMenuGraphicsWindowW;
+import org.geogebra.web.full.gui.pagecontrolpanel.PageListPanel;
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
-import org.geogebra.web.html5.css.ZoomPanelResources;
+import org.geogebra.web.full.main.AppWFull;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.zoompanel.FocusableWidget;
 import org.geogebra.web.html5.gui.zoompanel.ZoomController;
 import org.geogebra.web.html5.main.AppW;
+import org.geogebra.web.html5.main.topbar.TopBarIcon;
+import org.geogebra.web.html5.main.topbar.TopBarIconResource;
 
-public class TopbarController {
+public class TopBarController {
 	private final AppW appW;
 	private final ZoomController zoomController;
 	private final EuclidianView view;
 	private ContextMenuGraphicsWindowW settingsContextMenu;
+	private @CheckForNull PageListPanel pageControlPanel;
+	private final TopBarIconResource topBarIconResource;
 
 	/**
 	 * Controller
 	 * @param appW - application
+	 * @param topBarIconResource - top bar resources
 	 */
-	public TopbarController(AppW appW) {
+	public TopBarController(AppW appW, TopBarIconResource topBarIconResource) {
 		this.appW = appW;
 		this.view = appW.getActiveEuclidianView();
+		this.topBarIconResource = topBarIconResource;
 		zoomController = new ZoomController(appW, view);
 	}
 
@@ -151,8 +161,8 @@ public class TopbarController {
 		return fullScreenActive -> {
 			if (fullscreenBtn != null) {
 				fullscreenBtn.setIcon(fullScreenActive
-						? ZoomPanelResources.INSTANCE.fullscreen_exit_black18()
-						: ZoomPanelResources.INSTANCE.fullscreen_black18());
+						? topBarIconResource.getImageResource(TopBarIcon.FULLSCREEN_OFF)
+						: topBarIconResource.getImageResource(TopBarIcon.FULLSCREEN_ON));
 			}
 		};
 	}
@@ -194,6 +204,40 @@ public class TopbarController {
 
 	private GPopupPanel getSettingsContextMenu() {
 		return settingsContextMenu.getWrappedPopup().getPopupPanel();
+	}
+
+	/**
+	 * Toggle the page control panel
+	 */
+	public void togglePagePanel() {
+		if (getPageControlPanel().isVisible()) {
+			getPageControlPanel().close();
+		} else {
+			openPagePanel();
+		}
+	}
+
+	private void openPagePanel() {
+		appW.hideMenu();
+		appW.closePopups();
+		EuclidianController ec = appW.getActiveEuclidianView().getEuclidianController();
+		ec.widgetsToBackground();
+
+		getPageControlPanel().open();
+		appW.getPageController().updatePreviewImage();
+		appW.setMode(MODE_SELECT_MOW);
+	}
+
+	private PageListPanel getPageControlPanel() {
+		if (pageControlPanel == null) {
+			pageControlPanel = ((AppWFull) appW).getAppletFrame()
+					.getPageControlPanel();
+		}
+		return pageControlPanel;
+	}
+
+	public void setTouchStyleForPagePreviewCards() {
+		getPageControlPanel().setIsTouch();
 	}
 
 	/**

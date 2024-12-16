@@ -137,7 +137,7 @@ public class PerspectiveDecoder {
 	 *            application
 	 * @param width
 	 *            applet width
-	 * @return prefered ratio of left panel for AV perspective
+	 * @return preferred ratio of left panel for AV perspective
 	 */
 	public static double landscapeRatio(App app, double width) {
 
@@ -156,7 +156,7 @@ public class PerspectiveDecoder {
 	 *            applet height
 	 * @param graphing
 	 *            whether this is for graphing
-	 * @return prefered ratio for AV perspective in portrait mode.
+	 * @return preferred ratio for AV perspective in portrait mode.
 	 */
 	public static double portraitRatio(double height, boolean graphing) {
 		if (graphing) {
@@ -315,7 +315,7 @@ public class PerspectiveDecoder {
 	}
 
 	/**
-	 * Checks allowed views, asssumes we're in an unbundled app
+	 * Checks allowed views, assumes we're in an unbundled app
 	 * @param viewId view ID
 	 * @param forcedPerspective perspective number (as string)
 	 * @return which views are allowed in the perspective
