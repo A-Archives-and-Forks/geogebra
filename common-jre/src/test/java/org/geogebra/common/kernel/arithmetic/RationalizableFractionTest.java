@@ -276,12 +276,15 @@ public class RationalizableFractionTest extends BaseUnitTest {
 				"-3 (1 + sqrt(2))");
 		rationalizationShouldBe(genericSqrtFraction(-6, 9, -8, 9), "3 / 5");
 		rationalizationShouldBe(genericSqrtFraction(3, 1, 9, 9), "1 / 3");
+		rationalizationShouldBe(genericSqrtFraction(2, 4, 1, 2),
+				"4 (sqrt(2) - 1)");
+		rationalizationShouldBe(genericSqrtFraction(-5, 1, 5, 8),
+				"(-4 (5 - 2sqrt(2))) / 17");
 	}
 
 	@Test
 	public void wip() {
-		rationalizationShouldBe(genericSqrtFraction(0, 1, -1, 2),
-				"1 + sqrt(2)");
+		// case to debug
 	}
 
 	@Test

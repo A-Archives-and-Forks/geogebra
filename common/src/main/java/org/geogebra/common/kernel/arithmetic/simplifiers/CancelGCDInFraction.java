@@ -90,7 +90,7 @@ public class CancelGCDInFraction implements SimplifyNode {
 
 	private ExpressionNode applyForMultipliedNumerator(ExpressionNode node) {
 		int n = multiplier;
-		int m = (int) node.getRightTree().evaluateDouble();
+		int m = (int)Math.round(node.getRightTree().evaluateDouble());
 		long gcd = Kernel.gcd(n, m);
 		if (Math.abs(gcd) == 1) {
 			return node;

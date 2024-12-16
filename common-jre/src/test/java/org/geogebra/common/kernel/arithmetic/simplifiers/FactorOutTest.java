@@ -72,6 +72,7 @@ public class FactorOutTest extends BaseSimplifyTest {
 		shouldNotAccept("-(3 + 2sqrt(2))");
 		shouldNotAccept("-(2 + 3sqrt(2))");
 		shouldNotAccept("-(1 + 3sqrt(2))");
+		shouldNotAccept("4 (-1 + sqrt(2))");
 	}
 
 	public void name() {
