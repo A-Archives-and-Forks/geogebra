@@ -13,10 +13,17 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.util.debug.Log;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class RationalizableFractionTest extends BaseUnitTest {
+
+	@Before
+	public void setUp() throws Exception {
+		getKernel().setPrintDecimals(15);
+	}
+
 	@Test
 	public void testSupported() {
 		shouldBeSupported("1 / sqrt(2)");
@@ -61,7 +68,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void decimalValueShouldBeOK() {
 		GeoNumeric num = add("1/sqrt(2)");
 		num.setSymbolicMode(false, true);
-		assertEquals("0.71", num.getFormulaString(StringTemplate.defaultTemplate, true));
+		assertEquals("0.707106781186547", num.getFormulaString(StringTemplate.defaultTemplate, true));
 		num.setSymbolicMode(true, true);
 	}
 
@@ -284,7 +291,9 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void wip() {
-		// case to debug
+		// current case to fix
+		rationalizationShouldBe("1 / (2 * sqrt(2))", "sqrt(2) / 4");
+
 	}
 
 	@Test

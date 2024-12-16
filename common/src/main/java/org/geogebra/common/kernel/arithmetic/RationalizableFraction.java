@@ -56,7 +56,7 @@ public final class RationalizableFraction {
 				? simplifyNormalizedRadicalFraction(denominatorValue)
 				: rationalizeFraction();
 
-		return simplifiers.run(resolution);
+	return simplifiers.run(resolution);
 	}
 
 	/**

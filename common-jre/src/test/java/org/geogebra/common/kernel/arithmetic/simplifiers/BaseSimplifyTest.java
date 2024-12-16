@@ -22,6 +22,7 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 
 	@Before
 	public void setUp() throws Exception {
+		getKernel().setPrintDecimals(15);
 		utils = new SimplifyUtils(getKernel());
 	}
 

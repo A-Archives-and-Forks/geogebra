@@ -18,7 +18,8 @@ public class SimplifyUtils {
 	}
 
 	public ExpressionValue newDouble(double v) {
-		return new ExpressionNode(kernel, v);
+		return new ExpressionNode(kernel,
+				(isIntegerValue(v) ? Math.round(v) : v));
 	}
 
 	public ExpressionNode newNode(ExpressionValue left, Operation operation, ExpressionValue right) {
