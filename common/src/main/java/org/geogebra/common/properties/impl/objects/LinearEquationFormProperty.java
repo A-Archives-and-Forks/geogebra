@@ -20,12 +20,14 @@ import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropert
  */
 public class LinearEquationFormProperty extends AbstractNamedEnumeratedProperty<Integer> {
 
+	public static final String NAME_KEY = "LinearEquationForm"; // TODO add to ggbTranslate
+
 	private final GeoElementDelegate delegate;
 
 	/***/
 	public LinearEquationFormProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "LinearEquationForm");
+		super(localization, NAME_KEY);
 		delegate = new LinearEquationFormDelegate(element);
 		setNamedValues(
 				List.of(
@@ -69,5 +71,9 @@ public class LinearEquationFormProperty extends AbstractNamedEnumeratedProperty<
 	@Override
 	public boolean isEnabled() {
 		return delegate.isEnabled();
+	}
+
+	public GeoElement getGeoElement() {
+		return delegate.getElement();
 	}
 }

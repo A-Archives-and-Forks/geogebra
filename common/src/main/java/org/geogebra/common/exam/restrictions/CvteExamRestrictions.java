@@ -4,8 +4,10 @@ import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Re
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics1;
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics2;
 
+import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.geogebra.common.SuiteSubApp;
@@ -14,7 +16,9 @@ import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.cvte.CvteCommandArgumentFilter;
-import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
+//import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
+import org.geogebra.common.exam.restrictions.cvte.CvteLinearEquationFormPropertyRestriction;
+import org.geogebra.common.exam.restrictions.cvte.CvteQuadraticEquationFormPropertyRestriction;
 import org.geogebra.common.exam.restrictions.cvte.CvteSyntaxFilter;
 import org.geogebra.common.exam.restrictions.cvte.MatrixExpressionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
@@ -22,6 +26,7 @@ import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.EquationBehaviour;
+import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
 import org.geogebra.common.kernel.algos.ConstructionElement;
@@ -50,8 +55,13 @@ import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.properties.GeoElementPropertyFilter;
 import org.geogebra.common.properties.PropertiesRegistry;
 import org.geogebra.common.properties.Property;
+import org.geogebra.common.properties.ValueFilter;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
+import org.geogebra.common.properties.impl.objects.QuadraticEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
+
+import edu.umd.cs.findbugs.annotations.OverrideMustInvoke;
 
 public final class CvteExamRestrictions extends ExamRestrictions {
 
@@ -71,10 +81,10 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
-				null,
+				createPropertyRestrictions(),
 				createPropertyFilters(),
 				createConstructionElementSetups(),
-				createEquationBehaviour());
+				null);
 	}
 
 	@Override
@@ -281,43 +291,12 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new ShowObjectPropertyFilter());
 	}
 
+	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
+		return Map.of(LinearEquationFormProperty.NAME_KEY, new CvteLinearEquationFormPropertyRestriction(),
+				QuadraticEquationFormProperty.NAME_KEY, new CvteQuadraticEquationFormPropertyRestriction());
+	}
 	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
 		return Set.of(new EuclidianVisibilitySetup());
-	}
-
-	/**
-	 * The custom equation behaviour (APPS-6183) will be imposed onto the kernel.
-	 *
-	 * @See {@link ExamRestrictions#applyTo(CommandDispatcher, AlgebraProcessor, PropertiesRegistry, Object, Localization, Settings, AutocompleteProvider, ToolsProvider, GeoElementPropertiesFactory, Construction, ScheduledPreviewFromInputBar, ContextMenuFactory)}
-	 * @return the custom equation behaviour for this exam type.
-	 */
-	private static EquationBehaviour createEquationBehaviour() {
-		return new CvteEquationBehaviour();
-	}
-
-	/**
-	 * For any Conic, Line, Equation, Function or Implicit Equation manually entered
-	 * by the user, restrict the equation form to “Input Form”.
-	 */
-	private static final class LinearEquationFormPropertyRestriction extends PropertyRestriction {
-		public LinearEquationFormPropertyRestriction() {
-			super(false, value -> {
-				return true;
-			});
-		}
-	}
-
-	/**
-	 * For any Conic, Line, Equation, Function or Implicit Equation manually entered
-	 * by the user, restrict the equation form to “Input Form”.
-	 */
-	private static final class QuadraticEquationFormPropertyRestriction
-			extends PropertyRestriction {
-		public QuadraticEquationFormPropertyRestriction() {
-			super(false, value -> {
-				return true;
-			});
-		}
 	}
 
 	private static final class ShowObjectPropertyFilter implements GeoElementPropertyFilter {

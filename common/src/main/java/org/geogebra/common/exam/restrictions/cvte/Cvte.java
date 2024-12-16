@@ -41,6 +41,26 @@ final class Cvte {
         return element.getParentAlgorithm() != null;
     }
 
+    /**
+     * APPS-5926: "For Lines, Rays, Conics, Implicit Equations and Functions..."
+     * @param element a {@link GeoElementND}
+     * @return true if element matches the condition above.
+     */
+    static boolean isEquationFormRestrictedToUserForm(@Nullable GeoElementND element) {
+        if (element == null) {
+            return false;
+        }
+        // Restrict the equation form to “Input Form"
+        // for any Conic, Line, Equation, Function or Implicit Equation...
+        return (element.isGeoLine()
+                || element.isGeoRay()
+                || element.isGeoConic()
+                || element.isGeoFunction()
+                || isImplicitEquation(element))
+                // ...manually entered  by the user
+                && element.getParentAlgorithm() == null;
+    }
+
     private static boolean isImplicitEquation(@Nonnull GeoElementND geoElement) {
         if (geoElement instanceof EquationValue) {
             EquationValue equationValue = (EquationValue) geoElement;

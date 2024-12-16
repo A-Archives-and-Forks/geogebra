@@ -9,17 +9,16 @@ import org.geogebra.common.main.settings.config.equationforms.DefaultEquationBeh
  * - For any Conic, Line, Equation, Function or Implicit Equation manually
  *   entered  by the user, restrict the equation form to “Input Form”.
  * - Setting to change the form is disabled
- *   -> enforced by LineEqnModel/PlaneEqnModel/ConicEqnModel
  */
-public class CvteEquationBehaviour extends DefaultEquationBehaviour {
-
-	@Override
-	public LinearEquationRepresentable.Form getLinearAlgebraInputEquationForm() {
-		return LinearEquationRepresentable.Form.USER;
-	}
-
-	@Override
-	public QuadraticEquationRepresentable.Form getConicAlgebraInputEquationForm() {
-		return QuadraticEquationRepresentable.Form.USER;
-	}
-}
+//public class CvteEquationBehaviour extends DefaultEquationBehaviour {
+//
+//	@Override
+//	public LinearEquationRepresentable.Form getLinearAlgebraInputEquationForm() {
+//		return LinearEquationRepresentable.Form.USER;
+//	}
+//
+//	@Override
+//	public QuadraticEquationRepresentable.Form getConicAlgebraInputEquationForm() {
+//		return QuadraticEquationRepresentable.Form.USER;
+//	}
+//}

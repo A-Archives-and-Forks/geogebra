@@ -1,6 +1,5 @@
 package org.geogebra.common.properties.impl.objects.delegate;
 
-import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
@@ -17,22 +16,5 @@ public class QuadraticEquationFormDelegate extends AbstractGeoElementDelegate {
 			return isApplicableToGeoList((GeoList) element);
 		}
 		return element instanceof QuadraticEquationRepresentable;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return super.isEnabled() && !isEnforcedEquationForm(element);
-	}
-
-	private boolean isEnforcedEquationForm(GeoElement element) {
-		EquationBehaviour equationBehaviour = element.getKernel().getEquationBehaviour();
-		if (element instanceof QuadraticEquationRepresentable) {
-			boolean isUserInput = element.getParentAlgorithm() == null;
-			if (isUserInput) {
-				return equationBehaviour.getConicAlgebraInputEquationForm() != null
-						&& !equationBehaviour.allowsChangingEquationFormsByUser();
-			}
-		}
-		return false;
 	}
 }

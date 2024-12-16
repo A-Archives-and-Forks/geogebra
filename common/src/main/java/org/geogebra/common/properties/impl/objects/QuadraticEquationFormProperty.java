@@ -16,12 +16,14 @@ import org.geogebra.common.properties.impl.objects.delegate.QuadraticEquationFor
 
 public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProperty<Integer> {
 
+	public static final String NAME_KEY = "QuadraticEquationForm"; // TODO add to ggbTranslate
+
 	private final GeoElementDelegate delegate;
 
 	/***/
 	public QuadraticEquationFormProperty(Localization localization, GeoElement element)
 			throws NotApplicablePropertyException {
-		super(localization, "QuadraticEquationForm");
+		super(localization, NAME_KEY);
 		delegate = new QuadraticEquationFormDelegate(element);
 
 		QuadraticEquationRepresentable quadratic = (QuadraticEquationRepresentable) element;
@@ -85,5 +87,9 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 	@Override
 	public boolean isEnabled() {
 		return delegate.isEnabled();
+	}
+
+	public GeoElement getGeoElement() {
+		return delegate.getElement();
 	}
 }

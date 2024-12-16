@@ -37,8 +37,12 @@ public class PropertyRestriction {
         if (shouldFreeze) {
             freeze(property);
         }
-        if (property instanceof EnumeratedProperty<?> && valueFilter != null) {
-            ((EnumeratedProperty<?>) property).addValueFilter(valueFilter);
+        if (property instanceof EnumeratedProperty<?>) {
+            if (valueFilter != null) {
+                ((EnumeratedProperty<?>) property).addValueFilter(valueFilter);
+            } else if (this instanceof ValueFilter) {
+                ((EnumeratedProperty<?>) property).addValueFilter((ValueFilter) this);
+            }
         }
     }
 
@@ -52,8 +56,12 @@ public class PropertyRestriction {
         if (shouldFreeze) {
             unfreeze(property);
         }
-        if (property instanceof EnumeratedProperty<?> && valueFilter != null) {
-            ((EnumeratedProperty<?>) property).removeValueFilter(valueFilter);
+        if (property instanceof EnumeratedProperty<?>) {
+            if (valueFilter != null) {
+                ((EnumeratedProperty<?>) property).removeValueFilter(valueFilter);
+            } else if (this instanceof ValueFilter) {
+                ((EnumeratedProperty<?>) property).removeValueFilter((ValueFilter) this);
+            }
         }
     }
 
