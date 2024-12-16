@@ -283,6 +283,38 @@
 			margin-bottom: 16px;
 		}
 
+		&.labelStyle {
+			padding: 8px 0;
+			min-width: 184px;
+
+			.inputTextField {
+				padding: 0 8px;
+				width: calc(100% - 16px);
+				min-height: 58px;
+			}
+
+			.checkMarkMenuItem {
+				padding: 0 16px;
+				cursor: pointer;
+				display: flex;
+				.gwt-HTML {
+					line-height: 32px;
+				}
+
+				img {
+					opacity: 0.54;
+					position: absolute;
+					right: 8px;
+					padding: 4px;
+				}
+
+				&:hover {
+					background-color: neutral(200);
+					cursor: pointer;
+				}
+			}
+		}
+
 		&.segmentStyle {
 			max-width: 168px;
 		}

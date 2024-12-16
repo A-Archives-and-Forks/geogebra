@@ -61,7 +61,7 @@ public class SuiteTest {
 		algebraProcessor.processAlgebraCommand("h(x)=x", false);
 		app.getSelectionManager().addSelectedGeo(app.getKernel().lookupLabel("h"));
 		styleBar.updateStyleBar();
-		assertEquals(3, styleBar.getWidgetCount()); // will change with Label
+		assertEquals(4, styleBar.getWidgetCount()); // will change with color
 	}
 
 	private String getValueString(String label) {

@@ -8,6 +8,7 @@ import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
+import org.geogebra.common.properties.impl.collections.StringPropertyCollection;
 import org.geogebra.common.properties.impl.objects.BoldProperty;
 import org.geogebra.common.properties.impl.objects.BorderColorProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
@@ -19,6 +20,7 @@ import org.geogebra.common.properties.impl.objects.NotesInlineBackgroundColorPro
 import org.geogebra.common.properties.impl.objects.TextFontSizeProperty;
 import org.geogebra.common.properties.impl.objects.UnderlineProperty;
 import org.geogebra.web.full.css.MaterialDesignResources;
+import org.geogebra.web.full.css.ToolbarSvgResourcesSync;
 import org.geogebra.web.resources.SVGResource;
 
 public class PropertiesIconAdapter {
@@ -170,6 +172,8 @@ public class PropertiesIconAdapter {
 			} else if (firstProperty instanceof BorderColorProperty) {
 				return MaterialDesignResources.INSTANCE.color_border();
 			}
+		} else if (property instanceof StringPropertyCollection<?>) {
+			return ToolbarSvgResourcesSync.INSTANCE.mode_showhidelabel_32();
 		}
 
 		return MaterialDesignResources.INSTANCE.stylebar_empty();

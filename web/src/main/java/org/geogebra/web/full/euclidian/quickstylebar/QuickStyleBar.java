@@ -161,6 +161,13 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		addPropertyPopupButton(activeGeoList, null, true,
 				UndoActionType.STYLE_OR_TABLE_CONTENT, verticalAlignmentProperty);
 
+		if (!getApp().isWhiteboardActive()) {
+			PropertiesArray labelProperties = geoElementPropertiesFactory
+					.createLabelProperties(getApp().getLocalization(), activeGeoList);
+			addPropertyPopupButton(activeGeoList, "labelStyle", true,
+					labelProperties.getProperties());
+		}
+
 		addDivider();
 
 		addDeleteButton();
@@ -203,7 +210,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		addUndoActionObserver(properties, geos, undoFiler);
 		IconButtonWithProperty colorButton = new IconButtonWithProperty(getApp(), "colorStyle",
 				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(),
-				geos.get(0), true, properties);
+				geos, true, properties);
 
 		setPopupHandlerWithUndoAction(colorButton);
 		styleAndRegisterButton(colorButton);
@@ -253,7 +260,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		Property firstProperty = properties[0].get();
 		addUndoActionObserver(properties, geos, undoType);
 		IconButton button = new IconButtonWithProperty(getApp(), className,
-				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(), geos.get(0),
+				PropertiesIconAdapter.getIcon(firstProperty), firstProperty.getName(), geos,
 				closePopupOnAction, properties);
 		styleAndRegisterButton(button);
 	}

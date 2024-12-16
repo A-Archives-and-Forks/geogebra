@@ -131,7 +131,6 @@ public class EuclidianStyleBarW extends StyleBarW2
 	private final Localization loc;
 	private @CheckForNull ContextMenuPopup btnContextMenu = null;
 	private ToggleButton btnCrop;
-	private LabelSettingsPopup btnLabel;
 	private PopupMenuButtonW btnSegmentStartStyle;
 	private PopupMenuButtonW btnSegmentEndStyle;
 
@@ -479,10 +478,6 @@ public class EuclidianStyleBarW extends StyleBarW2
 			}
 		}
 
-		if (!app.isWhiteboardActive() && isDynamicStylebar()) {
-			add(getLabelPopup());
-		}
-
 		if (app.isWhiteboardActive() && isImageGeoSelected()
 				&& ev.getMode() != EuclidianConstants.MODE_SELECT) {
 			addCropButton();
@@ -691,14 +686,6 @@ public class EuclidianStyleBarW extends StyleBarW2
 		createFixObjectBtn();
 		createTextSizeBtn();
 		createChangeViewButtons();
-	}
-
-	private LabelSettingsPopup getLabelPopup() {
-		if (btnLabel == null) {
-			btnLabel = new LabelSettingsPopup(app);
-		}
-
-		return btnLabel;
 	}
 
 	public class ProjectionPopup extends PopupMenuButtonW {
@@ -1869,9 +1856,6 @@ public class EuclidianStyleBarW extends StyleBarW2
 		this.btnTextSize.getMyTable().updateText(ImageOrText
 				.convert(app.getLocalization().getFontSizeStrings()));
 
-		if (btnLabel != null) {
-			btnLabel.setLabels();
-		}
 		btnLineStyle.setLabels();
 		btnColor.setLabels();
 		if (btnTextBgColor != null) {

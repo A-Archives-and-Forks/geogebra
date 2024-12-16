@@ -20,6 +20,7 @@ import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.aliases.ColorProperty;
 import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
+import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.collections.IconsEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.RangePropertyCollection;
@@ -38,6 +39,7 @@ import org.geogebra.common.properties.impl.objects.HorizontalAlignmentProperty;
 import org.geogebra.common.properties.impl.objects.ImageOpacityProperty;
 import org.geogebra.common.properties.impl.objects.IsFixedObjectProperty;
 import org.geogebra.common.properties.impl.objects.ItalicProperty;
+import org.geogebra.common.properties.impl.objects.LabelStyleProperty;
 import org.geogebra.common.properties.impl.objects.LineStyleProperty;
 import org.geogebra.common.properties.impl.objects.MaxProperty;
 import org.geogebra.common.properties.impl.objects.MinProperty;
@@ -274,6 +276,22 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new CellBorderProperty(localization, element),
 				IconsEnumeratedPropertyCollection::new);
+	}
+
+	/**
+	 * Create label property array
+	 * @param localization localization
+	 * @param elements elements
+	 * @return label property
+	 */
+	public PropertiesArray createLabelProperties(Localization localization,
+			List<GeoElement> elements) {
+		return createPropertiesArray(localization, elements,  Stream.<Property>of(
+				createPropertyCollection(elements,
+						element -> new NameProperty(localization, element),
+						StringPropertyCollection::new),
+				createLabelStyleProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -529,6 +547,38 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new SegmentEndProperty(localization, element),
 				IconsEnumeratedPropertyCollection::new);
+	}
+
+	/**
+	 * Returns an ValuedPropertyCollection controlling the label style or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public static FlagListPropertyCollection<LabelStyleProperty> createLabelStyleProperty(
+			Localization localization, List<GeoElement> elements) {
+		List<LabelStyleProperty> labelStyleProperties = new ArrayList<>();
+		for (GeoElement element : elements) {
+			labelStyleProperties.add(new LabelStyleProperty(localization, element.getKernel(),
+					element));
+		}
+		return new FlagListPropertyCollection<>(labelStyleProperties.toArray(
+				new LabelStyleProperty[0]));
+	}
+
+	/**
+	 * Returns an StringPropertyCollection controlling the label of geo or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public StringPropertyCollection<NameProperty> createNameProperty(
+			Localization localization, List<GeoElement> elements) {
+		return createPropertyCollection(elements,
+				element -> new NameProperty(localization, element),
+				StringPropertyCollection::new);
 	}
 
 	/**
