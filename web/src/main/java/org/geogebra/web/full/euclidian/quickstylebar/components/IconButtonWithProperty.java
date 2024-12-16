@@ -9,7 +9,6 @@ import org.geogebra.common.properties.IconsEnumeratedProperty;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.PropertySupplier;
 import org.geogebra.common.properties.RangeProperty;
-import org.geogebra.common.properties.ValuedProperty;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
 import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
@@ -58,7 +57,7 @@ public class IconButtonWithProperty extends IconButton {
 	 * @param properties - array of applicable properties
 	 */
 	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel,
-			GeoElement geo, boolean closePopupOnAction, PropertySupplier... properties) {
+			List<GeoElement> geos, boolean closePopupOnAction, PropertySupplier... properties) {
 		super(appW, new ImageIconSpec(icon), ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		this.geos = geos;
@@ -153,7 +152,7 @@ public class IconButtonWithProperty extends IconButton {
 			RangeProperty<?> firstProperty = rangeProperty.getFirstProperty();
 			if (firstProperty instanceof NotesThicknessProperty) {
 				lineThicknessSlider = widgetAdapter.getSliderWidget(rangeProperty,
-						propertySupplier, geo);
+						propertySupplier, geos.get(0));
 				parent.add(lineThicknessSlider);
 			} else if (firstProperty instanceof CellBorderThicknessProperty
 					|| firstProperty instanceof BorderThicknessProperty) {
@@ -162,7 +161,7 @@ public class IconButtonWithProperty extends IconButton {
 				parent.add(borderThickness);
 			} else {
 				SliderWithProperty sliderWithProperty = widgetAdapter.getSliderWidget(
-						rangeProperty, propertySupplier, geo);
+						rangeProperty, propertySupplier, geos.get(0));
 				parent.add(sliderWithProperty);
 			}
 		}
@@ -175,11 +174,7 @@ public class IconButtonWithProperty extends IconButton {
 
 		if (property instanceof FlagListPropertyCollection<?>) {
 			FlagListPropertyCollection<?> valuedProperty = (FlagListPropertyCollection<?>) property;
-			ValuedProperty<?> firstProperty = valuedProperty.getFirstProperty();
 			LabelSettingsPanel labelStylePanel = widgetAdapter.getLabelPanel(valuedProperty);
-			if (firstProperty instanceof LabelStyleProperty && labelPanel != null) {
-				//TODO labelPanel.setLabelStyleProperty(valuedProperty);
-			}
 			parent.add(labelStylePanel);
 		}
 	}

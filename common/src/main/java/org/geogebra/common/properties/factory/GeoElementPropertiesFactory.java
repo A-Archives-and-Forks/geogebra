@@ -20,7 +20,6 @@ import org.geogebra.common.properties.aliases.BooleanProperty;
 import org.geogebra.common.properties.aliases.ColorProperty;
 import org.geogebra.common.properties.impl.collections.BooleanPropertyCollection;
 import org.geogebra.common.properties.impl.collections.ColorPropertyCollection;
-import org.geogebra.common.properties.impl.collections.EnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.FlagListPropertyCollection;
 import org.geogebra.common.properties.impl.collections.IconsEnumeratedPropertyCollection;
 import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
@@ -285,12 +284,14 @@ public final class GeoElementPropertiesFactory {
 	 * @param elements elements
 	 * @return label property
 	 */
-	public static PropertiesArray createLabelProperties(Localization localization,
+	public PropertiesArray createLabelProperties(Localization localization,
 			List<GeoElement> elements) {
-		List<Property> properties = new ArrayList<>();
-		addPropertyIfNotNull(properties, createNameProperty(localization, elements));
-		addPropertyIfNotNull(properties, createLabelStyleProperty(localization, elements));
-		return createPropertiesArray(localization, properties, elements);
+		return createPropertiesArray(localization, elements,  Stream.<Property>of(
+				createPropertyCollection(elements,
+						element -> new NameProperty(localization, element),
+						StringPropertyCollection::new),
+				createLabelStyleProperty(localization, elements)
+		).filter(Objects::nonNull).collect(Collectors.toList()));
 	}
 
 	/**
@@ -546,15 +547,6 @@ public final class GeoElementPropertiesFactory {
 		return createPropertyCollection(elements,
 				element -> new SegmentEndProperty(localization, element),
 				IconsEnumeratedPropertyCollection::new);
-		try {
-			List<NameProperty> nameProperties = new ArrayList<>();
-			for (GeoElement element : elements) {
-				nameProperties.add(new NameProperty(localization, element));
-			}
-			return new StringPropertyCollection<>(nameProperties.toArray(new NameProperty[0]));
-		} catch (NotApplicablePropertyException ignored) {
-			return null;
-		}
 	}
 
 	/**
@@ -575,28 +567,18 @@ public final class GeoElementPropertiesFactory {
 				new LabelStyleProperty[0]));
 	}
 
-	private static BooleanPropertyCollection<ShowObjectProperty> createShowObjectProperty(
+	/**
+	 * Returns an StringPropertyCollection controlling the label of geo or null
+	 * if not applicable.
+	 * @param localization localization
+	 * @param elements elements
+	 * @return property or null
+	 */
+	public StringPropertyCollection<NameProperty> createNameProperty(
 			Localization localization, List<GeoElement> elements) {
-		List<ShowObjectProperty> showObjectProperties = new ArrayList<>();
-		for (GeoElement element : elements) {
-			showObjectProperties.add(new ShowObjectProperty(localization, element));
-		}
-		return new BooleanPropertyCollection<>(
-				showObjectProperties.toArray(new ShowObjectProperty[0]));
-	}
-
-	private static EnumeratedPropertyCollection<CaptionStyleProperty, Integer>
-	createCaptionStyleProperty(Localization localization, List<GeoElement> elements) {
-		try {
-			List<CaptionStyleProperty> captionStyleProperties = new ArrayList<>();
-			for (GeoElement element : elements) {
-				captionStyleProperties.add(new CaptionStyleProperty(localization, element));
-			}
-			return new NamedEnumeratedPropertyCollection<>(
-					captionStyleProperties.toArray(new CaptionStyleProperty[0]));
-		} catch (NotApplicablePropertyException ignored) {
-			return null;
-		}
+		return createPropertyCollection(elements,
+				element -> new NameProperty(localization, element),
+				StringPropertyCollection::new);
 	}
 
 	/**

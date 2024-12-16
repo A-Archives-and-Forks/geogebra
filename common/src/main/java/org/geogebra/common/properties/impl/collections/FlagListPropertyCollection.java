@@ -14,7 +14,7 @@ public class FlagListPropertyCollection<T extends FlagListProperty>
 	 * @param properties properties to handle
 	 */
 	public FlagListPropertyCollection(T[] properties) {
-		super(properties);
+		super(List.of(properties));
 	}
 
 	/**
