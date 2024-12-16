@@ -2,10 +2,10 @@ package org.geogebra.common.kernel.arithmetic.simplifiers;
 
 import org.junit.Test;
 
-public class SimplifyMultiplicationTest extends BaseSimplifyTest {
+public class ExpandNodeTest extends BaseSimplifyTest {
 	@Override
 	protected SimplifyNode getSimplifier() {
-		return new SimplifyMultiplication(utils);
+		return new ExpandNode(utils);
 	}
 
 	@Test

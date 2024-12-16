@@ -13,12 +13,12 @@ import org.geogebra.common.kernel.arithmetic.NumberValue;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
 
-public class SimplifyMultiplication implements SimplifyNode {
+public class ExpandNode implements SimplifyNode {
 
 
 	private final SimplifyUtils utils;
 
-	public SimplifyMultiplication(SimplifyUtils utils) {
+	public ExpandNode(SimplifyUtils utils) {
 		this.utils = utils;
 	}
 

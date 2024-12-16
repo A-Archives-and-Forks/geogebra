@@ -15,6 +15,9 @@ public final class RationalizableFraction {
 	private final SimplifyUtils utils;
 	private ExpressionNode root;
 
+	private static final OperationCountChecker sqrtCountChecker =
+			new OperationCountChecker(Operation.SQRT);
+
 	private RationalizableFraction(ExpressionNode root) {
 		Kernel kernel = root.getKernel();
 		this.root = root.deepCopy(kernel);
@@ -95,8 +98,6 @@ public final class RationalizableFraction {
 		return isNodeSupported(numerator) && isNodeSupported(denominator);
 	}
 
-	private static OperationCountChecker sqrtCountChecker =
-			new OperationCountChecker(Operation.SQRT);
 
 	private ExpressionNode stripFromLeftMultiplier(ExpressionNode node) {
 		return utils.getLeftMultiplier(node) == 1 ? node : node.getRightTree();

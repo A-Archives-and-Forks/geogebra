@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.simplifiers.CancelGCDInFraction;
+import org.geogebra.common.kernel.arithmetic.simplifiers.ExpandNode;
 import org.geogebra.common.kernel.arithmetic.simplifiers.FactorOut;
 import org.geogebra.common.kernel.arithmetic.simplifiers.PositiveDenominator;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceToIntegers;
-import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyMultiplication;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyNode;
 import org.geogebra.common.kernel.arithmetic.simplifiers.SimplifyToRadical;
 import org.geogebra.common.util.debug.Log;
@@ -30,7 +30,7 @@ public class ExpressionSimplifiers {
 		postItems = List.of(
 						new SimplifyToRadical(utils),
 						new ReduceRoot(utils),
-						new SimplifyMultiplication(utils),
+						new ExpandNode(utils),
 						new PlusTagOrder(utils),
 						new FactorOut(utils),
 						new CancelGCDInFraction(utils),
@@ -47,7 +47,8 @@ public class ExpressionSimplifiers {
 		return simplifyWith(postItems, resolution.wrap());
 	}
 
-	private ExpressionNode simplifyWith(List<SimplifyNode> simplifiers, ExpressionNode node) {
+	private ExpressionNode simplifyWith(List<SimplifyNode> simplifiers, ExpressionNode inputNode) {
+		ExpressionNode node = inputNode;
 		for (SimplifyNode simplifier : simplifiers) {
 			if (simplifier.isAccepted(node)) {
 				String before = node.toValueString(StringTemplate.defaultTemplate);

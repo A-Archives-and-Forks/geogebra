@@ -193,43 +193,6 @@ public final class RationalizeFractionAlgo {
 				node.getRight());
 	}
 
-	/**
-	 * if plusMinusNode is in form like "-1 + sqrt(2)", returns "sqrt(2) - 1"
-	 * if not, returs the parameter back.
-	 *
-	 * @param plusMinusNode to check
-	 * @return natural ordered + or - expression.
-	 */
-	private ExpressionNode getOperandOrder(ExpressionNode plusMinusNode) {
-		if (plusMinusNode == null) {
-			return null;
-		}
-
-		ExpressionNode leftTree = plusMinusNode.getLeftTree();
-		ExpressionNode rightTree = plusMinusNode.getRightTree();
-		double evalLeft = leftTree.evaluateDouble();
-		double evalRight = rightTree.evaluateDouble();
-		if (evalLeft < 0 && evalRight < 0 && !plusMinusNode.isOperation(Operation.MULTIPLY)) {
-			return utils.newInverseNode(leftTree, plusMinusNode.getOperation(), rightTree);
-		}
-		ExpressionNode operandLeft = leftTree.getLeftTree();
-		ExpressionNode operandRight = leftTree.getRightTree();
-		if (operandLeft.isLeaf() && operandLeft.evaluateDouble() < 0 && operandRight != null) {
-			ExpressionNode result =
-					new ExpressionNode(kernel, operandRight.getLeft().evaluateDouble() == -1
-							? operandRight.getRightTree()
-							: operandRight,
-							Operation.inverse(leftTree.getOperation()),
-							operandLeft);
-			if (operandRight.evaluateDouble() > 0) {
-				return result;
-			} else {
-				return result.wrap().multiply(-1);
-			}
-		}
-		return plusMinusNode;
-	}
-
 	private ExpressionNode simplifiedMultiply(ExpressionValue rationalized,
 			ExpressionNode node1) {
 		return rationalized.equals(node1.getLeft())

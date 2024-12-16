@@ -27,7 +27,6 @@ public class SimplifyUtils {
 	}
 
 	public ExpressionNode div(ExpressionValue numerator, double number) {
-		ExpressionNode expanded = expand(numerator.wrap());
 		return number > 0
 				? newNode(numerator, Operation.DIVIDE, newDouble(number))
 				: newNode(negate(numerator.wrap()), Operation.DIVIDE, newDouble(-number));
@@ -136,7 +135,7 @@ public class SimplifyUtils {
 
 		ExpressionValue left = node.getLeft();
 		if (node.isOperation(Operation.MULTIPLY) && left.evaluateDouble() == -1) {
-			node = newLeaf(node.getRight());
+			return newLeaf(node.getRight());
 		}
 		return node;
 	}
@@ -253,10 +252,6 @@ public class SimplifyUtils {
 		return result;
 	}
 
-	private ExpressionValue newValue(ExpressionValue ev) {
-		double v = ev.evaluateDouble();
-		return isIntegerValue(v) ? newDouble(v) : ev;
-	}
 	public static boolean isSquareRootValidInteger(ExpressionValue ev) {
 		if (!ev.isOperation(Operation.SQRT)) {
 			return false;

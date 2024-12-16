@@ -95,23 +95,20 @@ public class FactorOut implements SimplifyNode {
 			double v = node.getRightTree().evaluateDouble();
 			return v == -1
 			? utils.newNode(node.getLeftTree(), Operation.MINUS, utils.newDouble(1).wrap())
-			: factorOutAddition(node, node.getLeftTree(), Operation.PLUS, node.getRightTree());
+			: factorOutAddition(node.getLeftTree(), node.getRightTree());
 
 		}
 		return factorOutSubtraction(node);
 	}
 
-	private ExpressionNode factorOutAddition(ExpressionNode node, ExpressionNode leftTree,
-			Operation operation, ExpressionNode rightTree) {
+	private ExpressionNode factorOutAddition(ExpressionNode leftTree,
+			ExpressionNode rightTree) {
 		double leftValue = leftTree.evaluateDouble();
 		double rightValue = rightTree.evaluateDouble();
-//		if (!(isIntegerValue(leftTree) && isIntegerValue(rightTree))) {
-//			return node;
-//		}
 		if (leftTree.isLeaf()) {
-			return factorOutGCD((int) leftValue, rightTree, operation);
+			return factorOutGCD((int) leftValue, rightTree, Operation.PLUS);
 		}
-		return factorOutGCD(leftTree, (int) rightValue, operation);
+		return factorOutGCD(leftTree, (int) rightValue, Operation.PLUS);
 	}
 
 	private ExpressionNode factorOutSubtraction(ExpressionNode node) {
@@ -162,7 +159,6 @@ public class FactorOut implements SimplifyNode {
 			return factorOutGCDWithSub(leftTree, constNumber, Operation.PLUS);
 
 		}
-		double rightValue = rightTree.evaluateDouble();
 		return utils.newNode(
 				leftTree.getRightTree(), Operation.PLUS, rightTree);
 	}
