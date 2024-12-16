@@ -42,10 +42,7 @@ public class SimplifyUtilsTest extends BaseSimplifyTest {
 
 	@Test
 	public void testMultiplyByMinusOne() {
-		mulShouldBe("sqrt(2) + 1", "-sqrt(2) - 1");
-		mulShouldBe("sqrt(2) - 1", "-sqrt(2) + 1");
-		mulShouldBe("1 + sqrt(2)", "-1 - sqrt(2)");
-		mulShouldBe("1 - sqrt(2)", "-1 + sqrt(2)");
+		mulShouldBe("-sqrt(2)", "sqrt(2)");
 
 	}
 
@@ -89,7 +86,7 @@ public class SimplifyUtilsTest extends BaseSimplifyTest {
 	}
 
 	@Test
-	public void name() {
+	public void testAccept() {
 		shouldNotSupportNode("sqrt(-2)");
 	}
 

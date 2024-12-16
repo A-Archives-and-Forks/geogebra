@@ -43,4 +43,12 @@ public class CancelGCDInFractionTest extends BaseSimplifyTest{
 		shouldSimplify("(3 (1 - sqrt(6))) / -5", "(3 (1 - sqrt(6))) / -5");
 		shouldSimplify("(-(sqrt(2) - 3)) / 7", "(-(sqrt(2) - 3)) / 7");
 	}
+
+	@Test
+	public void testSimplifyConstantFractions() {
+		shouldSimplify("12 / 8", " 3 / 2");
+		shouldSimplify("-1 / 3", " -1 / 3");
+		shouldSimplify("1 / -3", "1 / -3");
+		shouldSimplify("12 / 3", "4");
+	}
 }

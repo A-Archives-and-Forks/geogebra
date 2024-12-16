@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
+import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isIntegerValue;
 import static org.geogebra.common.util.DoubleUtil.isInteger;
 
 import org.geogebra.common.kernel.Kernel;
@@ -121,12 +122,31 @@ public class CancelGCDInFraction implements SimplifyNode {
 	private ExpressionNode getCanceledFraction(ExpressionNode node, ExpressionNode node1,
 			ExpressionNode node2) {
 		ExpressionNode canceledFraction = null;
+		if (isIntegerValue(node1) && isIntegerValue(node2)) {
+			return simplifyConstantFraction(node, node1, node2);
+		}
 		if (isCancelable(node1, node2)) {
 			canceledFraction = doCancel(node1, node2);
 		} else if (isCancelable(node2, node1)) {
 			canceledFraction = doCancel(node2, node1);
 		}
 		return canceledFraction != null ? canceledFraction : node;
+	}
+
+	private ExpressionNode simplifyConstantFraction(ExpressionNode node, ExpressionNode node1,
+			ExpressionNode node2) {
+		int n = (int) node1.evaluateDouble();
+		int m = (int) node2.evaluateDouble();
+		long gcd = Kernel.gcd(n, m);
+		long newMul = n / gcd;
+		long newDenom = m / gcd;
+		if (gcd == m) {
+			return utils.newDouble(newMul).wrap();
+		}
+		if (gcd != 1 && gcd != -1 && gcd != m) {
+			return utils.newNode(utils.newDouble(newMul), Operation.DIVIDE, utils.newDouble(newDenom));
+		}
+		return node;
 	}
 
 	private boolean isCancelable(ExpressionNode node1, ExpressionNode node2) {

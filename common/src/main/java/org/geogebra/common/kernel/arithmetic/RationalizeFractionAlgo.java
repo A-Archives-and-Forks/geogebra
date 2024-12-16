@@ -169,10 +169,6 @@ public final class RationalizeFractionAlgo {
 					Operation.DIVIDE, utils.newDouble(newDenominatorValue));
 
 		}
-		Operation operation = result.getOperation();
-		if (operation == Operation.PLUS || operation == Operation.MINUS) {
-			return getOperandOrder(result);
-		}
 		return result;
 	}
 

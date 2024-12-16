@@ -13,5 +13,6 @@ public class PlusTagOrderTest extends BaseSimplifyTest {
 	@Test
 	public void testPlusOrder() {
 		shouldSimplify("-10 + sqrt(2)", "sqrt(2) - 10");
+		shouldSimplify("-1 + sqrt(2)", "sqrt(2) - 1");
 	}
 }

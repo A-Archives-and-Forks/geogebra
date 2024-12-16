@@ -52,21 +52,15 @@ public final class RationalizableFraction {
 
 		double denominatorValue = root.getRightTree().evaluateDouble();
 
-		ExpressionValue resolution = null;
-		if (isIntegerValue(rootValue)) {
-			resolution = utils.newDouble(rootValue);
-		} else if (isIntegerValue(denominatorValue)) {
-			resolution = fractionWithIntDenominator(denominatorValue);
-		} else {
-			resolution = rationalize();
-		}
+		ExpressionValue resolution = isIntegerValue(denominatorValue)
+				? simplifyNormalizedRadicalFraction(denominatorValue)
+				: rationalizeFraction();
 
 		return simplifiers.run(resolution);
 	}
 
 	/**
 	 * Decides if geo is a rationalizable fraction and supported by this algo.
-	 *
 	 * The most complicated fraction that supported is:
 	 *     (a + sqrt(b)) / (c + sqrt(d))
 	 *
@@ -114,7 +108,7 @@ public final class RationalizableFraction {
 		return sqrtCountChecker.getCount();
 	}
 
-	private ExpressionNode rationalize() {
+	private ExpressionNode rationalizeFraction() {
 		logRootExpression();
 		ExpressionNode copy = utils.deepCopy(root);
 		RationalizeFractionAlgo algo =
@@ -128,7 +122,7 @@ public final class RationalizableFraction {
 				+ "(=" + root.evaluateDouble() + ")");
 	}
 
-	private ExpressionValue fractionWithIntDenominator(double denominatorValue) {
+	private ExpressionValue simplifyNormalizedRadicalFraction(double denominatorValue) {
 		if (denominatorValue == 0) {
 			return utils.newDouble(Double.NEGATIVE_INFINITY);
 		}
@@ -138,30 +132,6 @@ public final class RationalizableFraction {
 		if (denominatorValue == -1) {
 			return (new ExpressionNode(root.getLeftTree())).multiplyR(-1);
 		}
-		return root;//createFractionWithIntegerDenominator(denominatorValue);
-	}
-
-	private ExpressionNode createFractionWithIntegerDenominator(double denominatorValue) {
-		if (denominatorValue < 0) {
-			ExpressionNode numerator = RationalizeFractionAlgo.processUnderSqrts(
-					utils.deepCopy(root.getLeftTree()), root.getKernel());
-			numerator.traverse(new Traversing() {
-				ExpressionNode parent = null;
-				@Override
-				public ExpressionValue process(ExpressionValue ev) {
-					if (ev instanceof MySpecialDouble && (parent == null
-							|| !parent.isOperation(Operation.SQRT))) {
-						return utils.newDouble(-ev.evaluateDouble());
-					}
-					parent = ev.wrap();
-					return ev;
-				}
-			});
-			numerator.setOperation(SimplifyUtils.flip(numerator.getOperation()));
-			return utils.newNode(numerator,	Operation.DIVIDE,
-						utils.newDouble(-denominatorValue));
-		}
-		return utils.newNode(root.getLeftTree(), Operation.DIVIDE,
-				utils.newDouble(denominatorValue));
+		return root;
 	}
 }

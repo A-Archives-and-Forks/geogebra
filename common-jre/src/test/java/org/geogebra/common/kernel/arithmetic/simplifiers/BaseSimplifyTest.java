@@ -9,6 +9,7 @@ import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
+import org.geogebra.common.kernel.arithmetic.ExpressionValue;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 		shouldSerialize(expected.getDefinition(), applied);
 	}
 
-	protected static void shouldSerialize(ExpressionNode expected, ExpressionNode actual) {
+	protected static void shouldSerialize(ExpressionValue expected, ExpressionValue actual) {
 		assertEquals(expected.toString(StringTemplate.defaultTemplate)
 						.replaceAll("\\s+",""),
 				actual.toString(StringTemplate.defaultTemplate)

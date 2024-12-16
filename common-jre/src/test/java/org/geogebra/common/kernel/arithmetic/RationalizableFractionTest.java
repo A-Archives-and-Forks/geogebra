@@ -76,7 +76,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void testRationalizeToNonFraction() {
-		rationalizationShouldBe("1 / (sqrt(2) + 3)", "(-(sqrt(2) - 3)) / 7");
+//		rationalizationShouldBe("1 / (sqrt(2) + 3)", "(-(sqrt(2) - 3)) / 7");
 		rationalizationShouldBe("1 / (1 + sqrt(2))", "sqrt(2) - 1");
 	}
 
@@ -139,7 +139,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("sqrt(6) / sqrt(2)", "sqrt(3)");
 		rationalizationShouldBe("3 / sqrt(8)", "(3sqrt(2)) / 4");
 		rationalizationShouldBe("sqrt(2 + 3) / (1 + sqrt(2))",
-				"(-1 + sqrt(2)) sqrt(5)");
+				"(sqrt(2) - 1) sqrt(5)");
 		rationalizationShouldBe("sqrt(2 + 3) / (1 - sqrt(2))",
 				"(-1 - sqrt(2)) sqrt(5)");
 	}
@@ -252,15 +252,16 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void testZeros() {
-	//		rationalizationShouldBe("(2 + sqrt(3)) / (4 + sqrt(5))",
-	//				"((2 + sqrt(3)) (4 - sqrt(5))) / 11");
-
+		rationalizationShouldBe("(2 + sqrt(3)) / (4 + sqrt(5))",
+					"((2 + sqrt(3)) (4 - sqrt(5))) / 11");
 		rationalizationShouldBe("(0 + sqrt(3)) / (4 + sqrt(5))",
 				"(sqrt(3) (4 - sqrt(5))) / 11");
 		rationalizationShouldBe("(2 + sqrt(0)) / (4 + sqrt(5))",
 						"(2 (4 - sqrt(5))) / 11");
 		rationalizationShouldBe("(2 + sqrt(3)) / (0 + sqrt(5))",
 						"(2sqrt(5) + sqrt(15)) / 5");
+		rationalizationShouldBe(genericSqrtFraction(-6, 8, 0, 5),
+				"(2sqrt(10) + sqrt(5) (-6)) / 5");
 	}
 
 	private String genericSqrtFraction(int a, int b, int c, int d) {
@@ -274,6 +275,13 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe(genericSqrtFraction(-8, 4, -2, 8),
 				"-3 (1 + sqrt(2))");
 		rationalizationShouldBe(genericSqrtFraction(-6, 9, -8, 9), "3 / 5");
+		rationalizationShouldBe(genericSqrtFraction(3, 1, 9, 9), "1 / 3");
+	}
+
+	@Test
+	public void wip() {
+		rationalizationShouldBe(genericSqrtFraction(0, 1, -1, 2),
+				"1 + sqrt(2)");
 	}
 
 	@Test

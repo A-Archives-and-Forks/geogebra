@@ -3499,7 +3499,7 @@ public class ExpressionNode extends ValidExpression
 		if (!PreviewFeature.isAvailable(PreviewFeature.RATIONALIZE_FRACTIONS)) {
 			return false;
 		}
-
+		Log.debug("RATIONALIZE_FRACTIONS is enabled.");
 		ExpressionValue resolvedFraction = RationalizableFraction.getResolution(this);
 		if (resolvedFraction != null) {
 			resolve = resolvedFraction;

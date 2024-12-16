@@ -242,9 +242,14 @@ public class SimplifyUtils {
 	}
 
 	public ExpressionValue mulByMinusOne(ExpressionNode node) {
-		return isIntegerValue(node.getLeft())
+		ExpressionValue result = isIntegerValue(node.getLeft())
 				? mulByMinusOneL(node)
 				: mulByMinusOneR(node);
+		ExpressionNode rightTree = result.wrap().getRightTree();
+		if (rightTree != null && rightTree.getLeft() instanceof MinusOne) {
+			return rightTree.getRight();
+		}
+		return result;
 	}
 
 	private ExpressionValue newValue(ExpressionValue ev) {
