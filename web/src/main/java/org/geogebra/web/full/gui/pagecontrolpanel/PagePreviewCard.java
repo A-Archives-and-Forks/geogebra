@@ -262,6 +262,9 @@ public class PagePreviewCard extends FlowPanel
 		}
 	}
 
+	/**
+	 * @param title - card title
+	 */
 	public void setCardTitle(String title) {
 		Dom.toggleClass(this, "noTitle", title.isEmpty());
 		infoPanel.setCardTitle(title);
