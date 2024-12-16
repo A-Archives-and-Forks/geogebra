@@ -231,7 +231,7 @@ public class CellDragPasteHandlerTest extends BaseUnitTest {
 
 	@Test
 	@Issue("APPS-5987")
-	public void testDragPasteSHouldResultInNonEmptySpreadsheetCells2() {
+	public void testDragPasteShouldResultInNonEmptySpreadsheetCells2() {
 		getApp().setCasConfig();
 		getKernel().setSymbolicMode(SymbolicMode.SYMBOLIC_AV);
 		DefaultSpreadsheetCellProcessor processor

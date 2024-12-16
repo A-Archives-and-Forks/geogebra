@@ -421,22 +421,18 @@ public class RelativeCopy {
 		// B2 is done last
 		TreeSet<GeoElement> tree = new TreeSet<>();
 		for (int x = x1; x <= x2; ++x) {
-			int ix = x - x1;
-			GeoElement cell = getValue(app, x1 + ix, sy);
+			GeoElement cell = getValue(app, x, sy);
 			if (cell != null) {
 				tree.add(cell);
 			}
 		}
 
 		for (int y = dy1; y <= dy2; ++y) {
-			int iy = y - dy1;
-			Iterator<GeoElement> iterator = tree.iterator();
-			while (iterator.hasNext()) {
-				GeoElement geo = iterator.next();
+			for (GeoElement geo : tree) {
 				if (geo != null) {
 					SpreadsheetCoords p = geo.getSpreadsheetCoords();
 
-					GeoElement vOld = getValue(app, p.column, dy1 + iy);
+					GeoElement vOld = getValue(app, p.column, y);
 					if (vOld != null && vOld.isProtected(EventType.UPDATE)) {
 						continue;
 					}
@@ -473,15 +469,12 @@ public class RelativeCopy {
 		// B2 is done last
 		TreeSet<GeoElement> tree = new TreeSet<>();
 		for (int y = y1; y <= y2; ++y) {
-			int iy = y - y1;
-			GeoElement cell = getValue(app, sx, y1 + iy);
+			GeoElement cell = getValue(app, sx, y);
 			if (cell != null) {
 				tree.add(cell);
 			}
 		}
 		for (int x = dx1; x <= dx2; ++x) {
-			int ix = x - dx1;
-
 			Iterator<GeoElement> iterator = tree.iterator();
 			while (iterator.hasNext()) {
 
@@ -490,13 +483,13 @@ public class RelativeCopy {
 				if (geo != null) {
 					SpreadsheetCoords p = geo.getSpreadsheetCoords();
 
-					GeoElement vOld = getValue(app, dx1 + ix, p.row);
+					GeoElement vOld = getValue(app, x, p.row);
 					if (vOld != null && vOld.isProtected(EventType.UPDATE)) {
 						continue;
 					}
 
 					doCopyNoStoringUndoInfo0(geo,
-							getValue(app, dx1 + ix, p.row), x - sx, 0);
+							getValue(app, x, p.row), x - sx, 0);
 				}
 			}
 		}
