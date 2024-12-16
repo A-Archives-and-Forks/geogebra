@@ -13,7 +13,7 @@ the Free Software Foundation.
 /*
  * DrawConic.java
  *
- * Created on 16. Oktober 2001, 15:13
+ * Created on 16. October 2001, 15:13
  */
 
 package org.geogebra.common.euclidian.draw;
@@ -112,7 +112,7 @@ public class DrawConic extends SetDrawable implements Previewable {
 	/** transform for ellipse, hyperbola, parabola */
 	protected GAffineTransform transform = AwtFactory.getPrototype()
 			.newAffineTransform();
-	/** shape to be filled (eg. ellipse, space between paralel lines) */
+	/** shape to be filled (eg. ellipse, space between parallel lines) */
 	protected GShape fillShape;
 
 	// CONIC_ELLIPSE
@@ -921,7 +921,7 @@ public class DrawConic extends SetDrawable implements Previewable {
 	}
 
 	/**
-	 * close hyperbola branchs
+	 * close hyperbola branches
 	 */
 	protected void updateHyperbolaClosePaths(double x, double y) {
 
@@ -1377,15 +1377,15 @@ public class DrawConic extends SetDrawable implements Previewable {
 			double realY = view.toRealWorldCoordY(hitY);
 			double x3 = view.toRealWorldCoordX(3) - view.toRealWorldCoordX(0);
 			double y3 = view.toRealWorldCoordY(3) - view.toRealWorldCoordY(0);
-			int insideNeigbors = (conic.isInRegion(realX, realY) ? 1 : 0)
+			int insideNeighbors = (conic.isInRegion(realX, realY) ? 1 : 0)
 					+ (conic.isInRegion(realX - x3, realY - y3) ? 1 : 0)
 					+ (conic.isInRegion(realX + x3, realY - y3) ? 1 : 0)
 					+ (conic.isInRegion(realX - x3, realY + y3) ? 1 : 0)
 					+ (conic.isInRegion(realX + x3, realY + y3) ? 1 : 0);
 			if (conic.isInverseFill() && !conic.isSpotlight()) {
-				isOnFilling = (insideNeigbors < 5);
+				isOnFilling = (insideNeighbors < 5);
 			} else {
-				isOnFilling = (insideNeigbors > 0);
+				isOnFilling = (insideNeighbors > 0);
 			}
 		}
 		// set a flag to say if point is on the boundary

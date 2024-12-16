@@ -548,7 +548,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 
 	/**
 	 * @param sortMode
-	 *            Either AlgebraView.MODE_DEPDENCY or AlgebraView.MODE_TYPE
+	 *            Either AlgebraView.MODE_DEPENDENCY or AlgebraView.MODE_TYPE
 	 */
 	@Override
 	public void setTreeMode(SortMode sortMode) {
@@ -634,7 +634,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 
 		settingsChanged = false;
 
-		// auxilliary objects
+		// auxiliary objects
 		setShowAuxiliaryObjects(showAuxiliaryObjectsSettings);
 
 		// collapsed nodes
@@ -735,7 +735,7 @@ public class AlgebraViewW extends Tree implements LayerView, AlgebraView,
 		addItem(indNode);
 		addItem(depNode);
 
-		// add auxiliary node if neccessary
+		// add auxiliary node if necessary
 		if (app.showAuxiliaryObjects) {
 			if (auxiliaryNode.getTree() != this) {
 				addItem(auxiliaryNode);

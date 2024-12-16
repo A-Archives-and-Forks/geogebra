@@ -66,9 +66,9 @@ import org.geogebra.common.util.debug.Log;
 import com.himamis.retex.editor.share.util.Unicode;
 
 /**
- * @author gabor
+ * Common view for probability calculator
  *
- * Commmon view for ProbabilityCalculator
+ * @author gabor
  */
 public abstract class ProbabilityCalculatorView
 		implements View, SettingListener, SetLabels {
@@ -618,8 +618,8 @@ public abstract class ProbabilityCalculatorView
 							new ExpressionNode(kernel,
 									xLow, Operation.EQUAL_BOOLEAN, xHigh.getNumber()),
 							xminPlusOne), Operation.IF_ELSE, xMax);
-			AlgoDependentNumber adn = getDependentNumber(ex);
-			createTwoTailedDiscreteGraph(capMax(xMin), capMax(adn.getNumber()));
+			AlgoDependentNumber algoDepNumber = getDependentNumber(ex);
+			createTwoTailedDiscreteGraph(capMax(xMin), capMax(algoDepNumber.getNumber()));
 		} else {
 			createSimpleDiscreteGraph(capMax(xMin), capMax(xMax));
 		}
@@ -1387,22 +1387,22 @@ public abstract class ProbabilityCalculatorView
 
 	@Override
 	public void add(GeoElement geo) {
-		// view dows not handle external geos
+		// view does not handle external geos
 	}
 
 	@Override
 	public void updatePreviewFromInputBar(GeoElement[] geos) {
-		// view dows not handle external geos
+		// view does not handle external geos
 	}
 
 	@Override
 	public void remove(GeoElement geo) {
-		// view dows not handle external geos
+		// view does not handle external geos
 	}
 
 	@Override
 	public void rename(GeoElement geo) {
-		// view dows not handle external geos
+		// view does not handle external geos
 	}
 
 	// Handles user point changes in the EV plot panel

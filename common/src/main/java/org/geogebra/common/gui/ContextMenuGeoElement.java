@@ -259,7 +259,7 @@ public abstract class ContextMenuGeoElement {
 
 	/**
 	 * @param removeParents
-	 *            whether to also remove parents (eg vertices of a ploygon)
+	 *            whether to also remove parents (eg vertices of a polygon)
 	 */
 	public void deleteCmd(boolean removeParents) {
 
@@ -504,7 +504,7 @@ public abstract class ContextMenuGeoElement {
 	}
 
 	/**
-	 * Toggle animation falg
+	 * Toggle animation flag
 	 */
 	public void animationCmd() {
 		ArrayList<GeoElement> geos2 = checkOneGeo();
@@ -513,7 +513,7 @@ public abstract class ContextMenuGeoElement {
 			GeoElement geo1 = geos2.get(i);
 			if (geo1.isAnimatable()) {
 				geo1.setAnimating(!(geo1.isAnimating()
-						&& app.getKernel().getAnimatonManager().isRunning()));
+						&& app.getKernel().getAnimationManager().isRunning()));
 				geo1.updateRepaint();
 			}
 
@@ -523,7 +523,7 @@ public abstract class ContextMenuGeoElement {
 
 		// automatically start animation when animating was turned on
 		if (getGeo().isAnimating()) {
-			getGeo().getKernel().getAnimatonManager().startAnimation();
+			getGeo().getKernel().getAnimationManager().startAnimation();
 		}
 	}
 

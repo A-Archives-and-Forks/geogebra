@@ -153,7 +153,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 		int splashHeight = LOGO_HEIGHT;
 
 		// to not touch the DOM twice when computing width and height
-		preProcessFitToSceen();
+		preProcessFitToScreen();
 
 		int width = computeWidth();
 		int height = computeHeight();
@@ -204,7 +204,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 		Dom.toggleClass(this, "small", hasCompactNavigationRail());
 	}
 
-	private void preProcessFitToSceen() {
+	private void preProcessFitToScreen() {
 		if (appletParameters.getDataParamFitToScreen()) {
 			Document.get().getDocumentElement().getStyle()
 					.setHeight(100, Unit.PCT);
@@ -333,7 +333,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 	 * Update size of external header if applicable.
 	 */
 	public void updateHeaderSize() {
-		// overriden later
+		// overridden later
 	}
 
 	private void updateHeaderVisible() {
@@ -619,7 +619,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 
 	/**
 	 * @param width
-	 *            sets the geogebra-web applet widht
+	 *            sets the geogebra-web applet width
 	 */
 	@Override
 	public void setWidth(int width) {
@@ -697,7 +697,7 @@ public abstract class GeoGebraFrameW extends FlowPanel implements
 	/**
 	 * @param show
 	 *
-	 *            wheter show the reseticon in geogebra-web applets or not
+	 *            whether to show the reseticon in geogebra-web applets or not
 	 */
 	@Override
 	public void showResetIcon(boolean show) {

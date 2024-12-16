@@ -204,7 +204,7 @@ public class GeoNumeric extends GeoElement
 	 *
 	 * @param construction Construction
 	 * @param value Numeric value
-	 * @param setDefaults If true, set contruction defaults
+	 * @param setDefaults If true, set construction defaults
 	 */
 	public GeoNumeric(Construction construction, double value, boolean setDefaults) {
 		this(construction, setDefaults);
@@ -1144,7 +1144,7 @@ public class GeoNumeric extends GeoElement
 	}
 
 	/**
-	 * Returns whether slider shoud be horizontal or vertical
+	 * Returns whether slider should be horizontal or vertical
 	 * 
 	 * @return true iff should be horizontal
 	 */
@@ -2248,16 +2248,16 @@ public class GeoNumeric extends GeoElement
 
 	/**
 	 * @param parts output array for [numerator,denominator]
-	 * @param expandPlus whether to expand + and - operations
+	 * @param expandPlusAndDecimals whether to expand + and - operations and convert decimal numbers
 	 */
-	public void getFraction(ExpressionValue[] parts, boolean expandPlus) {
+	public void getFraction(ExpressionValue[] parts, boolean expandPlusAndDecimals) {
 		if (getDefinition() == null) {
 			parts[0] = getNumber();
 			parts[1] = null;
 			return;
 		}
 		getDefinition().isFraction(); // force fraction caching
-		getDefinition().getFraction(parts, expandPlus);
+		getDefinition().getFraction(parts, expandPlusAndDecimals);
 	}
 
 	@Override

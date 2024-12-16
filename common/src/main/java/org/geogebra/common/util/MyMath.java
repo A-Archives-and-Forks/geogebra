@@ -12,8 +12,6 @@ the Free Software Foundation.
 
 package org.geogebra.common.util;
 
-//import geogebra.AbstracKernel.AbstracKernel;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -97,7 +95,7 @@ public final class MyMath {
 	public static double csch(double a) {
 
 		// don't change this, csch(0.000000000000000000000000000000001)
-		// **shoudn't** return NaN
+		// **shouldn't** return NaN
 		if (a == 0) {
 			return Double.NaN;
 		}

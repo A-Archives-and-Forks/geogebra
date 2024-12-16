@@ -1306,7 +1306,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 				sb.append(leftStr);
 			}
 
-			// we need parantheses around right text
+			// we need parentheses around right text
 			// if right is not a leaf expression or
 			// it is a leaf GeoElement without a label (i.e. it is
 			// calculated somehow)
@@ -3052,7 +3052,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 	 *
 	 * @param scientificStr
 	 *            string in scientific notation
-	 * @return formated string in scientific notation (except for Giac)
+	 * @return formatted string in scientific notation (except for Giac)
 	 */
 	public String convertScientificNotation(String scientificStr) {
 

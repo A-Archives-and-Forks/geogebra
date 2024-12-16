@@ -172,14 +172,14 @@ public class AlgoAreEqual extends AlgoElement
 						}
 
 						// Decimal numbers with less than 8 significant digits are allowed
-						return countSignifiantDigits(d) > 8;
+						return countSignificantDigits(d) > 8;
 					}
 
 					return false;
 				});
 	}
 
-	private int countSignifiantDigits(double d) {
+	private int countSignificantDigits(double d) {
 		String s = formatter.format(d);
 		if (s.contains(".")) {
 			return s.length() - 1;
@@ -229,7 +229,7 @@ public class AlgoAreEqual extends AlgoElement
 			PVariable[] v1 = ((GeoLine) inputElement1).getBotanaVars(inputElement1); // AB
 			PVariable[] v2 = ((GeoLine) inputElement2).getBotanaVars(inputElement2); // CD
 
-			// We want to prove: 1) ABC collinear, 2) ABD collinear
+			// We want to prove: 1) A,B,C collinear, 2) A,B,D collinear
 			botanaPolynomials[0][0] = PPolynomial.collinear(v1[0], v1[1], v1[2],
 					v1[3], v2[0], v2[1]);
 			botanaPolynomials[1][0] = PPolynomial.collinear(v1[0], v1[1], v1[2],
@@ -442,10 +442,10 @@ public class AlgoAreEqual extends AlgoElement
 			// Convert the ValidExpression to ExpressionNode
 			ExpressionNode en = new ExpressionNode(kernel, resultVE);
 			// Silently create an AlgoDependentNumber from the ExpressionNode
-			AlgoDependentNumber adn = new AlgoDependentNumber(
+			AlgoDependentNumber algoDepNumber = new AlgoDependentNumber(
 					n1.getConstruction(), en, false, null, false, false);
 			// Obtain the polynomials
-			PPolynomial[] result = adn.getBotanaPolynomials(n1); // n1 unused
+			PPolynomial[] result = algoDepNumber.getBotanaPolynomials(n1); // n1 unused
 			int no = result.length;
 			botanaPolynomials = new PPolynomial[1][no];
 			for (int i = 0; i < no; ++i) {
@@ -453,14 +453,14 @@ public class AlgoAreEqual extends AlgoElement
 				// use the first equation as last (it will be denied),
 				// the order of the other eqs remains the same
 			}
-			PVariable[] botanaVars = adn.getBotanaVars(n1); // n1 unused
+			PVariable[] botanaVars = algoDepNumber.getBotanaVars(n1); // n1 unused
 			// Add the equation var=0 to the polynomial list
 			Map<PVariable, BigInteger> m = new HashMap<>();
 			m.put(botanaVars[0], BigInteger.ZERO);
 			botanaPolynomials[0][no - 1] = botanaPolynomials[0][no - 1]
 					.substitute(m);
 			// This AlgoDependentNumber is not needed anymore
-			n1.getConstruction().removeFromAlgorithmList(adn);
+			n1.getConstruction().removeFromAlgorithmList(algoDepNumber);
 			return botanaPolynomials;
 
 		}

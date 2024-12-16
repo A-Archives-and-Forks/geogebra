@@ -13,7 +13,7 @@ the Free Software Foundation.
 /*
  * DrawPoint.java
  *
- * Created on 11. Oktober 2001, 23:59
+ * Created on 11. October 2001, 23:59
  */
 
 package org.geogebra.common.euclidian.draw;
@@ -34,7 +34,7 @@ import org.geogebra.common.kernel.geos.GeoList;
  * @author Markus Hohenwarter
  */
 public final class DrawList extends Drawable implements RemoveNeeded {
-	/** coresponding list as geo */
+	/** corresponding list as geo */
 	GeoList geoList;
 	private DrawListArray drawables;
 	/** whether this is visible */

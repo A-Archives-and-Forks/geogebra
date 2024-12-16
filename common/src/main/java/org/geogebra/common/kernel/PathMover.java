@@ -77,7 +77,7 @@ public interface PathMover {
 	public boolean hasNext();
 
 	/**
-	 * Resets this path mover to the inital start parameter.
+	 * Resets this path mover to the initial start parameter.
 	 */
 	public void resetStartParameter();
 
@@ -99,7 +99,7 @@ public interface PathMover {
 	public boolean hasPositiveOrientation();
 
 	/**
-	 * Decreases the step width. Returns wheter this was possible.
+	 * Decreases the step width. Returns whether this was possible.
 	 * 
 	 * @return true if it was possible
 	 */

@@ -228,7 +228,7 @@ public class ParametricProcessor {
 	 *            label for output
 	 * @param info
 	 *            processing information
-	 * @return paramteric curve (or line, conic)
+	 * @return parametric curve (or line, conic)
 	 */
 	protected GeoElement[] processParametricFunction(ExpressionNode exp,
 			ExpressionValue ev, FunctionVariable[] fv, String label,
@@ -589,7 +589,7 @@ public class ParametricProcessor {
 	}
 
 	/**
-	 * Creates a number and replaces all occurences of the variable with it
+	 * Creates a number and replaces all occurrences of the variable with it
 	 * 
 	 * @param exp
 	 *            expression

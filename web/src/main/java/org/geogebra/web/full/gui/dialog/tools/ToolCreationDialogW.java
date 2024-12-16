@@ -57,7 +57,7 @@ public class ToolCreationDialogW extends ComponentDialog implements
 	 * Creates new tool creation dialog, if in macro-editing mode,
 	 * 
 	 * @param app
-	 *            Aplication to which this dialog belongs
+	 *            Application to which this dialog belongs
 	 */
 
 	public ToolCreationDialogW(AppW app) {
@@ -164,8 +164,8 @@ public class ToolCreationDialogW extends ComponentDialog implements
 		FlowPanel objectMultiselectPanel = new FlowPanel();
 		objectMultiselectPanel.addStyleName("multiSelectList");
 		objectMultiselectPanel.add(objectMultiselect);
-		objectMultiselectPanel.add(new MultiSelectButtonsPannel(
-				new MultiSelectButtonsPannel.ButtonsListener() {
+		objectMultiselectPanel.add(new MultiSelectButtonsPanel(
+				new MultiSelectButtonsPanel.ButtonsListener() {
 					@Override
 					public void moveSelection(boolean up) {
 						if (up) {

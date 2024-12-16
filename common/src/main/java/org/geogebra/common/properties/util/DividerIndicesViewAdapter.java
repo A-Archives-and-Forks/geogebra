@@ -9,12 +9,12 @@ import org.geogebra.common.properties.GroupedEnumeratedProperty;
  * This is a utility class that provides methods for displaying data with dividers for a
  * grouped enumerated property. <p></p>It allows converting between model indices
  * (corresponding to a valid position in {@link EnumeratedProperty#getValues()})
- * and view indices (corresponds to a valid position with an array containig values and dividers
+ * and view indices (corresponds to a valid position with an array containing values and dividers
  * together {see @link GroupedEnumeratedProperty#getGroupDividerIndices()}).
  */
 public final class DividerIndicesViewAdapter {
 
-	private final int[] dividerIndicies;
+	private final int[] dividerIndices;
 	private final int valueCount;
 
 	/**
@@ -31,14 +31,14 @@ public final class DividerIndicesViewAdapter {
 	 * @param valueCount number of values
 	 */
 	public DividerIndicesViewAdapter(int[] dividerIndices, int valueCount) {
-		this.dividerIndicies = Arrays.copyOf(dividerIndices, dividerIndices.length);
+		this.dividerIndices = Arrays.copyOf(dividerIndices, dividerIndices.length);
 		this.valueCount = valueCount;
 		offsetIndices();
 	}
 
 	private void offsetIndices() {
-		for (int i = 1; i < dividerIndicies.length; i++) {
-			dividerIndicies[i] += i;
+		for (int i = 1; i < dividerIndices.length; i++) {
+			dividerIndices[i] += i;
 		}
 	}
 
@@ -47,7 +47,7 @@ public final class DividerIndicesViewAdapter {
 	 * @return view count
 	 */
 	public int getViewCount() {
-		return valueCount + dividerIndicies.length;
+		return valueCount + dividerIndices.length;
 	}
 
 	/**
@@ -56,8 +56,8 @@ public final class DividerIndicesViewAdapter {
 	 * @return <code>true</code> if there is a divider at given index, <code>false</code> otherwise
 	 */
 	public boolean isDivider(int viewIndex) {
-		for (int i = 0; i < dividerIndicies.length; i++) {
-			if (dividerIndicies[i] == viewIndex) {
+		for (int i = 0; i < dividerIndices.length; i++) {
+			if (dividerIndices[i] == viewIndex) {
 				return true;
 			}
 		}
@@ -71,7 +71,7 @@ public final class DividerIndicesViewAdapter {
 	 * @return model index, that corresponds to a valid index in the array of values
 	 */
 	public int convertViewIndexToModel(int viewIndex) {
-		int insertPosition = Math.abs(Arrays.binarySearch(dividerIndicies, viewIndex));
+		int insertPosition = Math.abs(Arrays.binarySearch(dividerIndices, viewIndex));
 		return viewIndex - insertPosition + 1;
 	}
 
@@ -83,8 +83,8 @@ public final class DividerIndicesViewAdapter {
 	 */
 	public int convertModelIndexToView(int modelIndex) {
 		int viewIndex = modelIndex;
-		for (int i = 0; i < dividerIndicies.length; i++) {
-			if (dividerIndicies[i] <= viewIndex) {
+		for (int i = 0; i < dividerIndices.length; i++) {
+			if (dividerIndices[i] <= viewIndex) {
 				viewIndex += 1;
 			}
 		}

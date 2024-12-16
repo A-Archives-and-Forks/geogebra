@@ -94,7 +94,7 @@ public class AlgoIntersectPlaneQuadric extends AlgoElement3D {
 	}
 
 	/**
-	 * end of contructor for this algo
+	 * end of constructor for this algo
 	 */
 	protected void end() {
 		setInputOutput(new GeoElement[] { plane.toGeoElement(), quadric },
@@ -138,7 +138,7 @@ public class AlgoIntersectPlaneQuadric extends AlgoElement3D {
 		if (parametricMatrix == null) {
 			parametricMatrix = new CoordMatrix(4, 3);
 		}
-		CoordMatrix qm = inputQuad.getSymetricMatrix();
+		CoordMatrix qm = inputQuad.getSymmetricMatrix();
 		CoordMatrix pm = inputPlane.getCoordSys()
 				.getParametricMatrix(parametricMatrix);
 

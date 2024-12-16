@@ -389,7 +389,7 @@ public abstract class GlobalKeyDispatcher {
 			boolean fromEuclidianView) {
 
 		// eventually make an undo point (e.g. after zooming)
-		app.storeUndoInfoIfSetCoordSystemOccured();
+		app.storeUndoInfoIfSetCoordSystemOccurred();
 
 		boolean consumed = false;
 
@@ -1709,7 +1709,7 @@ public abstract class GlobalKeyDispatcher {
 
 		// stop all animation if slider dragged
 		if (num.isAnimating()) {
-			num.getKernel().getAnimatonManager().stopAnimation();
+			num.getKernel().getAnimationManager().stopAnimation();
 		}
 
 		num.setValue(newValue);

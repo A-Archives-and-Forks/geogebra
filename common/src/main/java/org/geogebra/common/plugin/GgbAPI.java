@@ -93,8 +93,6 @@ import com.himamis.retex.renderer.share.serialize.TeXAtomSerializer;
  * </ul>
  * 
  * @author H-P Ulven
- * @version 31.10.08 29.05.08: Tranferred applet interface methods (the relevant
- *          ones) from GeoGebraAppletBase
  */
 
 public abstract class GgbAPI implements JavaScriptAPI {
@@ -739,12 +737,12 @@ public abstract class GgbAPI implements JavaScriptAPI {
 
 	@Override
 	public void startAnimation() {
-		kernel.getAnimatonManager().startAnimation();
+		kernel.getAnimationManager().startAnimation();
 	}
 
 	@Override
 	public void stopAnimation() {
-		kernel.getAnimatonManager().stopAnimation();
+		kernel.getAnimationManager().stopAnimation();
 	}
 
 	@Override
@@ -755,7 +753,7 @@ public abstract class GgbAPI implements JavaScriptAPI {
 
 	@Override
 	public boolean isAnimationRunning() {
-		return kernel.getAnimatonManager().isRunning();
+		return kernel.getAnimationManager().isRunning();
 	}
 
 	@Override
@@ -987,7 +985,7 @@ public abstract class GgbAPI implements JavaScriptAPI {
 	}
 
 	/**
-	 * Returns true if the object with the given name has a vaild value at the
+	 * Returns true if the object with the given name has a valid value at the
 	 * moment.
 	 */
 	@Override
@@ -1905,7 +1903,7 @@ public abstract class GgbAPI implements JavaScriptAPI {
 
 	/**
 	 * @param enable
-	 *            wheter labels draggable in geogebra-web applets or not
+	 *            whether labels draggable in geogebra-web applets or not
 	 */
 	@Override
 	public void enableLabelDrags(boolean enable) {
@@ -1914,7 +1912,7 @@ public abstract class GgbAPI implements JavaScriptAPI {
 
 	/**
 	 * @param enable
-	 *            wheter shift - drag - zoom enabled in geogebra-web applets or
+	 *            whether shift - drag - zoom enabled in geogebra-web applets or
 	 *            not
 	 */
 	@Override

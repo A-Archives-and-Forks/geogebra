@@ -204,7 +204,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	protected Coords tmpCoords1 = new Coords(4);
 	protected Coords tmpCoords2 = new Coords(4);
 	protected GColor bgColor;
-	protected GColor bgApplyedColor;
+	protected GColor bgAppliedColor;
 
 	private Kernel3D kernel3D;
 	// list of 3D objects
@@ -714,7 +714,7 @@ public abstract class EuclidianView3D extends EuclidianView
 
 			case QUADRIC_LIMITED:
 				if (!((GeoQuadric3DLimited) geo).getSide().isLabelSet()) {
-					// create drawable when side is not explicitely created
+					// create drawable when side is not explicitly created
 					// (e.g. in sequence, or with transformation)
 					d = new DrawQuadric3DLimited(this,
 							(GeoQuadric3DLimited) geo);
@@ -2488,7 +2488,7 @@ public abstract class EuclidianView3D extends EuclidianView
 				// do nothing
 				break;
 			case PREVIEW_POINT_FREE:
-				// use default directions for the cros
+				// use default directions for the cross
 				cursorMatrix.setDiagonal3(1);
 				cursorMatrix.setOrigin(getCursor3D().getDrawingMatrix().getOrigin());
 				scaleXYZ(cursorMatrix.getOrigin());
@@ -3588,7 +3588,7 @@ public abstract class EuclidianView3D extends EuclidianView
 
 	private void updateDecorations(double[][] minMax) {
 		for (int i = 0; i < 3; i++) {
-			axisDrawable[i].setDrawMinMaxImmediatly(minMax);
+			axisDrawable[i].setDrawMinMaxImmediately(minMax);
 			axisDrawable[i].updateDecorations();
 			setAxesIntervals(getScale(i), i);
 
@@ -4193,7 +4193,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	}
 
 	public GColor getApplyedBackground() {
-		return bgApplyedColor;
+		return bgAppliedColor;
 	}
 
 	// ////////////////////////////////////////
@@ -4648,13 +4648,13 @@ public abstract class EuclidianView3D extends EuclidianView
 	 *
 	 * @param updatedColor
 	 *            color to update background
-	 * @param applyedColor
-	 *            color actually applyed
+	 * @param appliedColor
+	 *            color actually applied
 	 *
 	 */
-	public void setBackground(GColor updatedColor, GColor applyedColor) {
+	public void setBackground(GColor updatedColor, GColor appliedColor) {
 		this.bgColor = updatedColor;
-		this.bgApplyedColor = applyedColor;
+		this.bgAppliedColor = appliedColor;
 		if (renderer != null) {
 			renderer.setWaitForUpdateClearColor();
 		}
@@ -5214,7 +5214,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	 * set on touch listener
 	 */
 	public void setEuclidianPanelOnTouchListener() {
-		// overriden in EuclidianView3DA
+		// overridden in EuclidianView3DA
 	}
 
 	/**
@@ -5222,7 +5222,7 @@ public abstract class EuclidianView3D extends EuclidianView
 	 * @return mouse/touch gesture controller
 	 */
 	public MouseTouchGestureController getEuclidianPanelOnTouchListner() {
-		// overriden in EuclidianView3DA
+		// overridden in EuclidianView3DA
 		return null;
 	}
 

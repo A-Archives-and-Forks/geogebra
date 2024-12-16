@@ -13,7 +13,7 @@ the Free Software Foundation.
 /*
  * NumberValue.java
  *
- * Created on 03. Oktober 2001, 10:09
+ * Created on 03. October 2001, 10:09
  */
 
 package org.geogebra.common.kernel.arithmetic;
@@ -222,7 +222,7 @@ public interface ExpressionValue {
 	public boolean inspect(Inspecting t);
 
 	/**
-	 * If this is an expression node wrapping some other ExpressionValue, retur
+	 * If this is an expression node wrapping some other ExpressionValue, return
 	 * its content, otherwise return this.
 	 * 
 	 * @return unwrapped content

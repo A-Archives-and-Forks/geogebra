@@ -76,11 +76,11 @@ public class GeoImplicitSurface extends GeoElement3D
 								// be created
 		this.surface3D = new GeoTriangulatedSurface3D();
 		fromEquation(eqn);
-		updateParametic(eqn);
+		updateParametric(eqn);
 
 	}
 
-	private void updateParametic(Equation eqn) {
+	private void updateParametric(Equation eqn) {
 		ExpressionNode normal = eqn.getLHS().apply(Operation.MINUS,
 				eqn.getRHS());
 		normal = normal.deepCopy(cons.getKernel());
@@ -101,7 +101,7 @@ public class GeoImplicitSurface extends GeoElement3D
 						new ExpressionNode(kernel, normal, Operation.DIVIDE,
 								coef),
 						Operation.PLUS, fVars[i]);
-				m.simplifyLeafs();
+				m.simplifyLeaves();
 				FunctionNVar fun = new FunctionNVar(m,
 						new FunctionVariable[] { fVars[complement[i][0]],
 								fVars[complement[i][1]] });

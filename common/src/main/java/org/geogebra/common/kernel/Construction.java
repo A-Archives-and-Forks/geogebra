@@ -34,6 +34,7 @@ import org.geogebra.common.kernel.arithmetic.Inspecting;
 import org.geogebra.common.kernel.arithmetic.ValidExpression;
 import org.geogebra.common.kernel.cas.AlgoDependentCasCell;
 import org.geogebra.common.kernel.commands.EvalInfo;
+import org.geogebra.common.kernel.geos.ConstructionElementSetup;
 import org.geogebra.common.kernel.geos.GeoAxis;
 import org.geogebra.common.kernel.geos.GeoCasCell;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -115,7 +116,7 @@ public class Construction {
 
 	// in macro mode no new labels or construction elements
 	// can be added
-	private boolean supressLabelCreation = false;
+	private boolean suppressLabelCreation = false;
 
 	// a map for sets with all labeled GeoElements in alphabetical order of
 	// specific types
@@ -201,6 +202,8 @@ public class Construction {
 
 	private LayerManager layerManager;
 
+	private final Set<ConstructionElementSetup> constructionElementSetups = new HashSet<>();
+
 	/**
 	 * Creates a new Construction.
 	 * @param k Kernel
@@ -243,6 +246,28 @@ public class Construction {
 		geoTable = new HashMap<>(200);
 		initGeoTables();
 		groups = new ArrayList<>();
+	}
+
+	/**
+	 * Adds a {@link ConstructionElementSetup} which can modify the initial setup of elements when
+	 * adding them to the {@code Construction} with {@link Construction#addToConstructionList}.
+	 *
+	 * @param constructionElementSetup The {@link ConstructionElementSetup} to be added
+	 */
+	public void addConstructionElementSetup(
+			ConstructionElementSetup constructionElementSetup) {
+		constructionElementSetups.add(constructionElementSetup);
+	}
+
+	/**
+	 * Removes the previously added {@link ConstructionElementSetup} from this {@code Construction}.
+	 * Once removed, it will no longer affect the initial setup of elements added to the
+	 * {@code Construction}.
+	 *
+	 * @param constructionElementSetup The {@link ConstructionElementSetup} to be removed
+	 */
+	public void removeConstructionElementSetup(ConstructionElementSetup constructionElementSetup) {
+		constructionElementSetups.remove(constructionElementSetup);
 	}
 
 	/**
@@ -376,8 +401,8 @@ public class Construction {
 	}
 
 	/**
-	 * Renames xAxis and yAxis in the geoTable and sets *AxisLocalName-s
-	 * acordingly
+	 * Renames xAxis and yAxis in the geoTable and sets axisLocalName-s
+	 * accordingly
 	 */
 	final public void updateLocalAxesNames() {
 		geoTable.remove(xAxisLocalName);
@@ -401,14 +426,14 @@ public class Construction {
 	}
 
 	/**
-	 * @return table of arbitraryConstants from CAS with assigmentVar key
+	 * @return table of arbitraryConstants from CAS with assignmentVar key
 	 */
 	public HashMap<Integer, ArbitraryConstantRegistry> getArbitraryConsTable() {
 		return arbitraryConsTable;
 	}
 
 	/**
-	 * @param arbitraryConsTable - table of arbitraryConstants from CAS with assigmentVar key
+	 * @param arbitraryConsTable - table of arbitraryConstants from CAS with assignmentVar key
 	 */
 	public void setArbitraryConsTable(
 			HashMap<Integer, ArbitraryConstantRegistry> arbitraryConsTable) {
@@ -504,10 +529,10 @@ public class Construction {
 
 	/**
 	 * If this is set to true new construction elements won't get labels.
-	 * @param flag true iff labelcreation should be supressed
+	 * @param flag true iff label creation should be suppressed
 	 */
 	public void setSuppressLabelCreation(boolean flag) {
-		supressLabelCreation = flag;
+		suppressLabelCreation = flag;
 	}
 
 	/**
@@ -515,7 +540,7 @@ public class Construction {
 	 * @return true iff new construction elements won't get labels.
 	 */
 	public boolean isSuppressLabelsActive() {
-		return supressLabelCreation;
+		return suppressLabelCreation;
 	}
 
 	/**
@@ -784,6 +809,7 @@ public class Construction {
 	 * @param index index
 	 */
 	public void addToConstructionList(ConstructionElement ce, int index) {
+		constructionElementSetups.forEach(setup -> setup.applyTo(ce));
 		++step;
 		ceList.add(index, ce);
 		updateConstructionIndex(index);
@@ -874,7 +900,7 @@ public class Construction {
 	 */
 	public void addToConstructionList(ConstructionElement ce,
 			boolean checkContains) {
-		if (supressLabelCreation) {
+		if (suppressLabelCreation) {
 			return;
 		}
 		if (checkContains && ce.isInConstructionList()) {
@@ -887,7 +913,7 @@ public class Construction {
 	/**
 	 * Removes the given Construction Element from this Construction and updates
 	 * step if necessary (i.e. if ce.getConstructionIndex() &lt;= getStep()).
-	 * @param ce ConstuctionElement to be removed
+	 * @param ce ConstructionElement to be removed
 	 */
 	public void removeFromConstructionList(ConstructionElement ce) {
 
@@ -1275,7 +1301,7 @@ public class Construction {
 	 * Appends minimal version of the construction XML to given string builder.
 	 * Only elements/commands are preserved, the rest is ignored.
 	 * @param sb String builder
-	 * @param getListenersToo whether to includ JS listener names
+	 * @param getListenersToo whether to include JS listener names
 	 */
 	public void getConstructionElementsXML(StringBuilder sb,
 			boolean getListenersToo) {
@@ -1852,7 +1878,7 @@ public class Construction {
 	 * @see #lookupLabel(String)
 	 */
 	public void putLabel(GeoElement geo) {
-		if (supressLabelCreation || geo.getLabelSimple() == null) {
+		if (suppressLabelCreation || geo.getLabelSimple() == null) {
 			return;
 		}
 
@@ -2072,7 +2098,7 @@ public class Construction {
 			return checkConstructionStep(geo);
 		}
 
-		// DESPARATE CASE: variable name not found
+		// DESPERATE CASE: variable name not found
 
 		/*
 		 * CAS VARIABLE HANDLING e.g. ggbtmpvara for a
@@ -2709,7 +2735,7 @@ public class Construction {
 	 * order of their type strings and labels (e.g. Line g, Line h, Point A,
 	 * Point B, ...). Note: the returned TreeSet is a copy of the current
 	 * situation and is not updated by the construction later on.
-	 * @return Set of all labeld GeoElements orted by name and description
+	 * @return Set of all labeled GeoElements sorted by name and description
 	 */
 	final public TreeSet<GeoElement> getGeoSetNameDescriptionOrder() {
 		// sorted set of geos
@@ -2824,7 +2850,7 @@ public class Construction {
 
 		usedMacros = null;
 		spreadsheetTraces = false;
-		supressLabelCreation = false;
+		suppressLabelCreation = false;
 		groups.clear();
 	}
 
@@ -3039,33 +3065,6 @@ public class Construction {
 	public TreeSet<String> getCASdummies() {
 		return casDummies;
 	}
-
-	/**
-	 * TODO place this JavaDoc to the correct spot Build a set with all
-	 * algorithms of this construction (in topological order). The method
-	 * updateAll() of this set can be used to update the whole construction.
-	 *
-	 * public AlgorithmSet buildOveralAlgorithmSet() { // 1) get all independent
-	 * GeoElements in construction and update them // 2) build one overall
-	 * updateSet from all updateSets of (1)
-	 *
-	 * // 1) get all independent geos in construction LinkedHashSet indGeos =
-	 * new LinkedHashSet(); int size = ceList.size(); for (int i = 0; i < size;
-	 * ++i) { ConstructionElement ce = (ConstructionElement) ceList.get(i); if
-	 * (ce.isIndependent()) indGeos.add(ce); else {
-	 * indGeos.addAll(ce.getAllIndependentPredecessors()); } }
-	 *
-	 * // 2) build one overall updateSet AlgorithmSet algoSet = new
-	 * AlgorithmSet(); Iterator it = indGeos.iterator(); while (it.hasNext()) {
-	 * GeoElement geo = (GeoElement) it.next();
-	 *
-	 * // update this geo only geo.update();
-	 *
-	 * // get its update set and add it to the overall updateSet
-	 * algoSet.addAll(geo.getAlgoUpdateSet()); }
-	 *
-	 * return algoSet; }
-	 */
 
 	/**
 	 * Updates all algos in the set. Guards against double updates if location is involved.

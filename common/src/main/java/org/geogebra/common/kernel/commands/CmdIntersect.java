@@ -179,7 +179,7 @@ public class CmdIntersect extends CommandProcessor {
 			return ret;
 		}
 
-		// Line - Polygon(as boudary)
+		// Line - Polygon(as boundary)
 		else if ((ok[0] = (arg[0].isGeoLine()))
 				&& (ok[1] = (arg[1].isGeoPolygon()))) {
 			GeoElement[] ret = getAlgoDispatcher().intersectLinePolygon(
@@ -631,7 +631,7 @@ public class CmdIntersect extends CommandProcessor {
 	 * get single intersection points of a implicitPoly and a line
 	 * 
 	 * @param idx
-	 *            index of choosen point
+	 *            index of chosen point
 	 */
 	final private GeoPoint intersectImplicitpolyLineSingle(String label,
 			GeoImplicit p, GeoLine l, GeoNumberValue idx) {
@@ -645,7 +645,7 @@ public class CmdIntersect extends CommandProcessor {
 	 * get single intersection points of implicitPoly and conic
 	 * 
 	 * @param idx
-	 *            index of choosen point
+	 *            index of chosen point
 	 */
 	final private GeoPoint intersectImplicitpolyConicSingle(String label,
 			GeoImplicit p1, GeoConic c1, GeoNumberValue idx) {
@@ -660,7 +660,7 @@ public class CmdIntersect extends CommandProcessor {
 	 * get single intersection points of a implicitPoly and a line
 	 * 
 	 * @param idx
-	 *            index of choosen point
+	 *            index of chosen point
 	 */
 	final private GeoPoint intersectImplicitpolyPolynomialSingle(String label,
 			GeoImplicit p, GeoFunctionable f, GeoNumberValue idx) {

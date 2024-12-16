@@ -44,7 +44,7 @@
  *
  */
 
-/* Modified by Calixte Denizet to handle the case where several ligatures occure*/
+/* Modified by Calixte Denizet to handle the case where several ligatures occur */
 
 package com.himamis.retex.renderer.share;
 
@@ -57,7 +57,7 @@ import java.util.Stack;
 import com.himamis.retex.renderer.share.platform.FactoryProvider;
 
 /**
- * An atom representing a horizontal row of other atoms, to be seperated by
+ * An atom representing a horizontal row of other atoms, to be separated by
  * glue. It's also responsible for inserting kerns and ligatures.
  */
 public class RowAtom extends Atom implements Row {
