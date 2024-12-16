@@ -20,7 +20,7 @@ public class GeoSpotlight extends GeoConic {
 		super(c);
 		setSphere();
 		setVisualStyle();
-		setLabel(null);
+		setLabel("spotlight");
 	}
 
 	private void setSphere() {
