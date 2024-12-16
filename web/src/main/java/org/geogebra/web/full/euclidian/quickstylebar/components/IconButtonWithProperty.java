@@ -24,6 +24,7 @@ import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.AriaHelper;
 import org.geogebra.web.html5.gui.util.Dom;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.gui.view.button.StandardButton;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.resources.SVGResource;
@@ -49,7 +50,7 @@ public class IconButtonWithProperty extends IconButton {
 	 */
 	public IconButtonWithProperty(AppW appW, String className, SVGResource icon, String ariaLabel,
 			GeoElement geo, boolean closePopupOnAction, PropertySupplier... properties) {
-		super(appW, icon, ariaLabel, ariaLabel, () -> {}, null);
+		super(appW, new ImageIconSpec(icon), ariaLabel, ariaLabel, () -> {}, null);
 		this.appW = appW;
 		this.geo = geo;
 		widgetAdapter = new PropertyWidgetAdapter(appW, closePopupOnAction);

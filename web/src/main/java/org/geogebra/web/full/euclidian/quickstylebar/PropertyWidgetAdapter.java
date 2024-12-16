@@ -15,6 +15,7 @@ import org.geogebra.web.full.euclidian.quickstylebar.components.SliderWithProper
 import org.geogebra.web.full.gui.toolbar.mow.toolbox.components.IconButton;
 import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.menu.AriaMenuItem;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.main.AppW;
 import org.gwtproject.user.client.ui.FlowPanel;
 
@@ -47,9 +48,9 @@ public class PropertyWidgetAdapter {
 		for (int i = 0; i < icons.length; i++) {
 			int finalI = i;
 			IconButton enumeratedPropertyIconButton = new IconButton(appW, null,
-					PropertiesIconAdapter.getIcon(icons[i]), null);
+					new ImageIconSpec(PropertiesIconAdapter.getIcon(icons[i])), null);
 			enumeratedPropertyIconButton.addFastClickHandler(source -> {
-				((IconsEnumeratedProperty) propertySupplier.updateAndGet()).setIndex(finalI);
+				((IconsEnumeratedProperty<?>) propertySupplier.updateAndGet()).setIndex(finalI);
 				setIconButtonActive(enumeratedPropertyIconButton);
 				if (uiUpdater != null) {
 					uiUpdater.accept(finalI);

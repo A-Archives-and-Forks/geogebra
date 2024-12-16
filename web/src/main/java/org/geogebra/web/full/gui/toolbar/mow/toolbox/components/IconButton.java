@@ -255,7 +255,7 @@ public class IconButton extends StandardButton implements SetLabels {
 		SVGResource svgResource = isActive()
 				? ((SVGResource) icon).withFill(selectionColor) : (SVGResource) icon;
 		super.setIcon(svgResource);
-		image = svgResource;
+		image = new ImageIconSpec(svgResource);
 	}
 
 	/**

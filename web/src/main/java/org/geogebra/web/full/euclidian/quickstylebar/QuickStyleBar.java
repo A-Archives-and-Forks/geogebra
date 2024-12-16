@@ -30,6 +30,7 @@ import org.geogebra.web.full.javax.swing.GPopupMenuW;
 import org.geogebra.web.html5.gui.BaseWidgetFactory;
 import org.geogebra.web.html5.gui.GPopupPanel;
 import org.geogebra.web.html5.gui.util.ClickStartHandler;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.EventUtil;
 import org.gwtproject.dom.style.shared.Unit;
@@ -216,7 +217,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		}
 		property.addValueObserver(new UndoActionObserver(geos, UndoActionType.STYLE_OR_CONTENT));
 		IconButton toggleButton = new IconButton(getApp(), null,
-				PropertiesIconAdapter.getIcon(property), property.getName());
+				new ImageIconSpec(PropertiesIconAdapter.getIcon(property)), property.getName());
 		toggleButton.setActive(property.getValue());
 		addFastClickHandlerWithUndoContentAction(toggleButton, property);
 		styleAndRegisterButton(toggleButton);
@@ -286,7 +287,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 					getApp().closePopups();
 					getApp().splitAndDeleteSelectedObjects();
 				},
-				MaterialDesignResources.INSTANCE.delete_black(), "Delete");
+				new ImageIconSpec(MaterialDesignResources.INSTANCE.delete_black()), "Delete");
 		styleAndRegisterButton(deleteButton);
 	}
 
@@ -297,7 +298,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 		}
 
 		IconButton cropButton = new IconButton(getApp(), null,
-				MaterialDesignResources.INSTANCE.crop_black(), "stylebar.Crop");
+				new ImageIconSpec(MaterialDesignResources.INSTANCE.crop_black()), "stylebar.Crop");
 		cropButton.setActive(ev.getBoundingBox() != null && ev.getBoundingBox().isCropBox());
 		cropButton.addFastClickHandler((source) -> {
 			getApp().closePopups();
@@ -310,7 +311,7 @@ public class QuickStyleBar extends FlowPanel implements EuclidianStyleBar {
 
 	private void addContextMenuButton() {
 		IconButton contextMenuBtn = new IconButton(getApp(), null,
-				MaterialDesignResources.INSTANCE.more_vert_black(), "More");
+				new ImageIconSpec(MaterialDesignResources.INSTANCE.more_vert_black()), "More");
 
 		contextMenu = createContextMenu(contextMenuBtn);
 		contextMenuBtn.addFastClickHandler((event) -> {
