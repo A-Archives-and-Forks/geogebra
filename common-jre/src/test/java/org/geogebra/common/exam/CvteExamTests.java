@@ -103,6 +103,9 @@ public final class CvteExamTests extends BaseExamTests {
         assertFalse(isVisibilityEnabled(evaluateGeoElement("y^2 = x")));
         assertFalse(isVisibilityEnabled(evaluateGeoElement("x^3 + y^2 = 2")));
         assertFalse(isVisibilityEnabled(evaluateGeoElement("y^3 = x")));
+
+        // Restricted vectors
+        assertFalse(isVisibilityEnabled(evaluateGeoElement("a = (1, 2)")));
     }
     
     @Test

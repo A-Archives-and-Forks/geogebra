@@ -371,6 +371,12 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		if (isEquation(geoElement)) {
 			return false;
 		}
+
+		// Restrict the visibility of vectors
+		// E.g.: a = (1, 2)
+		if (geoElement.isGeoVector()) {
+			return false;
+		}
 		
 		return true;
 	}
