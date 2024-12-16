@@ -6,6 +6,8 @@ import org.geogebra.web.html5.gui.util.FastClickHandler;
 import org.geogebra.web.html5.gui.util.HasResource;
 import org.geogebra.web.html5.gui.util.ImageOrText;
 import org.geogebra.web.html5.gui.util.NoDragImage;
+import org.geogebra.web.html5.gui.view.IconSpec;
+import org.geogebra.web.html5.gui.view.ImageIconSpec;
 import org.geogebra.web.html5.util.GlobalHandlerRegistry;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.resources.client.ResourcePrototype;
@@ -52,11 +54,28 @@ public class StandardButton extends Widget implements HasResource {
 	}
 
 	/**
+	 * @param icon icon definition
+	 * @param label string label
+	 * @param width icon width
+	 * @param height icon height
+	 */
+	public StandardButton(final IconSpec icon, final String label,
+			int width, int height) {
+		this();
+		if (icon instanceof ImageIconSpec) {
+			setIconAndLabel(((ImageIconSpec) icon).getImage(), label, width, height);
+		} else {
+			setIconAndLabel(null, label, width, height);
+			getElement().insertFirst(icon.toElement());
+		}
+	}
+
+	/**
 	 * @param label
 	 *            - text of button
 	 */
 	public StandardButton(final String label) {
-		this(null, label, -1, -1);
+		this((ResourcePrototype) null, label, -1, -1);
 	}
 
 	/**
@@ -81,6 +100,14 @@ public class StandardButton extends Widget implements HasResource {
 	}
 
 	/**
+	 * @param icon - img of button
+	 * @param width - width
+	 */
+	public StandardButton(final IconSpec icon, int width) {
+		this(icon, null, width, -1);
+	}
+
+	/**
 	 * constructor for IconButton like colored button,
 	 * context menu buttons and dyn stylebar buttons
 	 * @param width - width
@@ -101,7 +128,7 @@ public class StandardButton extends Widget implements HasResource {
 	 * @param label
 	 *            - text of button
 	 * @param size
-	 *            - width and hight of button
+	 *            - width and height of the button
 	 */
 	public StandardButton(int size, final ResourcePrototype icon, final String label) {
 		this();
@@ -206,6 +233,19 @@ public class StandardButton extends Widget implements HasResource {
 			btnImage.setUrl(NoDragImage.safeURI(icon));
 		} else {
 			setIconAndLabel(icon, this.label, this.width, this.height);
+		}
+	}
+
+	/**
+	 * set icon
+	 * @param icon - icon
+	 */
+	public void setIcon(final IconSpec icon) {
+		if (icon instanceof ImageIconSpec) {
+			setIconAndLabel(((ImageIconSpec) icon).getImage(), label, width, height);
+		} else {
+			setIconAndLabel(null, label, width, height);
+			getElement().insertFirst(icon.toElement());
 		}
 	}
 
