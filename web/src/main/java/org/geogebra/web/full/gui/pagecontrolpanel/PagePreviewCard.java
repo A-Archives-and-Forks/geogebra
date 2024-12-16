@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.io.MyXMLio;
+import org.geogebra.common.util.StringUtil;
 import org.geogebra.gwtutil.NavigatorUtil;
 import org.geogebra.web.full.gui.CardInfoPanel;
 import org.geogebra.web.html5.euclidian.EuclidianViewWInterface;
@@ -266,7 +267,7 @@ public class PagePreviewCard extends FlowPanel
 	 * @param title - card title
 	 */
 	public void setCardTitle(String title) {
-		Dom.toggleClass(this, "noTitle", title.isEmpty());
+		Dom.toggleClass(this, "noTitle", StringUtil.empty(title));
 		infoPanel.setCardTitle(title);
 	}
 
