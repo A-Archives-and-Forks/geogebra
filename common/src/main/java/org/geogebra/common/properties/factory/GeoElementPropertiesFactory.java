@@ -105,9 +105,13 @@ public final class GeoElementPropertiesFactory {
 						properties -> new RangePropertyCollection<>(
 								properties.toArray(new SlopeSizeProperty[0]))),
 				createPropertyCollection(elements,
-						element -> new EquationFormProperty(localization, element),
+						element -> new LinearEquationFormProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(
-								properties.toArray(new EquationFormProperty[0]))),
+								properties.toArray(new LinearEquationFormProperty[0]))),
+				createPropertyCollection(elements,
+						element -> new QuadraticEquationFormProperty(localization, element),
+						properties -> new NamedEnumeratedPropertyCollection<>(
+								properties.toArray(new QuadraticEquationFormProperty[0]))),
 				createPropertyCollection(elements,
 						element -> new CaptionStyleProperty(localization, element),
 						properties -> new NamedEnumeratedPropertyCollection<>(
