@@ -16,6 +16,7 @@ import org.geogebra.common.util.debug.Log;
 /**
  * Equation type setting for quadrics and conics
  */
+@Deprecated // replace with QuadraticEquationFormProperty
 public class ConicEqnModel extends MultipleOptionsModel {
 
 	private Localization loc;
