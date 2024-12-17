@@ -240,6 +240,8 @@ public final class ExamController {
 	/**
 	 * Register an object that may need to apply additional restrictions/customization
 	 * for certain types of exams.
+	 * @apiNote When an exam is currently active, the {@link ExamRestrictable} is asked
+	 * to apply the current {@link ExamRestrictions} immediately.
 	 * @param restrictable An object that may need to perform additional customization
 	 * when an exam is started.
 	 */
@@ -251,11 +253,16 @@ public final class ExamController {
 	}
 
 	/**
-	 * Unregister an `ExamRestrictable`.
+	 * Unregister an {@link ExamRestrictable}.
+	 * @apiNote When an exam is currently active, the {@link ExamRestrictable} is asked
+	 * to remove the current {@link ExamRestrictions} immediately.
 	 * @param restrictable An object that that was previously registered with
 	 * {@link #registerRestrictable(ExamRestrictable)}..
 	 */
 	public void unregisterRestrictable(@Nonnull ExamRestrictable restrictable) {
+		if (examRestrictions != null) {
+			restrictable.removeRestrictions(examRestrictions.getFeatureRestrictions());
+		}
 		restrictables.remove(restrictable);
 	}
 

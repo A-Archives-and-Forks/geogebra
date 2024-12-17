@@ -15,6 +15,7 @@ import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.arithmetic.filter.ExpressionFilter;
 import org.geogebra.common.kernel.commands.AlgebraProcessor;
@@ -56,16 +57,16 @@ import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
  */
 public class ExamRestrictions implements PropertiesRegistryListener {
 
-	private final ExamType examType;
-	private final Set<SuiteSubApp> disabledSubApps;
-	private final SuiteSubApp defaultSubApp;
-	private final Set<ExamFeatureRestriction> featureRestrictions;
-	private final Set<ExpressionFilter> inputExpressionFilters;
-	private final Set<ExpressionFilter> outputExpressionFilters;
-	private final Set<CommandFilter> commandFilters;
-	private final Set<Operation> filteredOperations;
-	private final Set<CommandArgumentFilter> commandArgumentFilters;
-	private final Set<ContextMenuItemFilter> contextMenuItemFilters;
+	private final @Nonnull ExamType examType;
+	private final @Nonnull Set<SuiteSubApp> disabledSubApps;
+	private final @Nonnull SuiteSubApp defaultSubApp;
+	private final @Nonnull Set<ExamFeatureRestriction> featureRestrictions;
+	private final @Nonnull Set<ExpressionFilter> inputExpressionFilters;
+	private final @Nonnull Set<ExpressionFilter> outputExpressionFilters;
+	private final @Nonnull Set<CommandFilter> commandFilters;
+	private final @Nonnull Set<Operation> filteredOperations;
+	private final @Nonnull Set<CommandArgumentFilter> commandArgumentFilters;
+	private final @Nonnull Set<ContextMenuItemFilter> contextMenuItemFilters;
 	// filter independent of exam region
 	private final CommandArgumentFilter examCommandArgumentFilter =
 			new ExamCommandArgumentFilter();
@@ -74,6 +75,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	private final Map<String, PropertyRestriction> propertyRestrictions;
 	private final Set<GeoElementPropertyFilter> geoElementPropertyFilters;
 	private final Set<ConstructionElementSetup> constructionElementSetups;
+    private final @Nullable EquationBehaviour equationBehaviour;
+    private @Nullable EquationBehaviour originalEquationBehaviour;
 	private RestorableSettings savedSettings;
 	private Settings restrictedSettings = null;
 
@@ -127,7 +130,6 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	 * @param propertyRestrictions An optional map of properties and restrictions
 	 * to be applied to them during the exam.
 	 */
-	// TODO APPS-5867: add EquationBehaviour to exam
 	protected ExamRestrictions(
 			@Nonnull ExamType examType,
 			@Nullable Set<SuiteSubApp> disabledSubApps,
@@ -143,7 +145,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			@Nullable ToolCollectionFilter toolsFilter,
 			@Nullable Map<String, PropertyRestriction> propertyRestrictions,
 			@Nullable Set<GeoElementPropertyFilter> geoElementPropertyFilters,
-			@Nullable Set<ConstructionElementSetup> constructionElementSetups) {
+			@Nullable Set<ConstructionElementSetup> constructionElementSetups,
+			@Nullable EquationBehaviour equationBehaviour) {
 		this.examType = examType;
 		this.disabledSubApps = disabledSubApps != null ? disabledSubApps : Set.of();
 		this.defaultSubApp = defaultSubApp != null ? defaultSubApp : SuiteSubApp.GRAPHING;
@@ -166,6 +169,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				? geoElementPropertyFilters : Set.of();
 		this.constructionElementSetups = constructionElementSetups != null
 				? constructionElementSetups : Set.of();
+		this.equationBehaviour = equationBehaviour;
 	}
 
 	/**
@@ -232,6 +236,10 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				algebraProcessor.addOutputExpressionFilter(expressionFilter);
 			}
 			algebraProcessor.reinitCommands();
+			if (equationBehaviour != null) {
+				originalEquationBehaviour = algebraProcessor.getKernel().getEquationBehaviour();
+				algebraProcessor.getKernel().setEquationBehaviour(equationBehaviour);
+			}
 		}
 		if (syntaxFilter != null) {
 			if (autoCompleteProvider != null) {
@@ -257,6 +265,9 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 		}
 		if (geoElementPropertiesFactory != null) {
 			geoElementPropertyFilters.forEach(geoElementPropertiesFactory::addFilter);
+			propertyRestrictions.forEach((name, restriction) -> {
+				geoElementPropertiesFactory.addRestriction(name, restriction);
+			});
 		}
 		if (construction != null) {
 			constructionElementSetups.forEach(construction::addConstructionElementSetup);
@@ -274,6 +285,91 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			this.restrictedSettings = settings;
 			saveSettings(settings);
 			applySettingsRestrictions(settings);
+		}
+	}
+
+	/**
+	 * Remove the exam restrictions (i.e., undo the changes from
+	 * {@link #applyTo(CommandDispatcher, AlgebraProcessor, PropertiesRegistry, Object,
+	 * Localization, Settings, AutocompleteProvider, ToolsProvider, GeoElementPropertiesFactory,
+	 * Construction, ScheduledPreviewFromInputBar, ContextMenuFactory)}).
+	 */
+	public void removeFrom(
+			@Nullable CommandDispatcher commandDispatcher,
+			@Nullable AlgebraProcessor algebraProcessor,
+			@Nullable PropertiesRegistry propertiesRegistry,
+			@Nullable Object context,
+			@Nullable Localization localization,
+			@Nullable Settings settings,
+			@Nullable AutocompleteProvider autoCompleteProvider,
+			@Nullable ToolsProvider toolsProvider,
+			@Nullable GeoElementPropertiesFactory geoElementPropertiesFactory,
+			@Nullable Construction construction,
+			@Nullable ScheduledPreviewFromInputBar scheduledPreviewFromInputBar,
+			@Nullable ContextMenuFactory contextMenuFactory) {
+		if (commandDispatcher != null) {
+			for (CommandFilter commandFilter : commandFilters) {
+				commandDispatcher.removeCommandFilter(commandFilter);
+			}
+			commandDispatcher.removeCommandArgumentFilter(examCommandArgumentFilter);
+			for (CommandArgumentFilter commandArgumentFilter : commandArgumentFilters) {
+				commandDispatcher.removeCommandArgumentFilter(commandArgumentFilter);
+			}
+		}
+		if (algebraProcessor != null) {
+			for (ExpressionFilter expressionFilter : inputExpressionFilters) {
+				algebraProcessor.removeInputExpressionFilter(expressionFilter);
+			}
+			for (ExpressionFilter expressionFilter : outputExpressionFilters) {
+				algebraProcessor.removeOutputExpressionFilter(expressionFilter);
+			}
+			algebraProcessor.reinitCommands();
+			if (equationBehaviour != null) { // only restore it if we overwrote it
+				algebraProcessor.getKernel().setEquationBehaviour(originalEquationBehaviour);
+			}
+		}
+		if (syntaxFilter != null) {
+			if (autoCompleteProvider != null) {
+				autoCompleteProvider.removeSyntaxFilter(syntaxFilter);
+			}
+			if (localization != null) {
+				localization.getCommandSyntax().removeSyntaxFilter(syntaxFilter);
+			}
+		}
+		if (autoCompleteProvider != null) {
+			autoCompleteProvider.setFilteredOperations(null);
+		}
+		if (propertiesRegistry != null) {
+			propertyRestrictions.forEach((name, restriction) -> {
+				Property property = propertiesRegistry.lookup(name, context);
+				if (property != null) {
+					restriction.removeFrom(property);
+				}
+			});
+		}
+		if (toolsProvider != null && toolsFilter != null) {
+			toolsProvider.removeToolsFilter(toolsFilter);
+		}
+		if (geoElementPropertiesFactory != null) {
+			geoElementPropertyFilters.forEach(geoElementPropertiesFactory::removeFilter);
+			propertyRestrictions.forEach((name, restriction) -> {
+				geoElementPropertiesFactory.removeRestriction(name, restriction);
+			});
+		}
+		if (construction != null) {
+			constructionElementSetups.forEach(construction::removeConstructionElementSetup);
+		}
+		if (scheduledPreviewFromInputBar != null) {
+			constructionElementSetups.forEach(
+					scheduledPreviewFromInputBar::removeConstructionElementSetup);
+		}
+		if (contextMenuFactory != null) {
+			for (ContextMenuItemFilter contextMenuItemFilter : contextMenuItemFilters) {
+				contextMenuFactory.removeFilter(contextMenuItemFilter);
+			}
+		}
+		if (settings != null) {
+			removeSettingsRestrictions(settings);
 		}
 	}
 
@@ -322,85 +418,6 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			savedSettings.restore(settings);
 			savedSettings = null;
 			restrictedSettings = null;
-		}
-	}
-
-	/**
-	 * Remove the exam restrictions (i.e., undo the changes from
-	 * {@link #applyTo(CommandDispatcher, AlgebraProcessor, PropertiesRegistry, Object,
-	 * Localization, Settings, AutocompleteProvider, ToolsProvider, GeoElementPropertiesFactory,
-	 * Construction, ScheduledPreviewFromInputBar, ContextMenuFactory)}).
-	 */
-	public void removeFrom(
-			@Nullable CommandDispatcher commandDispatcher,
-			@Nullable AlgebraProcessor algebraProcessor,
-			@Nullable PropertiesRegistry propertiesRegistry,
-			@Nullable Object context,
-			@Nullable Localization localization,
-			@Nullable Settings settings,
-			@Nullable AutocompleteProvider autoCompleteProvider,
-			@Nullable ToolsProvider toolsProvider,
-			@Nullable GeoElementPropertiesFactory geoElementPropertiesFactory,
-			@Nullable Construction construction,
-			@Nullable ScheduledPreviewFromInputBar scheduledPreviewFromInputBar,
-			@Nullable ContextMenuFactory contextMenuFactory) {
-		if (commandDispatcher != null) {
-			for (CommandFilter commandFilter : commandFilters) {
-				commandDispatcher.removeCommandFilter(commandFilter);
-			}
-			commandDispatcher.removeCommandArgumentFilter(examCommandArgumentFilter);
-			for (CommandArgumentFilter commandArgumentFilter : commandArgumentFilters) {
-				commandDispatcher.removeCommandArgumentFilter(commandArgumentFilter);
-			}
-		}
-		if (algebraProcessor != null) {
-			for (ExpressionFilter expressionFilter : inputExpressionFilters) {
-				algebraProcessor.removeInputExpressionFilter(expressionFilter);
-			}
-			for (ExpressionFilter expressionFilter : outputExpressionFilters) {
-				algebraProcessor.removeOutputExpressionFilter(expressionFilter);
-			}
-			algebraProcessor.reinitCommands();
-		}
-		if (syntaxFilter != null) {
-			if (autoCompleteProvider != null) {
-				autoCompleteProvider.removeSyntaxFilter(syntaxFilter);
-			}
-			if (localization != null) {
-				localization.getCommandSyntax().removeSyntaxFilter(syntaxFilter);
-			}
-		}
-		if (autoCompleteProvider != null) {
-			autoCompleteProvider.setFilteredOperations(null);
-		}
-		if (propertiesRegistry != null) {
-			propertyRestrictions.forEach((name, restriction) -> {
-				Property property = propertiesRegistry.lookup(name, context);
-				if (property != null) {
-					restriction.removeFrom(property);
-				}
-			});
-		}
-		if (toolsProvider != null && toolsFilter != null) {
-			toolsProvider.removeToolsFilter(toolsFilter);
-		}
-		if (geoElementPropertiesFactory != null) {
-			geoElementPropertyFilters.forEach(geoElementPropertiesFactory::removeFilter);
-		}
-		if (construction != null) {
-			constructionElementSetups.forEach(construction::removeConstructionElementSetup);
-		}
-		if (scheduledPreviewFromInputBar != null) {
-			constructionElementSetups.forEach(
-					scheduledPreviewFromInputBar::removeConstructionElementSetup);
-		}
-		if (contextMenuFactory != null) {
-			for (ContextMenuItemFilter contextMenuItemFilter : contextMenuItemFilters) {
-				contextMenuFactory.removeFilter(contextMenuItemFilter);
-			}
-		}
-		if (settings != null) {
-			removeSettingsRestrictions(settings);
 		}
 	}
 

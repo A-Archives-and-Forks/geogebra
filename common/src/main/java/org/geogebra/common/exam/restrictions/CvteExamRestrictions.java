@@ -4,6 +4,7 @@ import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Re
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics1;
 import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.Statistics2;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -14,12 +15,14 @@ import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.cvte.CvteCommandArgumentFilter;
+import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
 import org.geogebra.common.exam.restrictions.cvte.CvteSyntaxFilter;
 import org.geogebra.common.exam.restrictions.cvte.MatrixExpressionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.EquationBehaviour;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
 import org.geogebra.common.kernel.algos.ConstructionElement;
@@ -49,6 +52,8 @@ import org.geogebra.common.properties.GeoElementPropertyFilter;
 import org.geogebra.common.properties.PropertiesRegistry;
 import org.geogebra.common.properties.Property;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
+import org.geogebra.common.properties.impl.objects.QuadraticEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
 
 public final class CvteExamRestrictions extends ExamRestrictions {
@@ -69,9 +74,10 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createContextMenuItemFilters(),
 				createSyntaxFilter(),
 				createToolsFilter(),
-				null,
+				createPropertyRestrictions(),
 				createPropertyFilters(),
-				createConstructionElementSetups());
+				createConstructionElementSetups(),
+				createEquationBehaviour());
 	}
 
 	@Override
@@ -278,8 +284,18 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 		return Set.of(new ShowObjectPropertyFilter());
 	}
 
+	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
+		// "freeze" the equation form properties
+		return Map.of(LinearEquationFormProperty.NAME_KEY, new PropertyRestriction(true, null),
+				QuadraticEquationFormProperty.NAME_KEY, new PropertyRestriction(true, null));
+	}
+
 	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
 		return Set.of(new EuclidianVisibilitySetup());
+	}
+
+	private static EquationBehaviour createEquationBehaviour() {
+		return new CvteEquationBehaviour();
 	}
 
 	private static final class ShowObjectPropertyFilter implements GeoElementPropertyFilter {
