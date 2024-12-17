@@ -7,6 +7,7 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoBoolean;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoFunction;
+import org.geogebra.common.kernel.geos.GeoSymbolic;
 import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.spreadsheet.core.CellRenderableFactory;
 import org.geogebra.common.spreadsheet.core.CellRenderer;
@@ -39,13 +40,28 @@ public final class GeoElementCellRendererFactory implements CellRenderableFactor
 		}
 		Integer fontStyle = style.getFontStyle(row, column);
 		GeoElement geoElement = (GeoElement) data;
-		GColor background = style.getBackgroundColor(row, column,
-				geoElement.getBackgroundColor());
+		GColor background = style.getBackgroundColor(row, column, geoElement.getBackgroundColor());
 		Integer align = style.getAlignment(row, column);
 		if (align == null) {
 			align = (data instanceof GeoText) ? CellFormat.ALIGN_LEFT : CellFormat.ALIGN_RIGHT;
 		}
-		if (data instanceof GeoFunction) {
+		if (
+				// In Graphing, inputs starting with "=" are evaluated as GeoFunction,
+				// which should be rendered with LaTeX.
+				// E.g.: = 5 / 2
+				//       = x ^ 2
+				//       = sqrt(5)
+				//       = Integral(f)
+				data instanceof GeoFunction
+				// In CAS, input is handled differently producing GeoSymbolic instead of
+				// other objects like GeoFunction or GeoNumeric, which should be rendered with LaTeX.
+				// E.g.: = 5 / 2
+				//       = x ^ 2
+				//       = sqrt(5)
+				//       = Integral(f)
+				//       -5
+				|| data instanceof GeoSymbolic
+		) {
 			TeXFormula tf = new TeXFormula(geoElement
 					.toValueString(StringTemplate.latexTemplate));
 			return new SelfRenderable(laTeXRenderer,
