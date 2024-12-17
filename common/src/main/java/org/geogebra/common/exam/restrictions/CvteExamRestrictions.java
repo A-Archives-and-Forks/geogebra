@@ -7,7 +7,6 @@ import static org.geogebra.common.contextmenu.TableValuesContextMenuItem.Item.St
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.geogebra.common.SuiteSubApp;
@@ -24,7 +23,6 @@ import org.geogebra.common.gui.toolcategorization.ToolsProvider;
 import org.geogebra.common.gui.toolcategorization.impl.ToolCollectionSetFilter;
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.EquationBehaviour;
-import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.ScheduledPreviewFromInputBar;
 import org.geogebra.common.kernel.algos.AlgoCirclePointRadius;
 import org.geogebra.common.kernel.algos.ConstructionElement;
@@ -53,13 +51,8 @@ import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.properties.GeoElementPropertyFilter;
 import org.geogebra.common.properties.PropertiesRegistry;
 import org.geogebra.common.properties.Property;
-import org.geogebra.common.properties.ValueFilter;
 import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
-import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
-import org.geogebra.common.properties.impl.objects.QuadraticEquationFormProperty;
 import org.geogebra.common.properties.impl.objects.ShowObjectProperty;
-
-import edu.umd.cs.findbugs.annotations.OverrideMustInvoke;
 
 public final class CvteExamRestrictions extends ExamRestrictions {
 

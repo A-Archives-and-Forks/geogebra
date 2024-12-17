@@ -130,10 +130,6 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	 * @param propertyRestrictions An optional map of properties and restrictions
 	 * to be applied to them during the exam.
 	 */
-	// TODO The PropertyRestrictions provided here are only applied to properties that
-	//  exist (i.e., are registered with the PropertiesRegistry) at exam start time.
-	//  However, we also need any restrictions to be applied to properties created while
-	//  an exam is running (e.g., by GeoElementPropertiesFactory)
 	protected ExamRestrictions(
 			@Nonnull ExamType examType,
 			@Nullable Set<SuiteSubApp> disabledSubApps,
