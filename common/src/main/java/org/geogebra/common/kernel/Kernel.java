@@ -8,6 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeSet;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.geogebra.common.GeoGebraConstants;
 import org.geogebra.common.cas.GeoGebraCAS;
 import org.geogebra.common.euclidian.EuclidianView;
@@ -187,6 +190,8 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	/** Evaluator for ExpressionNode */
 	protected ExpressionNodeEvaluator expressionNodeEvaluator;
 
+	private EquationBehaviour equationBehaviour;
+
 	/**
 	 * CAS variable handling
 	 * 
@@ -317,7 +322,6 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 
 	private boolean wantAnimationStarted = false;
 
-	// setResolveUnkownVarsAsDummyGeos
 	private SymbolicMode symbolicMode = SymbolicMode.NONE;
 
 	private boolean updateEVAgain = false; // used for DrawEquationWeb and
@@ -711,7 +715,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 			double x = StringUtil.parseDouble(attrs.get("x"));
 			double y = StringUtil.parseDouble(attrs.get("y"));
 			double z = StringUtil.parseDouble(attrs.get("z"));
-			v.hasUpdatePrevilege = true;
+			v.hasUpdatePrivilege = true;
 			v.setCoords(x, y, z);
 			return true;
 
@@ -946,7 +950,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 *            original position
 	 * @param to
 	 *            target position
-	 * @return true if succesful
+	 * @return true if successful
 	 */
 	public boolean moveInConstructionList(int from, int to) {
 		return cons.moveInConstructionList(from, to);
@@ -1112,7 +1116,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * @param sb
 	 *            output buffer
 	 * @param tpl
-	 *            formated number with leading + or -. Skips 1 and -1.
+	 *            formatted number with leading + or -. Skips 1 and -1.
 	 */
 	final public void formatSignedCoefficient(double x, StringBuilder sb,
 			StringTemplate tpl) {
@@ -1134,7 +1138,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * @param sb
 	 *            output buffer
 	 * @param tpl
-	 *            formated number with leading + or -
+	 *            formatted number with leading + or -
 	 */
 	final public void formatSigned(double x, StringBuilder sb,
 			StringTemplate tpl) {
@@ -1154,7 +1158,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * @param sb
 	 *            output buffer
 	 * @param tpl
-	 *            formated number with leading +- or -+. Skips 1 and -1.
+	 *            formatted number with leading +- or -+. Skips 1 and -1.
 	 */
 	final public void formatSignedCoefficientPlusMinus(double x,
 			StringBuilder sb, StringTemplate tpl) {
@@ -1176,7 +1180,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * @param sb
 	 *            output buffer
 	 * @param tpl
-	 *            formated number with leading + or -
+	 *            formatted number with leading + or -
 	 */
 	final public void formatSignedPlusMinus(double x, StringBuilder sb,
 			StringTemplate tpl) {
@@ -1313,7 +1317,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 *            number
 	 * @param tpl
 	 *            string template
-	 * @return formated number as string
+	 * @return formatted number as string
 	 */
 	final public String formatRaw(double number, StringTemplate tpl) {
 		double x = number;
@@ -1437,7 +1441,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 *            number
 	 * @param tpl
 	 *            string template
-	 * @return formated string
+	 * @return formatted string
 	 */
 
 	final public String format(double x, StringTemplate tpl) {
@@ -1523,7 +1527,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 *            number format
 	 * @param tpl
 	 *            string template
-	 * @return formated number with e's and pi's replaced by suitable symbols
+	 * @return formatted number with e's and pi's replaced by suitable symbols
 	 */
 	final public String formatPiE(double x, NumberFormatAdapter numF,
 			StringTemplate tpl) {
@@ -2182,7 +2186,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	// //////////////////////////////////////////////
 
 	/**
-	 * Returns formated angle (in degrees if necessary)
+	 * Returns formatted angle (in degrees if necessary)
 	 *
 	 * @param phi
 	 *            angle in radians
@@ -2605,7 +2609,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	}
 
 	/**
-	 * @return whether unkown variables are resolved as GeoDummyVariable
+	 * @return whether unknown variables are resolved as GeoDummyVariable
 	 *         objects.
 	 * 
 	 * @see #setSilentMode(boolean)
@@ -3241,11 +3245,11 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	}
 
 	/**
-	 * @param coordStlye
+	 * @param coordStyle
 	 *            coordinate style
 	 */
-	public void setCoordStyle(int coordStlye) {
-		getApplication().getSettings().getGeneral().setCoordFormat(coordStlye);
+	public void setCoordStyle(int coordStyle) {
+		getApplication().getSettings().getGeneral().setCoordFormat(coordStyle);
 	}
 
 	/**
@@ -3347,11 +3351,20 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * 
 	 * @return animation manager
 	 */
-	final public AnimationManager getAnimatonManager() {
+	final public AnimationManager getAnimationManager() {
 		if (animationManager == null) {
 			animationManager = getApplication().newAnimationManager(this);
 		}
 		return animationManager;
+	}
+
+	/**
+	 * @deprecated use {@link #getAnimationManager()} instead
+	 * @return animation manager
+	 */
+	@Deprecated
+	public final AnimationManager getAnimatonManager() {
+		return getAnimationManager();
 	}
 
 	/**
@@ -3952,7 +3965,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * @param geo
 	 *            highlighted geo
 	 */
-	public final void notifyUpdateHightlight(GeoElement geo) {
+	public final void notifyUpdateHighlight(GeoElement geo) {
 		if (notifyViewsActive) {
 			for (View view : views) {
 				view.updateHighlight(geo);
@@ -4523,7 +4536,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	}
 
 	/**
-	 * Returns an XML represenation of the given macros in this kernel.
+	 * Returns an XML representation of the given macros in this kernel.
 	 * 
 	 * @param macros
 	 *            macros
@@ -4710,7 +4723,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 
 	/**
 	 * When function (or parabola) is transformed to curve, we need some good
-	 * estimate for which part of curve should be ploted
+	 * estimate for which part of curve should be plotted
 	 * 
 	 * @return lower bound for function -&gt; curve transform
 	 */
@@ -4998,7 +5011,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 
 	/**
 	 * 
-	 * @return true if algo (e.g. AlgoOrthoLinePointLine) doens't need to say
+	 * @return true if algo (e.g. AlgoOrthoLinePointLine) doesn't need to say
 	 *         that we work in (or parallel to) xOy plane
 	 */
 	final public boolean noNeedToSpecifyXOYPlane() {
@@ -5229,7 +5242,7 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 	 * @return standard precision
 	 */
 	public double getStandardPrecision() {
-		// overiden in Hololens
+		// overridden in Hololens
 		return STANDARD_PRECISION;
 	}
 
@@ -5243,6 +5256,21 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 
 	public GeoFunctionConverter getFunctionConverter() {
 		return functionConverter;
+	}
+
+	/**
+	 * @return The current equation behaviour (may change at runtime, e.g. during exams).
+	 */
+	@CheckForNull
+	public EquationBehaviour getEquationBehaviour() {
+		return equationBehaviour;
+	}
+
+	/**
+	 * Set the current equation behaviour (may change at runtime, e.g. during exams).
+	 */
+	public void setEquationBehaviour(@Nonnull EquationBehaviour equationBehaviour) {
+		this.equationBehaviour = equationBehaviour;
 	}
 
 	/**

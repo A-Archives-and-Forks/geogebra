@@ -164,7 +164,7 @@ public class AlgebraViewD extends AlgebraTree
 			// set the root
 			model.setRoot(rootDependency);
 
-			// add auxiliary node if neccessary
+			// add auxiliary node if necessary
 			if (app.showAuxiliaryObjects) {
 				if (!auxiliaryNode.isNodeChild(rootDependency)) {
 					model.insertNodeInto(auxiliaryNode, rootDependency,
@@ -342,7 +342,7 @@ public class AlgebraViewD extends AlgebraTree
 
 	/**
 	 * @param sortMode
-	 *            Either AlgebraView.MODE_DEPDENCY or AlgebraView.MODE_TYPE
+	 *            Either AlgebraView.MODE_DEPENDENCY or AlgebraView.MODE_TYPE
 	 */
 	@Override
 	public void setTreeMode(SortMode sortMode) {
@@ -426,7 +426,7 @@ public class AlgebraViewD extends AlgebraTree
 			expandPath(tp);
 			makeVisible(tp);
 			scrollPathToVisible(tp);
-			startEditingAtPath(tp); // opend editing text field
+			startEditingAtPath(tp); // open editing text field
 		}
 	}
 
@@ -965,7 +965,7 @@ public class AlgebraViewD extends AlgebraTree
 
 		settingsChanged = false;
 
-		// auxilliary objects
+		// auxiliary objects
 		setShowAuxiliaryObjects(showAuxiliaryObjectsSettings);
 
 		// collapsed nodes

@@ -211,11 +211,11 @@ public class FunctionParser {
 
 		}
 		// create variable object for label to make sure
-		// to handle lables like $A$1 correctly and keep the expression
+		// to handle labels like $A$1 correctly and keep the expression
 		Variable geoVar = new Variable(kernel, label);
 		ExpressionValue geoExp = geoVar.resolveAsExpressionValue(SymbolicMode.NONE,
 				false, !inputBoxParsing);
-		// numer of arguments
+		// number of arguments
 
 		if (order > 0) { // derivative
 							// n-th derivative of geo
@@ -584,7 +584,8 @@ public class FunctionParser {
 	 * @return number
 	 */
 	final public MyDouble convertIndexToNumber(String str) {
-		return new MyDouble(kernel, StringUtil.indexToNumber(str));
+		int val = StringUtil.indexToNumber(str);
+		return new MySpecialDouble(kernel, val, String.valueOf(val));
 	}
 
 	/**

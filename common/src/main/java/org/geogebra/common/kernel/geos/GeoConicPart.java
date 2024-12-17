@@ -184,7 +184,7 @@ public class GeoConicPart extends GeoConic
 	}
 
 	/**
-	 * Returns wheter c is equal to this conic part
+	 * Returns whether c is equal to this conic part
 	 */
 	// Michael Borcherds 2008-05-01
 	@Override
@@ -312,7 +312,7 @@ public class GeoConicPart extends GeoConic
 	}
 
 	/**
-	 * states wheter P lies on this conic part or not
+	 * states whether P lies on this conic part or not
 	 */
 	@Override
 	public boolean isOnPath(GeoPointND PI, double precision) {
@@ -432,7 +432,7 @@ public class GeoConicPart extends GeoConic
 				}
 			} else {
 				// two rays
-				// we take point at infinty
+				// we take point at infinity
 				/*
 				 * P.x = -lines[0].y; P.y = lines[0].x; P.z = 0.0;
 				 */
@@ -496,7 +496,7 @@ public class GeoConicPart extends GeoConic
 				}
 			} else {
 				// two rays
-				// we take point at infinty
+				// we take point at infinity
 				P.setX(-lines[0].y);
 				P.setY(lines[0].x);
 				P.setZ(0);

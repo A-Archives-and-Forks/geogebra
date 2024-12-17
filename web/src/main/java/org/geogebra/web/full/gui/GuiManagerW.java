@@ -937,16 +937,16 @@ public class GuiManagerW extends GuiManager
 	}
 
 	/**
-	 * Get the properties view and initilize the right tab.
+	 * Get the properties view and initialize the right tab.
 	 *
-	 * @param ot
+	 * @param optionType
 	 *            initial tab
 	 * @return properties view
 	 */
-	public PropertiesView getPropertiesView(OptionType ot) {
+	public PropertiesView getPropertiesView(OptionType optionType) {
 		if (propertiesView == null) {
 			// initPropertiesDialog();
-			propertiesView = newPropertiesViewW(getApp(), ot);
+			propertiesView = newPropertiesViewW(getApp(), optionType);
 		}
 		return propertiesView;
 	}
@@ -955,13 +955,13 @@ public class GuiManagerW extends GuiManager
 	 *
 	 * @param app1
 	 *            application
-	 * @param ot
+	 * @param optionType
 	 *            option type
 	 * @return new properties view
 	 */
 	protected PropertiesViewW newPropertiesViewW(final AppW app1,
-			OptionType ot) {
-		return new PropertiesViewW(app1, ot);
+			OptionType optionType) {
+		return new PropertiesViewW(app1, optionType);
 	}
 
 	@Override
@@ -2105,9 +2105,9 @@ public class GuiManagerW extends GuiManager
 	}
 
 	@Override
-	public void setUnbundledHeaderStyle(String style) {
+	public void updateUnbundledToolbarStyle() {
 		if (getUnbundledToolbar() != null) {
-			getUnbundledToolbar().setHeaderStyle(style);
+			getUnbundledToolbar().resetHeaderStyle();
 		}
 	}
 

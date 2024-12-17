@@ -396,7 +396,7 @@ public class EuclidianSettings extends AbstractSettings {
 
 	/**
 	 * @param neverShowMouseCoords
-	 *            whther to show mouse coordinates
+	 *            whether to show mouse coordinates
 	 */
 	public void setAllowShowMouseCoords(boolean neverShowMouseCoords) {
 		if (neverShowMouseCoords == this.allowShowMouseCoords) {
@@ -565,6 +565,21 @@ public class EuclidianSettings extends AbstractSettings {
 		return axisNumberingDistances[i];
 	}
 
+	/**
+	 * Sets axis numbering distance from double value
+	 * @param i the index of the axis
+	 * @param distValue the distance
+	 */
+	public void setAxisNumberingDistance(int i, double distValue) {
+		GeoNumeric dist = new GeoNumeric(app.getKernel().getConstruction(), distValue);
+		setAxisNumberingDistance(i, dist, true);
+	}
+
+	/**
+	 * Sets axis numbering distance
+	 * @param i the index of the axis
+	 * @param dist the distance
+	 */
 	public void setAxisNumberingDistance(int i, GeoNumberValue dist) {
 		setAxisNumberingDistance(i, dist, true);
 	}
@@ -1015,7 +1030,7 @@ public class EuclidianSettings extends AbstractSettings {
 	 * Set grid type: cartesian, polar, isometric, ....
 	 * 
 	 * @param type
-	 *            one fof EuclidianView.GRID_* constants
+	 *            one of EuclidianView.GRID_* constants
 	 */
 	public void setGridType(int type) {
 		if (gridType == type) {
@@ -1204,7 +1219,7 @@ public class EuclidianSettings extends AbstractSettings {
 	 * 
 	 * @param i
 	 *            index of axis (0 for x, 1 for y)
-	 * @return axis label including formating tags
+	 * @return axis label including formatting tags
 	 */
 	public String axisLabelForXML(int i) {
 		return axesLabels[i];

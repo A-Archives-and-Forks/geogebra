@@ -45,7 +45,7 @@ public abstract class GeoVec3D extends GeoElement
 	/**
 	 * For backward compatibility
 	 */
-	public boolean hasUpdatePrevilege = false;
+	public boolean hasUpdatePrivilege = false;
 	private StringBuilder sbToString = new StringBuilder(50);
 
 	/**
@@ -664,7 +664,7 @@ public abstract class GeoVec3D extends GeoElement
 
 	@Override
 	public boolean hasSpecialEditor() {
-		return toStringMode != Kernel.COORD_COMPLEX && (isIndependent()
+		return toStringMode != Kernel.COORD_COMPLEX && (isIndependent() && getDefinition() == null
 				|| getDefinition() != null && getDefinition().unwrap() instanceof MyVecNDNode);
 	}
 }

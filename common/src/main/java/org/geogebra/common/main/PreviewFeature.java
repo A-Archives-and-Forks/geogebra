@@ -21,7 +21,8 @@ public enum PreviewFeature {
 	LOG_AXES,
 	/** GGB-2255 */
 	GEOMETRIC_DISCOVERY,
-
+	/** APPS-6011 */
+	SCICALC_IN_SUITE,
 	/** APPS-4961 */
 	CVTE_EXAM,
 	/** APPS-4867 */
@@ -30,10 +31,10 @@ public enum PreviewFeature {
 	IB_EXAM,
 	/** APPS-5740 */
 	REALSCHULE_EXAM,
-	/**
-	 * APPS-6004
-	 */
-	ENGINEERING_BUTTON;
+	/** APPS-6004 */
+	ENGINEERING_BUTTON,
+	/** APPS-6134 */
+	REALSCHULE_TEMPLATES;
 
 	/**
 	 * Global flag to activate feature previews.

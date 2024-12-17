@@ -853,10 +853,10 @@ public class GeoList extends GeoElement
 	}
 
 	/**
-	 * Increases capcity of this list if necessary
+	 * Increases capacity of this list if necessary
 	 *
 	 * @param size
-	 *            capcity to ensure
+	 *            capacity to ensure
 	 */
 	final public void ensureCapacity(final int size) {
 		elements.ensureCapacity(size);
@@ -2718,10 +2718,10 @@ public class GeoList extends GeoElement
 	}
 
 	/**
-	 * Sets this angle shuld be drawn differently when right
+	 * Sets this angle should be drawn differently when right
 	 *
 	 * @param emphasizeRightAngle
-	 *            true iff this angle shuld be drawn differently when right
+	 *            true iff this angle should be drawn differently when right
 	 */
 	@Override
 	public void setEmphasizeRightAngle(boolean emphasizeRightAngle) {
@@ -2817,27 +2817,17 @@ public class GeoList extends GeoElement
 	 *            sequence variable that should be replaced by its free copy
 	 */
 	public void replaceChildrenByValues(GeoElement vars) {
-		if (this.elementType != GeoClass.FUNCTION
-				&& this.elementType != GeoClass.CURVE_CARTESIAN
-				&& this.elementType != GeoClass.CURVE_CARTESIAN3D
-				&& this.elementType != GeoClass.FUNCTION_NVAR
-				&& this.elementType != GeoClass.SURFACECARTESIAN
-				&& this.elementType != GeoClass.SURFACECARTESIAN3D
-				&& this.elementType != GeoClass.LIST
-				&& this.elementType != ELEMENT_TYPE_MIXED) {
-			return;
-		}
 		for (GeoElement listElement : this.elements) {
 			if (listElement instanceof CasEvaluableFunction) {
 				CasEvaluableFunction f = (CasEvaluableFunction) listElement;
 				f.replaceChildrenByValues(vars);
-			}
-
-			else if (listElement.isGeoList()) {
+			} else if (listElement.isGeoList()) {
 				((GeoList) listElement).replaceChildrenByValues(vars);
+			} else {
+				// definition may contain references to local variable -> discard
+				listElement.resetDefinition();
 			}
 		}
-
 	}
 
 	@Override

@@ -15,7 +15,7 @@ the Free Software Foundation.
  *
  * binary tree node for ExpressionValues (NumberValues, VectorValues)
  *
- * Created on 03. Oktober 2001, 09:37
+ * Created on 03. October 2001, 09:37
  */
 
 package org.geogebra.common.kernel.arithmetic;
@@ -211,7 +211,7 @@ public class ExpressionNode extends ValidExpression
 	 */
 	final public void setLeft(ExpressionValue l) {
 		left = l;
-		left.setInTree(true); // needed fot list operations eg k=2 then k {1,2}
+		left.setInTree(true); // needed for list operations eg k=2 then k {1,2}
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class ExpressionNode extends ValidExpression
 	}
 
 	/**
-	 * copy the whole tree structure except leafs
+	 * copy the whole tree structure except leaves
 	 * 
 	 * @param kernel1
 	 *            kernel
@@ -348,15 +348,15 @@ public class ExpressionNode extends ValidExpression
 	}
 
 	/**
-	 * Replaces all ExpressionNodes in tree that are leafs (=wrappers) by their
+	 * Replaces all ExpressionNodes in tree that are leaves (=wrappers) by their
 	 * leaf objects (of type ExpressionValue).
 	 */
-	final public void simplifyLeafs() {
+	final public void simplifyLeaves() {
 		if (left.isExpressionNode()) {
 			ExpressionNode node = (ExpressionNode) left;
 			if (node.leaf) {
 				left = node.left;
-				simplifyLeafs();
+				simplifyLeaves();
 			}
 		}
 
@@ -365,7 +365,7 @@ public class ExpressionNode extends ValidExpression
 				ExpressionNode node = (ExpressionNode) right;
 				if (node.leaf) {
 					right = node.left;
-					simplifyLeafs();
+					simplifyLeaves();
 				}
 			}
 		}
@@ -419,7 +419,7 @@ public class ExpressionNode extends ValidExpression
 	public final void resolveVariables(EvalInfo info) {
 		doResolveVariables(info);
 		simplifyAndEvalCommands(info);
-		simplifyLeafs();
+		simplifyLeaves();
 	}
 
 	private void doResolveVariables(EvalInfo info) {
@@ -689,7 +689,7 @@ public class ExpressionNode extends ValidExpression
 	}
 
 	/**
-	 * Replaces all XCOORD, YCOORD, ZCOORD nodes by mutliplication nodes, e.g.
+	 * Replaces all XCOORD, YCOORD, ZCOORD nodes by multiplication nodes, e.g.
 	 * x(x+1) becomes x*(x+1). The given function variables for "x", "y", "z"
 	 * are used in this process.
 	 * 
@@ -1466,7 +1466,7 @@ public class ExpressionNode extends ValidExpression
 	/**
 	 * Returns a string representation of this node in LaTeX syntax. Note: the
 	 * resulting string may contain special unicode characters like greek
-	 * characters or special signs for integer exponents. These sould be handled
+	 * characters or special signs for integer exponents. These should be handled
 	 * afterwards!
 	 * 
 	 * @param symbolic
@@ -2269,7 +2269,7 @@ public class ExpressionNode extends ValidExpression
 	/**
 	 * @param v2
 	 *            clause
-	 * @return result of conjuction
+	 * @return result of conjunction
 	 */
 	public ExpressionNode and(ExpressionValue v2) {
 		return new ExpressionNode(kernel, this, Operation.AND, v2);
@@ -3156,7 +3156,7 @@ public class ExpressionNode extends ValidExpression
 	/**
 	 * @param vars
 	 *            forbidden vars
-	 * @return whether one of the forbidden vars appers in expression node
+	 * @return whether one of the forbidden vars appears in expression node
 	 */
 	public boolean containsFreeFunctionVariableOtherThan(
 			FunctionVariable[] vars) {
@@ -3191,7 +3191,7 @@ public class ExpressionNode extends ValidExpression
 	 * @param ev
 	 *            needle (probably function variable, but not necessary to
 	 *            check)
-	 * @return whther the array does NOT contain the variable
+	 * @return whether the array does NOT contain the variable
 	 */
 	public static boolean doesNotInclude(FunctionVariable[] vars,
 			ExpressionValue ev) {
@@ -3252,15 +3252,15 @@ public class ExpressionNode extends ValidExpression
 	/**
 	 * @param parts
 	 *            output parameter
-	 * @param expandPlus
-	 *            whether to expand a/b+c/d to (ad+bc)/bd
+	 * @param expandPlusAndDecimals
+	 *            whether to expand a/b+c/d to (ad+bc)/bd and convert 0.5 to 1/2
 	 */
-	public void getFraction(ExpressionValue[] parts, boolean expandPlus) {
+	public void getFraction(ExpressionValue[] parts, boolean expandPlusAndDecimals) {
 		if (this.resolve != null && this.resolve.isExpressionNode()) {
-			this.resolve.wrap().getFraction(parts, expandPlus);
+			this.resolve.wrap().getFraction(parts, expandPlusAndDecimals);
 			return;
 		}
-		Fractions.getFraction(parts, this, expandPlus);
+		Fractions.getFraction(parts, this, expandPlusAndDecimals);
 	}
 
 	/**
@@ -3568,7 +3568,7 @@ public class ExpressionNode extends ValidExpression
 
 	/**
 	 * Check if the fraction is a proper fraction
-	 * @return Wheter it is a proper fraction like 3/5 or -2/3
+	 * @return whether it is a proper fraction like 3/5 or -2/3
 	 */
 	public boolean isProperFraction() {
 		ExpressionValue unsigned = getUnsigned(this);

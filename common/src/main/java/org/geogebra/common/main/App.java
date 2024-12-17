@@ -2,7 +2,6 @@ package org.geogebra.common.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -37,10 +36,8 @@ import org.geogebra.common.euclidian.event.PointerEventType;
 import org.geogebra.common.euclidian.inline.InlineFormulaController;
 import org.geogebra.common.euclidian.inline.InlineTableController;
 import org.geogebra.common.euclidian.inline.InlineTextController;
-import org.geogebra.common.euclidian.smallscreen.AdjustScreen;
 import org.geogebra.common.euclidian.smallscreen.AdjustViews;
 import org.geogebra.common.euclidian3D.EuclidianView3DInterface;
-import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.ExamFeatureRestriction;
 import org.geogebra.common.exam.restrictions.ExamRestrictable;
 import org.geogebra.common.export.pstricks.GeoGebraExport;
@@ -109,11 +106,6 @@ import org.geogebra.common.kernel.statistics.AlgoTableToChart;
 import org.geogebra.common.main.MyError.Errors;
 import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.main.error.ErrorHelper;
-import org.geogebra.common.main.exam.ExamEnvironment;
-import org.geogebra.common.main.exam.restriction.ExamRestrictionFactory;
-import org.geogebra.common.main.exam.restriction.RestrictExam;
-import org.geogebra.common.main.exam.restriction.Restrictable;
-import org.geogebra.common.main.provider.ExamProvider;
 import org.geogebra.common.main.settings.AbstractSettings;
 import org.geogebra.common.main.settings.ConstructionProtocolSettings;
 import org.geogebra.common.main.settings.DefaultSettings;
@@ -158,7 +150,7 @@ import com.himamis.retex.editor.share.util.Unicode;
  * Represents an application window, gives access to views and system stuff
  */
 public abstract class App implements UpdateSelection, AppInterface, EuclidianHost,
-		ExamRestrictable, ExamProvider, ToolsProvider {
+		ExamRestrictable, ToolsProvider {
 
 	/** Url for wiki article about functions */
 	public static final String WIKI_OPERATORS = "Predefined_Functions_and_Operators";
@@ -336,11 +328,11 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	protected boolean showInputHelpToggle = true;
 	/**
-	 * whether righ click is enabled
+	 * whether right click is enabled
 	 */
 	protected boolean rightClickEnabled = true;
 	/**
-	 * whether righ click is enabled for Algebra View
+	 * whether right click is enabled for Algebra View
 	 */
 	protected boolean rightClickEnabledForAV = true;
 	/**
@@ -393,19 +385,11 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	protected HashMap<Integer, Boolean> showConstProtNavigationNeedsUpdate = null;
 	protected HashMap<Integer, Boolean> showConsProtNavigation = null;
 	protected AppCompanion companion;
-	@Deprecated // use PreviewFeature instead
-	protected boolean prerelease;
 
 	private boolean showResetIcon = false;
 	private ParserFunctions pf;
 	private ParserFunctions pfInputBox;
 	private SpreadsheetTraceManager traceManager;
-
-	// Exam
-	@Deprecated // use ExamController instead
-	private ExamEnvironment exam;
-	@Deprecated // use ExamController instead
-	protected RestrictExam restrictions;
 
 	// moved to Application from EuclidianView as the same value is used across
 	// multiple EVs
@@ -452,8 +436,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	// TODO: move following methods somewhere else
 	private String tubeID = null;
 	private AdjustViews adjustViews = null;
-	private AdjustScreen adjustScreen = null;
-	private AdjustScreen adjustScreen2 = null;
 	final static public long CE_ID_COUNTER_START = 1;
 	private long ceIDcounter = CE_ID_COUNTER_START;
 	private int nextVariableID = 1;
@@ -991,8 +973,8 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	/**
 	 * store undo info only if view coord system has changed
 	 */
-	public void storeUndoInfoIfSetCoordSystemOccured() {
-		if (storeUndoInfoForSetCoordSystem == CoordSystemStateForUndo.SET_COORD_SYSTEM_OCCURED) {
+	public void storeUndoInfoIfSetCoordSystemOccurred() {
+		if (storeUndoInfoForSetCoordSystem == CoordSystemStateForUndo.SET_COORD_SYSTEM_OCCURRED) {
 			storeUndoInfo();
 		}
 
@@ -1002,9 +984,9 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	/**
 	 * tells the application that a view coord system has changed
 	 */
-	public void setCoordSystemOccured() {
+	public void setCoordSystemOccurred() {
 		if (storeUndoInfoForSetCoordSystem == CoordSystemStateForUndo.MAY_SET_COORD_SYSTEM) {
-			storeUndoInfoForSetCoordSystem = CoordSystemStateForUndo.SET_COORD_SYSTEM_OCCURED;
+			storeUndoInfoForSetCoordSystem = CoordSystemStateForUndo.SET_COORD_SYSTEM_OCCURRED;
 		}
 	}
 
@@ -1022,7 +1004,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	public void setPropertiesOccured() {
-		getUndoManager().setPropertiesOccured();
+		getUndoManager().setPropertiesOccurred();
 	}
 
 	/**
@@ -2123,6 +2105,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		kernel = companion.newKernel();
 		kernel.setAngleUnit(appConfig.getDefaultAngleUnit());
 		kernel.setSymbolicMode(appConfig.getSymbolicMode());
+		kernel.setEquationBehaviour(appConfig.getEquationBehaviour());
 		// ensure that the selection manager is created
 		getSelectionManager();
 	}
@@ -2428,7 +2411,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 
 	/**
 	 * @param type
-	 *            what properties pannel should be showing (object, defults,
+	 *            what properties panel should be showing (object, defaults,
 	 *            advanced, ...)
 	 */
 	public void setPropertiesViewPanel(OptionType type) {
@@ -3088,7 +3071,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 *            possibly localized text
 	 * @param translate
 	 *            whether to convert from localized
-	 * @return sript object
+	 * @return script object
 	 */
 	public Script createScript(ScriptType type, String scriptText0,
 			boolean translate) {
@@ -3155,7 +3138,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * This should not be used, just overriden in AppW
+	 * This should not be used, just overridden in AppW
 	 */
 	public void scheduleUpdateConstruction() {
 		kernel.getConstruction().updateConstructionLaTeX();
@@ -3189,7 +3172,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * @return selction manager
+	 * @return selection manager
 	 */
 	public SelectionManager getSelectionManager() {
 		if (selection == null) {
@@ -3514,8 +3497,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 * @return icon
 	 */
 	public GImageIcon wrapGetModeIcon(int mode) {
-		// TODO: debug message commented out from Trunk version, probably loops
-		// Log.debug("App.wrapGetModeIcon must be overriden");
 		return null;
 	}
 
@@ -3690,16 +3671,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return false;
 	}
 
-	/**
-	 * @param f unused
-	 * @return false
-	 * @deprecated use {@link PreviewFeature}
-	 */
-	@Deprecated // to be removed in APPS-6110
-	public final boolean has(Feature f) {
-		return false;
-	}
-
 	public boolean isUnbundled() {
 		return false;
 	}
@@ -3798,7 +3769,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 			return false;
 		}
 
-		AnimationManager animMgr = kernel.getAnimatonManager();
+		AnimationManager animMgr = kernel.getAnimationManager();
 		if (animMgr.isRunning()) {
 			animMgr.stopAnimation();
 		} else {
@@ -3864,7 +3835,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 					getActiveEuclidianView().repaint();
 
 					if (num.isAnimating()) {
-						num.getKernel().getAnimatonManager().startAnimation();
+						num.getKernel().getAnimationManager().startAnimation();
 					}
 				}
 
@@ -3906,106 +3877,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 */
 	public boolean showAutoCreatedSlidersInEV() {
 		return true;
-	}
-
-	@Deprecated // use ExamController instead
-	@Override // from deprecated ExamProvider
-	public ExamEnvironment getExam() {
-		return exam;
-	}
-
-	@Deprecated // use ExamController instead
-	public boolean isExam() {
-		return getExam() != null;
-	}
-
-	@Deprecated // use ExamController instead
-	public boolean isExamStarted() {
-		return isExam() && getExam().isStarted();
-	}
-
-	@Deprecated // use ExamController instead
-	public void setExam(ExamEnvironment exam) {
-		this.exam = exam;
-	}
-
-	@Deprecated // use ExamController instead
-	public void setNewExam() {
-		setNewExam(ExamType.GENERIC);
-	}
-
-	/**
-	 * Initializes a new ExamEnvironment instance.
-	 */
-	@Deprecated // use ExamController instead
-	public void setNewExam(ExamType region) {
-		ExamEnvironment examEnvironment = newExamEnvironment();
-		examEnvironment.setExamRegion(region);
-		initRestrictions(region);
-		examEnvironment.setRestrictionModel(restrictions.getModel());
-		setExam(examEnvironment);
-		examEnvironment.setConfig(getConfig());
-		CommandDispatcher commandDispatcher =
-				getKernel().getAlgebraProcessor().getCommandDispatcher();
-		examEnvironment.setCommandDispatcher(commandDispatcher);
-		examEnvironment.setCopyPaste(getCopyPaste());
-	}
-
-	@Deprecated // use ExamController instead
-	protected ExamEnvironment newExamEnvironment() {
-		return new ExamEnvironment(getLocalization());
-	}
-
-	@Deprecated // use ExamController instead
-	private void initRestrictions(ExamType region) {
-		RestrictExam oldRestrictions = restrictions;
-		restrictions = ExamRestrictionFactory.create(region);
-		if (oldRestrictions != null) {
-			oldRestrictions.getRestrictables().forEach(restrictions::register);
-		}
-	}
-
-	/**
-	 * Register a component to be restriced during exam
-	 *
-	 * @param restrictable the component to restrict.
-	 */
-	@Deprecated // use ExamController instead
-	public void registerRestrictable(Restrictable restrictable) {
-		if (restrictions == null) {
-			ExamEnvironment exam = getExam();
-			ExamType region = exam != null && exam.isStarted() ? exam.getExamRegion() : null;
-			restrictions = ExamRestrictionFactory.create(region);
-		}
-		restrictions.register(restrictable);
-	}
-
-	/**
-	 * Start exam with current timestamp.
-	 */
-	@Deprecated // use ExamController instead
-	public void startExam() {
-		getExam().prepareExamForStarting();
-		getExam().setStart((new Date()).getTime());
-		restrictions.enable();
-	}
-
-	/**
-	 * If an exam is active, re-enable any exam restrictions.
-	 */
-	@Deprecated // use ExamController instead
-	public void reEnableExamRestrictions() {
-		if (getExam() != null && isExamStarted() && restrictions != null) {
-			restrictions.enable();
-		}
-	}
-
-	/**
-	 * Show exam welcome message.
-	 */
-	@Deprecated // use ExamController instead
-	public void examWelcome() {
-		// overridden in platforms supporting exam
 	}
 
 	/**
@@ -4107,11 +3978,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		return StringTemplate.screenReaderAscii;
 	}
 
-	@Deprecated // restrictions are handled by ExamController
-	public void clearRestrictions() {
-		restrictions.disable();
-	}
-
 	/**
 	 *
 	 * @param e event to examine
@@ -4180,7 +4046,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		/** tells that the mouse has been pressed */
 		MAY_SET_COORD_SYSTEM,
 		/** tells that the coord system has changed */
-		SET_COORD_SYSTEM_OCCURED,
+		SET_COORD_SYSTEM_OCCURRED,
 		/** no particular state */
 		NONE
 	}
@@ -4204,6 +4070,12 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		try {
 			// make sure objects are displayed in the correct View
 			setActiveView(App.VIEW_EUCLIDIAN);
+
+			// reset equation behaviour to app defaults (to clear out any overrides applied
+			// from construction defaults in previously opened files)
+			if (appConfig != null) {
+				kernel.setEquationBehaviour(appConfig.getEquationBehaviour());
+			}
 
 			getXMLio().readZipFromString(zipFile);
 
@@ -4252,7 +4124,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	 * Get url to eg play an MP3.
 	 *
 	 * @param id
-	 *            matrial ID
+	 *            material ID
 	 * @return download URL
 	 */
 	public String getURLforID(String id) {
@@ -4362,34 +4234,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 * Adjust widgets on screen.
-	 *
-	 * @param reset
-	 *            whether to reset the stored offsets
-	 */
-	public void adjustScreen(boolean reset) {
-		if (!Feature.ADJUST_WIDGETS.isAvailable()) {
-			return;
-		}
-		if (adjustScreen == null) {
-			adjustScreen = new AdjustScreen(getEuclidianView1());
-		}
-		if (!reset) {
-			adjustScreen.restartButtons();
-		}
-		adjustScreen.apply(reset);
-		if (this.hasEuclidianView2(1)) {
-			if (adjustScreen2 == null) {
-				adjustScreen2 = new AdjustScreen(getEuclidianView2(1));
-			}
-			if (!reset) {
-				adjustScreen2.restartButtons();
-			}
-			adjustScreen2.apply(reset);
-		}
-	}
-
-	/**
 	 * Adjusts Algebra and Euclidian View next to or bellow each other
 	 * (Portrait) according to app size.
 	 *
@@ -4402,11 +4246,8 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 		if (adjustViews == null) {
 			adjustViews = new AdjustViews(this);
 		}
-
 		adjustViews.apply(force);
-		adjustScreen(reset);
-
-		return adjustViews.isPortait();
+		return adjustViews.isPortrait();
 	}
 
 	/**
@@ -4586,7 +4427,7 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 
 	/**
 	 * @return a tool collection factory
-	 * Depreacted. Use {@link #getAvailableTools()} instead.
+	 * @deprecated Use {@link #getAvailableTools()} instead.
 	 */
 	@Deprecated
 	public ToolCollectionFactory createToolCollectionFactory() {
@@ -4866,15 +4707,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 	}
 
 	/**
-	 *
-	 * @return true if is prerelease
-	 */
-	@Deprecated // use PreviewFeature instead
-	public boolean isPrerelease() {
-		return prerelease;
-	}
-
-	/**
 	 * If the settingsUpdater is already initialized then returns this field,
 	 * otherwise
 	 * creates a new SettingsUpdaterBuilder,
@@ -5062,20 +4894,6 @@ public abstract class App implements UpdateSelection, AppInterface, EuclidianHos
 
 	public void closeMenuHideKeyboard() {
 		// nothing here
-	}
-
-	/**
-	 * Updates the objects that depend on the command dispatcher.
-	 *
-	 * @param commandDispatcher command dispatcher
-	 */
-	@Deprecated
-	public void onCommandDispatcherSet(CommandDispatcher commandDispatcher) {
-		ExamEnvironment examEnvironment = getExam();
-		if (examEnvironment != null) {
-			examEnvironment.setCommandDispatcher(commandDispatcher);
-			examEnvironment.setCopyPaste(getCopyPaste());
-		}
 	}
 
 	@Override

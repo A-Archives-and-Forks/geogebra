@@ -43,8 +43,8 @@ import java.util.Arrays;
  *
  * There is also a "fast" version of all decode methods that works the same way
  * as the normal ones, but har a few demands on the decoded input. Normally
- * though, these fast verions should be used if the source if the input is known
- * and it hasn't bee tampered with.<br>
+ * though, these fast versions should be used if the source if the input is known
+ * and it hasn't been tampered with.<br>
  * <br>
  *
  * If you find the code useful or you find a bug, please send me a note at
@@ -127,7 +127,7 @@ public class Base64 {
 
 		// Encode even 24-bits
 		for (int s = 0, d = 0, cc = 0; s < eLen;) {
-			// Copy next three bytes into lower 24 bits of int, paying attension
+			// Copy next three bytes into lower 24 bits of int, paying attention
 			// to sign.
 			int i = (sArr[s++] & 0xff) << 16 | (sArr[s++] & 0xff) << 8
 					| (sArr[s++] & 0xff);
@@ -235,7 +235,7 @@ public class Base64 {
 	}
 
 	/**
-	 * Decodes a BASE64 encoded char array that is known to be resonably well
+	 * Decodes a BASE64 encoded char array that is known to be reasonably well
 	 * formatted. The method is about twice as fast as {@link #decode(char[])}.
 	 * The preconditions are:<br>
 	 * + The array must have a line length of 76 chars OR no line separators at
@@ -348,7 +348,7 @@ public class Base64 {
 
 		// Encode even 24-bits
 		for (int s = 0, d = 0, cc = 0; s < eLen;) {
-			// Copy next three bytes into lower 24 bits of int, paying attension
+			// Copy next three bytes into lower 24 bits of int, paying attention
 			// to sign.
 			int i = (sArr[s++] & 0xff) << 16 | (sArr[s++] & 0xff) << 8
 					| (sArr[s++] & 0xff);
@@ -455,7 +455,7 @@ public class Base64 {
 	}
 
 	/**
-	 * Decodes a BASE64 encoded byte array that is known to be resonably well
+	 * Decodes a BASE64 encoded byte array that is known to be reasonably well
 	 * formatted. The method is about twice as fast as {@link #decode(byte[])}.
 	 * The preconditions are:<br>
 	 * + The array must have a line length of 76 chars OR no line separators at
@@ -637,7 +637,7 @@ public class Base64 {
 	}
 
 	/**
-	 * Decodes a BASE64 encoded string that is known to be resonably well
+	 * Decodes a BASE64 encoded string that is known to be reasonably well
 	 * formatted. The method is about twice as fast as {@link #decode(String)}.
 	 * The preconditions are:<br>
 	 * + The array must have a line length of 76 chars OR no line separators at
