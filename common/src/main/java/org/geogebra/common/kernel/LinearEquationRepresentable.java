@@ -99,14 +99,14 @@ public interface LinearEquationRepresentable {
 	/**
 	 * Set the equation form to {@code IMPLICIT}.
 	 */
-	default void setToImplicit() {
+	default void setToImplicitForm() {
 		setEquationForm(Form.IMPLICIT);
 	}
 
 	/**
 	 * Set the equation form to {@code EXPLICIT}.
 	 */
-	default void setToExplicit() {
+	default void setToExplicitForm() {
 		setEquationForm(Form.EXPLICIT);
 	}
 
@@ -114,19 +114,19 @@ public interface LinearEquationRepresentable {
 	 * Set the equation form to {@code PARAMETRIC}.
 	 * @param parameter The parameter name.
 	 */
-	void setToParametric(String parameter);
+	void setToParametricForm(String parameter);
 
 	/**
 	 * Set the equation form to {@code GENERAL}.
 	 */
-	default void setToGeneral() {
+	default void setToGeneralForm() {
 		setEquationForm(Form.GENERAL);
 	}
 
 	/**
 	 * Set the equation form to {@code USER}.
 	 */
-	default void setToUser() {
+	default void setToUserForm() {
 		setEquationForm(Form.USER);
 	}
 
@@ -140,15 +140,15 @@ public interface LinearEquationRepresentable {
 	 */
 	default boolean setEquationFormFromXML(String equationForm, String parameter) {
 		if ("implicit".equals(equationForm)) {
-			setToImplicit();
+			setToImplicitForm();
 		} else if ("explicit".equals(equationForm)) {
-			setToExplicit();
+			setToExplicitForm();
 		} else if ("parametric".equals(equationForm)) {
-			setToParametric(parameter);
+			setToParametricForm(parameter);
 		} else if ("general".equals(equationForm)) {
-			setToGeneral();
+			setToGeneralForm();
 		} else if ("user".equals(equationForm)) {
-			setToUser();
+			setToUserForm();
 		} else {
 			return false;
 		}

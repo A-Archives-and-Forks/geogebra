@@ -1305,7 +1305,7 @@ public class CommandsTestCommon extends BaseCommandTest {
 		t("Dilate[ (4,5), 2,(1,1) ]", "(7, 9)");
 		t("Dilate[ (4,5), 2 ]", "(8, 10)");
 		t("r=Dilate(y=-3x-6,2)", "y = -3x - 12");
-		((GeoLine) lookup("r")).setToUser();
+		((GeoLine) lookup("r")).setToUserForm();
 		t("r", "3x + y = -12");
 	}
 
