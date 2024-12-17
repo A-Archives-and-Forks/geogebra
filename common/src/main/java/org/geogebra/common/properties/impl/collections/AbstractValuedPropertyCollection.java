@@ -106,5 +106,6 @@ abstract class AbstractValuedPropertyCollection<T extends ValuedProperty<S>, S> 
 
 	@Override
 	public void setFrozen(boolean frozen) {
+		// ignore
 	}
 }

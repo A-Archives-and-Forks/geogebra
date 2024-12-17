@@ -15,6 +15,9 @@ public class QuadraticEquationFormDelegate extends AbstractGeoElementDelegate {
 		if (element instanceof GeoList) {
 			return isApplicableToGeoList((GeoList) element);
 		}
-		return element instanceof QuadraticEquationRepresentable;
+		if (element instanceof QuadraticEquationRepresentable) {
+			return element.getKernel().getEquationBehaviour().allowsChangingEquationFormsByUser();
+		}
+		return false;
 	}
 }

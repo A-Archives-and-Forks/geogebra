@@ -78,6 +78,5 @@ public interface EquationBehaviour {
 	 * split this into multiple methods.
 	 * @return true if the equation forms can be changed, false otherwise.
 	 */
-	// TODO do we really need this?
 	boolean allowsChangingEquationFormsByUser();
 }

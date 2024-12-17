@@ -15,6 +15,10 @@ public class LinearEquationFormDelegate extends AbstractGeoElementDelegate {
 		if (element instanceof GeoList) {
 			return isApplicableToGeoList((GeoList) element);
 		}
-		return element instanceof LinearEquationRepresentable;
+		if (element instanceof LinearEquationRepresentable) {
+			// see e.g., APPS-1691
+			return element.getKernel().getEquationBehaviour().allowsChangingEquationFormsByUser();
+		}
+		return false;
 	}
 }
