@@ -53,8 +53,8 @@ public final class GeoElementCellRendererFactory implements CellRenderableFactor
 				//       = sqrt(5)
 				//       = Integral(f)
 				data instanceof GeoFunction
-				// In CAS, input is handled differently producing GeoSymbolic instead of
-				// other objects like GeoFunction or GeoNumeric, which should be rendered with LaTeX.
+				// In CAS, input is handled differently producing GeoSymbolic instead of other
+				// objects like GeoFunction or GeoNumeric, which should be rendered with LaTeX.
 				// E.g.: = 5 / 2
 				//       = x ^ 2
 				//       = sqrt(5)
