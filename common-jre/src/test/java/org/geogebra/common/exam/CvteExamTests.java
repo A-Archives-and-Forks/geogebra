@@ -9,12 +9,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.geogebra.common.SuiteSubApp;
 import org.geogebra.common.euclidian.EuclidianConstants;
+import org.geogebra.common.kernel.LinearEquationRepresentable;
+import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.properties.Property;
+import org.geogebra.common.properties.PropertyCollection;
+import org.geogebra.common.properties.factory.GeoElementPropertiesFactory;
+import org.geogebra.common.properties.factory.PropertiesArray;
+import org.geogebra.common.properties.impl.collections.NamedEnumeratedPropertyCollection;
+import org.geogebra.common.properties.impl.objects.LinearEquationFormProperty;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -122,5 +131,38 @@ public final class CvteExamTests extends BaseExamTests {
         assertFalse(restrictedGeoElement.isEuclidianToggleable());
         assertNull(geoElementPropertiesFactory.createShowObjectProperty(
                 app.getLocalization(), List.of(restrictedGeoElement)));
+    }
+
+    @Test
+    public void testEquationForm() {
+        GeoElement line = evaluateGeoElement("y = 4");
+        assertEquals(LinearEquationRepresentable.Form.USER,
+                ((LinearEquationRepresentable) line).getEquationForm());
+        GeoElement parabola = evaluateGeoElement("y = x^2");
+        assertEquals(QuadraticEquationRepresentable.Form.USER,
+                ((QuadraticEquationRepresentable) parabola).getEquationForm());
+        GeoElement circle = evaluateGeoElement("x^2 + y^2 = 4");
+        assertEquals(QuadraticEquationRepresentable.Form.USER,
+                ((QuadraticEquationRepresentable) circle).getEquationForm());
+    }
+
+    @Test
+    public void testEquationFormPropertyFrozen() {
+        GeoElement line = evaluateGeoElement("y = 4");
+        PropertiesArray properties = geoElementPropertiesFactory
+                .createGeoElementProperties(algebraProcessor, app.getLocalization(), List.of(line));
+        LinearEquationFormProperty equationFormProperty = null;
+        for (Property property : properties.getProperties()) {
+            if ((property instanceof NamedEnumeratedPropertyCollection<?,?>)) {
+                Property firstProperty = ((NamedEnumeratedPropertyCollection) property)
+                        .getProperties()[0];
+                if (firstProperty instanceof LinearEquationFormProperty) {
+                    equationFormProperty = (LinearEquationFormProperty) firstProperty;
+                    break;
+                }
+            }
+        }
+        assertNotNull(equationFormProperty);
+        assertTrue(equationFormProperty.isFrozen());
     }
 }

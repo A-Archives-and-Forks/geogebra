@@ -75,8 +75,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	private final Map<String, PropertyRestriction> propertyRestrictions;
 	private final Set<GeoElementPropertyFilter> geoElementPropertyFilters;
 	private final Set<ConstructionElementSetup> constructionElementSetups;
-//    private final @Nullable EquationBehaviour equationBehaviour;
-//    private @Nullable EquationBehaviour originalEquationBehaviour;
+    private final @Nullable EquationBehaviour equationBehaviour;
+    private @Nullable EquationBehaviour originalEquationBehaviour;
 	private RestorableSettings savedSettings;
 	private Settings restrictedSettings = null;
 
@@ -150,7 +150,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 			@Nullable Map<String, PropertyRestriction> propertyRestrictions,
 			@Nullable Set<GeoElementPropertyFilter> geoElementPropertyFilters,
 			@Nullable Set<ConstructionElementSetup> constructionElementSetups,
-			@Nullable EquationBehaviour equationBehaviour) { // TODO remove again?
+			@Nullable EquationBehaviour equationBehaviour) {
 		this.examType = examType;
 		this.disabledSubApps = disabledSubApps != null ? disabledSubApps : Set.of();
 		this.defaultSubApp = defaultSubApp != null ? defaultSubApp : SuiteSubApp.GRAPHING;
@@ -173,7 +173,7 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				? geoElementPropertyFilters : Set.of();
 		this.constructionElementSetups = constructionElementSetups != null
 				? constructionElementSetups : Set.of();
-//		this.equationBehaviour = equationBehaviour;
+		this.equationBehaviour = equationBehaviour;
 	}
 
 	/**
@@ -240,10 +240,10 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				algebraProcessor.addOutputExpressionFilter(expressionFilter);
 			}
 			algebraProcessor.reinitCommands();
-//			if (equationBehaviour != null) {
-//				originalEquationBehaviour = algebraProcessor.getKernel().getEquationBehaviour();
-//				algebraProcessor.getKernel().setEquationBehaviour(equationBehaviour);
-//			}
+			if (equationBehaviour != null) {
+				originalEquationBehaviour = algebraProcessor.getKernel().getEquationBehaviour();
+				algebraProcessor.getKernel().setEquationBehaviour(equationBehaviour);
+			}
 		}
 		if (syntaxFilter != null) {
 			if (autoCompleteProvider != null) {
@@ -328,9 +328,9 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 				algebraProcessor.removeOutputExpressionFilter(expressionFilter);
 			}
 			algebraProcessor.reinitCommands();
-//			if (equationBehaviour != null) { // only restore it if we overwrote it
-//				algebraProcessor.getKernel().setEquationBehaviour(originalEquationBehaviour);
-//			}
+			if (equationBehaviour != null) { // only restore it if we overwrote it
+				algebraProcessor.getKernel().setEquationBehaviour(originalEquationBehaviour);
+			}
 		}
 		if (syntaxFilter != null) {
 			if (autoCompleteProvider != null) {

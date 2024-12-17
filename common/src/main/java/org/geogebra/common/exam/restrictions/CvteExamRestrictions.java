@@ -16,9 +16,7 @@ import org.geogebra.common.contextmenu.ContextMenuItemFilter;
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.exam.ExamType;
 import org.geogebra.common.exam.restrictions.cvte.CvteCommandArgumentFilter;
-//import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
-import org.geogebra.common.exam.restrictions.cvte.CvteLinearEquationFormPropertyRestriction;
-import org.geogebra.common.exam.restrictions.cvte.CvteQuadraticEquationFormPropertyRestriction;
+import org.geogebra.common.exam.restrictions.cvte.CvteEquationBehaviour;
 import org.geogebra.common.exam.restrictions.cvte.CvteSyntaxFilter;
 import org.geogebra.common.exam.restrictions.cvte.MatrixExpressionFilter;
 import org.geogebra.common.gui.toolcategorization.ToolCollectionFilter;
@@ -84,7 +82,7 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 				createPropertyRestrictions(),
 				createPropertyFilters(),
 				createConstructionElementSetups(),
-				null);
+				createEquationBehaviour());
 	}
 
 	@Override
@@ -292,11 +290,17 @@ public final class CvteExamRestrictions extends ExamRestrictions {
 	}
 
 	private static Map<String, PropertyRestriction> createPropertyRestrictions() {
-		return Map.of(LinearEquationFormProperty.NAME_KEY, new CvteLinearEquationFormPropertyRestriction(),
-				QuadraticEquationFormProperty.NAME_KEY, new CvteQuadraticEquationFormPropertyRestriction());
+		// "freeze" the equation form properties
+		return Map.of(LinearEquationFormProperty.NAME_KEY, new PropertyRestriction(true, null),
+				QuadraticEquationFormProperty.NAME_KEY, new PropertyRestriction(true, null));
 	}
+
 	private static Set<ConstructionElementSetup> createConstructionElementSetups() {
 		return Set.of(new EuclidianVisibilitySetup());
+	}
+
+	private static EquationBehaviour createEquationBehaviour() {
+		return new CvteEquationBehaviour();
 	}
 
 	private static final class ShowObjectPropertyFilter implements GeoElementPropertyFilter {
