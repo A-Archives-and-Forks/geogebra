@@ -17,7 +17,7 @@ public class LinearEquationFormDelegate extends AbstractGeoElementDelegate {
 		}
 		if (element instanceof LinearEquationRepresentable) {
 			// see e.g., APPS-1691
-			if (element.getKernel().getEquationBehaviour() != null) {
+			if (element.getKernel() != null && element.getKernel().getEquationBehaviour() != null) {
 				return element.getKernel().getEquationBehaviour()
 						.allowsChangingEquationFormsByUser();
 			}
