@@ -1398,7 +1398,8 @@ public class Kernel implements SpecialPointsListener, ConstructionStepper {
 			}
 
 			if (tpl.shouldDisplayEngineeringNotation()) {
-				return tpl.convertEngineeringNotationForDisplay(number);
+				return tpl.convertEngineeringNotationForDisplay(number,
+						useSF ? value -> formatSF(value, tpl) : value -> formatNF(value, tpl));
 			}
 			if (useSF) {
 				return formatSF(x, tpl);

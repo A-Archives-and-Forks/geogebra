@@ -1,5 +1,7 @@
 package org.geogebra.common.kernel;
 
+import java.util.function.Function;
+
 import javax.annotation.CheckForNull;
 
 import org.geogebra.common.cas.GeoGebraCAS;
@@ -3125,12 +3127,14 @@ public class StringTemplate implements ExpressionNodeConstants {
 
 	/**
 	 * Converts e.g. 1234 to 1.234 * 10³, 1234567 to 1.234567 * 10^6
-	 * @param number Number
+	 * @param value Value
+	 * @param formatBaseNumber Function used to format the base number
 	 * @return Formatted string in engineering notation using m*10^n, where n is restricted
 	 * to multiples of three
 	 */
-	public String convertEngineeringNotationForDisplay(double number) {
-		return EngineeringNotationString.format(number, stringType);
+	public String convertEngineeringNotationForDisplay(double value,
+			Function<Double, String> formatBaseNumber) {
+		return EngineeringNotationString.format(value, stringType, formatBaseNumber);
 	}
 
 	/**
