@@ -39,7 +39,7 @@ def partials = { code, appPartials ->
     return code
 }
 
-def replaceVendor = { htmlContent, vendor, offline ->
+def replaceVendor = { htmlContent, vendor ->
     htmlContent = htmlContent.replace("<!--VENDOR-->", vendor)
     if (vendor == "Mebis") {
         return htmlContent.replace("<!--VENDOR SCRIPTS-->", template("partials/vendor-scripts-mebis.html"))
@@ -70,7 +70,7 @@ ext.classicHtml = { app, prerelease, offline = false, inlineCss = false ->
     def platformSpecific = offline ? "<!--PLATFORM SPECIFIC CODE--><script src=\"platform.js\"></script>" : "<!--LANGUAGE LINKS-->"
     def inlinedCss = inlineCss ? getCss() : ""
     def inMobiTag = file("src/main/resources/org/geogebra/web/pub/html/inmobitag.html").text
-    return replaceVendor(html, "GeoGebra", offline)
+    return replaceVendor(html, "GeoGebra")
             .replace("<!--SPLASH-->", splash)
             .replace("<!--SPLASH STYLE-->", '<style>' + template("splash-style.css") + '</style>')
             .replace("<!--PRELOADED CSS-->", inlinedCss)
@@ -109,7 +109,7 @@ ext.appHtml = { app, prerelease, offline = false, inlineCss = false ->
     def inMobiTag = file("src/main/resources/org/geogebra/web/pub/html/inmobitag.html").text
     def firebaseAppId = app.firebaseAppId ?: ""
     def measurementId = app.measurementId ?: ""
-    return replaceVendor(html, vendor, offline)
+    return replaceVendor(html, vendor)
             .replace("<!--SPLASH-->", header + "<div class=\"$startscreenStyle\">$splashContent</div>")
             .replace("<!--SPLASH STYLE-->", splashStyle)
             .replace("<!--PRELOADED CSS-->", inlinedCss)
