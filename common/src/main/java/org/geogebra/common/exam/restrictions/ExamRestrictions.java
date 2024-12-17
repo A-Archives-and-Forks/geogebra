@@ -75,8 +75,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	private final Map<String, PropertyRestriction> propertyRestrictions;
 	private final Set<GeoElementPropertyFilter> geoElementPropertyFilters;
 	private final Set<ConstructionElementSetup> constructionElementSetups;
-    private final @Nullable EquationBehaviour equationBehaviour;
-    private @Nullable EquationBehaviour originalEquationBehaviour;
+	private final @Nullable EquationBehaviour equationBehaviour;
+	private @Nullable EquationBehaviour originalEquationBehaviour;
 	private RestorableSettings savedSettings;
 	private Settings restrictedSettings = null;
 
@@ -393,8 +393,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 
 	/**
 	 * Apply settings changes for this exam type.
-	 * @apiNote Override this only if the given exam needs custom settings.
 	 * @param settings {@link Settings}
+	 * @apiNote Override this only if the given exam needs custom settings.
 	 */
 	public void applySettingsRestrictions(@Nonnull Settings settings) {
 		// empty by default
@@ -410,8 +410,8 @@ public class ExamRestrictions implements PropertiesRegistryListener {
 	/**
 	 * Revert changes applied in {@link #applySettingsRestrictions(Settings)}, restoring the
 	 * previously saved settings.
-	 * @apiNote An override is not needed by default.
 	 * @param settings {@link Settings}
+	 * @apiNote An override is not needed by default.
 	 */
 	protected void removeSettingsRestrictions(@Nonnull Settings settings) {
 		if (savedSettings != null) {

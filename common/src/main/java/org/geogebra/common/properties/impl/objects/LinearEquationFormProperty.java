@@ -72,8 +72,4 @@ public class LinearEquationFormProperty extends AbstractNamedEnumeratedProperty<
 	public boolean isEnabled() {
 		return delegate.isEnabled();
 	}
-
-	public GeoElement getGeoElement() {
-		return delegate.getElement();
-	}
 }

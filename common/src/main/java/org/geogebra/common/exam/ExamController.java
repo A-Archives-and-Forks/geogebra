@@ -135,8 +135,8 @@ public final class ExamController {
 
 	/**
 	 * Adds a delegate.
-	 * @apiNote to be used in web together with registerContext
 	 * @param delegate The delegate
+	 * @apiNote to be used in web together with registerContext
 	 */
 	public void registerDelegate(@NonOwning ExamControllerDelegate delegate) {
 		this.delegates.add(delegate);
@@ -240,10 +240,10 @@ public final class ExamController {
 	/**
 	 * Register an object that may need to apply additional restrictions/customization
 	 * for certain types of exams.
-	 * @apiNote When an exam is currently active, the {@link ExamRestrictable} is asked
-	 * to apply the current {@link ExamRestrictions} immediately.
 	 * @param restrictable An object that may need to perform additional customization
 	 * when an exam is started.
+	 * @apiNote When an exam is currently active, the {@link ExamRestrictable} is asked
+	 * to apply the current {@link ExamRestrictions} immediately.
 	 */
 	public void registerRestrictable(@Nonnull ExamRestrictable restrictable) {
 		restrictables.add(restrictable);
@@ -254,10 +254,10 @@ public final class ExamController {
 
 	/**
 	 * Unregister an {@link ExamRestrictable}.
-	 * @apiNote When an exam is currently active, the {@link ExamRestrictable} is asked
-	 * to remove the current {@link ExamRestrictions} immediately.
 	 * @param restrictable An object that that was previously registered with
 	 * {@link #registerRestrictable(ExamRestrictable)}..
+	 * @apiNote When an exam is currently active, the {@link ExamRestrictable} is asked
+	 * to remove the current {@link ExamRestrictions} immediately.
 	 */
 	public void unregisterRestrictable(@Nonnull ExamRestrictable restrictable) {
 		if (examRestrictions != null) {
@@ -462,16 +462,13 @@ public final class ExamController {
 
 	/**
 	 * Start the exam.
-	 *
+	 * @param examType The exam type.
+	 * @param options Additional options (optional).
 	 * @throws IllegalStateException if the exam controller is not in either the
 	 * {@link ExamState#IDLE} or {@link ExamState#PREPARING PREPARING} state.
-	 *
 	 * @apiNote Make sure to call {@link #setActiveContext(Object, CommandDispatcher,
 	 * AlgebraProcessor, Localization, Settings, AutocompleteProvider, ToolsProvider,
 	 * Construction, ScheduledPreviewFromInputBar)} before attempting to start an exam.
-	 *
-	 * @param examType The exam type.
-	 * @param options Additional options (optional).
 	 */
 	public void startExam(@Nonnull ExamType examType, @CheckForNull ExamOptions options) {
 		if (state != ExamState.IDLE && state != ExamState.PREPARING) {
@@ -686,7 +683,6 @@ public final class ExamController {
 
 	/**
 	 * Creates a new temporary material, does not notify any delegates.
-	 *
 	 * @return the created material
 	 */
 	public Material getNewTempMaterial() {

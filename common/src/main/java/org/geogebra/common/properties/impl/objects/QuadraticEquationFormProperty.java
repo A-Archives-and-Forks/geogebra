@@ -88,8 +88,4 @@ public class QuadraticEquationFormProperty extends AbstractNamedEnumeratedProper
 	public boolean isEnabled() {
 		return delegate.isEnabled();
 	}
-
-	public GeoElement getGeoElement() {
-		return delegate.getElement();
-	}
 }
