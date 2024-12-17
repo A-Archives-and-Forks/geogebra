@@ -14,33 +14,32 @@ import org.geogebra.common.kernel.kernelND.GeoElementND;
 final class Cvte {
 
     /**
-     * APPS-5926: "For Lines, Rays, Conics, Implicit Equations and Functions..."
+     * APPS-5926: "For Lines, Rays, Conics, Implicit Equations and Functions created with a
+     * command or tool, we do not show the calculated equation."
+     * <p/>
+     * <b>Note:</b> The calculated equation will also be suppressed for all <i>dependent</i>
+     * lines/conics/functions/curves.
      * @param element a {@link GeoElementND}
      * @return true if element matches the condition above.
      */
-    static boolean isLineConicEquationOrFunction(@Nullable GeoElementND element) {
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
+    static boolean isCalculatedEquationAllowed(@Nullable GeoElementND element) {
         if (element == null) {
             return false;
         }
-        return element.isGeoLine()
+        // is Line, Ray, Conic, Implicit Equation or Function, ...
+        if ((element.isGeoLine()
                 || element.isGeoRay()
                 || element.isGeoConic()
                 || element.isGeoFunction()
-                || isImplicitEquation(element);
-    }
-
-    /**
-     * Checks whether a {@link GeoElementND} was created by a tool or command.
-     * @param element a {@link GeoElementND}
-     * @return if element was created by a tool or command
-     */
-    static boolean isCreatedByToolOrCmd(@Nullable GeoElementND element) {
-        if (element == null) {
+                || isImplicitEquation(element))
+                // ...created with a command or tool;
+                && (element.getParentAlgorithm() != null)) {
             return false;
         }
-        return element.getParentAlgorithm() != null;
+        return true;
     }
-    
+
     private static boolean isImplicitEquation(@Nonnull GeoElementND geoElement) {
         if (geoElement instanceof EquationValue) {
             EquationValue equationValue = (EquationValue) geoElement;

@@ -219,7 +219,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	 * @return the matrix representation of the conic in its 2D sub space
 	 */
 	@Override
-	protected CoordMatrix getSymetricMatrix(double[] vals) {
+	protected CoordMatrix getSymmetricMatrix(double[] vals) {
 		CoordMatrix ret = new CoordMatrix(3, 3);
 
 		ret.set(1, 1, vals[0]);
@@ -943,7 +943,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	/**
-	 * states wheter P lies on this conic or not. Note: this method is not
+	 * states whether P lies on this conic or not. Note: this method is not
 	 * overwritten by subclasses like isIntersectionPointIncident()
 	 * 
 	 * @return true P lies on this conic
@@ -2458,17 +2458,17 @@ public abstract class GeoConicND extends GeoQuadricND
 	 * "near-to-relationship" after loading a file)
 	 * 
 	 * @param x0
-	 *            homogenous x-coord of e0
+	 *            homogeneous x-coord of e0
 	 * @param y0
-	 *            homogenous y-coord of e0
+	 *            homogeneous y-coord of e0
 	 * @param z0
-	 *            homogenous z-coord of e0
+	 *            homogeneous z-coord of e0
 	 * @param x1
-	 *            homogenous x-coord of e1
+	 *            homogeneous x-coord of e1
 	 * @param y1
-	 *            homogenous y-coord of e1
+	 *            homogeneous y-coord of e1
 	 * @param z1
-	 *            homogenous z-coord of e1
+	 *            homogeneous z-coord of e1
 	 * 
 	 */
 	final public void setEigenvectors(double x0, double y0, double z0,
@@ -2517,7 +2517,7 @@ public abstract class GeoConicND extends GeoQuadricND
 				eigenvec[1].setCoords(-eigenvecY, eigenvecX);
 			}
 		}
-		// non-continous
+		// non-continuous
 		else if (!eigenvectorsSetOnLoad) {
 			eigenvec[0].setCoords(eigenvecX, eigenvecY);
 			eigenvec[1].setCoords(-eigenvecY, eigenvecX);
@@ -2554,7 +2554,7 @@ public abstract class GeoConicND extends GeoQuadricND
 				eigenvec[1].setCoords(-eigenvecY, eigenvecX);
 			}
 		} else if (!eigenvectorsSetOnLoad) {
-			// non-continous
+			// non-continuous
 			eigenvec[1].setCoords(-eigenvecY, eigenvecX);
 		}
 
@@ -3137,7 +3137,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	/**
-	 * states wheter P lies on this conic or not
+	 * states whether P lies on this conic or not
 	 * 
 	 * @return true iff P lies on this conic
 	 * @param P
@@ -3150,7 +3150,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	/**
-	 * states wheter P lies on this conic or not
+	 * states whether P lies on this conic or not
 	 * 
 	 * @return true iff P lies on this conic
 	 * @param P
@@ -3163,7 +3163,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	/**
-	 * return wheter this conic represents the same conic as c (this = lambda *
+	 * return whether this conic represents the same conic as c (this = lambda *
 	 * c).
 	 */
 	@Override
@@ -3231,7 +3231,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	/**
-	 * Sets the GeoLine polar to A.P, the polar line of P relativ to this conic.
+	 * Sets the GeoLine polar to A.P, the polar line of P relative to this conic.
 	 * 
 	 * @param P
 	 *            point to which we want the polar
@@ -3308,7 +3308,7 @@ public abstract class GeoConicND extends GeoQuadricND
 	}
 
 	/**
-	 * Sets the GeoLine polar to A.P, the polar line of P relativ to this conic.
+	 * Sets the GeoLine polar to A.P, the polar line of P relative to this conic.
 	 * 
 	 * @param project
 	 *            2D projected coords of the point to which we want the polar
@@ -3330,7 +3330,7 @@ public abstract class GeoConicND extends GeoQuadricND
 
 	/**
 	 * Sets the GeoLine diameter to X.S.v + a.v (v is a direction), the diameter
-	 * line parallel to v relativ to this conic.
+	 * line parallel to v relative to this conic.
 	 * 
 	 * @param v
 	 *            direction of diameter
@@ -3343,7 +3343,7 @@ public abstract class GeoConicND extends GeoQuadricND
 
 	/**
 	 * Sets the GeoLine diameter to X.S.v + a.v (v is a direction), the diameter
-	 * line parallel to v relativ to this conic.
+	 * line parallel to v relative to this conic.
 	 * 
 	 * @param vx
 	 *            vector x coord

@@ -37,18 +37,13 @@ public final class CvteLabelDescriptionConverter implements ToStringConverter<Ge
         if (element == null) {
             return null;
         }
-        if (restrictionsApplyTo(element)) {
+        if (!Cvte.isCalculatedEquationAllowed(element)) {
             return getRestrictedLabelDescription(element);
         }
         if (wrappedConverter != null) {
             return wrappedConverter.convert(element);
         }
         return null;
-    }
-
-    private boolean restrictionsApplyTo(GeoElement element) {
-        return Cvte.isLineConicEquationOrFunction(element)
-                && Cvte.isCreatedByToolOrCmd(element);
     }
 
     private String getRestrictedLabelDescription(GeoElement element) {

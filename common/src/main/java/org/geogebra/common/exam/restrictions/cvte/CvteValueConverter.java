@@ -34,17 +34,12 @@ public final class CvteValueConverter implements ToStringConverter<GeoElement> {
         if (element == null) {
             return null;
         }
-        if (restrictionsApplyTo(element)) {
+        if (!Cvte.isCalculatedEquationAllowed(element)) {
             return element.getDefinition(StringTemplate.algebraTemplate);
         }
         if (wrappedConverter != null) {
             return wrappedConverter.convert(element);
         }
         return null;
-    }
-
-    private boolean restrictionsApplyTo(GeoElement element) {
-        return Cvte.isLineConicEquationOrFunction(element)
-                && Cvte.isCreatedByToolOrCmd(element);
     }
 }
