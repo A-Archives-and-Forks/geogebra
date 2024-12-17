@@ -11,7 +11,7 @@ import org.geogebra.common.util.debug.Log;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 public final class RationalizableFraction {
-	public static final boolean LOG_ENABLED = true;
+	public static final boolean LOG_ENABLED = false;
 	private final ExpressionSimplifiers simplifiers;
 	private final SimplifyUtils utils;
 	private ExpressionNode root;
