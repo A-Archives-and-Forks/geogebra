@@ -143,7 +143,7 @@ public class AlgebraItemTest extends BaseUnitTest {
     public void testGetDefinitionLabeled() {
         GeoElement element = add("A=(1,2)");
         String definition = AlgebraItem.getDefinitionLatexForGeoElement(element);
-        assertThat(definition, is("A=(1,2)"));
+        assertThat(definition, is("A=$point(1,2)"));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class AlgebraItemTest extends BaseUnitTest {
         GeoElement element = add("A=(1,2)");
         new LabelController().hideLabel(element);
         String definition = AlgebraItem.getDefinitionLatexForGeoElement(element);
-        assertThat(definition, is("(1,2)"));
+        assertThat(definition, is("$point(1,2)"));
     }
 
     @Test

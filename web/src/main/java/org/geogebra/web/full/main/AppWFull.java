@@ -52,6 +52,7 @@ import org.geogebra.common.io.layout.DockPanelData;
 import org.geogebra.common.io.layout.Perspective;
 import org.geogebra.common.io.layout.PerspectiveDecoder;
 import org.geogebra.common.javax.swing.SwingConstants;
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.ModeSetter;
 import org.geogebra.common.kernel.arithmetic.SymbolicMode;
 import org.geogebra.common.kernel.commands.CommandNotLoadedError;
@@ -93,6 +94,7 @@ import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.ggbjdk.java.awt.geom.Dimension;
 import org.geogebra.gwtutil.NavigatorUtil;
+import org.geogebra.keyboard.base.impl.TemplateKeyProvider;
 import org.geogebra.keyboard.web.HasKeyboard;
 import org.geogebra.keyboard.web.TabbedKeyboard;
 import org.geogebra.web.cas.giac.CASFactoryW;
@@ -1234,6 +1236,16 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 	@Override
 	public List<String> getInputBoxFunctionVars() {
 		return functionVars;
+	}
+
+	@Override
+	public TemplateKeyProvider getTemplateKeyProvider() {
+		return () -> {
+			int dimension = getActiveEuclidianView().getDimension();
+			String command =  getSettings().getGeneral().getCoordFormat()
+					== Kernel.COORD_STYLE_AUSTRIAN ? "$pointAt" : "$point";
+			return command + ":" + dimension;
+		};
 	}
 
 	/**

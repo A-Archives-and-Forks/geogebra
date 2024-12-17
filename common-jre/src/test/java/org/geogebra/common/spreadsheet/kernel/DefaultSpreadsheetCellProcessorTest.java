@@ -109,7 +109,7 @@ public class DefaultSpreadsheetCellProcessorTest extends BaseUnitTest {
 	@Test
 	public void testSerializePoint() {
 		processor.process("=(1,1)", "A1");
-		assertSerializedAs("=(1,1)", "A1");
+		assertSerializedAs("=$point(1,1)", "A1");
 		assertIsAuxiliary();
 		assertIsEuclidianInvisible();
 	}

@@ -1,5 +1,6 @@
 package org.geogebra.common.kernel.arithmetic.vector;
 
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.printing.printable.vector.PrintableVector;
 import org.geogebra.common.kernel.printing.printer.Printer;
@@ -19,6 +20,15 @@ class CartesianPrinter implements Printer {
             PrintableVector vector) {
         if (tpl.getStringType().isGiac()) {
             return GiacPrinter.print(tpl, expressionPrinter, vector);
+        }
+        if (tpl.usePointTemplate()) {
+            String fn = settings.getCoordFormat() == Kernel.COORD_STYLE_AUSTRIAN
+                    ? "$pointAt(" : "$point(";
+            return fn
+                    + expressionPrinter.print(vector.getX(), tpl)
+                    + ','
+                    + expressionPrinter.print(vector.getY(), tpl)
+                    + ')';
         }
         return printLeftParenthesis(tpl)
                 + expressionPrinter.print(vector.getX(), tpl)

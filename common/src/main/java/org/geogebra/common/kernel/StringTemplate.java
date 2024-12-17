@@ -82,6 +82,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 	private boolean allowPiHack = true;
 	private boolean supportsFractions = true;
 	private char pointCoordBar = '|';
+	private boolean usePointTemplate = false;
 	private boolean displayStyle;
 
 	/**
@@ -365,6 +366,7 @@ public class StringTemplate implements ExpressionNodeConstants {
 		initForEditing(editorTemplate);
 		editorTemplate.forEditorParser = true;
 		editorTemplate.pointCoordBar = ',';
+		editorTemplate.usePointTemplate = true;
 		initForEditing(inputBoxTemplate);
 		inputBoxTemplate.forEditorParser = true;
 		inputBoxTemplate.pointCoordBar = Unicode.verticalLine;
@@ -3760,5 +3762,9 @@ public class StringTemplate implements ExpressionNodeConstants {
 				&& settings.getCoordFormat() == Kernel.COORD_STYLE_AUSTRIAN
 				? (getOptionalSpace() + getPointCoordBar()) : ",";
 		return delimiter + getOptionalSpace();
+	}
+
+	public boolean usePointTemplate() {
+		return usePointTemplate && forEditorParser;
 	}
 }

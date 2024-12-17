@@ -1705,7 +1705,11 @@ public class GeoPoint extends GeoVec3D implements VectorValue, PathOrPoint,
 			break;
 
 		default: // CARTESIAN
-			sbBuildValueString.append(tpl.leftBracket());
+			if (tpl.usePointTemplate()) {
+				sbBuildValueString.append("$point(");
+			} else {
+				sbBuildValueString.append(tpl.leftBracket());
+			}
 			sbBuildValueString.append(kernel.format(x, tpl));
 			switch (tpl.getCoordStyle(kernel.getCoordStyle())) {
 			case Kernel.COORD_STYLE_AUSTRIAN:
