@@ -6,7 +6,6 @@ import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isIntegerValue
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
-import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
 
@@ -17,6 +16,7 @@ public class FactorOut implements SimplifyNode {
 		MULTIPLIED,
 		FRACTION
 	}
+
 	private final SimplifyUtils utils;
 
 	public FactorOut(SimplifyUtils utils) {
@@ -87,7 +87,11 @@ public class FactorOut implements SimplifyNode {
 			return utils.multiplyR(node1.getRightTree(),
 					node.getLeft().evaluateDouble() * node1.getLeft().evaluateDouble());
 		}
-		return utils.multiplyR(apply(node.getLeftTree()), apply(node.getRightTree()));
+		ExpressionNode appliedLeft = apply(node.getLeftTree());
+		ExpressionNode appliedRight = apply(node.getRightTree());
+		return utils.getLeftMultiplier(appliedRight) == 1
+				? utils.multiplyR(appliedLeft, appliedRight)
+				: utils.multiply(appliedLeft, appliedRight);
 	}
 
 	private ExpressionNode factorOutPlusOrMinusNode(ExpressionNode node) {
@@ -193,7 +197,7 @@ public class FactorOut implements SimplifyNode {
 
 	private ExpressionNode factorOutGCDWithSub(ExpressionNode node, int constNumber,
 			Operation operation) {
-		return factorOutGCDWithSub(node, constNumber, operation, false);
+		return factorOutGCDWithSub(node, constNumber, false);
 	}
 
 	ExpressionNode factorOutGCD(ExpressionNode rightTree, int constNumber, Operation operation,
@@ -219,7 +223,6 @@ public class FactorOut implements SimplifyNode {
 		return utils.multiplyR(addition, shouldInvert ? -gcd : gcd);
 	}
 
-
 	private ExpressionNode getAddition(ExpressionValue factoredNumber, Operation operation,
 			ExpressionValue factoredExpression) {
 			if (utils.getLeftMultiplier(factoredExpression.wrap()) < 0) {
@@ -228,14 +231,7 @@ public class FactorOut implements SimplifyNode {
 			return utils.newNode(factoredNumber, operation, factoredExpression);
 	}
 
-	private ExpressionNode getAddition(ExpressionNode factoredExpression, Operation operation, MyDouble factoredNumber) {
-		if (utils.getLeftMultiplier(factoredExpression) < 0) {
-			return utils.newNode(factoredExpression, flip(operation), factoredNumber);
-		}
-		return utils.newNode(factoredExpression, operation, factoredNumber);}
-
 	ExpressionNode factorOutGCDWithSub(ExpressionNode rightTree, int constNumber,
-			Operation operation,
 			boolean numberFirst) {
 		int treeMultiplier = (int) rightTree.getLeft().evaluateDouble();
 		long gcd = Kernel.gcd(constNumber, treeMultiplier);

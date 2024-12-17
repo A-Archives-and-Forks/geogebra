@@ -17,6 +17,7 @@ public class ReduceRoot implements SimplifyNode {
 	public ReduceRoot(SimplifyUtils utils) {
 		this.utils = utils;
 	}
+
 	@Override
 	public ExpressionNode apply(ExpressionNode node) {
 		ExpressionValue reduceUnderSqrt = node.traverse(new Traversing() {

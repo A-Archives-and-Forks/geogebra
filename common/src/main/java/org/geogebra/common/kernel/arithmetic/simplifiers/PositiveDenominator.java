@@ -1,11 +1,10 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
-
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.plugin.Operation;
 
-public class PositiveDenominator implements SimplifyNode{
+public class PositiveDenominator implements SimplifyNode {
 
 	private NodeType nodeType = NodeType.INVALID;
 
@@ -14,6 +13,7 @@ public class PositiveDenominator implements SimplifyNode{
 		MULTIPLIED_FRACTION,
 		INVALID
 	}
+
 	private final SimplifyUtils utils;
 
 	public PositiveDenominator(SimplifyUtils utils) {
@@ -68,6 +68,4 @@ public class PositiveDenominator implements SimplifyNode{
 		}
 		return node;
 	}
-
-
 }

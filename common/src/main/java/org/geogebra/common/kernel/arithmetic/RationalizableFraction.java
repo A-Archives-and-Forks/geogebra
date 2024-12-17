@@ -4,9 +4,7 @@ import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isIntegerValue
 import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isNodeSupported;
 
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.plugin.Operation;
-import org.geogebra.common.util.debug.Log;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -98,7 +96,6 @@ public final class RationalizableFraction {
 		return isNodeSupported(numerator) && isNodeSupported(denominator);
 	}
 
-
 	private ExpressionNode stripFromLeftMultiplier(ExpressionNode node) {
 		return utils.getLeftMultiplier(node) == 1 ? node : node.getRightTree();
 	}
@@ -119,8 +116,8 @@ public final class RationalizableFraction {
 	}
 
 	private void logRootExpression() {
-		Log.debug("start: " + root.toValueString(StringTemplate.defaultTemplate)
-				+ "(=" + root.evaluateDouble() + ")");
+//		Log.debug("start: " + root.toValueString(StringTemplate.defaultTemplate)
+//				+ "(=" + root.evaluateDouble() + ")");
 	}
 
 	private ExpressionValue simplifyNormalizedRadicalFraction(double denominatorValue) {

@@ -7,11 +7,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.geogebra.common.BaseUnitTest;
 import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
+import org.geogebra.common.util.DoubleUtil;
 import org.geogebra.common.util.debug.Log;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -292,7 +295,8 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	@Test
 	public void wip() {
 		// current case to fix
-		rationalizationShouldBe("1 / (2 * sqrt(2))", "sqrt(2) / 4");
+		rationalizationShouldBe("(-5 + sqrt(2)) / (2 + sqrt(8))",
+				"(-6sqrt(2) +7)/2");
 
 	}
 
@@ -300,5 +304,36 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void supportedBugs() {
 		shouldBeSupported("(-5 + sqrt(5)) / (-3 + sqrt(9))");
 		shouldBeSupported("(6 + sqrt(10)) / (-4 + sqrt(9))");
+	}
+
+
+	@Test
+	public void allShouldBeNumericallyOK() {
+		StringBuilder failures = new StringBuilder();
+		for (int a = -5; a <= 5; a++) {
+			for (int b = 0; b <= 10; b++) {
+				for (int c = -5; c <= 5; c++) {
+					for (int d = 0; d <= 10; d++) {
+						ExpressionNode ex = new ExpressionNode(getKernel(), a)
+								.plus(new ExpressionNode(getKernel(), b).sqrt())
+								.divide(new ExpressionNode(getKernel(), c)
+										.plus(new ExpressionNode(getKernel(), d).sqrt()));
+						double expected = ex.evaluateDouble();
+						ExpressionValue resolution = RationalizableFraction.getResolution(ex);
+						if (resolution == null) {
+							continue;
+						}
+						double actual = resolution
+								.deepCopy(getKernel()).evaluateDouble();
+						if (Double.isFinite(expected) && !DoubleUtil.isEqual(expected, actual)) {
+							failures.append(Arrays.toString(
+											new double[]{a, b, c, d, actual,expected}))
+									.append(ex.toString(StringTemplate.defaultTemplate)).append(" -> ").append(resolution).append("\n");
+						}
+					}
+				}
+			}
+		}
+		assertEquals("0", failures.toString());
 	}
 }

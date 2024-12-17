@@ -105,7 +105,7 @@ public class SimplifyUtils {
 		if (isIntegerValue(node1) && isIntegerValue(node2)) {
 			return newDouble(node1.evaluateDouble() * node2.evaluateDouble()).wrap();
 		}
-		return node1.multiplyR(node2);
+				return node1.multiplyR(node2);
 	}
 
 

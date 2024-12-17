@@ -54,11 +54,8 @@ public class ReduceToIntegers implements SimplifyNode {
 								: utils.negativeInfinity();
 					}
 				}
-
-
 				return ev;
 			}
-
 
 		}).wrap();
 	}

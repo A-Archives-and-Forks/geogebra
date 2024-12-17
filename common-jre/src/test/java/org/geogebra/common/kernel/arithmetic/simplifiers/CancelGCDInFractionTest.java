@@ -40,6 +40,7 @@ public class CancelGCDInFractionTest extends BaseSimplifyTest{
 
 	@Test
 	public void wip() {
+		shouldSimplify("((2 * (1 - sqrt(2)) (sqrt(2) - 5))) / 4", "(1-sqrt(2))(sqrt(2)-5) / 2");
 	}
 
 	@Test

@@ -19,15 +19,19 @@ public class CancelGCDInFraction implements SimplifyNode {
 		INVALID,
 		SIMPLE_FRACTION,
 		MULTIPLIED_FRACTION,
-		MULTIPLIED_NUMERATOR, NEGATIVE_MULTIPLIED_NUMERATOR,
+		MULTIPLIED_NUMERATOR,
+		NEGATIVE_MULTIPLIED_NUMERATOR,
 	}
 
 	private final SimplifyUtils utils;
 	private final Kernel kernel;
 	private NodeType nodeType = NodeType.INVALID;
 	private ExpressionNode numerator;
-	private ExpressionNode denominator;
 
+	/**
+	 *
+	 * @param utils {@link SimplifyUtils}
+	 */
 	public CancelGCDInFraction(SimplifyUtils utils) {
 		this.utils = utils;
 		kernel = utils.kernel;
@@ -42,15 +46,18 @@ public class CancelGCDInFraction implements SimplifyNode {
 				multiplier *= utils.getLeftMultiplier(leftTree.getRightTree());
 				nodeType = NodeType.NEGATIVE_MULTIPLIED_NUMERATOR;
 			} else {
-				nodeType = isTrivialMultiplier() ? NodeType.SIMPLE_FRACTION : NodeType.MULTIPLIED_NUMERATOR;
+				nodeType = isTrivialMultiplier()
+						? NodeType.SIMPLE_FRACTION
+						: NodeType.MULTIPLIED_NUMERATOR;
 			}
 		}
 
 		if (node.isOperation(Operation.MULTIPLY)
 				&& node.getRightTree().isOperation(Operation.DIVIDE)) {
 			multiplier = utils.getLeftMultiplier(node);
-			nodeType = isTrivialMultiplier() ? NodeType.SIMPLE_FRACTION
-					:NodeType.MULTIPLIED_FRACTION;
+			nodeType = isTrivialMultiplier()
+					? NodeType.SIMPLE_FRACTION
+					: NodeType.MULTIPLIED_FRACTION;
 		}
 		return nodeType != NodeType.INVALID;
 	}
@@ -83,14 +90,13 @@ public class CancelGCDInFraction implements SimplifyNode {
 						utils.newDouble(multiplier),
 						Operation.MULTIPLY,
 						numerator.getRightTree().getRightTree()
-				)
-				, Operation.DIVIDE, node.getRightTree());
+				), Operation.DIVIDE, node.getRightTree());
 		return applyForMultipliedNumerator(node1);
 	}
 
 	private ExpressionNode applyForMultipliedNumerator(ExpressionNode node) {
 		int n = multiplier;
-		int m = (int)Math.round(node.getRightTree().evaluateDouble());
+		int m = (int) Math.round(node.getRightTree().evaluateDouble());
 		long gcd = Kernel.gcd(n, m);
 		if (Math.abs(gcd) == 1) {
 			return node;
@@ -114,7 +120,7 @@ public class CancelGCDInFraction implements SimplifyNode {
 
 	private ExpressionNode applyForSimpleFraction(ExpressionNode node) {
 		numerator = node.getLeftTree();
-		denominator = node.getRightTree();
+		ExpressionNode denominator = node.getRightTree();
 
 		return getCanceledFraction(node, numerator, denominator);
 	}
@@ -144,7 +150,8 @@ public class CancelGCDInFraction implements SimplifyNode {
 			return utils.newDouble(newMul).wrap();
 		}
 		if (gcd != 1 && gcd != -1 && gcd != m) {
-			return utils.newNode(utils.newDouble(newMul), Operation.DIVIDE, utils.newDouble(newDenom));
+			return utils.newNode(utils.newDouble(newMul), Operation.DIVIDE,
+					utils.newDouble(newDenom));
 		}
 		return node;
 	}

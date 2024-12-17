@@ -15,7 +15,6 @@ import org.geogebra.common.plugin.Operation;
 
 public class ExpandNode implements SimplifyNode {
 
-
 	private final SimplifyUtils utils;
 
 	public ExpandNode(SimplifyUtils utils) {
@@ -46,7 +45,7 @@ public class ExpandNode implements SimplifyNode {
 		double num = 0;
 		int i = 0;
 		double eval = list.get(0).evaluateDouble();
-		while (i < list.size() && isInteger(eval)){
+		while (i < list.size() && isInteger(eval)) {
 			num += eval;
 			i++;
 			eval = list.get(i).evaluateDouble();
@@ -63,7 +62,6 @@ public class ExpandNode implements SimplifyNode {
 				Operation.PLUS,
 				rest);
 	}
-
 
 	@Override
 	public boolean isAccepted(ExpressionNode node) {
