@@ -1,6 +1,5 @@
 package org.geogebra.common.util;
 
-
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -138,8 +137,8 @@ public class EngineeringNotationStringTest extends BaseUnitTest {
 
 	@Test
 	public void testCorrectEngineeringNotationForDecimalAsInput3() {
-		assertEquals("3 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_MINUS + Unicode.SUPERSCRIPT_3,
-				EngineeringNotationString.format(
+		assertEquals("3 " + Unicode.CENTER_DOT + " 10" + Unicode.SUPERSCRIPT_MINUS
+				+ Unicode.SUPERSCRIPT_3, EngineeringNotationString.format(
 						0.003, StringType.GEOGEBRA, getBaseNumberFormatter(5)));
 		assertEquals("3 \\cdot 10^{-3}", EngineeringNotationString.format(
 				0.003, StringType.LATEX, getBaseNumberFormatter(5)));

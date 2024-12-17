@@ -23,7 +23,8 @@ public class GeoListTest extends BaseUnitTest {
 	@Before
 	public  void setupTemplate() {
 		latexTemplate = StringTemplate.latexTemplate;
-		engineeringNotationTemplate = latexTemplate.deriveWithEngineeringNotation();
+		engineeringNotationTemplate = StringTemplate.defaultTemplate
+				.deriveWithEngineeringNotation();
 	}
 
 	@Test
