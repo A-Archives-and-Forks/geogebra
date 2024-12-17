@@ -113,5 +113,6 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 	@Test
 	public void wip() {
+		shouldSimplify("(2sqrt(2) + -2) / -5", "(2 (sqrt(2) - 1)) / -5");
 	}
 }

@@ -2,11 +2,9 @@
 package org.geogebra.common.kernel.arithmetic;
 
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.arithmetic.simplifiers.ReduceRoot;
 import org.geogebra.common.plugin.Operation;
 import org.geogebra.common.util.DoubleUtil;
-import org.geogebra.common.util.debug.Log;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -32,9 +30,6 @@ public final class RationalizeFractionAlgo {
 		if (node == null) {
 			return null;
 		}
-		Log.debug("rationalize: " + node.toValueString(StringTemplate.defaultTemplate)
-			+ "(=" + node.evaluateDouble() + ")");
-
 		return checkDecimals(node) ? null : node;
 	}
 

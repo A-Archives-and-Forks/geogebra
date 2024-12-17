@@ -45,7 +45,6 @@ public class PlusTagOrder implements SimplifyNode {
 					double valRight = wrap.getRight().evaluateDouble();
 					if (isIntegerValue(valRight) && !isIntegerValue(valLeft)) {
 						ExpressionValue lft = process(wrap.getLeftTree());
-
 						return utils.newNode(wrap.getRight(), wrap.getOperation(), lft);
 					}
 				}

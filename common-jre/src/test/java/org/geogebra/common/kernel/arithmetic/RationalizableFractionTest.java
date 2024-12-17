@@ -295,8 +295,10 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	@Test
 	public void wip() {
 		// current case to fix
+		rationalizationShouldBe("(-2 + sqrt(8)) / (-5 + sqrt(0))",
+				"(-2 (sqrt(2) - 1)) / 5");
 		rationalizationShouldBe("(-5 + sqrt(2)) / (2 + sqrt(8))",
-				"(-6sqrt(2) +7)/2");
+				"(-((1 - sqrt(2)) (sqrt(2) - 5))) / 2");
 
 	}
 

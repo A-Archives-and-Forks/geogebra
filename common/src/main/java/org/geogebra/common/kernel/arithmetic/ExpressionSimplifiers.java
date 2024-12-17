@@ -20,8 +20,10 @@ public class ExpressionSimplifiers {
 
 	private final List<SimplifyNode> preItems;
 	private final List<SimplifyNode> postItems;
+	private final boolean logEnabled;
 
-	public ExpressionSimplifiers(@NonNull SimplifyUtils utils) {
+	public ExpressionSimplifiers(@NonNull SimplifyUtils utils, boolean logEnabled) {
+		this.logEnabled = logEnabled;
 		ReduceToIntegers reduceToIntegers = new ReduceToIntegers(utils);
 		preItems = List.of(
 				reduceToIntegers
@@ -36,6 +38,7 @@ public class ExpressionSimplifiers {
 						new CancelGCDInFraction(utils),
 						new PositiveDenominator(utils),
 						new OperandOrder(utils), reduceToIntegers
+
 				);
 	}
 
@@ -53,14 +56,23 @@ public class ExpressionSimplifiers {
 			if (simplifier.isAccepted(node)) {
 				String before = node.toValueString(StringTemplate.defaultTemplate);
 				node = simplifier.apply(node);
-				String after = node.toValueString(StringTemplate.defaultTemplate);
-				if (!after.equals(before)) {
-					Log.debug(simplifier.name() + ": " + after
-							+ "(=" + node.evaluateDouble() + ")");
-				}
+				logProgress(simplifier.name(), before, node);
+
 			}
 		}
 		return node;
+	}
+
+	private void logProgress(String name, String before, ExpressionNode current) {
+		if (!logEnabled) {
+			return;
+		}
+		String after = current.toValueString(StringTemplate.defaultTemplate);
+		if (!after.equals(before)) {
+			Log.debug(name + ": " + after
+					+ "( =" + current.evaluateDouble() + ")");
+		}
+
 	}
 
 	public ExpressionNode runFirst(ExpressionNode root) {

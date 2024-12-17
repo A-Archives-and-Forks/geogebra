@@ -34,19 +34,23 @@ public class SimplifyUtils {
 
 	public ExpressionNode div(ExpressionValue numerator, ExpressionNode denominator) {
 		double valDenominator = denominator.evaluateDouble();
-		if (isIntegerValue(denominator)) {
-			if (valDenominator > 0) {
-				return valDenominator == 1
-						? numerator.wrap()
-						: newNode(numerator, Operation.DIVIDE, newDouble(valDenominator));
-			}
-
-			return newNode(mulByMinusOneL(numerator), Operation.DIVIDE, newDouble(-valDenominator));
+		if (valDenominator == 1) {
+			return numerator.wrap();
 		}
+
+		if (valDenominator == -1) {
+			return numerator.wrap().multiplyR(-1);
+		}
+
+
+		return newDiv(numerator, denominator);
+	}
+
+	public ExpressionNode newDiv(ExpressionValue numerator, ExpressionNode denominator) {
 		return newNode(numerator, Operation.DIVIDE, denominator);
 	}
 
-	public ExpressionNode multiply(ExpressionNode node1, ExpressionNode node2) {
+		public ExpressionNode multiply(ExpressionNode node1, ExpressionNode node2) {
 		if (isOne(node1)) {
 			return node2;
 		}

@@ -4,23 +4,27 @@ import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isIntegerValue
 import static org.geogebra.common.kernel.arithmetic.SimplifyUtils.isNodeSupported;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.plugin.Operation;
+import org.geogebra.common.util.debug.Log;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 public final class RationalizableFraction {
+	public static final boolean LOG_ENABLED = true;
 	private final ExpressionSimplifiers simplifiers;
 	private final SimplifyUtils utils;
 	private ExpressionNode root;
 
 	private static final OperationCountChecker sqrtCountChecker =
 			new OperationCountChecker(Operation.SQRT);
+	private double rootValue;
 
 	private RationalizableFraction(ExpressionNode root) {
 		Kernel kernel = root.getKernel();
 		this.root = root.deepCopy(kernel);
 		utils = new SimplifyUtils(kernel);
-		simplifiers = new ExpressionSimplifiers(utils);
+		simplifiers = new ExpressionSimplifiers(utils, LOG_ENABLED);
 	}
 
 	/**
@@ -41,7 +45,7 @@ public final class RationalizableFraction {
 
 		root = first;
 
-		double rootValue = root.evaluateDouble();
+		rootValue = root.evaluateDouble();
 
 		if (!Double.isFinite(rootValue)) {
 			return root;
@@ -112,12 +116,26 @@ public final class RationalizableFraction {
 		RationalizeFractionAlgo algo =
 				new RationalizeFractionAlgo(utils, copy.getLeftTree(),
 						copy.getRightTree());
-		return algo.compute();
+		ExpressionNode computed = algo.compute();
+		logRationalizedNode(computed);
+		return computed;
 	}
 
 	private void logRootExpression() {
-//		Log.debug("start: " + root.toValueString(StringTemplate.defaultTemplate)
-//				+ "(=" + root.evaluateDouble() + ")");
+		debug("start: " + root.toValueString(StringTemplate.defaultTemplate)
+				+ "(=" + root.evaluateDouble() + ")");
+	}
+
+
+	private void debug(String msg) {
+		if (LOG_ENABLED) {
+			Log.debug(msg);
+		}
+	}
+
+	private void logRationalizedNode(ExpressionNode node) {
+		debug("rationalized: " + node.toValueString(StringTemplate.defaultTemplate));
+
 	}
 
 	private ExpressionValue simplifyNormalizedRadicalFraction(double denominatorValue) {
