@@ -1,5 +1,6 @@
 package org.geogebra.common.properties.impl.objects.delegate;
 
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.QuadraticEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
@@ -16,9 +17,9 @@ public class QuadraticEquationFormDelegate extends AbstractGeoElementDelegate {
 			return isApplicableToGeoList((GeoList) element);
 		}
 		if (element instanceof QuadraticEquationRepresentable) {
-			if (element.getKernel() != null && element.getKernel().getEquationBehaviour() != null) {
-				return element.getKernel().getEquationBehaviour()
-						.allowsChangingEquationFormsByUser();
+			Kernel kernel = element.getKernel();
+			if (kernel != null && kernel.getEquationBehaviour() != null) {
+				return kernel.getEquationBehaviour().allowsChangingEquationFormsByUser();
 			}
 			return true;
 		}

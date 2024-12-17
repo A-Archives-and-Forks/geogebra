@@ -1,5 +1,6 @@
 package org.geogebra.common.properties.impl.objects.delegate;
 
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.LinearEquationRepresentable;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoList;
@@ -17,9 +18,9 @@ public class LinearEquationFormDelegate extends AbstractGeoElementDelegate {
 		}
 		if (element instanceof LinearEquationRepresentable) {
 			// see e.g., APPS-1691
-			if (element.getKernel() != null && element.getKernel().getEquationBehaviour() != null) {
-				return element.getKernel().getEquationBehaviour()
-						.allowsChangingEquationFormsByUser();
+			Kernel kernel = element.getKernel();
+			if (kernel != null && kernel.getEquationBehaviour() != null) {
+				return kernel.getEquationBehaviour().allowsChangingEquationFormsByUser();
 			}
 			return true;
 		}
