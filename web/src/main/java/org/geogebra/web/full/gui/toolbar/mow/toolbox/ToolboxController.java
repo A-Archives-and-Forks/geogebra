@@ -59,6 +59,10 @@ public class ToolboxController {
 		});
 	}
 
+
+	/**
+	 * switch spotlight off
+	 */
 	public void switchSpotlightOff() {
 		if (appW.getActiveEuclidianView() != null) {
 			appW.getActiveEuclidianView().getEuclidianController().spotlightOff();

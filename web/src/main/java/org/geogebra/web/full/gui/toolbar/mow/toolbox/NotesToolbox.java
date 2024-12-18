@@ -231,6 +231,9 @@ public class NotesToolbox extends FlowPanel implements SetLabels, ModeChangeList
 		}
 	}
 
+	/**
+	 * disable buttons other than spotlight
+	 */
 	public void disableNonSpotlightButtons() {
 		for (IconButton button : buttons) {
 			if (button != spotlightButton) {
