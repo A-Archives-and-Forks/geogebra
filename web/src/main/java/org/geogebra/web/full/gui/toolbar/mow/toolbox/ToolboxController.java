@@ -23,18 +23,17 @@ public class ToolboxController {
 	}
 
 	/**
-	 * @return turn spotlight on handler
+	 * turn spotlight on
 	 */
-	public Runnable getSpotlightOnHandler() {
-		return () -> {
-			DockPanelW dp = (DockPanelW) appW.getGuiManager().getLayout().getDockManager()
-					.getPanel(App.VIEW_EUCLIDIAN);
-			dp.getComponent().addStyleName("graphicsWithSpotlight");
-			appW.getActiveEuclidianView().getEuclidianController().spotlightOn();
-			initSpotlightOff();
-			appW.hideMenu();
-			appW.closePopups();
-		};
+	public void switchSpotlightOn() {
+		DockPanelW dp = (DockPanelW) appW.getGuiManager().getLayout().getDockManager()
+				.getPanel(App.VIEW_EUCLIDIAN);
+		dp.getComponent().addStyleName("graphicsWithSpotlight");
+		appW.getActiveEuclidianView().getEuclidianController().spotlightOn();
+		initSpotlightOff();
+		toolbox.disableNonSpotlightButtons();
+		appW.hideMenu();
+		appW.closePopups();
 	}
 
 	private void initSpotlightOff() {
@@ -47,6 +46,7 @@ public class ToolboxController {
 							.getPanel(App.VIEW_EUCLIDIAN);
 					dp.getComponent().removeStyleName("graphicsWithSpotlight");
 					view.clearSpotlight();
+					toolbox.forEach(widget -> widget.removeStyleName("disabled"));
 					toolbox.switchSpotlightOff();
 					appW.getEventDispatcher().removeEventListener(this);
 				}
@@ -57,5 +57,11 @@ public class ToolboxController {
 				// not needed
 			}
 		});
+	}
+
+	public void switchSpotlightOff() {
+		if (appW.getActiveEuclidianView() != null) {
+			appW.getActiveEuclidianView().getEuclidianController().spotlightOff();
+		}
 	}
 }

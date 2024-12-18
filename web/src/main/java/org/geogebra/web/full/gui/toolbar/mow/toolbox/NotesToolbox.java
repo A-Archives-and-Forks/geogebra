@@ -119,7 +119,14 @@ public class NotesToolbox extends FlowPanel implements SetLabels, ModeChangeList
 
 		spotlightButton = addToggleButton(toolboxIconResource.getImageResource(
 				ToolboxIcon.SPOTLIGHT), "Spotlight.Tool", "Spotlight.Tool", "spotlightTool",
-				controller.getSpotlightOnHandler(), () -> {});
+				() -> {}, () -> {});
+		spotlightButton.addFastClickHandler((source) -> {
+			if (spotlightButton.isActive()) {
+				controller.switchSpotlightOn();
+			} else {
+				controller.switchSpotlightOff();
+			}
+		});
 	}
 
 	private void addRulerButton() {
@@ -220,6 +227,14 @@ public class NotesToolbox extends FlowPanel implements SetLabels, ModeChangeList
 		for (IconButton button : buttons) {
 			if (!(button instanceof RulerIconButton)) {
 				button.deactivate();
+			}
+		}
+	}
+
+	public void disableNonSpotlightButtons() {
+		for (IconButton button : buttons) {
+			if (button != spotlightButton) {
+				button.addStyleName("disabled");
 			}
 		}
 	}

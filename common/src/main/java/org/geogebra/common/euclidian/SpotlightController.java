@@ -17,7 +17,7 @@ public class SpotlightController {
 	private final Construction cons;
 	private final GTimer disappearBoxTimer;
 	private final App app;
-	private SelectionManager selectionManager;
+	private final SelectionManager selectionManager;
 	private GeoSpotlight spotlight = null;
 
 	/**
