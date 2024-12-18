@@ -17,13 +17,14 @@ import org.geogebra.common.kernel.geos.GProperty;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.geos.HasTextFormatter;
+import org.geogebra.common.kernel.geos.TextProperties;
 import org.geogebra.common.kernel.geos.TextStyle;
 import org.geogebra.common.kernel.geos.properties.TextFontSize;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.properties.impl.AbstractNamedEnumeratedProperty;
+import org.geogebra.common.properties.impl.objects.delegate.FontStyleDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.GeoElementDelegate;
 import org.geogebra.common.properties.impl.objects.delegate.NotApplicablePropertyException;
-import org.geogebra.common.properties.impl.objects.delegate.TextFormatterDelegate;
 
 public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFontSize> {
 	private final List<TextFontSize> fontSizes = Arrays.asList(
@@ -40,7 +41,7 @@ public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFo
 	public TextFontSizeProperty(Localization localization, GeoElement element, EuclidianView ev)
 			throws NotApplicablePropertyException {
 		super(localization, "FontSize");
-		delegate = new TextFormatterDelegate(element);
+		delegate = new FontStyleDelegate(element);
 		this.ev = ev;
 		setValues(fontSizes);
 		setNamedValues(List.of(
@@ -57,8 +58,12 @@ public class TextFontSizeProperty extends AbstractNamedEnumeratedProperty<TextFo
 	@Override
 	protected void doSetValue(TextFontSize value) {
 		GeoElement element = delegate.getElement();
-		double size = GeoText.getRelativeFontSize(fontSizes.indexOf(value)) * ev.getFontSize();
-		if (element instanceof HasTextFormatter) {
+		double size = GeoText.getRelativeFontSize(fontSizes.indexOf(value));
+		if (element instanceof TextProperties && ((TextProperties) element)
+				.getFontSizeMultiplier() != size) {
+			((TextProperties) element).setFontSizeMultiplier(size);
+		} else if (element instanceof HasTextFormatter) {
+			size = size * ev.getFontSize();
 			((HasTextFormatter) element).getFormatter().format("size", size);
 		}
 		element.updateVisualStyleRepaint(GProperty.FONT);
