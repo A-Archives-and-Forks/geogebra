@@ -87,7 +87,8 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 	@Test
 	public void testFactorOutNominator() {
-		shouldSimplify("(2 + 2sqrt(2)) / -4", "(-(2(1 + sqrt(2))))/4");
+		shouldSimplify("(2 + 2sqrt(2)) / -4", "(-2(1+sqrt(2)))/4",
+				getSimplifier(), new PositiveDenominator(utils));
 		shouldSimplify("(-2 - 2sqrt(2)) / 4", "(-2 (1 + sqrt(2))) / 4");
 		shouldSimplify("(2 - 2sqrt(2)) / 4", "(2 (1 - sqrt(2))) / 4");
 	}
@@ -107,7 +108,7 @@ public class FactorOutTest extends BaseSimplifyTest {
 
 	@Test
 	public void test() {
-//		shouldSimplify("(-8 + 2sqrt(2)) (-2 - sqrt(6))", "2 ((4 sqrt(6) + 8 + (-sqrt(6) - 2) sqrt(2)))");
+		shouldSimplify("(-8 + 2sqrt(2)) (-2 - sqrt(6))", "-2 (4 + sqrt(2)) (-2 - sqrt(6))");
 		shouldSimplify("((sqrt(2) - 5) (2 - 2sqrt(2)))", "((2 * (1 - sqrt(2)) (sqrt(2) - 5)))");
 	}
 

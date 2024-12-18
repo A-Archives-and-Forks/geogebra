@@ -1,10 +1,13 @@
 package org.geogebra.common.kernel.arithmetic.simplifiers;
 
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.arithmetic.ExpressionValue;
+import org.geogebra.common.kernel.arithmetic.MyDouble;
 import org.geogebra.common.kernel.arithmetic.SimplifyUtils;
 import org.geogebra.common.kernel.arithmetic.Traversing;
 import org.geogebra.common.plugin.Operation;
+import org.geogebra.common.util.DoubleUtil;
 
 public class ReduceToIntegers implements SimplifyNode {
 
@@ -25,8 +28,11 @@ public class ReduceToIntegers implements SimplifyNode {
 			ExpressionNode parent = null;
 			@Override
 			public ExpressionValue process(ExpressionValue ev) {
+				if (ev instanceof MyDouble) {
+					return ev;
+				}
 				double v = ev.evaluateDouble();
-				if (Math.round(v) == v && v != -1) {
+				if (Math.round(v) == v) {
 					return utils.newDouble(v);
 				}
 

@@ -30,16 +30,16 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 		shouldSimplify(from, to, getSimplifier());
 	}
 
-	protected final void shouldSimplify(String actualDef, String expectedDef, SimplifyNode simplifier) {
+	protected final void shouldSimplify(String actualDef, String expectedDef,
+			SimplifyNode... simplifiers) {
 		GeoNumeric actual = newSymbolicNumeric(actualDef);
-		if (!getSimplifier().isAccepted(actual.getDefinition())) {
-			fail(actualDef + " is not accepted" );
-		}
-
 		GeoNumeric expected = newSymbolicNumeric(expectedDef);
-		assertTrue(actualDef + " is not accepted by " + simplifier.name(),
-				simplifier.isAccepted(actual.getDefinition()));
-		ExpressionNode applied = simplifier.apply(actual.getDefinition());
+		ExpressionNode applied = actual.getDefinition();
+		for (SimplifyNode simplifier: simplifiers) {
+			assertTrue(applied + " is not accepted by " + simplifier.name(),
+					simplifier.isAccepted(applied));
+			applied = simplifier.apply(applied);
+		}
 		assertEquals("Values do not equal! \n\nDefinitions:\n Expected: "
 						+ expectedDef + "\n Actual: " + applied,
 				expected.getDefinition().evaluateDouble(), applied.evaluateDouble(),
@@ -49,9 +49,9 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 
 	protected static void shouldSerialize(ExpressionValue expected, ExpressionValue actual) {
 		assertEquals(expected.toString(StringTemplate.defaultTemplate)
-						.replaceAll("\\s+",""),
+						.replaceAll("\\s+", ""),
 				actual.toString(StringTemplate.defaultTemplate)
-						.replaceAll("\\s+",""));
+						.replaceAll("\\s+", ""));
 	}
 
 	protected GeoNumeric newSymbolicNumeric(String actualDef) {
@@ -59,7 +59,6 @@ public abstract class BaseSimplifyTest extends BaseUnitTest {
 		actual.setSymbolicMode(true, true);
 		return actual;
 	}
-
 
 	protected final void shouldAccept(String def) {
 		assertTrue(isAccepted(def));
