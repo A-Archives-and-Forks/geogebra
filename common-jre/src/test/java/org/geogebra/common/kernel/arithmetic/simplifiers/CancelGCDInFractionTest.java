@@ -2,7 +2,7 @@ package org.geogebra.common.kernel.arithmetic.simplifiers;
 
 import org.junit.Test;
 
-public class CancelGCDInFractionTest extends BaseSimplifyTest{
+public class CancelGCDInFractionTest extends BaseSimplifyTest {
 	@Override
 	protected SimplifyNode getSimplifier() {
 		return new CancelGCDInFraction(utils);
@@ -27,20 +27,21 @@ public class CancelGCDInFractionTest extends BaseSimplifyTest{
 	@Test
 	public void testCancel2() {
 		shouldSimplify("(12 (1 + sqrt(2))) / 4" , "3 (1 + sqrt(2))");
-		shouldSimplify("(-(2 (1 - sqrt(2)))) / 4", "(-1 + sqrt(2)) / 2");
-		shouldSimplify("(-9 (8 + sqrt(10))) / 54", "(-8 - sqrt(10)) / 6");
+		shouldSimplify("(-(2 (1 - sqrt(2)))) / 4", "(sqrt(2)-1)/2");
+		shouldSimplify("(-9 (8 + sqrt(10))) / 54", "(-(8+sqrt(10)))/6");
 	}
 
 	@Test
 	public void name() {
-		shouldSimplify("(3 (1 - sqrt(6))) / -5", "(-(3 (1 - sqrt(6)))) / 5");
+		shouldSimplify("(3 (1 - sqrt(6))) / -5", "(-3 (1 - sqrt(6))) / 5", getSimplifier(),
+				new PositiveDenominator(utils));
 		shouldSimplify("(4 (sqrt(5) + 1)) / 4", "sqrt(5) + 1");
 		shouldSimplify("((sqrt(5) + 1) * 4) / 4", "sqrt(5) + 1");
 	}
 
 	@Test
-	public void wip() {
-		shouldSimplify("((2 * (1 - sqrt(2)) (sqrt(2) - 5))) / 4", "(1-sqrt(2))(sqrt(2)-5) / 2");
+	public void nestedMultiplication() {
+		shouldSimplify("((2 * (1 - sqrt(2)) (sqrt(2) - 5))) / 4", "((sqrt(2)-5)(1-sqrt(2)))/2");
 	}
 
 	@Test

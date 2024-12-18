@@ -19,10 +19,11 @@ public class SimplifyUtils {
 
 	public ExpressionValue newDouble(double v) {
 		return new ExpressionNode(kernel,
-				(isIntegerValue(v) ? Math.round(v) : v));
+				isIntegerValue(v) ? Math.round(v) : v);
 	}
 
-	public ExpressionNode newNode(ExpressionValue left, Operation operation, ExpressionValue right) {
+	public ExpressionNode newNode(ExpressionValue left, Operation operation,
+			ExpressionValue right) {
 		return new ExpressionNode(kernel, left, operation, right);
 	}
 
@@ -41,8 +42,6 @@ public class SimplifyUtils {
 		if (valDenominator == -1) {
 			return numerator.wrap().multiplyR(-1);
 		}
-
-
 		return newDiv(numerator, denominator);
 	}
 
@@ -90,6 +89,10 @@ public class SimplifyUtils {
 		if (isOne(v)) {
 			return node1;
 		}
+		if (v == -1 && node1.getOperation() == Operation.MINUS) {
+			return new ExpressionNode(node1.getKernel(),
+					node1.getRight(), Operation.MINUS, node1.getLeft());
+		}
 		if (isIntegerValue(node1) && isIntegerValue(v)) {
 			return newDouble(node1.evaluateDouble() * v).wrap();
 		}
@@ -111,7 +114,6 @@ public class SimplifyUtils {
 		}
 				return node1.multiplyR(node2);
 	}
-
 
 	private static boolean isOne(ExpressionNode node) {
 		return isOne(node.evaluateDouble());
@@ -185,6 +187,7 @@ public class SimplifyUtils {
 		double value = ev.evaluateDouble();
 		return isIntegerValue(value) && value >= 0;
 	}
+
 	public static boolean isIntegerValue(ExpressionValue ev) {
 		return ev != null && isIntegerValue(ev.evaluateDouble());
 	}
@@ -204,7 +207,7 @@ public class SimplifyUtils {
 
 	public ExpressionValue mulByMinusOneR(ExpressionValue ev) {
 		ExpressionNode node = ev.wrap();
-		ExpressionValue left =node.getLeftTree().getRight().isOperation(Operation.MULTIPLY)
+		ExpressionValue left = node.getLeftTree().getRight().isOperation(Operation.MULTIPLY)
 				? node.getLeftTree().getRight()
 				: node.getLeftTree();
 		ExpressionValue right = node.getRightTree();
@@ -240,6 +243,7 @@ public class SimplifyUtils {
 	public ExpressionNode negative(ExpressionValue ev) {
 		return negative(ev.wrap());
 	}
+
 	public ExpressionNode negative(ExpressionNode node) {
 		ExpressionValue mul = mulByMinusOne(node);
 		return mul.wrap().multiply(minusOne());
@@ -262,7 +266,6 @@ public class SimplifyUtils {
 		}
 		return isPositiveIntegerValue(ev.wrap().getLeft());
 	}
-
 
 	public static boolean isNodeSupported(ExpressionNode node) {
 		return (node.isLeaf() && isIntegerValue(node))
@@ -331,7 +334,7 @@ public class SimplifyUtils {
 			node.setLeft(newDouble(-leftNumber));
 			return node;
 		}
-		if (leftNumber == - 1) {
+		if (node.isOperation(Operation.MULTIPLY) && leftNumber == - 1) {
 			return node.getRightTree();
 		}
 		return multiplyR(node, -1);
@@ -347,7 +350,7 @@ public class SimplifyUtils {
 	}
 
 	public ExpressionNode newSqrt(double v) {
-		return new ExpressionNode(kernel, newDouble(v),	Operation.SQRT, null);
+		return new ExpressionNode(kernel, newDouble(v), Operation.SQRT, null);
 	}
 
 	public boolean isSqrt(ExpressionValue ev) {

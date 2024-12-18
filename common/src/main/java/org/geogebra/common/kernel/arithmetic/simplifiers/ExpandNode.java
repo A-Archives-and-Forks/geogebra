@@ -51,16 +51,19 @@ public class ExpandNode implements SimplifyNode {
 			eval = list.get(i).evaluateDouble();
 		}
 
-		ExpressionNode rest = list.get(i);
+		ExpressionNode rest = utils.newDouble(num).wrap();
 
-		while (i < list.size() - 1) {
+		while (i < list.size()) {
+			if (list.get(i).isOperation(Operation.MULTIPLY)
+					&& list.get(i).getLeft().evaluateDouble() == -1) {
+				rest = rest.subtract(utils.getSurdsOrSame(list.get(i).getRight()));
+			} else {
+				rest = rest.plus(utils.getSurdsOrSame(list.get(i)));
+			}
 			i++;
-			rest = rest.plus(utils.getSurdsOrSame(list.get(i)));
 		}
 
-		return utils.newNode(utils.newDouble(num),
-				Operation.PLUS,
-				rest);
+		return rest;
 	}
 
 	@Override

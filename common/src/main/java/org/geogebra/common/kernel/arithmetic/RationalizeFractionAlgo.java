@@ -21,8 +21,6 @@ public final class RationalizeFractionAlgo {
 		this.kernel = numerator.getKernel();
 		this.numerator = numerator.deepCopy(kernel);
 		this.denominator = denominator.deepCopy(kernel);
-
-
 	}
 
 	public ExpressionNode compute() {
@@ -32,7 +30,6 @@ public final class RationalizeFractionAlgo {
 		}
 		return checkDecimals(node) ? null : node;
 	}
-
 
 	/**
 	 * Package private to be testable in isolation
@@ -48,8 +45,7 @@ public final class RationalizeFractionAlgo {
 				|| v instanceof MyDouble) && !isIntegerValue(v.wrap());
 			}
 		});
-}
-
+	}
 
 	public static boolean isIntegerValue(ExpressionNode node) {
 		double v = node.evaluateDouble();
@@ -99,11 +95,11 @@ public final class RationalizeFractionAlgo {
 		ExpressionNode rightOperand = expanded;
 		Operation rightOperandOperation = rightOperand.getOperation();
 		if (hasTwoTags(rightOperand)) {
- 			return doFactorize(expanded);
+			return doFactorize(expanded);
 		} if (rightOperandOperation == Operation.SQRT) {
 			ExpressionNode sqrt = denominator.getRightTree();
 			return utils.newNode(this.numerator.multiplyR(sqrt), Operation.DIVIDE,
-					denominator.multiplyR(sqrt));
+					denominator.getLeftTree().multiplyR(sqrt.getLeft()));
 		} else {
 			ExpressionNode numerator = new ExpressionNode(kernel, expanded.getLeftTree(),
 					rightOperandOperation, null);

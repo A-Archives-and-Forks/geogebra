@@ -104,6 +104,11 @@ public class CancelGCDInFraction implements SimplifyNode {
 
 		long newMul = n / gcd;
 		long newDenom = m / gcd;
+		if (newDenom < 0) {
+			newDenom = -newDenom;
+			newMul = -newMul;
+		}
+
 				return utils.div(utils.multiplyR(node.getLeftTree().getRightTree(), newMul),
 				utils.newDouble(newDenom).wrap());
 	}
@@ -164,6 +169,10 @@ public class CancelGCDInFraction implements SimplifyNode {
 		ExpressionValue canceled = node2.getLeft();
 		double evalCanceled = canceled.evaluateDouble();
 		if (node1.isOperation(Operation.MULTIPLY)) {
+			if (node1.getLeft().isOperation(Operation.MULTIPLY)) {
+				node1.setRight(node1.getLeftTree().getRightTree().multiply(node1.getRight()));
+				node1.setLeft(node1.getLeftTree().getLeft());
+			}
 			double evalLeft = node1.getLeft().evaluateDouble();
 			double evalRight = node1.getRight().evaluateDouble();
 			if (isInteger(evalLeft)) {
@@ -214,10 +223,6 @@ public class CancelGCDInFraction implements SimplifyNode {
 					.multiplyR(multRArg),
 					Operation.DIVIDE, new MyDouble(kernel, canceledDominator)
 			);
-		} else {
-			double v = eval / evalCanceled;
-			return new ExpressionNode(kernel, new MyDouble(kernel, v),
-					node1.getOperation(), node1.getLeftTree());
 		}
 		return null;
 	}

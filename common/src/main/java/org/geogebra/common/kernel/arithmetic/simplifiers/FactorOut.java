@@ -40,7 +40,10 @@ public class FactorOut implements SimplifyNode {
 		if (node.isOperation(Operation.MULTIPLY) && isAccepted(node.getRightTree())) {
 			return NodeType.MULTIPLIED;
 		}
-
+		if (node.isOperation(Operation.MULTIPLY) && isAccepted(node.getLeftTree())
+				&& !isIntegerValue(node.getLeft())) {
+			return NodeType.MULTIPLIED;
+		}
 		if (node.isOperation(Operation.DIVIDE)
 				&& isAccepted(node.getLeftTree()) && isAccepted(node.getRightTree())) {
 			return NodeType.FRACTION;
@@ -75,20 +78,20 @@ public class FactorOut implements SimplifyNode {
 		case PLUS_OR_MINUS:
 			return factorOutPlusOrMinusNode(node);
 		case MULTIPLIED:
-			return factorOutMultiplied(node);
+			return factorOutMultiplied(node.getLeftTree(), node.getRightTree());
 		default:
 			return node;
 		}
 	}
 
-	private ExpressionNode factorOutMultiplied(ExpressionNode node) {
-		if (isIntegerValue(node.getLeftTree())) {
-			ExpressionNode node1 = factorOutPlusOrMinusNode(node.getRightTree());
+	private ExpressionNode factorOutMultiplied(ExpressionNode leftTree, ExpressionNode rightTree) {
+		if (isIntegerValue(leftTree)) {
+			ExpressionNode node1 = factorOutPlusOrMinusNode(rightTree);
 			return utils.multiplyR(node1.getRightTree(),
-					node.getLeft().evaluateDouble() * node1.getLeft().evaluateDouble());
+					leftTree.evaluateDouble() * node1.getLeft().evaluateDouble());
 		}
-		ExpressionNode appliedLeft = apply(node.getLeftTree());
-		ExpressionNode appliedRight = apply(node.getRightTree());
+		ExpressionNode appliedLeft = apply(leftTree);
+		ExpressionNode appliedRight = apply(rightTree);
 		int rightMultiplier = utils.getLeftMultiplier(appliedRight);
 		return rightMultiplier == 1
 				? utils.multiplyR(appliedLeft, appliedRight)
@@ -115,7 +118,10 @@ public class FactorOut implements SimplifyNode {
 		if (leftTree.isLeaf()) {
 			return factorOutGCD((int) leftValue, rightTree, operation);
 		}
-		return factorOutGCD(leftTree, (int) Math.abs(rightValue), operation);
+		if (rightTree.isLeaf()) {
+			return factorOutGCD(leftTree, (int) Math.abs(rightValue), operation);
+		}
+		return new ExpressionNode(leftTree.getKernel(), leftTree, Operation.PLUS, rightTree);
 	}
 
 	private ExpressionNode factorOutSubtraction(ExpressionNode node) {
@@ -207,7 +213,6 @@ public class FactorOut implements SimplifyNode {
 			boolean numberFirst) {
 		double treeMultiplier = rightTree.getLeft().evaluateDouble();
 		double gcd = Kernel.gcd(constNumber, (int) Math.round(treeMultiplier));
-
 
 		double constFactor = constNumber / gcd;
 		double treeFactor = treeMultiplier / gcd;

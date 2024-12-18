@@ -71,7 +71,8 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void decimalValueShouldBeOK() {
 		GeoNumeric num = add("1/sqrt(2)");
 		num.setSymbolicMode(false, true);
-		assertEquals("0.707106781186547", num.getFormulaString(StringTemplate.defaultTemplate, true));
+		assertEquals("0.707106781186547",
+				num.getFormulaString(StringTemplate.defaultTemplate, true));
 		num.setSymbolicMode(true, true);
 	}
 
@@ -158,7 +159,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void testFixMe() {
 		rationalizationShouldBe("2 / sqrt(2)", "sqrt(2)");
 		rationalizationShouldBe("1 / (2 * (1 + sqrt(2)))", "(sqrt(2) - 1) / 2");
-		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(-1 - sqrt(2)) / 2");
+		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(-(1 + sqrt(2))) / 2");
 	}
 
 	@Test
@@ -178,7 +179,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 
 	@Test
 	public void testProductInDenominator() {
-		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(-1 - sqrt(2)) / 2");
+		rationalizationShouldBe("1 / (2 * (1 - sqrt(2)))", "(-(1 + sqrt(2))) / 2");
 		rationalizationShouldBe("1 / (2 * sqrt(2))", "sqrt(2) / 4");
 	}
 
@@ -222,7 +223,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		rationalizationShouldBe("(-8 + sqrt(4)) / (-2 + sqrt(8))", "-3 (1 + sqrt(2))");
 	}
 
-
 	@Ignore
 	@Test
 	public void testSimplestForm() {
@@ -237,7 +237,7 @@ public class RationalizableFractionTest extends BaseUnitTest {
 	public void testTrivialDenominators() {
 		rationalizationShouldBe(genericSqrtFraction(6, 10, -4, 9),
 				"-(6 + sqrt(10))");
-		rationalizationShouldBe(genericSqrtFraction(-5, 5, -3,9),
+		rationalizationShouldBe(genericSqrtFraction(-5, 5, -3, 9),
 				"-\u221e");
 	}
 
@@ -308,7 +308,6 @@ public class RationalizableFractionTest extends BaseUnitTest {
 		shouldBeSupported("(6 + sqrt(10)) / (-4 + sqrt(9))");
 	}
 
-
 	@Test
 	public void allShouldBeNumericallyOK() {
 		StringBuilder failures = new StringBuilder();
@@ -329,13 +328,14 @@ public class RationalizableFractionTest extends BaseUnitTest {
 								.deepCopy(getKernel()).evaluateDouble();
 						if (Double.isFinite(expected) && !DoubleUtil.isEqual(expected, actual)) {
 							failures.append(Arrays.toString(
-											new double[]{a, b, c, d, actual,expected}))
-									.append(ex.toString(StringTemplate.defaultTemplate)).append(" -> ").append(resolution).append("\n");
+											new double[]{a, b, c, d, actual, expected}))
+									.append(ex.toString(StringTemplate.defaultTemplate))
+									.append(" -> ").append(resolution).append("\n");
 						}
 					}
 				}
 			}
 		}
-		assertEquals("0", failures.toString());
+		assertEquals("", failures.toString());
 	}
 }
